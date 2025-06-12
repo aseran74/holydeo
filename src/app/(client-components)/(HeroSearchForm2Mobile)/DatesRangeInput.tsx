@@ -7,20 +7,30 @@ import DatePickerCustomDay from "@/components/DatePickerCustomDay";
 
 export interface StayDatesRangeInputProps {
   className?: string;
+  onChange?: (dates: [Date | null, Date | null]) => void;
+  value?: [Date | null, Date | null];
 }
 
 const StayDatesRangeInput: FC<StayDatesRangeInputProps> = ({
   className = "",
+  onChange,
+  value,
 }) => {
-  const [startDate, setStartDate] = useState<Date | null>(
-    new Date("2023/02/06")
-  );
-  const [endDate, setEndDate] = useState<Date | null>(new Date("2023/02/23"));
+  const [startDate, setStartDate] = useState<Date | null>(value?.[0] ?? null);
+  const [endDate, setEndDate] = useState<Date | null>(value?.[1] ?? null);
+
+  useEffect(() => {
+    setStartDate(value?.[0] ?? null);
+    setEndDate(value?.[1] ?? null);
+  }, [value?.[0], value?.[1]]);
 
   const onChangeDate = (dates: [Date | null, Date | null]) => {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
+    if (onChange && start && end) {
+      onChange([start, end]);
+    }
   };
 
   return (

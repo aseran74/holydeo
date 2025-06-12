@@ -7,7 +7,6 @@ import NotifyDropdown from "./NotifyDropdown";
 import AvatarDropdown from "./AvatarDropdown";
 import MenuBar from "@/shared/MenuBar";
 import { SearchTab } from "../(HeroSearchForm)/HeroSearchForm";
-import HeroSearchForm2MobileFactory from "../(HeroSearchForm2Mobile)/HeroSearchForm2MobileFactory";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import HeroSearchFormSmall from "../(HeroSearchFormSmall)/HeroSearchFormSmall";
@@ -173,7 +172,7 @@ const Header3: FC<Header3Props> = ({ className = "" }) => {
                 {renderButtonOpenHeroSearch()}
               </div>
               <div className="self-center flex-1 lg:hidden w-full max-w-lg mx-auto">
-                <HeroSearchForm2MobileFactory />
+                {/* <HeroSearchForm2MobileFactory /> */}
               </div>
               {renderHeroSearch()}
             </div>

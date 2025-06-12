@@ -1,13 +1,10 @@
 import React, { FC, ReactNode } from "react";
-import { DEMO_STAY_LISTINGS } from "@/data/listings";
 import { StayDataType } from "@/data/types";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import PropertyCardH from "@/components/PropertyCardH";
 import HeaderFilter from "@/components/HeaderFilter";
 
 // OTHER DEMO WILL PASS PROPS
-const DEMO_DATA: StayDataType[] = DEMO_STAY_LISTINGS.filter((_, i) => i < 8);
-//
 export interface SectionGridFeaturePropertyProps {
   stayListings?: StayDataType[];
   gridClass?: string;
@@ -18,10 +15,10 @@ export interface SectionGridFeaturePropertyProps {
 }
 
 const SectionGridFeatureProperty: FC<SectionGridFeaturePropertyProps> = ({
-  stayListings = DEMO_DATA,
+  stayListings = [],
   gridClass = "",
-  heading = "Featured places to stay",
-  subHeading = "Popular places to stay that Chisfis recommends for you",
+  heading,
+  subHeading,
   headingIsCenter,
   tabs = ["New York", "Tokyo", "Paris", "London"],
 }) => {

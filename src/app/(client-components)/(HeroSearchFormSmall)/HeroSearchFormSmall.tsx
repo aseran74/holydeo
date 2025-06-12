@@ -15,7 +15,7 @@ export interface HeroSearchFormSmallProps {
   onTabChange?: (tab: SearchTab) => void;
   defaultFieldFocus?: StaySearchFormFields;
 }
-const TABS: SearchTab[] = ["Stays", "Experiences", "Cars", "Flights"];
+const TABS: SearchTab[] = ["Stays", "Experiences"];
 
 const HeroSearchFormSmall: FC<HeroSearchFormSmallProps> = ({
   className = "",
@@ -66,11 +66,6 @@ const HeroSearchFormSmall: FC<HeroSearchFormSmallProps> = ({
         return <StaySearchForm defaultFieldFocus={defaultFieldFocus} />;
       case "Experiences":
         return <ExperiencesSearchForm />;
-      case "Cars":
-        return <RentalCarSearchForm />;
-      case "Flights":
-        return <FlightSearchForm />;
-
       default:
         return null;
     }

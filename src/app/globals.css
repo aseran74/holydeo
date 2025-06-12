@@ -1,3 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.react-datepicker, .react-datepicker * {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Forzar el ancho completo del calendario y los meses */
+.react-datepicker,
+.react-datepicker__month-container {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.react-datepicker__month {
+  width: 100% !important;
+}
+
+.react-datepicker__month-wrapper {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .react-datepicker {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 2rem;
+  }
+  .react-datepicker__month-container {
+    width: 100% !important;
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

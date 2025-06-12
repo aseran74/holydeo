@@ -1,124 +1,116 @@
-import React, { FC } from "react";
+import React, { FC, useState, ChangeEvent, FormEvent } from "react";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import Input from "@/shared/Input";
 
-export interface PageAddListing5Props {}
+export interface PageAddListing5Props {
+  formData: any;
+  updateFormData: (fields: Partial<any>) => void;
+}
 
-const PageAddListing5: FC<PageAddListing5Props> = () => {
-  const renderRadio = (
-    name: string,
-    id: string,
-    label: string,
-    defaultChecked?: boolean
-  ) => {
-    return (
-      <div className="flex items-center">
-        <input
-          defaultChecked={defaultChecked}
-          id={id + name}
-          name={name}
-          type="radio"
-          className="focus:ring-primary-500 h-6 w-6 text-primary-500 border-neutral-300 !checked:bg-primary-500 bg-transparent"
-        />
-        <label
-          htmlFor={id + name}
-          className="ml-3 block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-        >
-          {label}
-        </label>
-      </div>
-    );
+const RULES = [
+  { key: "smoking", label: "Smoking" },
+  { key: "pet", label: "Pet" },
+  { key: "party", label: "Party organizing" },
+  { key: "cooking", label: "Cooking" },
+];
+
+const OPTIONS = [
+  { value: "Do not allow", label: "No permitir" },
+  { value: "Allow", label: "Permitir" },
+  { value: "Charge", label: "Cobrar" },
+];
+
+const PageAddListing5: FC<PageAddListing5Props> = ({ formData, updateFormData }) => {
+  const [newRule, setNewRule] = useState("");
+
+  const handleRadioChange = (ruleKey: string, value: string) => {
+    updateFormData({
+      houseRules: {
+        ...formData.houseRules,
+        [ruleKey]: value,
+      },
+    });
   };
 
-  const renderNoInclude = (text: string) => {
-    return (
-      <div className="flex items-center justify-between py-3">
-        <span className="text-neutral-6000 dark:text-neutral-400 font-medium">
-          {text}
-        </span>
-        <i className="text-2xl text-neutral-400 las la-times-circle hover:text-neutral-900 dark:hover:text-neutral-100 cursor-pointer"></i>
-      </div>
-    );
+  const handleAddRule = (e: FormEvent) => {
+    e.preventDefault();
+    if (newRule.trim()) {
+      updateFormData({
+        additionalRules: [...(formData.additionalRules || []), newRule.trim()],
+      });
+      setNewRule("");
+    }
+  };
+
+  const handleRemoveRule = (index: number) => {
+    const updated = (formData.additionalRules || []).filter((_, i) => i !== index);
+    updateFormData({ additionalRules: updated });
   };
 
   return (
     <>
       <div>
-        <h2 className="text-2xl font-semibold">
-          Set house rules for your guests{" "}
-        </h2>
+        <h2 className="text-2xl font-semibold">Reglas de la casa</h2>
         <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
-          Guests must agree to your house rules before they book.
+          Los huéspedes deben aceptar estas reglas antes de reservar.
         </span>
       </div>
       <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
       {/* FORM */}
       <div className="space-y-8">
-        {/* ITEM */}
-        <div>
-          <label className="text-lg font-semibold" htmlFor="">
-            General amenities
-          </label>
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {renderRadio("Smoking", "Do", "Do not allow")}
-            {renderRadio("Smoking", "Allow", "Allow", true)}
-            {renderRadio("Smoking", "Charge", "Charge")}
+        {RULES.map((rule) => (
+          <div key={rule.key}>
+            <label className="text-lg font-semibold" htmlFor="">
+              {rule.label}
+            </label>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {OPTIONS.map((opt) => (
+                <label key={opt.value} className="flex items-center">
+                  <input
+                    type="radio"
+                    name={rule.key}
+                    value={opt.value}
+                    checked={formData.houseRules?.[rule.key] === opt.value}
+                    onChange={() => handleRadioChange(rule.key, opt.value)}
+                    className="focus:ring-primary-500 h-6 w-6 text-primary-500 border-neutral-300 !checked:bg-primary-500 bg-transparent"
+                  />
+                  <span className="ml-3 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                    {opt.label}
+                  </span>
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
-
-        {/* ITEM */}
-        <div>
-          <label className="text-lg font-semibold" htmlFor="">
-            Pet
-          </label>
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {renderRadio("Pet", "Do", "Do not allow")}
-            {renderRadio("Pet", "Allow", "Allow", true)}
-            {renderRadio("Pet", "Charge", "Charge")}
-          </div>
-        </div>
-
-        {/* ITEM */}
-        <div>
-          <label className="text-lg font-semibold" htmlFor="">
-            Party organizing
-          </label>
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {renderRadio("Partyorganizing", "Do", "Do not allow")}
-            {renderRadio("Partyorganizing", "Allow", "Allow", true)}
-            {renderRadio("Partyorganizing", "Charge", "Charge")}
-          </div>
-        </div>
-
-        {/* ITEM */}
-        <div>
-          <label className="text-lg font-semibold" htmlFor="">
-            Cooking
-          </label>
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {renderRadio("Cooking", "Do", "Do not allow")}
-            {renderRadio("Cooking", "Allow", "Allow", true)}
-            {renderRadio("Cooking", "Charge", "Charge")}
-          </div>
-        </div>
-
-        {/* ----------- */}
+        ))}
         <div className=" border-b border-neutral-200 dark:border-neutral-700"></div>
-        <span className="block text-lg font-semibold">Additional rules</span>
+        <span className="block text-lg font-semibold">Reglas adicionales</span>
         <div className="flow-root">
           <div className="-my-3 divide-y divide-neutral-100 dark:divide-neutral-800">
-            {renderNoInclude("No smoking in common areas")}
-            {renderNoInclude("Do not wear shoes/shoes in the house")}
-            {renderNoInclude("No cooking in the bedroom")}
+            {(formData.additionalRules || []).map((rule: string, idx: number) => (
+              <div key={idx} className="flex items-center justify-between py-3">
+                <span className="text-neutral-6000 dark:text-neutral-400 font-medium">
+                  {rule}
+                </span>
+                <i
+                  className="text-2xl text-neutral-400 las la-times-circle hover:text-neutral-900 dark:hover:text-neutral-100 cursor-pointer"
+                  onClick={() => handleRemoveRule(idx)}
+                ></i>
+              </div>
+            ))}
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row sm:justify-between space-y-3 sm:space-y-0 sm:space-x-5">
-          <Input className="!h-full" placeholder="No smoking..." />
-          <ButtonPrimary className="flex-shrink-0">
+        <form onSubmit={handleAddRule} className="flex flex-col sm:flex-row sm:justify-between space-y-3 sm:space-y-0 sm:space-x-5">
+          <Input
+            className="!h-full"
+            placeholder="Ej: No fumar en zonas comunes..."
+            value={newRule}
+            onChange={e => setNewRule(e.target.value)}
+          />
+          <ButtonPrimary className="flex-shrink-0" type="submit">
             <i className="text-xl las la-plus"></i>
-            <span className="ml-3">Add tag</span>
+            <span className="ml-3">Añadir regla</span>
           </ButtonPrimary>
-        </div>
+        </form>
       </div>
     </>
   );

@@ -105,12 +105,8 @@ const SectionGridCategoryBox: React.FC<SectionGridCategoryBoxProps> = ({
 
   return (
     <div className={`nc-SectionGridCategoryBox relative ${className}`}>
-      <Heading
-        desc="Discover great places near where you live"
-        isCenter={headingCenter}
-      >
-        Explore nearby
-      </Heading>
+      {/* Solo renderizar Heading si hay children */}
+      {/* No se pasa texto por defecto, así que no se muestra heading vacío */}
       <div className={`grid ${gridClassName} gap-5 sm:gap-6 md:gap-8`}>
         {categories.map((item, i) => (
           <CardComponentName key={i} taxonomy={item} />

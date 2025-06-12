@@ -3,15 +3,12 @@
 import React, { FC, useState } from "react";
 import AnyReactComponent from "@/components/AnyReactComponent/AnyReactComponent";
 import GoogleMapReact from "google-map-react";
-import { DEMO_STAY_LISTINGS } from "@/data/listings";
 import ButtonClose from "@/shared/ButtonClose";
 import Checkbox from "@/shared/Checkbox";
 import Pagination from "@/shared/Pagination";
 import TabFilters from "./TabFilters";
 import Heading2 from "@/shared/Heading2";
 import PropertyCardH from "@/components/PropertyCardH";
-
-const DEMO_EXPERIENCES = DEMO_STAY_LISTINGS.filter((_, i) => i < 12);
 
 export interface SectionGridHasMapProps {}
 
@@ -39,7 +36,7 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
             <TabFilters />
           </div>
           <div className="grid grid-cols-1 gap-8">
-            {DEMO_EXPERIENCES.map((item) => (
+            {/* DEMO_EXPERIENCES.map((item) => (
               <div
                 key={item.id}
                 onMouseEnter={() => setCurrentHoverID((_) => item.id)}
@@ -47,7 +44,7 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
               >
                 <PropertyCardH data={item} />
               </div>
-            ))}
+            )) */}
           </div>
           <div className="flex mt-16 justify-center items-center">
             <Pagination />
@@ -87,13 +84,13 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
 
             <GoogleMapReact
               bootstrapURLKeys={{
-                key: "AIzaSyAGVJfZMAKYfZ71nzL_v5i3LjTTWnCYwTY",
+                key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
               }}
               yesIWantToUseGoogleMapApiInternals
               defaultZoom={12}
-              defaultCenter={DEMO_EXPERIENCES[0].map}
+              defaultCenter={/* DEMO_EXPERIENCES[0].map */}
             >
-              {DEMO_EXPERIENCES.map((item) => (
+              {/* DEMO_EXPERIENCES.map((item) => (
                 <AnyReactComponent
                   isSelected={currentHoverID === item.id}
                   key={item.id}
@@ -101,7 +98,7 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
                   lng={item.map.lng}
                   experiences={item}
                 />
-              ))}
+              )) */}
             </GoogleMapReact>
           </div>
         </div>

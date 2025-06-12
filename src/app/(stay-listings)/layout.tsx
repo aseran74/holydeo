@@ -1,3 +1,4 @@
+'use client';
 import BackgroundSection from "@/components/BackgroundSection";
 import BgGlassmorphism from "@/components/BgGlassmorphism";
 import SectionGridAuthorBox from "@/components/SectionGridAuthorBox";

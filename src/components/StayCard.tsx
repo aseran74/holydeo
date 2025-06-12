@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import { DEMO_STAY_LISTINGS } from "@/data/listings";
 import { StayDataType } from "@/data/types";
 import StartRating from "@/components/StartRating";
 import BtnLikeIcon from "@/components/BtnLikeIcon";
@@ -14,12 +13,10 @@ export interface StayCardProps {
   size?: "default" | "small";
 }
 
-const DEMO_DATA = DEMO_STAY_LISTINGS[0];
-
 const StayCard: FC<StayCardProps> = ({
   size = "default",
   className = "",
-  data = DEMO_DATA,
+  data,
 }) => {
   const {
     galleryImgs,
@@ -35,7 +32,7 @@ const StayCard: FC<StayCardProps> = ({
     reviewStart,
     reviewCount,
     id,
-  } = data;
+  } = data || {};
 
   const renderSliderGallery = () => {
     return (
@@ -58,7 +55,7 @@ const StayCard: FC<StayCardProps> = ({
       <div className={size === "default" ? "p-4 space-y-4" : "p-3 space-y-1"}>
         <div className={size === "default" ? "space-y-2" : "space-y-1"}>
           <span className="text-sm text-neutral-500 dark:text-neutral-400">
-            {listingCategory.name} · {bedrooms} beds
+            {listingCategory?.name} · {bedrooms} beds
           </span>
           <div className="flex items-center space-x-2">
             {isAds && <Badge name="ADS" color="green" />}
@@ -124,7 +121,7 @@ const StayCard: FC<StayCardProps> = ({
       data-nc-id="StayCard"
     >
       {renderSliderGallery()}
-      <Link href={href}>{renderContent()}</Link>
+      <Link href={href || "#"}>{renderContent()}</Link>
     </div>
   );
 };

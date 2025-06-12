@@ -6,11 +6,15 @@ import { GuestsObject } from "../../type";
 import GuestsInput from "../GuestsInput";
 import LocationInput from "../LocationInput";
 import DatesRangeInput from "../DatesRangeInput";
+import { supabase } from "@/utils/supabaseClient";
+import StayCard2 from "@/components/StayCard2";
+import { useRouter } from "next/navigation";
+import SeasonInput from '@/app/(client-components)/(HeroSearchForm)/(stay-search-form)/SeasonInput';
 
 const StaySearchForm = () => {
   //
   const [fieldNameShow, setFieldNameShow] = useState<
-    "location" | "dates" | "guests"
+    "location" | "dates" | "seasons"
   >("location");
   //
   const [locationInputTo, setLocationInputTo] = useState("");
@@ -23,6 +27,10 @@ const StaySearchForm = () => {
     new Date("2023/02/06")
   );
   const [endDate, setEndDate] = useState<Date | null>(new Date("2023/02/23"));
+  const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
+  const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   //
 
   const onChangeDate = (dates: [Date | null, Date | null]) => {
@@ -31,11 +39,20 @@ const StaySearchForm = () => {
     setEndDate(end);
   };
 
+  const handleSearch = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const params = new URLSearchParams();
+    if (locationInputTo) params.append("location", locationInputTo);
+    if (startDate && endDate) params.append("dates", `${startDate.toISOString()},${endDate.toISOString()}`);
+    if (selectedSeasons.length > 0) params.append("seasons", selectedSeasons.join(","));
+    router.push(`/listing-stay?${params.toString()}`);
+  };
+
   const renderInputLocation = () => {
     const isActive = fieldNameShow === "location";
     return (
       <div
-        className={`w-full bg-white dark:bg-neutral-800 ${
+        className={`w-full bg-white overflow-hidden ${
           isActive
             ? "rounded-2xl shadow-lg"
             : "rounded-xl shadow-[0px_2px_2px_0px_rgba(0,0,0,0.25)]"
@@ -46,8 +63,8 @@ const StaySearchForm = () => {
             className={`w-full flex justify-between text-sm font-medium p-4`}
             onClick={() => setFieldNameShow("location")}
           >
-            <span className="text-neutral-400">Where</span>
-            <span>{locationInputTo || "Location"}</span>
+            <span className="text-neutral-400">¿Dónde?</span>
+            <span>{locationInputTo || "Ubicación"}</span>
           </button>
         ) : (
           <LocationInput
@@ -64,10 +81,9 @@ const StaySearchForm = () => {
 
   const renderInputDates = () => {
     const isActive = fieldNameShow === "dates";
-
     return (
       <div
-        className={`w-full bg-white dark:bg-neutral-800 overflow-hidden ${
+        className={`w-full bg-white overflow-hidden ${
           isActive
             ? "rounded-2xl shadow-lg"
             : "rounded-xl shadow-[0px_2px_2px_0px_rgba(0,0,0,0.25)]"
@@ -78,11 +94,11 @@ const StaySearchForm = () => {
             className={`w-full flex justify-between text-sm font-medium p-4  `}
             onClick={() => setFieldNameShow("dates")}
           >
-            <span className="text-neutral-400">When</span>
+            <span className="text-neutral-400">¿Cuándo?</span>
             <span>
               {startDate
                 ? converSelectedDateToString([startDate, endDate])
-                : "Add date"}
+                : "Añadir fecha"}
             </span>
           </button>
         ) : (
@@ -92,22 +108,11 @@ const StaySearchForm = () => {
     );
   };
 
-  const renderInputGuests = () => {
-    const isActive = fieldNameShow === "guests";
-    let guestSelected = "";
-    if (guestInput.guestAdults || guestInput.guestChildren) {
-      const guest =
-        (guestInput.guestAdults || 0) + (guestInput.guestChildren || 0);
-      guestSelected += `${guest} guests`;
-    }
-
-    if (guestInput.guestInfants) {
-      guestSelected += `, ${guestInput.guestInfants} infants`;
-    }
-
+  const renderInputSeasons = () => {
+    const isActive = fieldNameShow === "seasons";
     return (
       <div
-        className={`w-full bg-white dark:bg-neutral-800 overflow-hidden ${
+        className={`w-full bg-white overflow-hidden ${
           isActive
             ? "rounded-2xl shadow-lg"
             : "rounded-xl shadow-[0px_2px_2px_0px_rgba(0,0,0,0.25)]"
@@ -116,29 +121,27 @@ const StaySearchForm = () => {
         {!isActive ? (
           <button
             className={`w-full flex justify-between text-sm font-medium p-4`}
-            onClick={() => setFieldNameShow("guests")}
+            onClick={() => setFieldNameShow("seasons")}
           >
-            <span className="text-neutral-400">Who</span>
-            <span>{guestSelected || `Add guests`}</span>
+            <span className="text-neutral-400">Temporada</span>
+            <span>{selectedSeasons.length > 0 ? selectedSeasons.join(", ") : `Seleccionar`}</span>
           </button>
         ) : (
-          <GuestsInput defaultValue={guestInput} onChange={setGuestInput} />
+          <SeasonInput selectedSeasons={selectedSeasons} onChange={setSelectedSeasons} />
         )}
       </div>
     );
   };
 
   return (
-    <div>
+    <form onSubmit={handleSearch}>
       <div className="w-full space-y-5">
-        {/*  */}
         {renderInputLocation()}
-        {/*  */}
         {renderInputDates()}
-        {/*  */}
-        {renderInputGuests()}
+        {renderInputSeasons()}
       </div>
-    </div>
+      <button type="submit" className="mt-4 w-full px-6 py-2 rounded-full bg-blue-600 text-white font-semibold">Buscar</button>
+    </form>
   );
 };
 

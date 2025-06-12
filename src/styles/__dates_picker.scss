@@ -26,9 +26,12 @@
 }
 
 .react-datepicker__day {
-  @apply w-full flex items-center justify-center cursor-pointer empty:opacity-0 empty:cursor-auto empty:hover:bg-transparent text-sm;
-  @apply empty:bg-transparent #{!important};
+  @apply w-full flex items-center justify-center cursor-pointer text-sm;
 
+  &--outside-month {
+    @apply text-gray-400;
+  }
+  
   span {
     @apply rounded-full hover:bg-gray-100 dark:hover:bg-gray-700/60;
   }
@@ -58,7 +61,7 @@
   }
 
   &--disabled {
-    @apply text-neutral-400 dark:text-neutral-500;
+    @apply text-neutral-400 dark:text-neutral-500 cursor-not-allowed;
   }
 }
 
@@ -70,7 +73,7 @@
 .addListingDatePickerExclude {
   .react-datepicker__day {
     &--disabled {
-      @apply relative bg-gray-100 dark:bg-gray-700/50 rounded-none empty:opacity-0;
+      @apply relative bg-gray-100 dark:bg-gray-700/50 rounded-none;
       &::after {
         content: "";
         @apply block h-full absolute border-l border-neutral-300 dark:border-neutral-700 rotate-45;

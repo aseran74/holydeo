@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import GallerySlider from "@/components/GallerySlider";
-import { DEMO_STAY_LISTINGS } from "@/data/listings";
 import StartRating from "@/components/StartRating";
 import BtnLikeIcon from "@/components/BtnLikeIcon";
 import SaleOffBadge from "@/components/SaleOffBadge";
@@ -13,11 +12,9 @@ export interface PropertyCardHProps {
   data?: StayDataType;
 }
 
-const DEMO_DATA = DEMO_STAY_LISTINGS[0];
-
 const PropertyCardH: FC<PropertyCardHProps> = ({
   className = "",
-  data = DEMO_DATA,
+  data,
 }) => {
   const {
     galleryImgs,
@@ -30,7 +27,7 @@ const PropertyCardH: FC<PropertyCardHProps> = ({
     reviewStart,
     reviewCount,
     id,
-  } = data;
+  } = data || {};
 
   const renderSliderGallery = () => {
     return (

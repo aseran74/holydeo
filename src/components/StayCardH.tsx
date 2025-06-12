@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import GallerySlider from "@/components/GallerySlider";
-import { DEMO_STAY_LISTINGS } from "@/data/listings";
 import { StayDataType } from "@/data/types";
 import StartRating from "@/components/StartRating";
 import BtnLikeIcon from "@/components/BtnLikeIcon";
@@ -13,11 +12,9 @@ export interface StayCardHProps {
   data?: StayDataType;
 }
 
-const DEMO_DATA = DEMO_STAY_LISTINGS[0];
-
 const StayCardH: FC<StayCardHProps> = ({
   className = "",
-  data = DEMO_DATA,
+  data,
 }) => {
   const {
     galleryImgs,
@@ -32,7 +29,7 @@ const StayCardH: FC<StayCardHProps> = ({
     reviewStart,
     reviewCount,
     id,
-  } = data;
+  } = data || {};
 
   const renderSliderGallery = () => {
     return (
@@ -104,7 +101,7 @@ const StayCardH: FC<StayCardHProps> = ({
         <div className="space-y-2">
           <div className="text-sm text-neutral-500 dark:text-neutral-400">
             <span>
-              {listingCategory.name} in {address}
+              {listingCategory?.name} in {address}
             </span>
           </div>
           <div className="flex items-center space-x-2">

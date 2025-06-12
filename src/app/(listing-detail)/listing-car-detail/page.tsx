@@ -131,7 +131,7 @@ const ListingCarDetailPage: FC<ListingCarDetailPageProps> = ({}) => {
             <br />
             <br />
             Questions are at the heart of making things great. Watch our
-            celebrity-filled TV ad and you’ll see that when we say “everything,”
+            celebrity-filled TV ad and you'll see that when we say "everything,"
             we mean everything.
           </p>
         </div>
@@ -324,7 +324,7 @@ const ListingCarDetailPage: FC<ListingCarDetailPageProps> = ({}) => {
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAGVJfZMAKYfZ71nzL_v5i3LjTTWnCYwTY&q=Eiffel+Tower,Paris+France"
+              src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=Eiffel+Tower,Paris+France`}
             ></iframe>
           </div>
         </div>
@@ -353,8 +353,8 @@ const ListingCarDetailPage: FC<ListingCarDetailPageProps> = ({}) => {
         <div>
           <h4 className="text-lg font-semibold">Special Note</h4>
           <span className="block mt-3 text-neutral-500 dark:text-neutral-400">
-            We asked ourselves, “How can we make the dash not only look better,
-            but also give the driver a better look outside?” The unexpected
+            We asked ourselves, "How can we make the dash not only look better,
+            but also give the driver a better look outside?" The unexpected
             answer is having no hood above the available 10.25-inch digital
             instrument cluster...
           </span>

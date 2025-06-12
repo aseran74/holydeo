@@ -23,7 +23,7 @@ const DatePickerCustomHeaderTwoMonth = ({
           <ChevronLeftIcon className="w-5 h-5" />
         </span>
       </button>
-      <span className="react-datepicker__current-month">
+      <span className="react-datepicker__current-month !text-[16px] font-poppins">
         {monthDate.toLocaleString("en-US", {
           month: "long",
           year: "numeric",

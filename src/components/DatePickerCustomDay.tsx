@@ -6,7 +6,7 @@ interface Props {
 }
 
 const DatePickerCustomDay: FC<Props> = ({ dayOfMonth, date }) => {
-  return <span className="react-datepicker__day_span">{dayOfMonth}</span>;
+  return <span className="react-datepicker__day_span !text-[16px] font-poppins">{dayOfMonth}</span>;
 };
 
 export default DatePickerCustomDay;

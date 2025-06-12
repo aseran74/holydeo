@@ -64,20 +64,20 @@ const SectionHowItWork: FC<SectionHowItWorkProps> = ({
             {item.imgDark ? (
               <>
                 <Image
-                  className="dark:hidden block mb-8 max-w-[180px] mx-auto"
+                  className="dark:hidden block mb-8 max-w-[180px] mx-auto rounded-2xl"
                   src={item.img}
                   alt=""
                 />
                 <Image
                   alt=""
-                  className="hidden dark:block mb-8 max-w-[180px] mx-auto"
+                  className="hidden dark:block mb-8 max-w-[180px] mx-auto rounded-2xl"
                   src={item.imgDark}
                 />
               </>
             ) : (
               <Image
                 alt=""
-                className="mb-8 max-w-[180px] mx-auto"
+                className="mb-8 max-w-[180px] mx-auto rounded-2xl"
                 src={item.img}
               />
             )}

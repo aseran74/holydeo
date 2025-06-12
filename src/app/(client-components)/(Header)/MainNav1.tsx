@@ -5,8 +5,8 @@ import SearchDropdown from "./SearchDropdown";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import MenuBar from "@/shared/MenuBar";
 import SwitchDarkMode from "@/shared/SwitchDarkMode";
-import HeroSearchForm2MobileFactory from "../(HeroSearchForm2Mobile)/HeroSearchForm2MobileFactory";
 import LangDropdown from "./LangDropdown";
+import AvatarDropdown from "./AvatarDropdown";
 
 export interface MainNav1Props {
   className?: string;
@@ -21,9 +21,12 @@ const MainNav1: FC<MainNav1Props> = ({ className = "" }) => {
           <Navigation />
         </div>
 
-        <div className="flex lg:hidden flex-[3] max-w-lg !mx-auto md:px-3 ">
-          <div className="self-center flex-1">
-            <HeroSearchForm2MobileFactory />
+        <div className="flex flex-col w-full md:hidden max-w-lg !mx-auto">
+          <div className="flex items-center justify-between py-2">
+            <Logo className="w-24" />
+            <div className="ml-2">
+              <AvatarDropdown />
+            </div>
           </div>
         </div>
 

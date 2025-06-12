@@ -1,15 +1,50 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
+import { supabase } from "@/utils/supabaseClient";
 
-export interface PageAddListing7Props {}
+export interface PageAddListing7Props {
+  formData: any;
+  updateFormData: (fields: Partial<any>) => void;
+}
 
-const PageAddListing7: FC<PageAddListing7Props> = () => {
+const PageAddListing7: FC<PageAddListing7Props> = ({ formData, updateFormData }) => {
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    const urls: string[] = [];
+
+    for (let file of Array.from(files)) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+      const { data, error } = await supabase.storage
+        .from("imagenes")
+        .upload(fileName, file);
+
+      if (error) {
+        alert("Error subiendo imagen: " + error.message);
+        continue;
+      }
+      // Obtener URL pública
+      const { data: publicUrlData } = supabase.storage
+        .from("imagenes")
+        .getPublicUrl(fileName);
+      urls.push(publicUrlData.publicUrl);
+    }
+
+    // Actualiza el array de imágenes en el estado global
+    updateFormData({ gallery: [...(formData.gallery || []), ...urls] });
+    setUploading(false);
+  };
+
   return (
     <>
       <div>
         <h2 className="text-2xl font-semibold">Pictures of the place</h2>
         <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
-          A few beautiful photos will help customers have more sympathy for your
-          property.
+          Sube fotos bonitas para que tu propiedad destaque.
         </span>
       </div>
 
@@ -17,86 +52,28 @@ const PageAddListing7: FC<PageAddListing7Props> = () => {
       {/* FORM */}
       <div className="space-y-8">
         <div>
-          <span className="text-lg font-semibold">Cover image</span>
+          <span className="text-lg font-semibold">Imágenes</span>
           <div className="mt-5 ">
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-neutral-300 dark:border-neutral-6000 border-dashed rounded-md">
-              <div className="space-y-1 text-center">
-                <svg
-                  className="mx-auto h-12 w-12 text-neutral-400"
-                  stroke="currentColor"
-                  fill="none"
-                  viewBox="0 0 48 48"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></path>
-                </svg>
-                <div className="flex text-sm text-neutral-6000 dark:text-neutral-300">
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer  rounded-md font-medium text-primary-6000 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
-                  >
-                    <span>Upload a file</span>
-                    <input
-                      id="file-upload"
-                      name="file-upload"
-                      type="file"
-                      className="sr-only"
-                    />
-                  </label>
-                  <p className="pl-1">or drag and drop</p>
-                </div>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                  PNG, JPG, GIF up to 10MB
-                </p>
+            <div className="mt-1 flex flex-col items-center justify-center px-6 pt-5 pb-6 border-2 border-neutral-300 dark:border-neutral-6000 border-dashed rounded-md">
+              <input
+                id="file-upload"
+                name="file-upload"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleFileChange}
+                className="mb-2"
+              />
+              {uploading && <p className="text-blue-600">Subiendo imágenes...</p>}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {(formData.gallery || []).map((url: string, i: number) => (
+                  <img key={i} src={url} alt="" className="w-24 h-24 object-cover rounded" />
+                ))}
               </div>
             </div>
-          </div>
-        </div>
-        {/* ----------------- */}
-        <div>
-          <span className="text-lg font-semibold">Pictures of the place</span>
-          <div className="mt-5 ">
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-neutral-300 dark:border-neutral-6000 border-dashed rounded-md">
-              <div className="space-y-1 text-center">
-                <svg
-                  className="mx-auto h-12 w-12 text-neutral-400"
-                  stroke="currentColor"
-                  fill="none"
-                  viewBox="0 0 48 48"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></path>
-                </svg>
-                <div className="flex text-sm text-neutral-6000 dark:text-neutral-300">
-                  <label
-                    htmlFor="file-upload-2"
-                    className="relative cursor-pointer  rounded-md font-medium text-primary-6000 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
-                  >
-                    <span>Upload a file</span>
-                    <input
-                      id="file-upload-2"
-                      name="file-upload-2"
-                      type="file"
-                      className="sr-only"
-                    />
-                  </label>
-                  <p className="pl-1">or drag and drop</p>
-                </div>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                  PNG, JPG, GIF up to 10MB
-                </p>
-              </div>
-            </div>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2">
+              PNG, JPG, GIF hasta 10MB por imagen
+            </p>
           </div>
         </div>
       </div>

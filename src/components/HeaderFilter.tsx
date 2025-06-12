@@ -19,7 +19,7 @@ const HeaderFilter: FC<HeaderFilterProps> = ({
   tabActive,
   tabs,
   subHeading = "",
-  heading = "Latest Articles 🎈",
+  heading,
   onClickTab = () => {},
 }) => {
   const [tabActiveState, setTabActiveState] = useState(tabActive);

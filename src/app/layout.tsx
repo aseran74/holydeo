@@ -1,3 +1,4 @@
+'use client';
 import { Poppins } from "next/font/google";
 import SiteHeader from "./(client-components)/(Header)/SiteHeader";
 import ClientCommons from "./ClientCommons";
@@ -12,6 +13,7 @@ const poppins = Poppins({
   subsets: ["latin"],
   display: "swap",
   weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-poppins",
 });
 
 export default function RootLayout({
@@ -22,7 +24,7 @@ export default function RootLayout({
   params: any;
 }) {
   return (
-    <html lang="en" className={poppins.className}>
+    <html lang="en" className={poppins.variable}>
       <body className="bg-white text-base dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200">
         <ClientCommons />
         <SiteHeader />

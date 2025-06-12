@@ -1,6 +1,5 @@
+'use client';
 import React, { FC } from "react";
-import { DEMO_STAY_LISTINGS } from "@/data/listings";
-import { StayDataType } from "@/data/types";
 import Pagination from "@/shared/Pagination";
 import TabFilters from "./TabFilters";
 import Heading2 from "@/shared/Heading2";
@@ -8,14 +7,12 @@ import StayCard2 from "@/components/StayCard2";
 
 export interface SectionGridFilterCardProps {
   className?: string;
-  data?: StayDataType[];
+  data?: any[];
 }
-
-const DEMO_DATA: StayDataType[] = DEMO_STAY_LISTINGS.filter((_, i) => i < 8);
 
 const SectionGridFilterCard: FC<SectionGridFilterCardProps> = ({
   className = "",
-  data = DEMO_DATA,
+  data = [],
 }) => {
   return (
     <div

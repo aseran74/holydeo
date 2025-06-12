@@ -16,7 +16,7 @@ const SectionHero2ArchivePage: FC<SectionHero2ArchivePageProps> = ({
       data-nc-id="SectionHero2ArchivePage"
     >
       <div className="absolute inset-y-0 w-5/6 xl:w-3/4 right-0 flex-grow">
-        <Image fill className="object-cover" src={imagePng} alt="hero" />
+        <Image fill className="object-cover rounded-2xl" src={imagePng} alt="hero" />
       </div>
       <div className="relative py-14 ">
         <div className="relative inline-flex">

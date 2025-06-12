@@ -19,7 +19,7 @@ const HeroSearchForm: FC<HeroSearchFormProps> = ({
   currentTab = "Stays",
   currentPage,
 }) => {
-  const tabs: SearchTab[] = ["Stays", "Experiences", "Cars", "Flights"];
+  const tabs: SearchTab[] = ["Stays", "Experiences"];
   const [tabActive, setTabActive] = useState<SearchTab>(currentTab);
 
   const renderTab = () => {
@@ -30,15 +30,15 @@ const HeroSearchForm: FC<HeroSearchFormProps> = ({
           return (
             <li
               onClick={() => setTabActive(tab)}
-              className={`flex-shrink-0 flex items-center cursor-pointer text-sm lg:text-base font-medium ${
+              className={`flex-shrink-0 flex items-center cursor-pointer text-sm lg:text-base font-medium text-white ${
                 active
                   ? ""
-                  : "text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-400"
+                  : "opacity-70 hover:opacity-100"
               } `}
               key={tab}
             >
               {active && (
-                <span className="block w-2.5 h-2.5 rounded-full bg-neutral-800 dark:bg-neutral-100 mr-2" />
+                <span className="block w-2.5 h-2.5 rounded-full bg-white mr-2" />
               )}
               <span>{tab}</span>
             </li>
@@ -54,11 +54,6 @@ const HeroSearchForm: FC<HeroSearchFormProps> = ({
         return <StaySearchForm />;
       case "Experiences":
         return <ExperiencesSearchForm />;
-      case "Cars":
-        return <RentalCarSearchForm />;
-      case "Flights":
-        return <FlightSearchForm />;
-
       default:
         return null;
     }

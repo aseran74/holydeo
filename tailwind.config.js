@@ -70,6 +70,14 @@ module.exports = {
           900: customColors("--c-neutral-900"),
         },
       },
+      fontFamily: {
+        poppins: ['var(--font-poppins)', 'sans-serif'],
+        pacifico: ['Pacifico', 'cursive'],
+      },
+      fontSize: {
+        '24px': '24px',
+        '20px': '20px',
+      },
     },
   },
   variants: {

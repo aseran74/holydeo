@@ -18,6 +18,7 @@ export interface GallerySliderProps {
   imageClass?: string;
   galleryClass?: string;
   navigation?: boolean;
+  index?: number;
 }
 
 export default function GallerySlider({
@@ -29,11 +30,21 @@ export default function GallerySlider({
   galleryClass = "rounded-xl",
   href = "/listing-stay-detail",
   navigation = true,
+  index: initialIndex = 0,
 }: GallerySliderProps) {
   const [loaded, setLoaded] = useState(false);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
-  const images = galleryImgs;
+  const images = galleryImgs || [];
+
+  if (!Array.isArray(images) || images.length === 0) {
+    return <div className="w-full h-48 flex items-center justify-center bg-gray-100 text-gray-400">No hay imágenes para mostrar</div>;
+  }
+  if (typeof index !== 'number' || index < 0 || index >= images.length) {
+    return <div className="w-full h-48 flex items-center justify-center bg-gray-100 text-gray-400">Índice de imagen inválido</div>;
+  }
+
+  let currentImage = images[index];
 
   function changePhotoId(newVal: number) {
     if (newVal > index) {
@@ -57,8 +68,6 @@ export default function GallerySlider({
     },
     trackMouse: true,
   });
-
-  let currentImage = images[index];
 
   return (
     <MotionConfig

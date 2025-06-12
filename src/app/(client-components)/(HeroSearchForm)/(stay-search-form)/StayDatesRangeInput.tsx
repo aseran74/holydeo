@@ -36,11 +36,11 @@ const StayDatesRangeInput: FC<StayDatesRangeInputProps> = ({
           <CalendarIcon className="w-5 h-5 lg:w-7 lg:h-7" />
         </div>
         <div className="flex-grow text-left">
-          <span className="block xl:text-lg font-semibold">
+          <span className="block font-semibold text-center text-[16px]">
             {startDate?.toLocaleDateString("en-US", {
               month: "short",
               day: "2-digit",
-            }) || "Add dates"}
+            }) || "¿Cuándo vas?"}
             {endDate
               ? " - " +
                 endDate?.toLocaleDateString("en-US", {
@@ -49,7 +49,7 @@ const StayDatesRangeInput: FC<StayDatesRangeInputProps> = ({
                 })
               : ""}
           </span>
-          <span className="block mt-1 text-sm text-neutral-400 leading-none font-light">
+          <span className="block mt-1 text-sm text-neutral-400 leading-none font-light text-center text-[14px]">
             {"Check in - Check out"}
           </span>
         </div>
@@ -58,7 +58,7 @@ const StayDatesRangeInput: FC<StayDatesRangeInputProps> = ({
   };
 
   return (
-    <Popover className={`StayDatesRangeInput z-10 relative flex ${className}`}>
+    <Popover className={`StayDatesRangeInput z-10 relative flex ${className} font-poppins flex-[1.5]`}>
       {({ open }) => (
         <>
           <Popover.Button
@@ -85,7 +85,7 @@ const StayDatesRangeInput: FC<StayDatesRangeInputProps> = ({
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <Popover.Panel className="absolute left-1/2 z-10 mt-3 top-full w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
+            <Popover.Panel className="absolute left-1/2 z-10 mt-3 top-full w-screen max-w-2xl -translate-x-1/2 transform px-4 sm:px-0">
               <div className="overflow-hidden rounded-3xl shadow-lg ring-1 ring-black ring-opacity-5 bg-white dark:bg-neutral-800 p-8">
                 <DatePicker
                   selected={startDate}

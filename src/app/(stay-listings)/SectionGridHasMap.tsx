@@ -2,33 +2,69 @@
 
 import React, { FC, useEffect, useState } from "react";
 import AnyReactComponent from "@/components/AnyReactComponent/AnyReactComponent";
-import GoogleMapReact from "google-map-react";
-import { DEMO_STAY_LISTINGS } from "@/data/listings";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import ButtonClose from "@/shared/ButtonClose";
 import Checkbox from "@/shared/Checkbox";
 import Pagination from "@/shared/Pagination";
 import TabFilters from "./TabFilters";
 import Heading2 from "@/shared/Heading2";
 import StayCard2 from "@/components/StayCard2";
+import { supabase } from "@/utils/supabaseClient";
+import MiniStayCard from "@/components/MiniStayCard";
 
-const DEMO_STAYS = DEMO_STAY_LISTINGS.filter((_, i) => i < 12);
 export interface SectionGridHasMapProps {}
 
 const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
   const [currentHoverID, setCurrentHoverID] = useState<string | number>(-1);
   const [showFullMapFixed, setShowFullMapFixed] = useState(false);
+  const [properties, setProperties] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedProperty, setSelectedProperty] = useState<any>(null);
+
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      setLoading(true);
+      const { data, error } = await supabase.from("properties").select("*");
+      setProperties(data || []);
+      setLoading(false);
+    };
+    fetchProperties();
+  }, []);
+
+  // Validar propiedades con coordenadas válidas
+  const propertiesWithCoords = properties.filter(
+    (item) =>
+      item.map &&
+      typeof item.map.lat === "number" &&
+      typeof item.map.lng === "number" &&
+      !isNaN(item.map.lat) &&
+      !isNaN(item.map.lng)
+  );
+
+  const defaultCenter =
+    propertiesWithCoords.length > 0
+      ? propertiesWithCoords[0].map
+      : { lat: 40.4168, lng: -3.7038 };
+
+  // Configuración del loader de Google Maps
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    libraries: ["places"],
+  });
 
   return (
     <div>
       <div className="relative flex min-h-screen">
-        {/* CARDSSSS */}
+        {/* CARDS */}
         <div className="min-h-screen w-full xl:w-[60%] 2xl:w-[60%] max-w-[1184px] flex-shrink-0 xl:px-8 ">
           <Heading2 className="!mb-8" />
           <div className="mb-8 lg:mb-11">
             <TabFilters />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 2xl:gap-x-6 gap-y-8">
-            {DEMO_STAYS.map((item) => (
+            {properties.map((item) => (
               <div
                 key={item.id}
                 onMouseEnter={() => setCurrentHoverID((_) => item.id)}
@@ -53,7 +89,7 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
           </div>
         )}
 
-        {/* MAPPPPP */}
+        {/* MAPA */}
         <div
           className={`xl:flex-1 xl:static xl:block ${
             showFullMapFixed ? "fixed inset-0 z-50" : "hidden"
@@ -74,24 +110,55 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
                 label="Search as I move the map"
               />
             </div>
-            <GoogleMapReact
-              defaultZoom={12}
-              defaultCenter={DEMO_STAYS[0].map}
-              bootstrapURLKeys={{
-                key: "AIzaSyAGVJfZMAKYfZ71nzL_v5i3LjTTWnCYwTY",
-              }}
-              yesIWantToUseGoogleMapApiInternals
-            >
-              {DEMO_STAYS.map((item) => (
-                <AnyReactComponent
-                  isSelected={currentHoverID === item.id}
-                  key={item.id}
-                  lat={item.map.lat}
-                  lng={item.map.lng}
-                  listing={item}
-                />
-              ))}
-            </GoogleMapReact>
+            <div style={{ width: "100%", height: "100%", position: "relative" }}>
+              {isLoaded && propertiesWithCoords.length > 0 ? (
+                <GoogleMap
+                  mapContainerStyle={{ width: "100%", height: "100%" }}
+                  center={defaultCenter}
+                  zoom={12}
+                >
+                  {propertiesWithCoords.map((item) => (
+                    <Marker
+                      key={item.id}
+                      position={item.map}
+                      onMouseOver={() => {
+                        if (!isMobile) setCurrentHoverID(item.id);
+                      }}
+                      onMouseOut={() => {
+                        if (!isMobile) setCurrentHoverID(-1);
+                      }}
+                      onClick={() => {
+                        if (isMobile) setSelectedProperty(item);
+                      }}
+                    />
+                  ))}
+                  {/* Minicard en escritorio */}
+                  {!isMobile && currentHoverID !== -1 && (
+                    (() => {
+                      const prop = propertiesWithCoords.find(p => p.id === currentHoverID);
+                      if (!prop) return null;
+                      return (
+                        <MiniStayCard property={prop} />
+                      );
+                    })()
+                  )}
+                </GoogleMap>
+              ) : propertiesWithCoords.length === 0 ? (
+                <div className="flex items-center justify-center h-full text-neutral-500">
+                  No hay propiedades con coordenadas válidas para mostrar en el mapa.
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full text-neutral-500">
+                  Cargando mapa...
+                </div>
+              )}
+              {/* Minicard en móvil */}
+              {isMobile && selectedProperty && (
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+                  <MiniStayCard property={selectedProperty} onClose={() => setSelectedProperty(null)} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

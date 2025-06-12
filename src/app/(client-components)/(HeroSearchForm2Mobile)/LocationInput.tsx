@@ -64,14 +64,14 @@ const LocationInput: FC<Props> = ({
   };
 
   return (
-    <div className={`${className}`} ref={containerRef}>
+    <div className={`bg-white ${className}`} ref={containerRef}>
       <div className="p-5">
         <span className="block font-semibold text-xl sm:text-2xl">
           {headingText}
         </span>
         <div className="relative mt-5">
           <input
-            className={`block w-full bg-transparent border px-4 py-3 pr-12 border-neutral-900 dark:border-neutral-200 rounded-xl focus:ring-0 focus:outline-none text-base leading-none placeholder-neutral-500 dark:placeholder-neutral-300 truncate font-bold placeholder:truncate`}
+            className={`block w-full bg-white border px-4 py-3 pr-12 border-neutral-900 rounded-xl focus:ring-0 focus:outline-none text-base leading-none placeholder-neutral-500 truncate font-bold placeholder:truncate`}
             placeholder={"Search destinations"}
             value={value}
             onChange={(e) => setValue(e.currentTarget.value)}

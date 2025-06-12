@@ -9,6 +9,7 @@ import ButtonClose from "@/shared/ButtonClose";
 import Checkbox from "@/shared/Checkbox";
 import Slider from "rc-slider";
 import convertNumbThousand from "@/utils/convertNumbThousand";
+import { AMENITIES } from "@/data/amenities";
 
 // DEMO DATA
 const typeOfPaces = [
@@ -31,18 +32,7 @@ const typeOfPaces = [
   },
 ];
 
-const moreFilter1 = [
-  { name: "Kitchen", defaultChecked: true },
-  { name: "Air conditioning", defaultChecked: true },
-  { name: "Heating" },
-  { name: "Dryer" },
-  { name: "Washer" },
-  { name: "Wifi" },
-  { name: "Indoor fireplace" },
-  { name: "Breakfast" },
-  { name: "Hair dryer" },
-  { name: " Dedicated workspace" },
-];
+const moreFilter1 = AMENITIES.map(a => ({ name: a.label, key: a.key }));
 
 const moreFilter2 = [
   { name: " Free parking on premise" },
@@ -67,17 +57,45 @@ const moreFilter3 = [
 
 const moreFilter4 = [{ name: " Pets allowed" }, { name: "Smoking allowed" }];
 
-const TabFilters = () => {
-  const [isOpenMoreFilter, setisOpenMoreFilter] = useState(false);
+interface TabFiltersProps {
+  isOpenMoreFilter?: boolean;
+  setIsOpenMoreFilter?: (open: boolean) => void;
+}
+
+const TabFilters: React.FC<TabFiltersProps> = ({ isOpenMoreFilter, setIsOpenMoreFilter }) => {
+  // Si se pasan props, usarlos; si no, usar estado interno
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = typeof isOpenMoreFilter === 'boolean' ? isOpenMoreFilter : internalOpen;
+  const setOpen = setIsOpenMoreFilter || setInternalOpen;
+
   const [isOpenMoreFilterMobile, setisOpenMoreFilterMobile] = useState(false);
   const [rangePrices, setRangePrices] = useState([0, 1000]);
 
+  // Opciones de temporada
+  const seasonOptions = [
+    "Sep a Julio",
+    "Sep a Junio",
+    "Sep a Mayo",
+    "Oct a Julio",
+    "Oct a Junio",
+    "Oct a Mayo",
+  ];
+  const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
+
   //
-  const closeModalMoreFilter = () => setisOpenMoreFilter(false);
-  const openModalMoreFilter = () => setisOpenMoreFilter(true);
+  const closeModalMoreFilter = () => setOpen(false);
+  const openModalMoreFilter = () => setOpen(true);
   //
   const closeModalMoreFilterMobile = () => setisOpenMoreFilterMobile(false);
   const openModalMoreFilterMobile = () => setisOpenMoreFilterMobile(true);
+
+  const handleSeasonChange = (option: string) => {
+    setSelectedSeasons((prev) =>
+      prev.includes(option)
+        ? prev.filter((item) => item !== option)
+        : [...prev, option]
+    );
+  };
 
   const renderXClear = () => {
     return (
@@ -311,6 +329,58 @@ const TabFilters = () => {
     );
   };
 
+  const renderTabsSeason = () => {
+    return (
+      <Popover className="relative">
+        {({ open, close }) => (
+          <>
+            <Popover.Button
+              className={`flex items-center justify-center px-4 py-2 text-sm rounded-full border border-neutral-300 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-6000 focus:outline-none ${open ? "!border-primary-500 " : ""}`}
+            >
+              <span>{selectedSeasons.length > 0 ? selectedSeasons.join(", ") : "Temporada"}</span>
+              <i className="las la-angle-down ml-2"></i>
+              {selectedSeasons.length > 0 && (
+                <span
+                  className="ml-2 text-xs text-red-500 cursor-pointer"
+                  onClick={e => { e.stopPropagation(); setSelectedSeasons([]); }}
+                >
+                  Limpiar
+                </span>
+              )}
+            </Popover.Button>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-200"
+              enterFrom="opacity-0 translate-y-1"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-150"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-1"
+            >
+              <Popover.Panel className="absolute z-10 w-96 px-4 mt-3 left-0 sm:px-0">
+                <div className="overflow-hidden rounded-2xl shadow-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 p-4">
+                  <div className="grid grid-cols-3 gap-2">
+                    {seasonOptions.map(option => (
+                      <label key={option} className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={selectedSeasons.includes(option)}
+                          onChange={() => handleSeasonChange(option)}
+                          className="accent-blue-600"
+                        />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </>
+        )}
+      </Popover>
+    );
+  };
+
   const renderMoreFilterItem = (
     data: {
       name: string;
@@ -356,7 +426,7 @@ const TabFilters = () => {
           {renderXClear()}
         </div>
 
-        <Transition appear show={isOpenMoreFilter} as={Fragment}>
+        <Transition appear show={open} as={Fragment}>
           <Dialog
             as="div"
             className="fixed inset-0 z-50 overflow-y-auto"
@@ -456,220 +526,16 @@ const TabFilters = () => {
     );
   };
 
-  const renderTabMoreFilterMobile = () => {
-    return (
-      <div>
-        <div
-          className={`flex lg:hidden items-center justify-center px-4 py-2 text-sm rounded-full border border-primary-500 bg-primary-50 text-primary-700 focus:outline-none cursor-pointer`}
-          onClick={openModalMoreFilterMobile}
-        >
-          <span>More filters (3)</span>
-          {renderXClear()}
-        </div>
-
-        <Transition appear show={isOpenMoreFilterMobile} as={Fragment}>
-          <Dialog
-            as="div"
-            className="fixed inset-0 z-50 overflow-y-auto"
-            onClose={closeModalMoreFilterMobile}
-          >
-            <div className="min-h-screen text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-40 dark:bg-opacity-60" />
-              </Transition.Child>
-
-              {/* This element is to trick the browser into centering the modal contents. */}
-              <span
-                className="inline-block h-screen align-middle"
-                aria-hidden="true"
-              >
-                &#8203;
-              </span>
-              <Transition.Child
-                className="inline-block py-8 px-2 h-screen w-full max-w-4xl"
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <div className="inline-flex flex-col w-full max-w-4xl text-left align-middle transition-all transform overflow-hidden rounded-2xl bg-white dark:bg-neutral-900 dark:border dark:border-neutral-700 dark:text-neutral-100 shadow-xl h-full">
-                  <div className="relative flex-shrink-0 px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 text-center">
-                    <Dialog.Title
-                      as="h3"
-                      className="text-lg font-medium leading-6 text-gray-900"
-                    >
-                      More filters
-                    </Dialog.Title>
-                    <span className="absolute left-3 top-3">
-                      <ButtonClose onClick={closeModalMoreFilterMobile} />
-                    </span>
-                  </div>
-
-                  <div className="flex-grow overflow-y-auto">
-                    <div className="px-4 sm:px-6 divide-y divide-neutral-200 dark:divide-neutral-800">
-                      {/* ---- */}
-                      <div className="py-7">
-                        <h3 className="text-xl font-medium">Type of place</h3>
-                        <div className="mt-6 relative ">
-                          {renderMoreFilterItem(typeOfPaces)}
-                        </div>
-                      </div>
-
-                      {/* ---- */}
-                      <div className="py-7">
-                        <h3 className="text-xl font-medium">Range Prices</h3>
-                        <div className="mt-6 relative ">
-                          <div className="relative flex flex-col space-y-8">
-                            <div className="space-y-5">
-                              <Slider
-                                range
-                                className="text-red-400"
-                                min={0}
-                                max={2000}
-                                defaultValue={[0, 1000]}
-                                allowCross={false}
-                                onChange={(e) => setRangePrices(e as number[])}
-                              />
-                            </div>
-
-                            <div className="flex justify-between space-x-5">
-                              <div>
-                                <label
-                                  htmlFor="minPrice"
-                                  className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-                                >
-                                  Min price
-                                </label>
-                                <div className="mt-1 relative rounded-md">
-                                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span className="text-neutral-500 sm:text-sm">
-                                      $
-                                    </span>
-                                  </div>
-                                  <input
-                                    type="text"
-                                    name="minPrice"
-                                    disabled
-                                    id="minPrice"
-                                    className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-3 sm:text-sm border-neutral-200 rounded-full text-neutral-900"
-                                    value={rangePrices[0]}
-                                  />
-                                </div>
-                              </div>
-                              <div>
-                                <label
-                                  htmlFor="maxPrice"
-                                  className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-                                >
-                                  Max price
-                                </label>
-                                <div className="mt-1 relative rounded-md">
-                                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span className="text-neutral-500 sm:text-sm">
-                                      $
-                                    </span>
-                                  </div>
-                                  <input
-                                    type="text"
-                                    disabled
-                                    name="maxPrice"
-                                    id="maxPrice"
-                                    className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-3 sm:text-sm border-neutral-200 rounded-full text-neutral-900"
-                                    value={rangePrices[1]}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* ---- */}
-                      <div className="py-7">
-                        <h3 className="text-xl font-medium">Rooms and beds</h3>
-                        <div className="mt-6 relative flex flex-col space-y-5">
-                          <NcInputNumber label="Beds" max={10} />
-                          <NcInputNumber label="Bedrooms" max={10} />
-                          <NcInputNumber label="Bathrooms" max={10} />
-                        </div>
-                      </div>
-
-                      {/* ---- */}
-                      <div className="py-7">
-                        <h3 className="text-xl font-medium">Amenities</h3>
-                        <div className="mt-6 relative ">
-                          {renderMoreFilterItem(moreFilter1)}
-                        </div>
-                      </div>
-
-                      {/* ---- */}
-                      <div className="py-7">
-                        <h3 className="text-xl font-medium">Facilities</h3>
-                        <div className="mt-6 relative ">
-                          {renderMoreFilterItem(moreFilter2)}
-                        </div>
-                      </div>
-
-                      {/* ---- */}
-                      <div className="py-7">
-                        <h3 className="text-xl font-medium">Property type</h3>
-                        <div className="mt-6 relative ">
-                          {renderMoreFilterItem(moreFilter3)}
-                        </div>
-                      </div>
-
-                      {/* ---- */}
-                      <div className="py-7">
-                        <h3 className="text-xl font-medium">House rules</h3>
-                        <div className="mt-6 relative ">
-                          {renderMoreFilterItem(moreFilter4)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 sm:p-6 flex-shrink-0 bg-neutral-50 dark:bg-neutral-900 dark:border-t dark:border-neutral-800 flex items-center justify-between">
-                    <ButtonThird
-                      onClick={closeModalMoreFilterMobile}
-                      sizeClass="px-4 py-2 sm:px-5"
-                    >
-                      Clear
-                    </ButtonThird>
-                    <ButtonPrimary
-                      onClick={closeModalMoreFilterMobile}
-                      sizeClass="px-4 py-2 sm:px-5"
-                    >
-                      Apply
-                    </ButtonPrimary>
-                  </div>
-                </div>
-              </Transition.Child>
-            </div>
-          </Dialog>
-        </Transition>
-      </div>
-    );
-  };
-
   return (
     <div className="flex lg:space-x-4">
       <div className="hidden lg:flex space-x-4">
         {renderTabsTypeOfPlace()}
         {renderTabsPriceRage()}
         {renderTabsRoomAndBeds()}
+        {renderTabsSeason()}
         {renderTabMoreFilter()}
       </div>
-      {renderTabMoreFilterMobile()}
+      {/* {renderTabMoreFilterMobile()} */}
     </div>
   );
 };

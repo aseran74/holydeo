@@ -58,6 +58,19 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
           Beach House in Collingwood
         </h2>
 
+        {/* INFORMACIÓN DE TEMPORADAS */}
+        <div className="flex flex-wrap gap-2 my-4">
+          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Sep a Julio</span>
+          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Sep a Junio</span>
+          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Sep a Mayo</span>
+          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Oct a Julio</span>
+          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Oct a Junio</span>
+          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Oct a Mayo</span>
+        </div>
+        <div className="text-neutral-6000 dark:text-neutral-300 text-sm mb-2">
+          <strong>Alquiler de temporada entera:</strong> Estas son las opciones de temporada disponibles para este alojamiento. Consulta con el host para más detalles.
+        </div>
+
         {/* 3 */}
         <div className="flex items-center space-x-4">
           <StartRating />
@@ -272,8 +285,8 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
               <span>$219</span>
             </div>
             <div className="p-4 flex justify-between items-center space-x-4 rounded-lg">
-              <span>Rent by month</span>
-              <span>-8.34 %</span>
+              <span>Alquiler mensual</span>
+              <span>{property.price_monthly ? `${property.price_monthly} ${property.currency || '€'}` : '-'}</span>
             </div>
             <div className="p-4 bg-neutral-100 dark:bg-neutral-800 flex justify-between items-center space-x-4 rounded-lg">
               <span>Minimum number of nights</span>
@@ -449,7 +462,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAGVJfZMAKYfZ71nzL_v5i3LjTTWnCYwTY&q=Eiffel+Tower,Paris+France"
+              src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=Eiffel+Tower,Paris+France`}
             ></iframe>
           </div>
         </div>
@@ -567,13 +580,13 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
             <Image
               fill
               className="object-cover rounded-md sm:rounded-xl"
-              src={PHOTOS[0]}
-              alt=""
+              src="/logo2.jpg"
+              alt="logo principal"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw"
             />
             <div className="absolute inset-0 bg-neutral-900 bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity"></div>
           </div>
-          {PHOTOS.filter((_, i) => i >= 1 && i < 5).map((item, index) => (
+          {[1,2,3,4].map((_, index) => (
             <div
               key={index}
               className={`relative rounded-md sm:rounded-xl overflow-hidden ${
@@ -584,8 +597,8 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
                 <Image
                   fill
                   className="object-cover rounded-md sm:rounded-xl "
-                  src={item || ""}
-                  alt=""
+                  src="/logo2.jpg"
+                  alt="logo secundario"
                   sizes="400px"
                 />
               </div>

@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import imagePng from "@/images/hero-right-3.png";
+// import imagePng from "@/images/hero-right-3.png";
 import Image from "next/image";
 import HeroRealEstateSearchForm from "../(client-components)/(HeroSearchForm)/(real-estate-search-form)/HeroRealEstateSearchForm";
 
@@ -12,7 +12,7 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "", children }) => {
   return (
     <div className={`nc-SectionHero2 relative ${className}`}>
       <div className="absolute inset-y-0 w-5/6 xl:w-3/4 right-0 flex-grow">
-        <Image fill className="object-cover" src={imagePng} alt="hero" />
+        <Image fill className="object-cover" src="/logo2.jpg" alt="hero" />
       </div>
       <div className="relative py-14 lg:py-20">
         <div className="relative inline-flex">

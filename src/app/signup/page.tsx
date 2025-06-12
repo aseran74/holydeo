@@ -1,4 +1,5 @@
-import React, { FC } from "react";
+"use client";
+import React, { FC, useState } from "react";
 import facebookSvg from "@/images/Facebook.svg";
 import twitterSvg from "@/images/Twitter.svg";
 import googleSvg from "@/images/Google.svg";
@@ -6,6 +7,8 @@ import Input from "@/shared/Input";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/utils/supabaseClient";
 
 export interface PageSignUpProps {}
 
@@ -28,6 +31,30 @@ const loginSocials = [
 ];
 
 const PageSignUp: FC<PageSignUpProps> = ({}) => {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    // Registro en Supabase Auth
+    const { error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    if (signUpError) {
+      setError(signUpError.message);
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
+    router.push("/login");
+  };
+
   return (
     <div className={`nc-PageSignUp  `}>
       <div className="container mb-24 lg:mb-32">
@@ -61,7 +88,7 @@ const PageSignUp: FC<PageSignUpProps> = ({}) => {
             <div className="absolute left-0 w-full top-1/2 transform -translate-y-1/2 border border-neutral-100 dark:border-neutral-800"></div>
           </div>
           {/* FORM */}
-          <form className="grid grid-cols-1 gap-6" action="#" method="post">
+          <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
             <label className="block">
               <span className="text-neutral-800 dark:text-neutral-200">
                 Email address
@@ -70,15 +97,27 @@ const PageSignUp: FC<PageSignUpProps> = ({}) => {
                 type="email"
                 placeholder="example@example.com"
                 className="mt-1"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
               />
             </label>
             <label className="block">
               <span className="flex justify-between items-center text-neutral-800 dark:text-neutral-200">
                 Password
               </span>
-              <Input type="password" className="mt-1" />
+              <Input
+                type="password"
+                className="mt-1"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+              />
             </label>
-            <ButtonPrimary type="submit">Continue</ButtonPrimary>
+            {error && <span className="text-red-500 text-sm">{error}</span>}
+            <ButtonPrimary type="submit" disabled={loading}>
+              {loading ? "Creando cuenta..." : "Continue"}
+            </ButtonPrimary>
           </form>
 
           {/* ==== */}
