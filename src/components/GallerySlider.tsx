@@ -37,15 +37,6 @@ export default function GallerySlider({
   const [direction, setDirection] = useState(0);
   const images = galleryImgs || [];
 
-  if (!Array.isArray(images) || images.length === 0) {
-    return <div className="w-full h-48 flex items-center justify-center bg-gray-100 text-gray-400">No hay imágenes para mostrar</div>;
-  }
-  if (typeof index !== 'number' || index < 0 || index >= images.length) {
-    return <div className="w-full h-48 flex items-center justify-center bg-gray-100 text-gray-400">Índice de imagen inválido</div>;
-  }
-
-  let currentImage = images[index];
-
   function changePhotoId(newVal: number) {
     if (newVal > index) {
       setDirection(1);
@@ -68,6 +59,15 @@ export default function GallerySlider({
     },
     trackMouse: true,
   });
+
+  if (!Array.isArray(images) || images.length === 0) {
+    return <div className="w-full h-48 flex items-center justify-center bg-gray-100 text-gray-400">No hay imágenes para mostrar</div>;
+  }
+  if (typeof index !== 'number' || index < 0 || index >= images.length) {
+    return <div className="w-full h-48 flex items-center justify-center bg-gray-100 text-gray-400">Índice de imagen inválido</div>;
+  }
+
+  let currentImage = images[index];
 
   return (
     <MotionConfig

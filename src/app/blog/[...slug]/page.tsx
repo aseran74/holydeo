@@ -17,8 +17,8 @@ const Page = ({
   params,
   searchParams,
 }: {
-  params: { stepIndex: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string[] }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
   const renderHeader = () => {
     return (
@@ -32,7 +32,7 @@ const Page = ({
             Keep up the spirit of the desire to travel around the world
           </h1>
           <span className="block text-base text-neutral-500 md:text-lg dark:text-neutral-400 pb-1">
-            We’re an online magazine dedicated to covering the best in
+            We're an online magazine dedicated to covering the best in
             international product design. We started as a little blog back in
             2002 covering student work and over time
           </span>
@@ -197,8 +197,8 @@ const Page = ({
               <a href="/">Fones Mimi</a>
             </h2>
             <span className="text-sm text-neutral-500 sm:text-base dark:text-neutral-300">
-              There’s no stopping the tech giant. Apple now opens its 100th
-              store in China.There’s no stopping the tech giant.
+              There's no stopping the tech giant. Apple now opens its 100th
+              store in China.There's no stopping the tech giant.
               <a className="text-primary-6000 font-medium ml-1" href="/">
                 Readmore
               </a>

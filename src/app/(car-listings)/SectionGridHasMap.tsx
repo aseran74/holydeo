@@ -84,7 +84,8 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
             </div>
             {/* BELLOW IS MY GOOGLE API KEY -- PLEASE DELETE AND TYPE YOUR API KEY */}
 
-            <GoogleMapReact
+            {/* Temporarily commented out due to build issues with GoogleMapReact */}
+            {/* <GoogleMapReact
               bootstrapURLKeys={{
                 key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
               }}
@@ -101,7 +102,10 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
                   car={item}
                 />
               ))}
-            </GoogleMapReact>
+            </GoogleMapReact> */}
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <p className="text-gray-500">Mapa temporalmente deshabilitado</p>
+            </div>
           </div>
         </div>
       </div>

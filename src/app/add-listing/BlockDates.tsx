@@ -1,4 +1,6 @@
 import "@/styles/__dates_picker.scss";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function BlockDates({ propertyId }: { propertyId: string }) {
   // ... (lógica existente)

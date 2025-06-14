@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.14",
+    "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.2.0",
     "@react-google-maps/api": "^2.20.6",
     "@supabase/supabase-js": "^2.49.8",
@@ -25,7 +25,7 @@
     "eslint": "8.41.0",
     "eslint-config-next": "^13.4.3",
     "framer-motion": "^10.12.16",
-    "google-map-react": "^2.2.1",
+    "google-map-react": "^2.2.5",
     "ical-generator": "^9.0.0",
     "ical.js": "^2.1.0",
     "lodash": "^4.17.21",

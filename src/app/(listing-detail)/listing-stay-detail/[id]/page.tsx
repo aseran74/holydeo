@@ -27,7 +27,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useMediaQuery } from 'react-responsive';
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 const isMobileOrTablet = typeof window !== 'undefined' && window.innerWidth < 1024;
@@ -40,33 +40,46 @@ const ListingStayDetailPage: FC<Props> = ({ params }) => {
   const [occupiedDates, setOccupiedDates] = useState<Date[]>([]);
   const [calendarData, setCalendarData] = useState<any[]>([]);
   const [monthsShown, setMonthsShown] = useState(2);
+  const [propertyId, setPropertyId] = useState<string>("");
 
   useEffect(() => {
+    const resolveParams = async () => {
+      const resolvedParams = await params;
+      setPropertyId(resolvedParams.id);
+    };
+    resolveParams();
+  }, [params]);
+
+  useEffect(() => {
+    if (!propertyId) return;
+    
     const fetchProperty = async () => {
       setLoading(true);
       const { data, error } = await supabase
         .from("properties")
         .select("*")
-        .eq("id", params.id)
+        .eq("id", propertyId)
         .single();
       setProperty(data);
       setLoading(false);
     };
     fetchProperty();
-  }, [params.id]);
+  }, [propertyId]);
 
   useEffect(() => {
+    if (!propertyId) return;
+    
     async function fetchOccupiedDates() {
       // 1. Fechas bloqueadas
       const { data: blocked } = await supabase
         .from('blocked_dates')
         .select('date')
-        .eq('property_id', params.id);
+        .eq('property_id', propertyId);
       // 2. Reservas aprobadas
       const { data: bookings } = await supabase
         .from('bookings')
         .select('start_date, end_date')
-        .eq('property_id', params.id)
+        .eq('property_id', propertyId)
         .eq('status', 'aprobada');
       let dates: Date[] = [];
       if (blocked) {
@@ -87,26 +100,28 @@ const ListingStayDetailPage: FC<Props> = ({ params }) => {
       setOccupiedDates(unique);
     }
     fetchOccupiedDates();
-  }, [params.id]);
+  }, [propertyId]);
 
   useEffect(() => {
+    if (!propertyId) return;
+    
     async function fetchCalendarData() {
       // 1. Fechas bloqueadas (manual e iCal)
       const { data: blocked } = await supabase
         .from('blocked_dates')
         .select('date, source')
-        .eq('property_id', params.id);
+        .eq('property_id', propertyId);
       // 2. Reservas aprobadas
       const { data: bookings } = await supabase
         .from('bookings')
         .select('start_date, end_date')
-        .eq('property_id', params.id)
+        .eq('property_id', propertyId)
         .eq('status', 'aprobada');
       // 3. Precios especiales
       const { data: specialPrices } = await supabase
         .from('special_prices')
         .select('date, price')
-        .eq('property_id', params.id);
+        .eq('property_id', propertyId);
       let days: any[] = [];
       // Bloqueos manuales y ical
       if (blocked) {
@@ -155,7 +170,7 @@ const ListingStayDetailPage: FC<Props> = ({ params }) => {
       setCalendarData(Object.values(dayMap));
     }
     fetchCalendarData();
-  }, [params.id]);
+  }, [propertyId]);
 
   useEffect(() => {
     function handleResize() {
