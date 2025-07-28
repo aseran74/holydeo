@@ -5,8 +5,24 @@ interface Property {
   id: string;
   title: string;
   location: string;
-  price: number | null;
+  price?: number;
   property_code?: string;
+  main_image_path?: string | null;
+  image_paths?: string[] | null;
+  precio_entresemana?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  toilets?: number;
+  square_meters?: number;
+  destacada?: boolean;
+  // Campos adicionales que pueden estar presentes
+  description?: string;
+  amenities?: string[] | null;
+  precio_mes?: number;
+  precio_dia?: number;
+  precio_fin_de_semana?: number;
+  tipo?: string;
+  region?: string;
 }
 
 interface PropertiesCardsProps {

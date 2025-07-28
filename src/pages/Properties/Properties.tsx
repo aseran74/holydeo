@@ -20,12 +20,10 @@ const Properties = () => {
 
   const fetchProperties = async () => {
     setLoading(true);
-    console.log("Fetching properties...");
     const { data, error } = await supabase.from("properties").select("*");
     if (error) {
       console.error("Error fetching properties:", error);
     } else {
-      console.log("Properties fetched:", data);
       setProperties(data || []);
     }
     setLoading(false);

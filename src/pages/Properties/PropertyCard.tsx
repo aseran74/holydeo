@@ -1,38 +1,98 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BedDouble, Bath, Users, MapPin, Euro, Calendar } from 'lucide-react';
+import { BedDouble, Bath, Users, MapPin, Euro, Calendar, Eye } from 'lucide-react';
+import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 
 interface PropertyCardProps {
   property: {
     id: string;
     title: string;
-    image_paths?: string[];
+    image_paths?: string[] | null;
+    main_image_path?: string | null;
     precio_entresemana?: number;
     bedrooms?: number;
     bathrooms?: number;
     toilets?: number;
     location: string;
+    price?: number;
+    square_meters?: number;
+    destacada?: boolean;
   };
   onEdit: () => void;
   onDelete: () => void;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onDelete }) => {
-  const imageUrl = property.image_paths && property.image_paths.length > 0 ? property.image_paths[0] : '/public/images/cards/card-01.jpg';
+  // 1. Estado para almacenar la URL de la imagen. Inicia con un placeholder.
+  const [imageUrl, setImageUrl] = useState<string>('/images/cards/card-01.jpg');
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 2. useEffect para buscar la URL de la imagen de forma asíncrona.
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      setIsLoading(true);
+      let finalUrl: string | null = null;
+
+      // Unir la imagen principal y las secundarias para buscar la primera que sea válida
+      const imagePaths = [
+        property.main_image_path,
+        ...(property.image_paths || [])
+      ].filter(Boolean) as string[]; // Filtra valores nulos o undefined
+
+      if (imagePaths.length > 0) {
+        // Usar la misma lógica que PropertyDetails
+        const allImageUrls = getAllImageUrls(property.image_paths);
+        const mainImageUrl = property.main_image_path ? getImageUrlWithFallback([property.main_image_path]) : null;
+        
+        // Usar la primera imagen disponible
+        finalUrl = mainImageUrl || (allImageUrls.length > 0 ? allImageUrls[0] : null);
+      }
+
+      // 3. Actualizar el estado con la URL obtenida o mantener el placeholder si no se encuentra ninguna
+      setImageUrl(finalUrl || '/images/cards/card-01.jpg');
+      setIsLoading(false);
+    };
+
+    fetchImageUrl();
+  }, [property.main_image_path, property.image_paths]); // Se ejecuta si las imágenes de la propiedad cambian
 
   return (
-    <div className="block rounded-lg shadow-lg overflow-hidden bg-white dark:bg-gray-800 transform hover:-translate-y-1 transition-transform duration-300">
+    <div className="block rounded-lg shadow-lg overflow-hidden bg-white dark:bg-gray-800 transform hover:-translate-y-1 transition-transform duration-300 hover:shadow-xl">
       <div className="relative h-56">
-        <img className="w-full h-full object-cover" src={imageUrl} alt={property.title} />
+        <Link to={`/properties/${property.id}`} className="block w-full h-full group">
+          {/* Muestra un esqueleto de carga mientras se obtiene la imagen */}
+          {isLoading && <div className="w-full h-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>}
+          
+          <img
+            className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer ${isLoading ? 'hidden' : 'block'}`}
+            src={imageUrl}
+            alt={property.title}
+            // 4. El onError ahora es un último recurso por si la URL de Supabase falla
+            onError={() => {
+              setImageUrl('/images/cards/card-01.jpg');
+            }}
+            onLoad={() => setIsLoading(false)} // Opcional: oculta el esqueleto cuando la imagen carga
+          />
+          
+          {/* Overlay que cambia su propia opacidad en hover */}
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300 flex items-center justify-center">
+            <div className="text-white bg-opacity-95 px-4 py-2 rounded-lg font-medium shadow-lg">
+              <Eye className="w-4 h-4 inline mr-2" />
+              Ver detalles
+            </div>
+          </div>
+        </Link>
         <div className="absolute top-2 right-2 bg-primary text-white text-sm font-bold px-3 py-1 rounded-full">
           <span className="flex items-center">
             <Euro className="w-4 h-4 mr-1" />
-            {property.precio_entresemana} / noche
+            {property.precio_entresemana || 0} / noche
           </span>
         </div>
       </div>
       <div className="p-4">
-        <h3 className="text-xl font-bold mb-2 truncate text-gray-900 dark:text-white">{property.title}</h3>
+        <Link to={`/properties/${property.id}`} className="block">
+          <h3 className="text-xl font-bold mb-2 truncate text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer">{property.title}</h3>
+        </Link>
         <p className="text-gray-600 dark:text-gray-400 text-sm flex items-center mb-3">
           <MapPin className="w-4 h-4 mr-2" />
           <span className="truncate">{property.location}</span>

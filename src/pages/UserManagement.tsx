@@ -73,7 +73,7 @@ const UserManagement = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10">
-                      <img className="h-10 w-10 rounded-full object-cover" src={user.avatar_url || 'https://via.placeholder.com/150'} alt="" />
+                      <img className="h-10 w-10 rounded-full object-cover" src={user.avatar_url || '/images/user/user-01.jpg'} alt="" />
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900 dark:text-white">{user.full_name || 'Sin nombre'}</div>

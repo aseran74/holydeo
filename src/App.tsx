@@ -31,6 +31,10 @@ import MessagesPage from "./pages/Messages/MessagesPage";
 import UserManagement from "./pages/UserManagement";
 import ImageUploadTest from "./components/ImageUploadTest";
 import CalendarManagement from "./pages/CalendarManagement/CalendarManagement";
+import PropertyDetails from "./pages/Properties/PropertyDetails";
+import ImageDebugger from "./components/ImageDebugger";
+import PropertyImageTest from "./components/PropertyImageTest";
+import ImageTest from "./components/ImageTest";
 
 export default function App() {
   return (
@@ -44,6 +48,7 @@ export default function App() {
 
             {/* Propiedades y Gestión */}
             <Route path="/properties" element={<Properties />} />
+            <Route path="/properties/:id" element={<PropertyDetails />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/experiences" element={<Experiences />} />
             <Route path="/agencies" element={<Agencies />} />
@@ -78,6 +83,9 @@ export default function App() {
 
             {/* Debug/Test Routes */}
             <Route path="/image-upload-test" element={<ImageUploadTest />} />
+            <Route path="/image-debug/:propertyId" element={<ImageDebugger />} />
+            <Route path="/property-image-test" element={<PropertyImageTest />} />
+            <Route path="/image-test" element={<ImageTest />} />
             
             {/* Calendar Management */}
             <Route path="/calendar-management/:propertyId" element={<CalendarManagement />} />
