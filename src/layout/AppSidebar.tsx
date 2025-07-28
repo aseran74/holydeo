@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
+import { UserButton, SignedIn } from '@clerk/clerk-react';
 
 // Assume these icons are imported from an icon library
 import {
@@ -14,6 +15,13 @@ import {
   PlugInIcon,
   TableIcon,
   UserCircleIcon,
+  BoxIcon,
+  UserIcon,
+  GroupIcon,
+  ChatIcon,
+  TaskIcon,
+  BoxIconLine,
+  ShootingStarIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -32,31 +40,51 @@ const navItems: NavItem[] = [
     subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
   {
+    icon: <BoxIcon />,
+    name: "Propiedades",
+    path: "/properties",
+  },
+  {
     icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
+    name: "Reservas",
+    path: "/bookings",
   },
   {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
+    icon: <ShootingStarIcon />,
+    name: "Experiencias",
+    path: "/experiences",
   },
   {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+    icon: <BoxIconLine />,
+    name: "Agencias",
+    path: "/agencies",
   },
   {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+    icon: <UserIcon />,
+    name: "Agentes",
+    path: "/agents",
   },
   {
-    name: "Pages",
-    icon: <PageIcon />,
+    icon: <BoxIcon />,
+    name: "Propietarios",
+    path: "/owners",
+  },
+  {
+    icon: <GroupIcon />,
+    name: "Huéspedes",
+    path: "/guests",
+  },
+  {
+    icon: <ChatIcon />,
+    name: "Mensajes",
+    path: "/messages",
+  },
+  {
+    icon: <TaskIcon />,
+    name: "Gestión",
     subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "Gestión de Usuarios", path: "/user-management", pro: false },
+      { name: "Gestión de Calendarios", path: "/calendar", pro: false },
     ],
   },
 ];
@@ -80,6 +108,24 @@ const othersItems: NavItem[] = [
       { name: "Buttons", path: "/buttons", pro: false },
       { name: "Images", path: "/images", pro: false },
       { name: "Videos", path: "/videos", pro: false },
+    ],
+  },
+  {
+    name: "Forms",
+    icon: <ListIcon />,
+    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+  },
+  {
+    name: "Tables",
+    icon: <TableIcon />,
+    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+  },
+  {
+    name: "Pages",
+    icon: <PageIcon />,
+    subItems: [
+      { name: "Blank Page", path: "/blank", pro: false },
+      { name: "404 Error", path: "/error-404", pro: false },
     ],
   },
   {
@@ -370,6 +416,11 @@ const AppSidebar: React.FC = () => {
         </nav>
         {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
       </div>
+      <SignedIn>
+        <div className="flex justify-center my-4">
+          <UserButton afterSignOutUrl="/signin" />
+        </div>
+      </SignedIn>
     </aside>
   );
 };

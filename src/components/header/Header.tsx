@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
 import NotificationDropdown from "./NotificationDropdown";
-import UserDropdown from "./UserDropdown";
-import { Link } from "react-router";
+import { UserButton, SignedIn, SignedOut } from '@clerk/clerk-react';
+import { Link } from "react-router-dom";
 
 // Define the interface for the props
 interface HeaderProps {
@@ -78,16 +78,18 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
             </svg>
           </button>
 
-          <Link to="/" className="lg:hidden">
+          <Link to="/">
             <img
               className="dark:hidden"
-              src="./images/logo/logo.svg"
-              alt="Logo"
+              src="/images/logo2.png"
+              alt="Logo Holvdeo"
+              style={{ maxHeight: '48px', width: 'auto' }}
             />
             <img
               className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
-              alt="Logo"
+              src="/images/logo2.png"
+              alt="Logo Holvdeo"
+              style={{ maxHeight: '48px', width: 'auto' }}
             />
           </Link>
 
@@ -158,7 +160,17 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
-          <UserDropdown />
+          <SignedIn>
+            <UserButton afterSignOutUrl="/signin" />
+          </SignedIn>
+          <SignedOut>
+            <Link 
+              to="/signin" 
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+            >
+              Iniciar Sesión
+            </Link>
+          </SignedOut>
         </div>
       </div>
     </header>

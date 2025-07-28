@@ -5,6 +5,18 @@ import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
 import RecentOrders from "../../components/ecommerce/RecentOrders";
 import DemographicCard from "../../components/ecommerce/DemographicCard";
 import PageMeta from "../../components/common/PageMeta";
+import SupabaseConnectionTest from "../../components/SupabaseConnectionTest";
+import SimplePropertiesTest from "../../components/SimplePropertiesTest";
+import DebugSupabase from "../../components/DebugSupabase";
+import EnvVarsDebug from "../../components/EnvVarsDebug";
+import ClerkDebug from "../../components/ClerkDebug";
+import QuickTest from "../../components/QuickTest";
+import EnvChecker from "../../components/EnvChecker";
+import DebugCredentials from "../../components/DebugCredentials";
+import TestPermissions from "../../components/TestPermissions";
+import PropertyEditDebug from "../../components/PropertyEditDebug";
+import PropertyEditTest from "../../components/PropertyEditTest";
+import PropertyFormTest from "../../components/PropertyFormTest";
 
 export default function Home() {
   return (
@@ -34,6 +46,66 @@ export default function Home() {
 
         <div className="col-span-12 xl:col-span-7">
           <RecentOrders />
+        </div>
+
+        {/* Prueba de Conexión Supabase */}
+        <div className="col-span-12">
+          <SupabaseConnectionTest />
+        </div>
+
+        {/* Prueba Simple de Propiedades */}
+        <div className="col-span-12">
+          <SimplePropertiesTest />
+        </div>
+
+        {/* Variables de Entorno */}
+        <div className="col-span-12">
+          <EnvVarsDebug />
+        </div>
+
+        {/* Debug Detallado de Credenciales */}
+        <div className="col-span-12">
+          <DebugCredentials />
+        </div>
+
+        {/* Prueba de Permisos */}
+        <div className="col-span-12">
+          <TestPermissions />
+        </div>
+
+        {/* Debug de Edición de Propiedades */}
+        <div className="col-span-12">
+          <PropertyEditDebug />
+        </div>
+
+        {/* Prueba de Edición de Propiedades */}
+        <div className="col-span-12">
+          <PropertyEditTest />
+        </div>
+
+        {/* Prueba del Formulario de Propiedades */}
+        <div className="col-span-12">
+          <PropertyFormTest />
+        </div>
+
+        {/* Verificación de Credenciales */}
+        <div className="col-span-12">
+          <EnvChecker />
+        </div>
+
+        {/* Prueba Rápida */}
+        <div className="col-span-12">
+          <QuickTest />
+        </div>
+
+        {/* Debug Clerk */}
+        <div className="col-span-12">
+          <ClerkDebug />
+        </div>
+
+        {/* Debug Detallado */}
+        <div className="col-span-12">
+          <DebugSupabase />
         </div>
       </div>
     </>

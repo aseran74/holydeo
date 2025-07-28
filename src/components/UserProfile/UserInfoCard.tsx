@@ -3,12 +3,15 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import ImageUploader from '../common/ImageUploader';
+import { useState } from 'react';
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const [photoUrl, setPhotoUrl] = useState<string>("");
   const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
+    // TODO: Guardar photoUrl en la base de datos de usuario
+    console.log("Saving changes...", { photoUrl });
     closeModal();
   };
   return (
@@ -102,6 +105,12 @@ export default function UserInfoCard() {
           </div>
           <form className="flex flex-col">
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+              <ImageUploader
+                bucketName="profile-photos"
+                initialUrl={photoUrl}
+                onUpload={setPhotoUrl}
+                label="Foto de perfil"
+              />
               <div>
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Social Links

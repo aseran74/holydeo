@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -19,6 +19,19 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 
+// Importar las páginas del proyecto
+import Properties from "./pages/Properties/Properties";
+import Bookings from "./pages/Bookings/Bookings";
+import Experiences from "./pages/Experiences/Experiences";
+import Agencies from "./pages/Agencies/Agencies";
+import Agents from "./pages/Agents/Agents";
+import Owners from "./pages/Owners/Owners";
+import Guests from "./pages/Guests";
+import MessagesPage from "./pages/Messages/MessagesPage";
+import UserManagement from "./pages/UserManagement";
+import ImageUploadTest from "./components/ImageUploadTest";
+import CalendarManagement from "./pages/CalendarManagement/CalendarManagement";
+
 export default function App() {
   return (
     <>
@@ -28,6 +41,17 @@ export default function App() {
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             <Route index path="/" element={<Home />} />
+
+            {/* Propiedades y Gestión */}
+            <Route path="/properties" element={<Properties />} />
+            <Route path="/bookings" element={<Bookings />} />
+            <Route path="/experiences" element={<Experiences />} />
+            <Route path="/agencies" element={<Agencies />} />
+            <Route path="/agents" element={<Agents />} />
+            <Route path="/owners" element={<Owners />} />
+            <Route path="/guests" element={<Guests />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/user-management" element={<UserManagement />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
@@ -51,6 +75,12 @@ export default function App() {
             {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
+
+            {/* Debug/Test Routes */}
+            <Route path="/image-upload-test" element={<ImageUploadTest />} />
+            
+            {/* Calendar Management */}
+            <Route path="/calendar-management/:propertyId" element={<CalendarManagement />} />
           </Route>
 
           {/* Auth Layout */}
