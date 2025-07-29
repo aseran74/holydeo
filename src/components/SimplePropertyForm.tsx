@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { Image as ImageIcon } from 'lucide-react';
+import GooglePlacesAutocomplete from './common/GooglePlacesAutocomplete';
 
 interface SimpleProperty {
   id?: string;
@@ -179,6 +180,52 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
     }
   };
 
+  // Función para manejar la selección de lugar desde Google Places
+  const handlePlaceSelect = (place: any) => {
+    console.log('Lugar seleccionado:', place);
+    
+    // Extraer componentes de dirección
+    if (place.address_components) {
+      let streetNumber = '';
+      let route = '';
+      let locality = '';
+      let administrativeArea = '';
+      let postalCode = '';
+      let country = '';
+
+      place.address_components.forEach((component: any) => {
+        const types = component.types;
+        
+        if (types.includes('street_number')) {
+          streetNumber = component.long_name;
+        } else if (types.includes('route')) {
+          route = component.long_name;
+        } else if (types.includes('locality')) {
+          locality = component.long_name;
+        } else if (types.includes('administrative_area_level_1')) {
+          administrativeArea = component.long_name;
+        } else if (types.includes('postal_code')) {
+          postalCode = component.long_name;
+        } else if (types.includes('country')) {
+          country = component.long_name;
+        }
+      });
+
+      // Actualizar campos de dirección
+      setStreetAddress(streetNumber && route ? `${streetNumber} ${route}` : route);
+      setCity(locality);
+      setState(administrativeArea);
+      setPostalCode(postalCode);
+      setCountry(country);
+    }
+
+    // Actualizar coordenadas si están disponibles
+    if (place.geometry && place.geometry.location) {
+      setLat(place.geometry.location.lat());
+      setLng(place.geometry.location.lng());
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -267,15 +314,81 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
 
         <div className="mb-4">
           <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Ubicación</label>
-          <input
-            type="text"
+          <GooglePlacesAutocomplete
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-            placeholder="Madrid, España"
-            required
+            onChange={setLocation}
+            onPlaceSelect={handlePlaceSelect}
+            placeholder="Buscar dirección..."
+            className="w-full"
           />
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Escribe para buscar direcciones y selecciona una opción
+          </p>
         </div>
+
+        {/* Campos de dirección que se llenan automáticamente */}
+        {(streetAddress || city || state || postalCode) && (
+          <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">
+              📍 Detalles de dirección (se llenan automáticamente)
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {streetAddress && (
+                <div>
+                  <label className="block text-xs font-medium text-blue-700 dark:text-blue-300">Dirección</label>
+                  <input
+                    type="text"
+                    value={streetAddress}
+                    onChange={(e) => setStreetAddress(e.target.value)}
+                    className="w-full px-2 py-1 text-sm border border-blue-200 dark:border-blue-700 rounded bg-white dark:bg-gray-800"
+                    placeholder="Dirección de la calle"
+                  />
+                </div>
+              )}
+              {city && (
+                <div>
+                  <label className="block text-xs font-medium text-blue-700 dark:text-blue-300">Ciudad</label>
+                  <input
+                    type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full px-2 py-1 text-sm border border-blue-200 dark:border-blue-700 rounded bg-white dark:bg-gray-800"
+                    placeholder="Ciudad"
+                  />
+                </div>
+              )}
+              {state && (
+                <div>
+                  <label className="block text-xs font-medium text-blue-700 dark:text-blue-300">Provincia</label>
+                  <input
+                    type="text"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    className="w-full px-2 py-1 text-sm border border-blue-200 dark:border-blue-700 rounded bg-white dark:bg-gray-800"
+                    placeholder="Provincia"
+                  />
+                </div>
+              )}
+              {postalCode && (
+                <div>
+                  <label className="block text-xs font-medium text-blue-700 dark:text-blue-300">Código Postal</label>
+                  <input
+                    type="text"
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
+                    className="w-full px-2 py-1 text-sm border border-blue-200 dark:border-blue-700 rounded bg-white dark:bg-gray-800"
+                    placeholder="Código postal"
+                  />
+                </div>
+              )}
+            </div>
+            {(lat && lng) && (
+              <div className="mt-2 text-xs text-blue-600 dark:text-blue-400">
+                📍 Coordenadas: {lat.toFixed(6)}, {lng.toFixed(6)}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="grid grid-cols-3 gap-4 mb-4">
           <div>

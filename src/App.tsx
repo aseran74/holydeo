@@ -35,6 +35,7 @@ import PropertyDetails from "./pages/Properties/PropertyDetails";
 import ImageDebugger from "./components/ImageDebugger";
 import PropertyImageTest from "./components/PropertyImageTest";
 import ImageTest from "./components/ImageTest";
+import GooglePlacesTest from "./components/GooglePlacesTest";
 
 export default function App() {
   return (
@@ -86,6 +87,7 @@ export default function App() {
             <Route path="/image-debug/:propertyId" element={<ImageDebugger />} />
             <Route path="/property-image-test" element={<PropertyImageTest />} />
             <Route path="/image-test" element={<ImageTest />} />
+            <Route path="/google-places-test" element={<GooglePlacesTest />} />
             
             {/* Calendar Management */}
             <Route path="/calendar-management/:propertyId" element={<CalendarManagement />} />
