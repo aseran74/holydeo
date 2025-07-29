@@ -72,7 +72,7 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
   const [urlAirbnb, setUrlAirbnb] = useState("");
   const [minDays, setMinDays] = useState<number>(1);
   const [maxDays, setMaxDays] = useState<number>(30);
-  const [tipo, setTipo] = useState("Piso o apartamento");
+  const [tipo, setTipo] = useState("Apartamento o piso");
   const [region, setRegion] = useState("Andalucia");
   const [destacada, setDestacada] = useState(false);
   const [lat, setLat] = useState<number | null>(null);
@@ -119,9 +119,9 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
     }
   }, [property]);
 
-  const handleAmenityToggle = (value: string) => {
-    setAmenities(prev =>
-      prev.includes(value)
+    const handleComplementoToggle = (value: string) => {
+    setAmenities(prev => 
+      prev.includes(value) 
         ? prev.filter(item => item !== value)
         : [...prev, value]
     );
@@ -265,17 +265,25 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
     onSave(propertyToSave);
   };
 
-  const AMENITIES = [
-    { label: "Piscina", value: "Piscina" },
-    { label: "Jardín", value: "Jardín" },
-    { label: "Terraza", value: "Terraza" },
-    { label: "Garaje", value: "Garaje" },
-    { label: "Ascensor", value: "Ascensor" },
-    { label: "Aire Acondicionado", value: "Aire Acond." },
-    { label: "Vistas al mar", value: "Vistas al mar" },
-    { label: "Barbacoa", value: "Barbacoa" },
-    { label: "Lujo", value: "Lujo" },
-    { label: "Accesible", value: "Accesible" },
+  const COMPLEMENTOS = [
+    { label: "Piscina", value: "Piscina", icon: "🏊" },
+    { label: "Jardín", value: "Jardín", icon: "🌳" },
+    { label: "Terraza", value: "Terraza", icon: "🏖️" },
+    { label: "Garaje", value: "Garaje", icon: "🚗" },
+    { label: "Ascensor", value: "Ascensor", icon: "🛗" },
+    { label: "Aire Acondicionado", value: "Aire Acond.", icon: "❄️" },
+    { label: "Vistas al mar", value: "Vistas al mar", icon: "🌊" },
+    { label: "Barbacoa", value: "Barbacoa", icon: "🔥" },
+    { label: "Lujo", value: "Lujo", icon: "💎" },
+    { label: "Accesible", value: "Accesible", icon: "♿" },
+  ];
+
+  const TIPOS_VIVIENDA = [
+    { label: "Apartamento o piso", value: "Apartamento o piso" },
+    { label: "Ático", value: "Ático" },
+    { label: "Bajo con jardín", value: "Bajo con jardín" },
+    { label: "Chalet adosado", value: "Chalet adosado" },
+    { label: "Chalet individual", value: "Chalet individual" },
   ];
 
   const SEASONS = [
@@ -324,6 +332,40 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
             Escribe para buscar direcciones y selecciona una opción
           </p>
+        </div>
+
+        {/* Mapa de ubicación */}
+        {(lat && lng) && (
+          <div className="mb-4">
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Ubicación en mapa</label>
+            <div className="w-full h-48 bg-gray-100 dark:bg-gray-700 rounded-lg border flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-2xl mb-2">🗺️</div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Coordenadas: {lat.toFixed(6)}, {lng.toFixed(6)}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Mapa interactivo próximamente
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="mb-4">
+          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Tipo de vivienda</label>
+          <select
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value)}
+            className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+            required
+          >
+            {TIPOS_VIVIENDA.map((tipoOption) => (
+              <option key={tipoOption.value} value={tipoOption.value}>
+                {tipoOption.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Campos de dirección que se llenan automáticamente */}
@@ -463,17 +505,18 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
         </div>
 
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Amenities</label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {AMENITIES.map(({ label, value }) => (
-              <label key={value} className="flex items-center gap-2">
+          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Complementos</label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {COMPLEMENTOS.map(({ label, value, icon }) => (
+              <label key={value} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
                 <input
                   type="checkbox"
                   checked={amenities.includes(value)}
-                  onChange={() => handleAmenityToggle(value)}
+                  onChange={() => handleComplementoToggle(value)}
                   className="accent-primary"
                 />
-                {label}
+                <span className="text-lg">{icon}</span>
+                <span className="text-sm">{label}</span>
               </label>
             ))}
           </div>
