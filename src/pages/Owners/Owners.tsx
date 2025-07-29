@@ -9,7 +9,7 @@ interface Owner {
   id: string;
   user_id: string;
   phone?: string;
-  user?: {
+  users?: {
     full_name?: string;
     email?: string;
   };
@@ -42,12 +42,12 @@ const Owners = () => {
           id,
           user_id,
           phone,
-          user:users!owners_user_id_fkey (
+          users!inner (
             full_name,
             email
           )
         `)
-        .order('user.full_name');
+        .order('users.full_name');
       setOwners(data || []);
       setLoading(false);
       if (error) setError(error.message);
@@ -99,12 +99,12 @@ const Owners = () => {
             id,
             user_id,
             phone,
-            user:users!owners_user_id_fkey (
+            users!inner (
               full_name,
               email
             )
           `)
-          .order('user.full_name');
+          .order('users.full_name');
         setOwners(data || []);
       setEditModalOpen(false);
       setCurrentOwner(null);
@@ -118,8 +118,8 @@ const Owners = () => {
   const filteredOwners = owners.filter((owner) => {
     const searchTerm = filter.toLowerCase();
     return (
-      owner.user?.full_name?.toLowerCase().includes(searchTerm) ||
-      owner.user?.email?.toLowerCase().includes(searchTerm) ||
+      owner.users?.full_name?.toLowerCase().includes(searchTerm) ||
+      owner.users?.email?.toLowerCase().includes(searchTerm) ||
       owner.phone?.toLowerCase().includes(searchTerm)
     );
   });
@@ -200,12 +200,12 @@ const Owners = () => {
                       <td className="px-4 py-3">
                         <img
                           src="/images/user/user-01.jpg"
-                          alt={owner.user?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}
+                          alt={owner.users?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}
                           className="h-10 w-10 rounded-full object-cover"
                         />
                       </td>
-                      <td className="px-4 py-3">{owner.user?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}</td>
-                      <td className="px-4 py-3">{owner.user?.email}</td>
+                      <td className="px-4 py-3">{owner.users?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}</td>
+                      <td className="px-4 py-3">{owner.users?.email}</td>
                       <td className="px-4 py-3">{owner.phone}</td>
                       <td className="px-4 py-3">
                         {getOwnerProperties(owner.id) || "Sin propiedades"}
@@ -239,11 +239,11 @@ const Owners = () => {
               >
                 <img
                   src="/images/user/user-01.jpg"
-                  alt={owner.user?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}
+                  alt={owner.users?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}
                   className="h-24 w-24 rounded-full object-cover mb-4"
                 />
-                <h3 className="font-bold text-lg">{owner.user?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}</h3>
-                <p className="text-sm text-gray-500">{owner.user?.email}</p>
+                <h3 className="font-bold text-lg">{owner.users?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}</h3>
+                <p className="text-sm text-gray-500">{owner.users?.email}</p>
                 <p className="text-sm text-gray-500 mt-1">{owner.phone}</p>
                 <div className="mt-4 pt-4 border-t w-full">
                   <h4 className="font-semibold text-sm mb-2">
@@ -295,11 +295,11 @@ const Owners = () => {
                   className="w-full border rounded-lg px-3 py-2 mt-1"
                 />
               </div>
-              {currentOwner.user && (
+              {currentOwner.users && (
                 <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
                   <div className="font-medium">Información del usuario:</div>
-                  <div>Nombre: {currentOwner.user.full_name}</div>
-                  <div>Email: {currentOwner.user.email}</div>
+                  <div>Nombre: {currentOwner.users.full_name}</div>
+                  <div>Email: {currentOwner.users.email}</div>
                 </div>
               )}
             </div>
@@ -316,7 +316,7 @@ const Owners = () => {
       {messagingOwner && (
         <MessagingModal
             recipientId={messagingOwner.id}
-            recipientName={messagingOwner.user?.full_name || `Propietario ${messagingOwner.user_id.slice(0, 8)}`}
+            recipientName={messagingOwner.users?.full_name || `Propietario ${messagingOwner.user_id.slice(0, 8)}`}
             recipientType="owners"
             onClose={() => setMessagingOwner(null)}
         />
