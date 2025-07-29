@@ -525,7 +525,8 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
         <div className="mb-4">
           <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Imágenes</label>
           <div
-            className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 text-center cursor-pointer"
+            className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 text-center cursor-pointer hover:border-primary-500 transition-colors"
+            onClick={() => fileInputRef.current?.click()}
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
           >
