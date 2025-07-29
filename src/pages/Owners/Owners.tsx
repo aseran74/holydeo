@@ -7,11 +7,12 @@ import MessagingModal from "../../components/common/MessagingModal";
 
 interface Owner {
   id: string;
-  name: string;
-  email: string;
-  phone: string;
-  photo_url?: string;
-  role?: string;
+  user_id: string;
+  phone?: string;
+  user?: {
+    full_name?: string;
+    email?: string;
+  };
 }
 
 interface Property {
@@ -36,15 +37,18 @@ const Owners = () => {
     const fetchOwners = async () => {
       setLoading(true);
       const { data, error } = await supabase
-        .from('profiles')
-        .select('user_id, full_name, email, phone, photo_url, role')
-        .eq('role', 'owner');
-      const owners = (data || []).map(a => ({
-        ...a,
-        id: a.user_id,
-        name: a.full_name
-      }));
-      setOwners(owners);
+        .from('owners')
+        .select(`
+          id,
+          user_id,
+          phone,
+          user:users!owners_user_id_fkey (
+            full_name,
+            email
+          )
+        `)
+        .order('user.full_name');
+      setOwners(data || []);
       setLoading(false);
       if (error) setError(error.message);
     };
@@ -59,17 +63,17 @@ const Owners = () => {
   const handleSave = async () => {
     if (!currentOwner) return;
     const { id, ...updates } = currentOwner;
-    const { error } = await supabase.from("profiles").update(updates).eq("id", id);
+    const { error } = await supabase.from("owners").update(updates).eq("id", id);
     if (error) {
       console.error("Error updating owner:", error);
     } else {
       setEditModalOpen(false);
-      fetchData();
+      fetchOwners();
     }
   };
 
   const handleAddOwner = () => {
-    setCurrentOwner({ id: '', name: '', email: '', phone: '', photo_url: '', role: 'owner' });
+    setCurrentOwner({ id: '', user_id: '', phone: '' });
     setEditModalOpen(true);
   };
 
@@ -78,29 +82,30 @@ const Owners = () => {
     setError(null);
     try {
       if (updated.id) {
-        const { error } = await supabase.from('profiles').update({
-          full_name: updated.name,
-          email: updated.email,
-          phone: updated.phone,
-          photo_url: updated.photo_url
-        }).eq('user_id', updated.id);
+        const { error } = await supabase.from('owners').update({
+          phone: updated.phone
+        }).eq('id', updated.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('profiles').insert([{
-          full_name: updated.name,
-          email: updated.email,
-          phone: updated.phone,
-          photo_url: updated.photo_url,
-          role: 'owner',
-          user_id: updated.id
+        const { error } = await supabase.from('owners').insert([{
+          user_id: updated.user_id,
+          phone: updated.phone
         }]);
         if (error) throw error;
       }
-      const { data } = await supabase
-        .from('profiles')
-        .select('user_id as id, full_name as name, email, phone, photo_url, role')
-        .eq('role', 'owner');
-      setOwners(data || []);
+              const { data } = await supabase
+          .from('owners')
+          .select(`
+            id,
+            user_id,
+            phone,
+            user:users!owners_user_id_fkey (
+              full_name,
+              email
+            )
+          `)
+          .order('user.full_name');
+        setOwners(data || []);
       setEditModalOpen(false);
       setCurrentOwner(null);
     } catch (err: any) {
@@ -113,8 +118,8 @@ const Owners = () => {
   const filteredOwners = owners.filter((owner) => {
     const searchTerm = filter.toLowerCase();
     return (
-      owner.name?.toLowerCase().includes(searchTerm) ||
-      owner.email?.toLowerCase().includes(searchTerm) ||
+      owner.user?.full_name?.toLowerCase().includes(searchTerm) ||
+      owner.user?.email?.toLowerCase().includes(searchTerm) ||
       owner.phone?.toLowerCase().includes(searchTerm)
     );
   });
@@ -194,15 +199,13 @@ const Owners = () => {
                     >
                       <td className="px-4 py-3">
                         <img
-                          src={
-                            owner.photo_url || "/images/user/user-01.jpg"
-                          }
-                          alt={owner.name}
+                          src="/images/user/user-01.jpg"
+                          alt={owner.user?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}
                           className="h-10 w-10 rounded-full object-cover"
                         />
                       </td>
-                      <td className="px-4 py-3">{owner.name}</td>
-                      <td className="px-4 py-3">{owner.email}</td>
+                      <td className="px-4 py-3">{owner.user?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}</td>
+                      <td className="px-4 py-3">{owner.user?.email}</td>
                       <td className="px-4 py-3">{owner.phone}</td>
                       <td className="px-4 py-3">
                         {getOwnerProperties(owner.id) || "Sin propiedades"}
@@ -235,12 +238,12 @@ const Owners = () => {
                 className="bg-white dark:bg-boxdark rounded-lg shadow-md p-5 text-center flex flex-col items-center"
               >
                 <img
-                  src={owner.photo_url || "/images/user/user-01.jpg"}
-                  alt={owner.name}
+                  src="/images/user/user-01.jpg"
+                  alt={owner.user?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}
                   className="h-24 w-24 rounded-full object-cover mb-4"
                 />
-                <h3 className="font-bold text-lg">{owner.name}</h3>
-                <p className="text-sm text-gray-500">{owner.email}</p>
+                <h3 className="font-bold text-lg">{owner.user?.full_name || `Propietario ${owner.user_id.slice(0, 8)}`}</h3>
+                <p className="text-sm text-gray-500">{owner.user?.email}</p>
                 <p className="text-sm text-gray-500 mt-1">{owner.phone}</p>
                 <div className="mt-4 pt-4 border-t w-full">
                   <h4 className="font-semibold text-sm mb-2">
@@ -273,28 +276,14 @@ const Owners = () => {
           <div className="bg-white dark:bg-boxdark rounded-lg shadow-xl p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">{currentOwner.id ? 'Editar Propietario' : 'Añadir Propietario'}</h2>
             <div className="space-y-4">
-              <ImageUploader
-                bucketName="profile-photos"
-                initialUrl={currentOwner.photo_url}
-                onUpload={(url) => setCurrentOwner({ ...currentOwner, photo_url: url })}
-                label="Foto del propietario"
-              />
               <div>
-                <label className="block text-sm font-medium">Nombre completo</label>
+                <label className="block text-sm font-medium">ID de Usuario</label>
                 <input
                   type="text"
-                  value={currentOwner.name || ''}
-                  onChange={e => setCurrentOwner({ ...currentOwner, name: e.target.value })}
+                  value={currentOwner.user_id || ''}
+                  onChange={e => setCurrentOwner({ ...currentOwner, user_id: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2 mt-1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Email</label>
-                <input
-                  type="email"
-                  value={currentOwner.email || ''}
-                  onChange={e => setCurrentOwner({ ...currentOwner, email: e.target.value })}
-                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  placeholder="UUID del usuario"
                 />
               </div>
               <div>
@@ -306,6 +295,13 @@ const Owners = () => {
                   className="w-full border rounded-lg px-3 py-2 mt-1"
                 />
               </div>
+              {currentOwner.user && (
+                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
+                  <div className="font-medium">Información del usuario:</div>
+                  <div>Nombre: {currentOwner.user.full_name}</div>
+                  <div>Email: {currentOwner.user.email}</div>
+                </div>
+              )}
             </div>
             <div className="flex justify-end gap-2 mt-6">
               <button onClick={() => setEditModalOpen(false)} className="px-4 py-2 bg-gray-400 text-white rounded">Cancelar</button>
@@ -320,7 +316,7 @@ const Owners = () => {
       {messagingOwner && (
         <MessagingModal
             recipientId={messagingOwner.id}
-            recipientName={messagingOwner.name}
+            recipientName={messagingOwner.user?.full_name || `Propietario ${messagingOwner.user_id.slice(0, 8)}`}
             recipientType="owners"
             onClose={() => setMessagingOwner(null)}
         />
