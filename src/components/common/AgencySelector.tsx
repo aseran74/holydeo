@@ -28,6 +28,8 @@ const AgencySelector: React.FC<AgencySelectorProps> = ({
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchAgencies();
@@ -58,6 +60,15 @@ const AgencySelector: React.FC<AgencySelectorProps> = ({
 
   const selectedAgency = agencies.find(agency => agency.id === value);
 
+  const filteredAgencies = agencies.filter(agency => {
+    const search = searchTerm.toLowerCase();
+    return (
+      agency.name.toLowerCase().includes(search) ||
+      agency.contact_email?.toLowerCase().includes(search) ||
+      agency.phone?.toLowerCase().includes(search)
+    );
+  });
+
   return (
     <div className={`relative ${className}`}>
       <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
@@ -65,29 +76,68 @@ const AgencySelector: React.FC<AgencySelectorProps> = ({
       </label>
       
       <div className="relative">
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
           disabled={disabled || loading}
-          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline disabled:opacity-50"
+          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline disabled:opacity-50 text-left flex justify-between items-center"
         >
-          <option value="">{placeholder}</option>
-          {agencies.map((agency) => (
-            <option key={agency.id} value={agency.id}>
-              {agency.name}
-            </option>
-          ))}
-        </select>
-        
-        {loading && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />
+          <span className={value ? '' : 'text-gray-500'}>
+            {selectedAgency ? selectedAgency.name : placeholder}
+          </span>
+          <div className="flex items-center">
+            {loading && <Loader2 className="w-4 h-4 text-gray-400 animate-spin mr-2" />}
+            {!loading && <Building2 className="w-4 h-4 text-gray-400" />}
           </div>
-        )}
+        </button>
         
-        {!loading && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <Building2 className="w-4 h-4 text-gray-400" />
+        {isOpen && (
+          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+            <div className="p-2 border-b border-gray-200">
+              <input
+                type="text"
+                placeholder="Buscar agencia..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                autoFocus
+              />
+            </div>
+            <div className="py-1">
+              <button
+                type="button"
+                onClick={() => {
+                  onChange('');
+                  setIsOpen(false);
+                  setSearchTerm('');
+                }}
+                className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+              >
+                {placeholder}
+              </button>
+              {filteredAgencies.map((agency) => (
+                <button
+                  key={agency.id}
+                  type="button"
+                  onClick={() => {
+                    onChange(agency.id);
+                    setIsOpen(false);
+                    setSearchTerm('');
+                  }}
+                  className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                >
+                  <div className="font-medium">{agency.name}</div>
+                  {agency.contact_email && (
+                    <div className="text-xs text-gray-500">{agency.contact_email}</div>
+                  )}
+                </button>
+              ))}
+              {filteredAgencies.length === 0 && searchTerm && (
+                <div className="px-3 py-2 text-sm text-gray-500">
+                  No se encontraron agencias
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

@@ -34,20 +34,55 @@ const Owners = () => {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const fetchOwners = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('owners')
-        .select(`
-          id,
-          user_id,
-          phone,
-          users (
-            full_name,
-            email
-          )
-        `)
-        .order('users.full_name');
+          const fetchOwners = async () => {
+        setLoading(true);
+        console.log('🔍 Fetching owners...');
+        const { data: ownersData, error } = await supabase
+          .from('owners')
+          .select('id, user_id, phone')
+          .order('user_id');
+      
+              if (error) {
+          console.error('❌ Error fetching owners:', error);
+          setError(error.message);
+          setLoading(false);
+          return;
+        }
+
+        console.log('📊 Owners data:', ownersData);
+
+              // Obtener los datos de usuarios para los propietarios
+        if (ownersData && ownersData.length > 0) {
+          const userIds = ownersData.map(owner => owner.user_id);
+          console.log('👥 User IDs:', userIds);
+          const { data: usersData, error: usersError } = await supabase
+            .from('users')
+            .select('id, full_name, email')
+            .in('id', userIds);
+
+                  if (usersError) {
+            console.error('❌ Error fetching users:', usersError);
+            setError(usersError.message);
+            setLoading(false);
+            return;
+          }
+
+          console.log('👤 Users data:', usersData);
+
+                  // Combinar los datos
+          const combinedData = ownersData.map(owner => {
+            const user = usersData?.find(u => u.id === owner.user_id);
+            return {
+              ...owner,
+              users: user || null
+            };
+          });
+
+          console.log('🎯 Combined data:', combinedData);
+          setOwners(combinedData);
+      } else {
+        setOwners([]);
+      }
       setOwners(data || []);
       setLoading(false);
       if (error) setError(error.message);
@@ -93,19 +128,41 @@ const Owners = () => {
         }]);
         if (error) throw error;
       }
-              const { data } = await supabase
-          .from('owners')
-          .select(`
-            id,
-            user_id,
-            phone,
-            users (
-              full_name,
-              email
-            )
-          `)
-          .order('users.full_name');
-        setOwners(data || []);
+              // Recargar los datos después de guardar
+              const { data: ownersData, error: reloadError } = await supabase
+                .from('owners')
+                .select('id, user_id, phone')
+                .order('user_id');
+              
+              if (reloadError) {
+                setError(reloadError.message);
+                return;
+              }
+
+              if (ownersData && ownersData.length > 0) {
+                const userIds = ownersData.map(owner => owner.user_id);
+                const { data: usersData, error: usersError } = await supabase
+                  .from('users')
+                  .select('id, full_name, email')
+                  .in('id', userIds);
+
+                if (usersError) {
+                  setError(usersError.message);
+                  return;
+                }
+
+                const combinedData = ownersData.map(owner => {
+                  const user = usersData?.find(u => u.id === owner.user_id);
+                  return {
+                    ...owner,
+                    users: user || null
+                  };
+                });
+
+                setOwners(combinedData);
+              } else {
+                setOwners([]);
+              }
       setEditModalOpen(false);
       setCurrentOwner(null);
     } catch (err: any) {

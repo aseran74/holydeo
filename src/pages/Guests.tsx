@@ -4,11 +4,13 @@ import ImageUploader from "../components/common/ImageUploader";
 import { ListIcon, GridIcon } from "../icons";
 
 interface Guest {
+  id: string;
   user_id: string;
-  full_name: string;
-  email: string;
   phone?: string;
-  photo_url?: string;
+  users?: {
+    full_name?: string;
+    email?: string;
+  };
 }
 
 const Guests = () => {
@@ -27,17 +29,58 @@ const Guests = () => {
 
   const fetchGuests = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('user_id, full_name, email, phone, photo_url, role')
-      .eq('role', 'client');
-    setGuests(data || []);
+    console.log('🔍 Fetching guests...');
+    const { data: guestsData, error } = await supabase
+      .from('guests')
+      .select('id, user_id, phone')
+      .order('user_id');
+    
+    if (error) {
+      console.error('❌ Error fetching guests:', error);
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
+
+    console.log('📊 Guests data:', guestsData);
+
+    // Obtener los datos de usuarios para los huéspedes
+    if (guestsData && guestsData.length > 0) {
+      const userIds = guestsData.map(guest => guest.user_id);
+      console.log('👥 User IDs:', userIds);
+      const { data: usersData, error: usersError } = await supabase
+        .from('users')
+        .select('id, full_name, email')
+        .in('id', userIds);
+
+      if (usersError) {
+        console.error('❌ Error fetching users:', usersError);
+        setError(usersError.message);
+        setLoading(false);
+        return;
+      }
+
+      console.log('👤 Users data:', usersData);
+
+      // Combinar los datos
+      const combinedData = guestsData.map(guest => {
+        const user = usersData?.find(u => u.id === guest.user_id);
+        return {
+          ...guest,
+          users: user || null
+        };
+      });
+
+      console.log('🎯 Combined data:', combinedData);
+      setGuests(combinedData);
+    } else {
+      setGuests([]);
+    }
     setLoading(false);
-    if (error) setError(error.message);
   };
 
   const handleAdd = () => {
-    setEditingGuest({ user_id: '', full_name: '', email: '', phone: '', photo_url: '' });
+    setEditingGuest({ id: '', user_id: '', phone: '' });
     setModalOpen(true);
   };
 
@@ -50,21 +93,19 @@ const Guests = () => {
     if (!editingGuest) return;
     setSaving(true);
     setError(null);
-    let success = false;
     try {
-      if (editingGuest.user_id) {
-        const { error } = await supabase.from('profiles').update({
-          full_name: editingGuest.full_name,
-          email: editingGuest.email,
-          phone: editingGuest.phone,
-          photo_url: editingGuest.photo_url
-        }).eq('user_id', editingGuest.user_id);
+      if (editingGuest.id) {
+        const { error } = await supabase.from('guests').update({
+          phone: editingGuest.phone
+        }).eq('id', editingGuest.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('profiles').insert([{ ...editingGuest, role: 'client', user_id: editingGuest.user_id }]);
+        const { error } = await supabase.from('guests').insert([{
+          user_id: editingGuest.user_id,
+          phone: editingGuest.phone
+        }]);
         if (error) throw error;
       }
-      success = true;
       await fetchGuests();
       setModalOpen(false);
       setEditingGuest(null);
@@ -80,8 +121,8 @@ const Guests = () => {
     : guests.filter((g) => {
         const search = filter.toLowerCase();
         return (
-          (g.full_name && g.full_name.toLowerCase().includes(search)) ||
-          (g.email && g.email.toLowerCase().includes(search)) ||
+          (g.users?.full_name && g.users.full_name.toLowerCase().includes(search)) ||
+          (g.users?.email && g.users.email.toLowerCase().includes(search)) ||
           (g.phone && g.phone.toLowerCase().includes(search))
         );
       });
@@ -118,10 +159,10 @@ const Guests = () => {
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredGuests.map(guest => (
-            <div key={guest.user_id} className="bg-white rounded-xl shadow p-5 text-center flex flex-col items-center">
-              <img src={guest.photo_url || '/images/user/user-01.jpg'} alt="foto" className="w-24 h-24 object-cover rounded-full mb-4" />
-              <h3 className="font-bold text-lg">{guest.full_name || 'Sin nombre'}</h3>
-              <p className="text-sm text-gray-500">{guest.email || 'Sin email'}</p>
+            <div key={guest.id} className="bg-white rounded-xl shadow p-5 text-center flex flex-col items-center">
+              <img src="/images/user/user-01.jpg" alt={guest.users?.full_name || `Huésped ${guest.user_id.slice(0, 8)}`} className="w-24 h-24 object-cover rounded-full mb-4" />
+              <h3 className="font-bold text-lg">{guest.users?.full_name || `Huésped ${guest.user_id.slice(0, 8)}`}</h3>
+              <p className="text-sm text-gray-500">{guest.users?.email || 'Sin email'}</p>
               <p className="text-sm text-gray-500 mt-1">{guest.phone || 'Sin teléfono'}</p>
               <button className="mt-4 text-blue-600 hover:text-blue-800" onClick={() => handleEdit(guest)}>Editar</button>
             </div>
@@ -141,12 +182,12 @@ const Guests = () => {
             </thead>
             <tbody>
               {filteredGuests.map(guest => (
-                <tr key={guest.user_id} className="border-b border-gray-100 hover:bg-gray-50 transition">
+                <tr key={guest.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
                   <td className="px-6 py-3 align-middle">
-                    <img src={guest.photo_url || '/images/user/user-01.jpg'} alt="foto" className="w-10 h-10 object-cover rounded-full" />
+                    <img src="/images/user/user-01.jpg" alt={guest.users?.full_name || `Huésped ${guest.user_id.slice(0, 8)}`} className="w-10 h-10 object-cover rounded-full" />
                   </td>
-                  <td className="px-6 py-3 align-middle">{guest.full_name || 'Sin nombre'}</td>
-                  <td className="px-6 py-3 align-middle">{guest.email || 'Sin email'}</td>
+                  <td className="px-6 py-3 align-middle">{guest.users?.full_name || `Huésped ${guest.user_id.slice(0, 8)}`}</td>
+                  <td className="px-6 py-3 align-middle">{guest.users?.email || 'Sin email'}</td>
                   <td className="px-6 py-3 align-middle">{guest.phone || 'Sin teléfono'}</td>
                   <td className="px-6 py-3 align-middle">
                     <button className="text-blue-600 hover:text-blue-800" onClick={() => handleEdit(guest)}>
@@ -162,30 +203,16 @@ const Guests = () => {
       {modalOpen && editingGuest && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">{editingGuest.user_id ? 'Editar huésped' : 'Añadir huésped'}</h2>
+            <h2 className="text-xl font-bold mb-4">{editingGuest.id ? 'Editar huésped' : 'Añadir huésped'}</h2>
             <div className="space-y-4">
-              <ImageUploader
-                bucketName="profile-photos"
-                initialUrl={editingGuest.photo_url}
-                onUpload={url => setEditingGuest({ ...editingGuest, photo_url: url })}
-                label="Foto de perfil"
-              />
               <div>
-                <label className="block text-sm font-medium">Nombre completo</label>
+                <label className="block text-sm font-medium">ID de Usuario</label>
                 <input
                   type="text"
-                  value={editingGuest.full_name}
-                  onChange={e => setEditingGuest({ ...editingGuest, full_name: e.target.value })}
+                  value={editingGuest.user_id || ''}
+                  onChange={e => setEditingGuest({ ...editingGuest, user_id: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2 mt-1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Email</label>
-                <input
-                  type="email"
-                  value={editingGuest.email}
-                  onChange={e => setEditingGuest({ ...editingGuest, email: e.target.value })}
-                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  placeholder="UUID del usuario"
                 />
               </div>
               <div>
@@ -197,6 +224,13 @@ const Guests = () => {
                   className="w-full border rounded-lg px-3 py-2 mt-1"
                 />
               </div>
+              {editingGuest.users && (
+                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
+                  <div className="font-medium">Información del usuario:</div>
+                  <div>Nombre: {editingGuest.users.full_name}</div>
+                  <div>Email: {editingGuest.users.email}</div>
+                </div>
+              )}
             </div>
             <div className="flex justify-end gap-2 mt-6">
               <button onClick={() => setModalOpen(false)} className="px-4 py-2 bg-gray-400 text-white rounded">Cancelar</button>
