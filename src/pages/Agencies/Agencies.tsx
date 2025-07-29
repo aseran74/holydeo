@@ -6,22 +6,19 @@ import { ListIcon, GridIcon, PencilIcon, EyeIcon, PaperPlaneIcon } from "../../i
 import MessagingModal from "../../components/common/MessagingModal";
 
 interface AgencyProfile {
-  user_id: string;
-  username?: string;
-  full_name?: string;
-  email?: string;
+  id: string;
+  name: string;
+  contact_email?: string;
   phone?: string;
-  photo_url?: string;
-  role?: string;
+  logo_url?: string;
 }
 
 interface AgentProfile {
+  id: string;
   user_id: string;
-  username?: string;
-  full_name?: string;
-  email?: string;
-  phone?: string;
   agency_id?: string;
+  phone?: string;
+  avatar_url?: string;
 }
 
 const Agencies = () => {
@@ -43,9 +40,8 @@ const Agencies = () => {
   const fetchAgencies = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from('profiles')
-      .select('user_id, full_name, email, phone, photo_url, role')
-      .eq('role', 'agency');
+      .from('agencies')
+      .select('id, name, contact_email, phone, logo_url');
     console.log('Agencias data:', data, 'Error:', error);
     setAgencies(data || []);
     setLoading(false);
@@ -53,22 +49,20 @@ const Agencies = () => {
   };
   const fetchAgents = async () => {
     const { data: agentsData, error } = await supabase
-      .from('profiles')
-      .select('user_id, full_name, agency_id')
-      .eq('role', 'agent');
+      .from('agents')
+      .select('id, user_id, agency_id, phone, avatar_url');
     console.log('Agentes data:', agentsData, 'Error:', error);
     setAgents(agentsData || []);
   };
 
-  const getAgentsForAgency = (agencyUserId: string) =>
-    agents.filter((a) => a.agency_id === agencyUserId);
+  const getAgentsForAgency = (agencyId: string) =>
+    agents.filter((a) => a.agency_id === agencyId);
 
   const filteredAgencies = agencies.filter((agency) => {
     const search = filter.toLowerCase();
     return (
-      agency.username?.toLowerCase().includes(search) ||
-      agency.full_name?.toLowerCase().includes(search) ||
-      agency.email?.toLowerCase().includes(search) ||
+      agency.name?.toLowerCase().includes(search) ||
+      agency.contact_email?.toLowerCase().includes(search) ||
       agency.phone?.toLowerCase().includes(search)
     );
   });
@@ -78,24 +72,23 @@ const Agencies = () => {
   };
 
   const handleAddAgency = () => {
-    setSelectedAgency({ user_id: '', username: '', full_name: '', email: '', phone: '', photo_url: '', role: 'agency' });
+    setSelectedAgency({ id: '', name: '', contact_email: '', phone: '', logo_url: '' });
     setEditModalOpen(true);
   };
 
   const handleSaveAgency = async (updated: AgencyProfile) => {
-    if (updated.user_id) {
-      await supabase.from('profiles').update(updated).eq('user_id', updated.user_id);
+    if (updated.id) {
+      await supabase.from('agencies').update(updated).eq('id', updated.id);
     } else {
-      const { data, error } = await supabase.from('profiles').insert([{ ...updated, role: 'agency' }]);
+      const { data, error } = await supabase.from('agencies').insert([updated]);
       if (error) console.error(error);
     }
     setEditModalOpen(false);
     setSelectedAgency(null);
     // Recargar lista
     const { data } = await supabase
-      .from('profiles')
-      .select('user_id, username, full_name, email, phone, photo_url, role')
-      .eq('role', 'agency');
+      .from('agencies')
+      .select('id, name, contact_email, phone, logo_url');
     setAgencies(data || []);
   };
 
@@ -146,13 +139,13 @@ const Agencies = () => {
                 </thead>
                 <tbody>
                   {filteredAgencies.map((agency) => (
-                    <tr key={agency.user_id} className="border-b border-gray-100 hover:bg-gray-50 transition">
+                    <tr key={agency.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
                       <td className="px-6 py-3 align-middle">
-                        <img src={agency.photo_url || '/images/user/user-01.jpg'} alt={agency.username || agency.full_name || 'Agencia'} className="w-12 h-12 object-contain rounded" />
+                        <img src={agency.logo_url || '/images/user/user-01.jpg'} alt={agency.name || 'Agencia'} className="w-12 h-12 object-contain rounded" />
                       </td>
-                      <td className="px-6 py-3 align-middle">{agency.username ? (agency.full_name ? `${agency.username} (${agency.full_name})` : agency.username) : agency.full_name}</td>
+                      <td className="px-6 py-3 align-middle">{agency.name}</td>
                       <td className="px-6 py-3 align-middle">{agency.phone}</td>
-                      <td className="px-6 py-3 align-middle">{agency.email}</td>
+                      <td className="px-6 py-3 align-middle">{agency.contact_email}</td>
                       <td className="px-6 py-3 align-middle flex items-center gap-2">
                         <button className="text-blue-600" onClick={() => setSelectedAgency(agency)}>
                           <EyeIcon className="w-5 h-5"/>
@@ -169,10 +162,10 @@ const Agencies = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredAgencies.map((agency) => (
-                <div key={agency.user_id} className="bg-white rounded-xl shadow p-5 text-center flex flex-col items-center">
-                  <img src={agency.photo_url || '/images/user/user-01.jpg'} alt={agency.username || agency.full_name || 'Agencia'} className="w-24 h-24 object-contain rounded-full mb-4" />
-                  <h3 className="font-bold text-lg">{agency.username ? (agency.full_name ? `${agency.username} (${agency.full_name})` : agency.username) : agency.full_name}</h3>
-                  <p className="text-sm text-gray-500 mt-1">{agency.email}</p>
+                <div key={agency.id} className="bg-white rounded-xl shadow p-5 text-center flex flex-col items-center">
+                  <img src={agency.logo_url || '/images/user/user-01.jpg'} alt={agency.name || 'Agencia'} className="w-24 h-24 object-contain rounded-full mb-4" />
+                  <h3 className="font-bold text-lg">{agency.name}</h3>
+                  <p className="text-sm text-gray-500 mt-1">{agency.contact_email}</p>
                   <p className="text-sm text-gray-500">{agency.phone}</p>
                   <div className="flex items-center gap-4 mt-4">
                     <button className="text-blue-600" onClick={() => setSelectedAgency(agency)}>
@@ -192,24 +185,28 @@ const Agencies = () => {
           <button className="mb-4 text-blue-600 underline" onClick={() => setSelectedAgency(null)}>
             ← Volver al listado
           </button>
-          <h2 className="text-xl font-semibold mb-2">{selectedAgency.username ? (selectedAgency.full_name ? `${selectedAgency.username} (${selectedAgency.full_name})` : selectedAgency.username) : selectedAgency.full_name}</h2>
+          <h2 className="text-xl font-semibold mb-2">{selectedAgency.name}</h2>
           <div className="mb-2">Teléfono: {selectedAgency.phone}</div>
-          <div className="mb-2">Email: {selectedAgency.email}</div>
+          <div className="mb-2">Email: {selectedAgency.contact_email}</div>
           <h3 className="mt-6 mb-2 font-bold">Agentes vinculados</h3>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableCell isHeader>Nombre</TableCell>
-                <TableCell isHeader>Email</TableCell>
+                <TableCell isHeader>ID Agente</TableCell>
                 <TableCell isHeader>Teléfono</TableCell>
+                <TableCell isHeader>Avatar</TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {getAgentsForAgency(selectedAgency.user_id).map((agent) => (
-                <TableRow key={agent.user_id}>
-                  <TableCell>{agent.username ? (agent.full_name ? `${agent.username} (${agent.full_name})` : agent.username) : agent.full_name}</TableCell>
-                  <TableCell>{agent.email}</TableCell>
+              {getAgentsForAgency(selectedAgency.id).map((agent) => (
+                <TableRow key={agent.id}>
+                  <TableCell>{agent.user_id}</TableCell>
                   <TableCell>{agent.phone}</TableCell>
+                  <TableCell>
+                    {agent.avatar_url && (
+                      <img src={agent.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full" />
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -227,38 +224,29 @@ const Agencies = () => {
       {editModalOpen && selectedAgency && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
           <div className="bg-white dark:bg-boxdark rounded-lg shadow-xl p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">{selectedAgency.user_id ? 'Editar Agencia' : 'Añadir Agencia'}</h2>
+            <h2 className="text-xl font-bold mb-4">{selectedAgency.id ? 'Editar Agencia' : 'Añadir Agencia'}</h2>
             <div className="space-y-4">
               <ImageUploader
-                bucketName="profile-photos"
-                initialUrl={selectedAgency.photo_url}
-                onUpload={(url) => setSelectedAgency({ ...selectedAgency, photo_url: url })}
-                label="Foto de la agencia"
+                bucketName="agency-logos"
+                initialUrl={selectedAgency.logo_url}
+                onUpload={(url) => setSelectedAgency({ ...selectedAgency, logo_url: url })}
+                label="Logo de la agencia"
               />
               <div>
-                <label className="block text-sm font-medium">Nombre de usuario</label>
+                <label className="block text-sm font-medium">Nombre de la agencia</label>
                 <input
                   type="text"
-                  value={selectedAgency.username || ''}
-                  onChange={e => setSelectedAgency({ ...selectedAgency, username: e.target.value })}
+                  value={selectedAgency.name || ''}
+                  onChange={e => setSelectedAgency({ ...selectedAgency, name: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2 mt-1"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">Nombre completo</label>
-                <input
-                  type="text"
-                  value={selectedAgency.full_name || ''}
-                  onChange={e => setSelectedAgency({ ...selectedAgency, full_name: e.target.value })}
-                  className="w-full border rounded-lg px-3 py-2 mt-1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Email</label>
+                <label className="block text-sm font-medium">Email de contacto</label>
                 <input
                   type="email"
-                  value={selectedAgency.email || ''}
-                  onChange={e => setSelectedAgency({ ...selectedAgency, email: e.target.value })}
+                  value={selectedAgency.contact_email || ''}
+                  onChange={e => setSelectedAgency({ ...selectedAgency, contact_email: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2 mt-1"
                 />
               </div>
@@ -283,4 +271,5 @@ const Agencies = () => {
   );
 };
 
+export default Agencies; 
 export default Agencies; 

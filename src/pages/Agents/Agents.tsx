@@ -7,12 +7,10 @@ import MessagingModal from "../../components/common/MessagingModal";
 
 interface Agent {
   id: string;
-  name: string;
-  email?: string;
-  phone?: string;
+  user_id: string;
   agency_id?: string;
-  photo_url?: string;
-  role?: string;
+  phone?: string;
+  avatar_url?: string;
 }
 
 interface Agency {
@@ -48,26 +46,15 @@ const Agents = () => {
   const fetchAgents = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from('profiles')
-      .select('user_id, full_name, email, phone, agency_id, role')
-      .eq('role', 'agent');
-    const agents = (data || []).map(a => ({
-      ...a,
-      id: a.user_id,
-      name: a.full_name
-    }));
-    setAgents(agents);
+      .from('agents')
+      .select('id, user_id, agency_id, phone, avatar_url');
+    setAgents(data || []);
     setLoading(false);
     if (error) setError(error.message);
   };
   const fetchAgencies = async () => {
-    const { data: agenciesData } = await supabase.from('profiles').select('user_id, full_name').eq('role', 'agency');
-    const agencies = (agenciesData || []).map(a => ({
-      ...a,
-      id: a.user_id,
-      name: a.full_name
-    }));
-    setAgencies(agencies);
+    const { data: agenciesData } = await supabase.from('agencies').select('id, name');
+    setAgencies(agenciesData || []);
   };
   const fetchProperties = async () => {
     const { data } = await supabase.from("properties").select("id, title, agent_id");
@@ -83,8 +70,7 @@ const Agents = () => {
   const filteredAgents = agents.filter((agent) => {
     const search = filter.toLowerCase();
     return (
-      agent.name?.toLowerCase().includes(search) ||
-      agent.email?.toLowerCase().includes(search) ||
+      agent.user_id?.toLowerCase().includes(search) ||
       agent.phone?.toLowerCase().includes(search)
     );
   });
@@ -95,7 +81,12 @@ const Agents = () => {
   };
 
   const handleSaveAgent = async (updated: Agent) => {
-    await supabase.from('profiles').update(updated).eq('user_id', updated.id);
+    if (updated.id) {
+      await supabase.from('agents').update(updated).eq('id', updated.id);
+    } else {
+      const { data, error } = await supabase.from('agents').insert([updated]);
+      if (error) console.error(error);
+    }
     setEditModalOpen(false);
     setEditAgent(null);
     fetchAgents();
@@ -106,7 +97,7 @@ const Agents = () => {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold self-start">Agentes Inmobiliarios</h1>
         <div className="flex items-center gap-2">
-          <button onClick={() => { setEditAgent({ id: '', name: '', email: '', phone: '', agency_id: '', photo_url: '', role: 'agent' }); setEditModalOpen(true); }} className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">Añadir agente</button>
+          <button onClick={() => { setEditAgent({ id: '', user_id: '', phone: '', agency_id: '', avatar_url: '' }); setEditModalOpen(true); }} className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">Añadir agente</button>
           <input
             type="text"
             placeholder="Filtrar..."
@@ -150,10 +141,10 @@ const Agents = () => {
                   {filteredAgents.map((agent) => (
                     <tr key={agent.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
                       <td className="px-6 py-3 align-middle">
-                        <img src={agent.photo_url || '/images/user/user-01.jpg'} alt={agent.name} className="w-10 h-10 object-cover rounded-full" />
+                        <img src={agent.avatar_url || '/images/user/user-01.jpg'} alt={`Agente ${agent.user_id}`} className="w-10 h-10 object-cover rounded-full" />
                       </td>
-                      <td className="px-6 py-3 align-middle">{agent.name}</td>
-                      <td className="px-6 py-3 align-middle">{agent.email}</td>
+                      <td className="px-6 py-3 align-middle">{agent.user_id}</td>
+                      <td className="px-6 py-3 align-middle">-</td>
                       <td className="px-6 py-3 align-middle">{agent.phone}</td>
                       <td className="px-6 py-3 align-middle">{getAgencyName(agent.agency_id)}</td>
                       <td className="px-6 py-3 align-middle flex items-center gap-2">
@@ -176,9 +167,9 @@ const Agents = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredAgents.map((agent) => (
                 <div key={agent.id} className="bg-white rounded-xl shadow p-5 text-center flex flex-col items-center">
-                  <img src={agent.photo_url || '/images/user/user-01.jpg'} alt={agent.name} className="w-24 h-24 object-cover rounded-full mb-4" />
-                  <h3 className="font-bold text-lg">{agent.name}</h3>
-                  <p className="text-sm text-gray-500">{agent.email}</p>
+                  <img src={agent.avatar_url || '/images/user/user-01.jpg'} alt={`Agente ${agent.user_id}`} className="w-24 h-24 object-cover rounded-full mb-4" />
+                  <h3 className="font-bold text-lg">Agente {agent.user_id.slice(0, 8)}</h3>
+                  <p className="text-sm text-gray-500">ID: {agent.user_id}</p>
                   <p className="text-sm text-gray-500 mt-1">{getAgencyName(agent.agency_id)}</p>
                   <div className="flex items-center gap-4 mt-4">
                     <button className="text-blue-600" onClick={() => setSelectedAgent(agent)}>
@@ -201,8 +192,8 @@ const Agents = () => {
           <button className="mb-4 text-blue-600 underline" onClick={() => setSelectedAgent(null)}>
             ← Volver al listado
           </button>
-          <h2 className="text-xl font-semibold mb-2">{selectedAgent.name}</h2>
-          <div className="mb-2">Email: {selectedAgent.email}</div>
+          <h2 className="text-xl font-semibold mb-2">Agente {selectedAgent.user_id.slice(0, 8)}</h2>
+          <div className="mb-2">ID: {selectedAgent.user_id}</div>
           <div className="mb-2">Teléfono: {selectedAgent.phone}</div>
           <div className="mb-2">Agencia: {getAgencyName(selectedAgent.agency_id)}</div>
           <h3 className="mt-6 mb-2 font-bold">Propiedades que gestiona</h3>
@@ -225,27 +216,19 @@ const Agents = () => {
             <h2 className="text-xl font-bold mb-4">{editAgent.id ? 'Editar Agente' : 'Añadir Agente'}</h2>
             <div className="space-y-4">
               <ImageUploader
-                bucketName="profile-photos"
-                initialUrl={editAgent.photo_url}
-                onUpload={(url) => setEditAgent({ ...editAgent, photo_url: url })}
-                label="Foto del agente"
+                bucketName="agent-avatars"
+                initialUrl={editAgent.avatar_url}
+                onUpload={(url) => setEditAgent({ ...editAgent, avatar_url: url })}
+                label="Avatar del agente"
               />
               <div>
-                <label className="block text-sm font-medium">Nombre completo</label>
+                <label className="block text-sm font-medium">ID de Usuario</label>
                 <input
                   type="text"
-                  value={editAgent.name || ''}
-                  onChange={e => setEditAgent({ ...editAgent, name: e.target.value })}
+                  value={editAgent.user_id || ''}
+                  onChange={e => setEditAgent({ ...editAgent, user_id: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2 mt-1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Email</label>
-                <input
-                  type="email"
-                  value={editAgent.email || ''}
-                  onChange={e => setEditAgent({ ...editAgent, email: e.target.value })}
-                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  placeholder="UUID del usuario"
                 />
               </div>
               <div>
