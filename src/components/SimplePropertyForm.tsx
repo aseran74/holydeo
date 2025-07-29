@@ -390,9 +390,9 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
           </div>
         )}
 
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio entre semana</label>
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio entre semana/día</label>
             <input
               type="number"
               value={precioEntresemana}
@@ -413,16 +413,17 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
               required
             />
           </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio por día</label>
-            <input
-              type="number"
-              value={precioDia}
-              onChange={(e) => setPrecioDia(e.target.value)}
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-              placeholder="€"
-            />
-          </div>
+        </div>
+
+        <div className="mb-4">
+          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio mensual (€)</label>
+          <input
+            type="number"
+            value={precioMes}
+            onChange={(e) => setPrecioMes(e.target.value)}
+            className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+            placeholder="Ej: 1200"
+          />
         </div>
 
         <div className="grid grid-cols-3 gap-4 mb-4">
@@ -478,41 +479,7 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
           </div>
         </div>
 
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Galería de fotos</label>
-          <div
-            className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary-500 transition relative bg-gray-50 dark:bg-gray-700"
-            onClick={() => fileInputRef.current?.click()}
-            onDrop={handleDrop}
-            onDragOver={e => e.preventDefault()}
-          >
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleImageUpload}
-            />
-            <ImageIcon className="w-12 h-12 text-gray-400 mb-2" />
-            <span className="text-gray-500 dark:text-gray-400">Subir imágenes</span>
-            {uploading && <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Subiendo imágenes...</p>}
-            <div className="flex flex-wrap gap-2 mt-4 justify-center">
-              {imagePaths.map((url, idx) => (
-                <div key={idx} className="relative group">
-                  <img src={url} alt="preview" className="w-16 h-16 object-cover rounded shadow" />
-                  <button
-                    type="button"
-                    className="absolute top-0 right-0 bg-white bg-opacity-80 rounded-full p-1 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition"
-                    onClick={e => { e.stopPropagation(); handleRemoveImage(url); }}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+
 
         <div className="mb-4">
           <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Temporadas disponibles</label>
@@ -529,17 +496,6 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
               </label>
             ))}
           </div>
-        </div>
-
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio mensual (€)</label>
-          <input
-            type="number"
-            value={precioMes}
-            onChange={(e) => setPrecioMes(e.target.value)}
-            className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-            placeholder="Ej: 1200"
-          />
         </div>
 
         <div className="mb-4">
