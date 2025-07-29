@@ -42,7 +42,7 @@ const Owners = () => {
           id,
           user_id,
           phone,
-          users!inner (
+          users (
             full_name,
             email
           )
@@ -99,7 +99,7 @@ const Owners = () => {
             id,
             user_id,
             phone,
-            users!inner (
+            users (
               full_name,
               email
             )
