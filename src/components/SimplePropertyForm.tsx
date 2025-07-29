@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { Image as ImageIcon } from 'lucide-react';
 import GooglePlacesAutocomplete from './common/GooglePlacesAutocomplete';
+import AgencySelector from './common/AgencySelector';
+import OwnerSelector from './common/OwnerSelector';
+import AgentSelector from './common/AgentSelector';
 
 interface SimpleProperty {
   id?: string;
@@ -77,6 +80,8 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
   const [destacada, setDestacada] = useState(false);
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
+  const [ownerId, setOwnerId] = useState<string>("");
+  const [agencyId, setAgencyId] = useState<string>("");
   
   // Estados para imágenes
   const [imagePaths, setImagePaths] = useState<string[]>(property?.image_paths || []);
@@ -115,6 +120,8 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
       setDestacada(property.destacada || false);
       setLat(property.lat || null);
       setLng(property.lng || null);
+      setOwnerId(property.owner_id || "");
+      setAgencyId(property.agency_id || "");
       setImagePaths(property.image_paths || []);
     }
   }, [property]);
@@ -261,6 +268,8 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
       tipo,
       region,
       destacada,
+      owner_id: ownerId || null,
+      agency_id: agencyId || null,
     };
     onSave(propertyToSave);
   };
@@ -366,6 +375,20 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Campos de propietario y agencia */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <OwnerSelector
+            value={ownerId}
+            onChange={setOwnerId}
+            placeholder="Seleccionar propietario..."
+          />
+          <AgencySelector
+            value={agencyId}
+            onChange={setAgencyId}
+            placeholder="Seleccionar agencia..."
+          />
         </div>
 
         {/* Campos de dirección que se llenan automáticamente */}
