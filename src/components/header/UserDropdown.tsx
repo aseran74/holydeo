@@ -1,10 +1,4 @@
-import { useState, useEffect } from "react";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../supabaseClient";
-import { User } from "@supabase/supabase-js";
-import LogoutButton from '../common/LogoutButton';
+import { UserButton } from '@clerk/clerk-react';
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
