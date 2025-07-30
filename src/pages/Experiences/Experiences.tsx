@@ -4,7 +4,20 @@ import PageBreadCrumb from '../../components/common/PageBreadCrumb';
 import Button from '../../components/ui/button/Button';
 import { PlusIcon } from '../../icons';
 import ExperienceModal from '../../components/experiences/ExperienceModal';
-import { Experience } from '../../types';
+interface Experience {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  duration: number;
+  location: string;
+  max_guests: number;
+  what_is_included: string;
+  what_is_needed: string;
+  photos: string[];
+  created_at: string;
+}
 
 const Experiences = () => {
   const [experiences, setExperiences] = useState<Experience[]>([]);

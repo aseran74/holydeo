@@ -5,7 +5,20 @@ import Input from '../form/input/InputField';
 import Label from '../form/Label';
 import Select from '../form/Select';
 import TextArea from '../form/input/TextArea';
-import { Experience } from '../../types';
+interface Experience {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  duration: number;
+  location: string;
+  max_guests: number;
+  what_is_included: string;
+  what_is_needed: string;
+  photos: string[];
+  created_at: string;
+}
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { es } from 'date-fns/locale';
@@ -110,19 +123,19 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
           <div className="md:col-span-1 space-y-4">
             <div>
               <Label>Nombre</Label>
-              <Input name="name" value={formData.name} onChange={handleChange} required />
+              <Input name="name" value={formData.name} onChange={(value) => setFormData(prev => ({ ...prev, name: value }))} />
             </div>
             <div>
               <Label>Categoría</Label>
-              <Select name="category" value={formData.category} onChange={handleChange} options={categoryOptions} />
+              <Select name="category" value={formData.category} onChange={(value) => setFormData(prev => ({ ...prev, category: value }))} options={categoryOptions} />
             </div>
             <div>
               <Label>URL Externa</Label>
-              <Input name="external_url" value={formData.external_url} onChange={handleChange} />
+              <Input name="external_url" value={formData.external_url} onChange={(value) => setFormData(prev => ({ ...prev, external_url: value }))} />
             </div>
             <div>
               <Label>Precio (€)</Label>
-              <Input name="price" type="number" value={formData.price} onChange={handleChange} />
+              <Input name="price" type="number" value={formData.price} onChange={(value) => setFormData(prev => ({ ...prev, price: Number(value) }))} />
             </div>
             <div className="flex items-center gap-2">
                 <input
@@ -136,15 +149,15 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
             </div>
             <div>
                 <Label>Descripción</Label>
-                <TextArea name="description" value={formData.description} onChange={handleChange} rows={4}/>
+                <TextArea name="description" value={formData.description} onChange={(value) => setFormData(prev => ({ ...prev, description: value }))} rows={4}/>
             </div>
             <div>
                 <Label>¿Qué entra?</Label>
-                <TextArea name="what_is_included" value={formData.what_is_included} onChange={handleChange} rows={3}/>
+                <TextArea name="what_is_included" value={formData.what_is_included} onChange={(value) => setFormData(prev => ({ ...prev, what_is_included: value }))} rows={3}/>
             </div>
             <div>
                 <Label>¿Qué se necesita?</Label>
-                <TextArea name="what_is_needed" value={formData.what_is_needed} onChange={handleChange} rows={3}/>
+                <TextArea name="what_is_needed" value={formData.what_is_needed} onChange={(value) => setFormData(prev => ({ ...prev, what_is_needed: value }))} rows={3}/>
             </div>
           </div>
           
@@ -152,8 +165,8 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
             <div>
               <Label>Fotos</Label>
               <ImageUploader
-                initialUrls={photos}
-                onUrlsChange={setPhotos}
+                initialUrl={photos.join(',')}
+                onUrlChange={(url) => setPhotos(url ? url.split(',').filter(Boolean) : [])}
                 bucketName="experience-photos"
               />
             </div>

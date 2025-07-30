@@ -231,15 +231,8 @@ const PropertyDetails = () => {
 
   return (
     <>
-      <PageMeta title={`${property.title} - Detalles`} />
-      <PageBreadCrumb 
-        title="Detalles de Propiedad"
-        items={[
-          { label: 'Inicio', path: '/' },
-          { label: 'Propiedades', path: '/properties' },
-          { label: property.title, path: `/properties/${property.id}` }
-        ]}
-      />
+      <PageMeta title={`${property.title} - Detalles`} description={`Detalles completos de la propiedad ${property.title}`} />
+      <PageBreadCrumb pageTitle="Detalles de Propiedad" />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header con navegación */}
@@ -380,7 +373,7 @@ const PropertyDetails = () => {
               </div>
 
               <div className="text-3xl font-bold text-primary-600">
-                {formatPrice(property.price)}
+                {property.price ? formatPrice(property.price) : 'Precio no disponible'}
                 <span className="text-lg font-normal text-gray-500">/mes</span>
               </div>
             </div>

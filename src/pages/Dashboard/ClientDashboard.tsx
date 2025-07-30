@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MessagingModal from '../../components/common/MessagingModal';
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '../../supabaseClient';
 
 interface Booking {
   id: string;
@@ -145,7 +145,7 @@ const ClientDashboard: React.FC = () => {
           <MessagingModal
             recipientId={adminId}
             recipientName={adminName}
-            recipientType="profiles" // O "admin" si tienes un tipo específico
+            recipientType="clients" // O "admin" si tienes un tipo específico
             onClose={() => setOpenAdminModal(false)}
           />
         )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../supabaseClient';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import PropertyCard from './Properties/PropertyCard';
 import ExperienceCard from '../components/experiences/ExperienceCard';
@@ -290,7 +290,7 @@ const ArchivePage: React.FC = () => {
           {isLoaded ? (
             <GoogleMap
               mapContainerStyle={MAP_CONTAINER_STYLE}
-              center={mapCenter}
+              center={mapCenter || { lat: 40.4168, lng: -3.7038 }}
               zoom={filteredResults.length > 0 ? 12 : 5}
             >
               {filteredResults.map((item: any) => (

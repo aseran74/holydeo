@@ -70,11 +70,14 @@ const Owners = () => {
           console.log('👤 Users data:', usersData);
 
                   // Combinar los datos
-          const combinedData = ownersData.map(owner => {
+          const combinedData: Owner[] = ownersData.map(owner => {
             const user = usersData?.find(u => u.id === owner.user_id);
             return {
               ...owner,
-              users: user || null
+              users: user ? {
+                full_name: user.full_name,
+                email: user.email
+              } : undefined
             };
           });
 
@@ -151,11 +154,14 @@ const Owners = () => {
                   return;
                 }
 
-                const combinedData = ownersData.map(owner => {
+                const combinedData: Owner[] = ownersData.map(owner => {
                   const user = usersData?.find(u => u.id === owner.user_id);
                   return {
                     ...owner,
-                    users: user || null
+                    users: user ? {
+                      full_name: user.full_name,
+                      email: user.email
+                    } : undefined
                   };
                 });
 
@@ -190,7 +196,7 @@ const Owners = () => {
 
   return (
     <>
-      <PageMeta title="Propietarios" />
+      <PageMeta title="Propietarios" description="Gestión de propietarios de propiedades" />
       <div className="p-4 md:p-6 2xl:p-10">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
           <h1 className="text-2xl font-bold">Propietarios</h1>

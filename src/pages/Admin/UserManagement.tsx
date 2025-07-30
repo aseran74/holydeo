@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '../../supabaseClient';
 import toast from 'react-hot-toast';
 
 const ROLES = ['admin', 'agency', 'agent', 'owner', 'client', 'guest'];

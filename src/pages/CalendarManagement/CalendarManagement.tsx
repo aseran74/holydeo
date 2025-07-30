@@ -111,7 +111,7 @@ const CalendarManagement = () => {
       />
       <PageBreadcrumb 
         pageTitle={`Gestión de Calendario`} 
-        parentPage="Propiedades"
+        pageTitle="Gestión de Calendario"
         parentPageUrl="/properties"
       />
       

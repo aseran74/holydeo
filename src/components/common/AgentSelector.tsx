@@ -69,7 +69,22 @@ const AgentSelector: React.FC<AgentSelectorProps> = ({
         return;
       }
 
-      setAgents(data || []);
+      // Transformar los datos para que coincidan con el tipo Agent
+      const transformedData: Agent[] = (data || []).map((item: any) => ({
+        id: item.id,
+        user_id: item.user_id,
+        agency_id: item.agency_id,
+        phone: item.phone,
+        avatar_url: item.avatar_url,
+        user: item.user ? {
+          full_name: item.user.full_name,
+          email: item.user.email
+        } : undefined,
+        agency: item.agency ? {
+          name: item.agency.name
+        } : undefined
+      }));
+      setAgents(transformedData);
     } catch (err) {
       console.error('Error fetching agents:', err);
       setError('Error al cargar los agentes');

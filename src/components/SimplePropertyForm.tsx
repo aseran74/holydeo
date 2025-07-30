@@ -4,7 +4,6 @@ import { Image as ImageIcon } from 'lucide-react';
 import GooglePlacesAutocomplete from './common/GooglePlacesAutocomplete';
 import AgencySelector from './common/AgencySelector';
 import OwnerSelector from './common/OwnerSelector';
-import AgentSelector from './common/AgentSelector';
 
 interface SimpleProperty {
   id?: string;
@@ -253,8 +252,8 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
       state,
       postal_code: postalCode,
       country,
-      lat,
-      lng,
+      lat: lat || undefined,
+      lng: lng || undefined,
       amenities,
       meses_temporada: selectedMesesTemporada,
       precio_mes: precioMes ? Number(precioMes) : 0,
@@ -268,8 +267,8 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
       tipo,
       region,
       destacada,
-      owner_id: ownerId || null,
-      agency_id: agencyId || null,
+      owner_id: ownerId || undefined,
+      agency_id: agencyId || undefined,
     };
     onSave(propertyToSave);
   };

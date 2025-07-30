@@ -70,7 +70,7 @@ const MessagesPage: React.FC = () => {
 
   return (
     <>
-      <PageMeta title="Bandeja de Entrada" />
+      <PageMeta title="Bandeja de Entrada" description="Gestión de mensajes y comunicaciones" />
       <div className="p-4 md:p-6 2xl:p-10">
         <h1 className="text-2xl font-bold mb-6">Últimos 10 Mensajes Enviados</h1>
         <div className="bg-white dark:bg-boxdark rounded-lg shadow-md">

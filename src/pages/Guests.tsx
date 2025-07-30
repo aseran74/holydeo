@@ -63,11 +63,14 @@ const Guests = () => {
       console.log('👤 Users data:', usersData);
 
       // Combinar los datos
-      const combinedData = guestsData.map(guest => {
+      const combinedData: Guest[] = guestsData.map(guest => {
         const user = usersData?.find(u => u.id === guest.user_id);
         return {
           ...guest,
-          users: user || null
+          users: user ? {
+            full_name: user.full_name,
+            email: user.email
+          } : undefined
         };
       });
 

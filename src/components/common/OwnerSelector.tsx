@@ -72,11 +72,14 @@ const OwnerSelector: React.FC<OwnerSelectorProps> = ({
         console.log('👤 OwnerSelector: Users data:', usersData);
 
         // Combinar los datos
-        const combinedData = ownersData.map(owner => {
+        const combinedData: Owner[] = ownersData.map(owner => {
           const user = usersData?.find(u => u.id === owner.user_id);
           return {
             ...owner,
-            user: user || null
+            user: user ? {
+              full_name: user.full_name,
+              email: user.email
+            } : undefined
           };
         });
 

@@ -431,27 +431,48 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
   };
 
   const handleExportICal = () => {
-    const events = [
-      ...blockedDates.map(b => ({
-        start: b.date.split('-').map(Number),
-        title: 'Bloqueado',
-        description: `Día bloqueado (${b.source})`,
-        duration: { days: 1 },
-      })),
-      ...specialPrices.map(s => ({
-        start: s.date.split('-').map(Number),
-        title: `Precio especial: €${s.price}`,
-        description: `Precio especial: €${s.price}`,
-        duration: { days: 1 },
-      })),
-      ...bookings.map(b => ({
-        start: b.start_date.split('-').map(Number),
-        title: `Reserva: ${b.guest_name}`,
-        description: `Reserva confirmada`,
-        duration: { days: Math.ceil((new Date(b.end_date).getTime() - new Date(b.start_date).getTime()) / (1000 * 60 * 60 * 24)) },
-      })),
+    // Generar eventos iCal con tipado correcto
+    type IcsEvent = {
+      start: [number, number, number];
+      title: string;
+      description: string;
+      duration: { days: number };
+    };
+    const events: IcsEvent[] = [
+      ...blockedDates.map(b => {
+        const [year, month, day] = b.date.split('-').map(Number);
+        return {
+          start: [year, month, day],
+          title: 'Bloqueo',
+          description: 'Día bloqueado',
+          duration: { days: 1 },
+        };
+      }),
+      ...specialPrices.map(s => {
+        const [year, month, day] = s.date.split('-').map(Number);
+        return {
+          start: [year, month, day],
+          title: `Precio especial: €${s.price}`,
+          description: `Precio especial: €${s.price}`,
+          duration: { days: 1 },
+        };
+      }),
+      ...bookings.map(b => {
+        const [year, month, day] = b.start_date.split('-').map(Number);
+        const startDate = new Date(b.start_date);
+        const endDate = new Date(b.end_date);
+        // Calcular duración en días (mínimo 1)
+        let days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+        if (days < 1) days = 1;
+        return {
+          start: [year, month, day],
+          title: `Reserva: ${b.guest_name || ''}`,
+          description: `Reserva confirmada`,
+          duration: { days },
+        };
+      })
     ];
-    
+
     createEvents(events, (error, value) => {
       if (error) {
         alert('Error exportando iCal');
