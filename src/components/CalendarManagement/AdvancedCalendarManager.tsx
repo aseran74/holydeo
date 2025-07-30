@@ -1,16 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { 
   BoltIcon, 
-  PlugInIcon, 
-  UserIcon, 
-  CalenderIcon, 
-  TrashBinIcon, 
-  PlusIcon
+  PlugInIcon
 } from '../../icons';
 import { createEvents } from 'ics';
+import ICAL from 'ical.js';
 
 interface AdvancedCalendarManagerProps {
   propertyId: string;
@@ -73,7 +70,6 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
   // Estados para selección múltiple
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectionStart, setSelectionStart] = useState<Date | null>(null);
-  const [selectionEnd, setSelectionEnd] = useState<Date | null>(null);
   const [selectedRange, setSelectedRange] = useState<Date[]>([]);
 
   useEffect(() => {
@@ -126,7 +122,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
       if (blocked) setBlockedDates(blocked);
       if (specials) setSpecialPrices(specials);
       if (bookingsData) {
-        setBookings(bookingsData.map(b => ({
+        setBookings(bookingsData.map((b: any) => ({
           ...b,
           guest_name: b.guests?.users?.full_name
         })));
@@ -150,7 +146,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
       if (error) {
         console.error('Error al obtener huéspedes:', error);
       } else if (data) {
-        setGuests(data.map(g => ({
+        setGuests(data.map((g: any) => ({
           id: g.id,
           full_name: g.users?.full_name || 'Sin nombre',
           email: g.users?.email || '',
@@ -201,8 +197,8 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
 
   const getDateRange = (start: Date, end: Date): Date[] => {
     const dates: Date[] = [];
-    const current = new Date(start);
-    const endDate = new Date(end);
+    let current = new Date(start);
+    let endDate = new Date(end);
     
     // Asegurar que start sea la fecha más temprana
     if (current > endDate) {
@@ -634,7 +630,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border">
               <h4 className="font-semibold mb-2 flex items-center gap-2">
-                <DocsIcon className="w-4 h-4" />
+                <PlugInIcon className="w-4 h-4" />
                 Importar iCal
               </h4>
               <label className="btn btn-outline btn-sm w-full cursor-pointer">
@@ -645,7 +641,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
 
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border">
               <h4 className="font-semibold mb-2 flex items-center gap-2">
-                <DownloadIcon className="w-4 h-4" />
+                <BoltIcon className="w-4 h-4" />
                 Exportar iCal
               </h4>
               <button className="btn btn-outline btn-sm w-full" onClick={handleExportICal}>

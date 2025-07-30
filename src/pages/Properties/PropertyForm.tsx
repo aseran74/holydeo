@@ -1,23 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../supabaseClient';
 import { 
-  Bed, 
-  Bath, 
-  Users, 
   MapPin, 
   Calendar, 
   Star, 
   Wifi, 
   Car, 
-  Tree, 
-  Utensils, 
-  Dumbbell, 
-  Coffee, 
   Phone, 
   Mail, 
   ExternalLink,
   Building,
-  User,
   BedDouble,
   Building2,
   CalendarDays,
@@ -30,7 +22,8 @@ import {
   Sun,
   Moon,
   Mountain,
-  MapPinIcon
+  MapPinIcon,
+  Image as ImageIcon
 } from 'lucide-react';
 import { useJsApiLoader, Autocomplete, GoogleMap, Marker } from "@react-google-maps/api";
 import PropertyCalendarManager from './PropertyCalendarManager';
@@ -83,16 +76,16 @@ interface PropertyFormProps {
 const libraries = ["places"];
 
 const AMENITIES = [
-  { label: "Piscina", value: "Piscina", icon: WavesLadder },
-  { label: "Jardín", value: "Jardín", icon: TreePalm },
+  { label: "Piscina", value: "Piscina", icon: Waves },
+  { label: "Jardín", value: "Jardín", icon: TreePine },
   { label: "Garaje", value: "Garaje", icon: Car },
   { label: "Terraza", value: "Terraza", icon: Sun },
-  { label: "Aire Acond.", value: "Aire Acond.", icon: Snowflake },
-  { label: "Ascensor", value: "Ascensor", icon: MoveUpRight },
-  { label: "Trastero", value: "Trastero", icon: Box },
+  { label: "Aire Acondicionado", value: "Aire Acondicionado", icon: Snowflake },
+  { label: "Ascensor", value: "Ascensor", icon: Building2 },
+  { label: "Trastero", value: "Trastero", icon: Building },
   { label: "Vistas al mar", value: "Vistas al mar", icon: Waves },
-  { label: "Accesible", value: "Accesible", icon: Accessibility },
-  { label: "Lujo", value: "Lujo", icon: Gem },
+  { label: "Accesible", value: "Accesible", icon: Building },
+  { label: "Lujo", value: "Lujo", icon: Star },
   { label: "Obra nueva", value: "Obra nueva", icon: Building2 },
 ];
 
