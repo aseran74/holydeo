@@ -151,7 +151,7 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
       const file = files[i];
       const fileExt = file.name.split('.').pop();
       const filePath = `property_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-      const { data, error } = await supabase.storage.from('property-images').upload(filePath, file);
+      const { error } = await supabase.storage.from('property-images').upload(filePath, file);
       if (error) {
         alert('Error subiendo imagen: ' + error.message);
         continue;

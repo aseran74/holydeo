@@ -286,7 +286,7 @@ const ArchivePage: React.FC = () => {
           {isLoaded ? (
             <GoogleMap
               mapContainerStyle={MAP_CONTAINER_STYLE}
-              center={mapCenter && mapCenter.lat && mapCenter.lng ? mapCenter : { lat: 40.4168, lng: -3.7038 }}
+              center={{ lat: mapCenter?.lat ?? 40.4168, lng: mapCenter?.lng ?? -3.7038 }}
               zoom={filteredResults.length > 0 ? 12 : 5}
             >
               {filteredResults.map((item: any) => (

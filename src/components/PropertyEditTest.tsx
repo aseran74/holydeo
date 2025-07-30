@@ -34,12 +34,12 @@ export default function PropertyEditTest() {
         .select();
       
       if (error) {
-        setTestResults(prev => ({
+        setTestResults((prev: any) => ({
           ...prev,
           [property.id]: { success: false, error: error.message }
         }));
       } else {
-        setTestResults(prev => ({
+        setTestResults((prev: any) => ({
           ...prev,
           [property.id]: { success: true, data }
         }));
@@ -56,8 +56,8 @@ export default function PropertyEditTest() {
             .eq('id', property.id);
         }, 2000);
       }
-    } catch (err) {
-      setTestResults(prev => ({
+    } catch (err: any) {
+      setTestResults((prev: any) => ({
         ...prev,
         [property.id]: { success: false, error: err.message }
       }));

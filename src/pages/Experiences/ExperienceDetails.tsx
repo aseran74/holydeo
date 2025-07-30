@@ -74,11 +74,7 @@ const ExperienceDetails: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-6 2xl:p-10">
-      <PageBreadCrumb
-        pageName={experience.name}
-        parentPage="Experiencias"
-        parentPath="/archivo"
-      />
+      <PageBreadCrumb pageTitle={experience.name} />
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Columna Izquierda: Galería y Descripción */}

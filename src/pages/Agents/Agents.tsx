@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
-import { Table, TableHeader, TableBody, TableRow, TableCell } from "../../components/ui/table";
 import ImageUploader from '../../components/common/ImageUploader';
 import { ListIcon, GridIcon, PencilIcon, EyeIcon, PaperPlaneIcon } from "../../icons";
 import MessagingModal from "../../components/common/MessagingModal";
@@ -34,8 +33,6 @@ const Agents = () => {
   const [editAgent, setEditAgent] = useState<Agent | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [messagingAgent, setMessagingAgent] = useState<Agent | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAgents();
@@ -44,13 +41,11 @@ const Agents = () => {
   }, []);
 
   const fetchAgents = async () => {
-    setLoading(true);
     const { data, error } = await supabase
       .from('agents')
       .select('id, user_id, agency_id, phone, avatar_url');
     setAgents(data || []);
-    setLoading(false);
-    if (error) setError(error.message);
+    if (error) console.error(error);
   };
   const fetchAgencies = async () => {
     const { data: agenciesData } = await supabase.from('agencies').select('id, name');
@@ -75,16 +70,11 @@ const Agents = () => {
     );
   });
 
-  const handleEditAgent = (agent: Agent) => {
-    setEditAgent(agent);
-    setEditModalOpen(true);
-  };
-
   const handleSaveAgent = async (updated: Agent) => {
     if (updated.id) {
       await supabase.from('agents').update(updated).eq('id', updated.id);
     } else {
-      const { data, error } = await supabase.from('agents').insert([updated]);
+      const { error } = await supabase.from('agents').insert([updated]);
       if (error) console.error(error);
     }
     setEditModalOpen(false);
@@ -262,7 +252,7 @@ const Agents = () => {
       {messagingAgent && (
         <MessagingModal
           recipientId={messagingAgent.id}
-          recipientName={messagingAgent.name}
+          recipientName={messagingAgent.user_id}
           recipientType="real_estate_agents"
           onClose={() => setMessagingAgent(null)}
         />

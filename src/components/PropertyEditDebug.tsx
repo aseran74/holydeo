@@ -4,7 +4,6 @@ import { supabase } from '../supabaseClient';
 export default function PropertyEditDebug() {
   const [testResults, setTestResults] = useState<any>({});
   const [loading, setLoading] = useState(false);
-  const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [properties, setProperties] = useState<any[]>([]);
 
   const fetchProperties = async () => {
@@ -30,12 +29,12 @@ export default function PropertyEditDebug() {
         .select();
       
       if (error) {
-        setTestResults(prev => ({
+        setTestResults((prev: any) => ({
           ...prev,
           update: { success: false, error: error.message, property: property.id }
         }));
       } else {
-        setTestResults(prev => ({
+        setTestResults((prev: any) => ({
           ...prev,
           update: { success: true, data, property: property.id }
         }));
@@ -46,8 +45,8 @@ export default function PropertyEditDebug() {
           .update({ title: property.title })
           .eq('id', property.id);
       }
-    } catch (err) {
-      setTestResults(prev => ({
+    } catch (err: any) {
+      setTestResults((prev: any) => ({
         ...prev,
         update: { success: false, error: err.message, property: property.id }
       }));
@@ -74,12 +73,12 @@ export default function PropertyEditDebug() {
       const { data, error } = await supabase.from('properties').insert(testProperty).select();
       
       if (error) {
-        setTestResults(prev => ({
+        setTestResults((prev: any) => ({
           ...prev,
           create: { success: false, error: error.message }
         }));
       } else {
-        setTestResults(prev => ({
+        setTestResults((prev: any) => ({
           ...prev,
           create: { success: true, data }
         }));
@@ -89,8 +88,8 @@ export default function PropertyEditDebug() {
           await supabase.from('properties').delete().eq('id', data[0].id);
         }
       }
-    } catch (err) {
-      setTestResults(prev => ({
+    } catch (err: any) {
+      setTestResults((prev: any) => ({
         ...prev,
         create: { success: false, error: err.message }
       }));

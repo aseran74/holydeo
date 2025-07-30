@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
-import { ListIcon, GridIcon, PencilIcon, EyeIcon } from "../../icons";
+import { ListIcon, GridIcon, PencilIcon } from "../../icons";
 
 interface Booking {
   id: string;
@@ -52,14 +52,6 @@ const Bookings = () => {
   const handleEditBooking = (booking: Booking) => {
     setEditBooking(booking);
     setEditModalOpen(true);
-  };
-
-  const handleSaveBooking = async (updated: Booking) => {
-    // Logic to save booking
-    console.log("Saving booking:", updated);
-    setEditModalOpen(false);
-    setEditBooking(null);
-    fetchData();
   };
 
   const getStatusChip = (status: string) => {

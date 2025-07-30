@@ -81,11 +81,6 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
     }
   }, [experience]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
@@ -134,7 +129,7 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
             </div>
             <div>
               <Label>Categoría</Label>
-              <Select value={formData.category} onChange={(value) => setFormData(prev => ({ ...prev, category: value }))} options={categoryOptions} />
+              <Select onChange={(value) => setFormData(prev => ({ ...prev, category: value }))} options={categoryOptions} />
             </div>
             <div>
               <Label>URL Externa</Label>
@@ -142,7 +137,7 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
             </div>
             <div>
               <Label>Precio (€)</Label>
-              <Input name="price" type="number" value={formData.price} onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))} />
+              <Input name="price" type="number" value={formData.price} onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))} />
             </div>
             <div className="flex items-center gap-2">
                 <input
@@ -156,15 +151,15 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
             </div>
             <div>
                 <Label>Descripción</Label>
-                <TextArea name="description" value={formData.description} onChange={(value) => setFormData(prev => ({ ...prev, description: value }))} rows={4}/>
+                <TextArea value={formData.description} onChange={(value) => setFormData(prev => ({ ...prev, description: value }))} rows={4}/>
             </div>
             <div>
                 <Label>¿Qué entra?</Label>
-                <TextArea name="what_is_included" value={formData.what_is_included} onChange={(value) => setFormData(prev => ({ ...prev, what_is_included: value }))} rows={3}/>
+                <TextArea value={formData.what_is_included} onChange={(value) => setFormData(prev => ({ ...prev, what_is_included: value }))} rows={3}/>
             </div>
             <div>
                 <Label>¿Qué se necesita?</Label>
-                <TextArea name="what_is_needed" value={formData.what_is_needed} onChange={(value) => setFormData(prev => ({ ...prev, what_is_needed: value }))} rows={3}/>
+                <TextArea value={formData.what_is_needed} onChange={(value) => setFormData(prev => ({ ...prev, what_is_needed: value }))} rows={3}/>
             </div>
           </div>
           
@@ -173,8 +168,8 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
               <Label>Fotos</Label>
               <ImageUploader
                 initialUrl={photos.join(',')}
-                onUrlChange={(url) => setPhotos(url ? url.split(',').filter(Boolean) : [])}
-                bucketName="experience-photos"
+                onUpload={(url: string) => setPhotos(url ? url.split(',').filter(Boolean) : [])}
+                bucketName="experience-images"
               />
             </div>
             <div>

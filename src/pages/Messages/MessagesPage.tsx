@@ -60,7 +60,7 @@ const MessagesPage: React.FC = () => {
     fetchMessages();
   }, []);
 
-  const getRecipientLink = (type: string, id: string) => {
+  const getRecipientLink = (type: string) => {
     if (type === 'agents') return `/agents`;
     if (type === 'agencies') return `/agencies`;
     if (type === 'owners') return `/owners`;
@@ -82,7 +82,7 @@ const MessagesPage: React.FC = () => {
                 <li key={msg.id} className="p-4 hover:bg-gray-50 dark:hover:bg-meta-4">
                   <div className="flex justify-between text-sm mb-2">
                     <p className="font-semibold">
-                      De: {msg.sender_name} a <Link to={getRecipientLink(msg.recipient_type, msg.recipient_id)} className="text-blue-600 hover:underline">{msg.recipient_name}</Link>
+                      De: {msg.sender_name} a <Link to={getRecipientLink(msg.recipient_type)} className="text-blue-600 hover:underline">{msg.recipient_name}</Link>
                     </p>
                     <p className="text-gray-500">{new Date(msg.created_at).toLocaleString()}</p>
                   </div>

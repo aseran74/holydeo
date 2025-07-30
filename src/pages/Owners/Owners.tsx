@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
-import ImageUploader from "../../components/common/ImageUploader";
 import { ListIcon, GridIcon, PencilIcon, PaperPlaneIcon } from "../../icons";
 import PageMeta from "../../components/common/PageMeta";
 import MessagingModal from "../../components/common/MessagingModal";
@@ -15,27 +14,19 @@ interface Owner {
   };
 }
 
-interface Property {
-  id: string;
-  title: string;
-  owner_id: string;
-}
-
 const Owners = () => {
   const [owners, setOwners] = useState<Owner[]>([]);
-  const [properties, setProperties] = useState<Property[]>([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentOwner, setCurrentOwner] = useState<Owner | null>(null);
   const [filter, setFilter] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [messagingOwner, setMessagingOwner] = useState<Owner | null>(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
           const fetchOwners = async () => {
-        setLoading(true);
+        setError(null);
         console.log('🔍 Fetching owners...');
         const { data: ownersData, error } = await supabase
           .from('owners')
@@ -45,7 +36,6 @@ const Owners = () => {
               if (error) {
           console.error('❌ Error fetching owners:', error);
           setError(error.message);
-          setLoading(false);
           return;
         }
 
@@ -63,7 +53,6 @@ const Owners = () => {
                   if (usersError) {
             console.error('❌ Error fetching users:', usersError);
             setError(usersError.message);
-            setLoading(false);
             return;
           }
 
@@ -86,32 +75,12 @@ const Owners = () => {
       } else {
         setOwners([]);
       }
-      setOwners(data || []);
-      setLoading(false);
-      if (error) setError(error.message);
     };
     fetchOwners();
   }, []);
 
   const handleEdit = (owner: Owner) => {
     setCurrentOwner({ ...owner });
-    setEditModalOpen(true);
-  };
-
-  const handleSave = async () => {
-    if (!currentOwner) return;
-    const { id, ...updates } = currentOwner;
-    const { error } = await supabase.from("owners").update(updates).eq("id", id);
-    if (error) {
-      console.error("Error updating owner:", error);
-    } else {
-      setEditModalOpen(false);
-      fetchOwners();
-    }
-  };
-
-  const handleAddOwner = () => {
-    setCurrentOwner({ id: '', user_id: '', phone: '' });
     setEditModalOpen(true);
   };
 
@@ -188,9 +157,9 @@ const Owners = () => {
   });
 
   const getOwnerProperties = (ownerId: string) => {
-    return properties
-      .filter((p) => p.owner_id === ownerId)
-      .map((p) => p.title)
+    return owners
+      .filter((p) => p.user_id === ownerId)
+      .map((p) => p.users?.full_name || `Propietario ${p.user_id.slice(0, 8)}`)
       .join(", ");
   };
 
@@ -201,7 +170,10 @@ const Owners = () => {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
           <h1 className="text-2xl font-bold">Propietarios</h1>
           <div className="flex items-center gap-2">
-            <button onClick={handleAddOwner} className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">Añadir propietario</button>
+            <button onClick={() => {
+              setCurrentOwner({ id: '', user_id: '', phone: '' });
+              setEditModalOpen(true);
+            }} className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">Añadir propietario</button>
             <input
               type="text"
               placeholder="Buscar propietario..."
@@ -271,7 +243,7 @@ const Owners = () => {
                       <td className="px-4 py-3">{owner.users?.email}</td>
                       <td className="px-4 py-3">{owner.phone}</td>
                       <td className="px-4 py-3">
-                        {getOwnerProperties(owner.id) || "Sin propiedades"}
+                        {getOwnerProperties(owner.user_id) || "Sin propiedades"}
                       </td>
                       <td className="px-4 py-3">
                         <button
@@ -313,7 +285,7 @@ const Owners = () => {
                     Propiedades
                   </h4>
                   <p className="text-xs text-gray-600">
-                    {getOwnerProperties(owner.id) || "Sin propiedades"}
+                    {getOwnerProperties(owner.user_id) || "Sin propiedades"}
                   </p>
                 </div>
                 <button

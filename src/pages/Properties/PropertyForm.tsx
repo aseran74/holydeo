@@ -4,19 +4,11 @@ import {
   Star, 
   Car, 
   Building,
-  BedDouble,
   Building2,
-  CalendarDays,
   Waves,
   Snowflake,
-  UtensilsCrossed,
-  ParkingSquare,
-  Tv,
   TreePine,
   Sun,
-  Moon,
-  Mountain,
-  MapPinIcon,
   Image as ImageIcon
 } from 'lucide-react';
 import { useJsApiLoader, Autocomplete, GoogleMap, Marker } from "@react-google-maps/api";
@@ -247,7 +239,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
       const file = files[i];
       const fileExt = file.name.split('.').pop();
       const filePath = `property_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-      const { data, error } = await supabase.storage.from('property-images').upload(filePath, file);
+      const { error } = await supabase.storage.from('property-images').upload(filePath, file);
       if (error) {
         alert('Error subiendo imagen: ' + error.message);
         continue;

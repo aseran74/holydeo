@@ -70,7 +70,6 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
   // Estados para selección múltiple
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectionStart, setSelectionStart] = useState<Date | null>(null);
-  const [selectionEnd, setSelectionEnd] = useState<Date | null>(null);
   const [selectedRange, setSelectedRange] = useState<Date[]>([]);
 
   useEffect(() => {
@@ -184,11 +183,9 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
       if (!isSelecting) {
         setIsSelecting(true);
         setSelectionStart(date);
-        setSelectionEnd(date);
         setSelectedRange([date]);
       } else {
         setIsSelecting(false);
-        setSelectionEnd(date);
         const range = getDateRange(selectionStart!, date);
         setSelectedRange(range);
         setShowModal(true);

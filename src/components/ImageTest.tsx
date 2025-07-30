@@ -24,7 +24,7 @@ const ImageTest: React.FC = () => {
                 onError={(e) => {
                   console.log(`Error loading image ${index + 1}:`, url);
                   e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling!.style.display = 'flex';
+                  (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
                 }}
                 onLoad={() => {
                   console.log(`Image ${index + 1} loaded successfully:`, url);

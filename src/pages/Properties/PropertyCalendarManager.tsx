@@ -191,13 +191,13 @@ const PropertyCalendarManager: React.FC<PropertyCalendarManagerProps> = ({ prope
   const handleExportICal = () => {
     const events = [
       ...blockedDates.map(b => ({
-        start: b.date.split('-').map(Number),
+        start: [parseInt(b.date.split('-')[0]), parseInt(b.date.split('-')[1]), parseInt(b.date.split('-')[2])] as [number, number, number],
         title: 'Bloqueado',
         description: 'Día bloqueado',
         duration: { days: 1 },
       })),
       ...specialPrices.map(s => ({
-        start: s.date.split('-').map(Number),
+        start: [parseInt(s.date.split('-')[0]), parseInt(s.date.split('-')[1]), parseInt(s.date.split('-')[2])] as [number, number, number],
         title: `Precio especial: €${s.price}`,
         description: `Precio especial para este día: €${s.price}`,
         duration: { days: 1 },

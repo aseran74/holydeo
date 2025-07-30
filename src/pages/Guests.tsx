@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import ImageUploader from "../components/common/ImageUploader";
 import { ListIcon, GridIcon } from "../icons";
 
 interface Guest {

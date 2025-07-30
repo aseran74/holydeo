@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "../../components/ui/table";
 import ImageUploader from '../../components/common/ImageUploader';
-import { ListIcon, GridIcon, PencilIcon, EyeIcon, PaperPlaneIcon } from "../../icons";
+import { ListIcon, GridIcon, PencilIcon, EyeIcon } from "../../icons";
 import MessagingModal from "../../components/common/MessagingModal";
 
 interface AgencyProfile {
@@ -23,14 +23,11 @@ interface AgentProfile {
 
 const Agencies = () => {
   const [agencies, setAgencies] = useState<AgencyProfile[]>([]);
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [messagingAgency, setMessagingAgency] = useState<AgencyProfile | null>(null);
+  const [filter, setFilter] = useState('');
   const [selectedAgency, setSelectedAgency] = useState<AgencyProfile | null>(null);
   const [agents, setAgents] = useState<AgentProfile[]>([]);
-  const [filter, setFilter] = useState("");
-  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
-  const [messagingAgency, setMessagingAgency] = useState<AgencyProfile | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [editModalOpen, setEditModalOpen] = useState(false);
 
   useEffect(() => {
     fetchAgencies();
@@ -38,14 +35,12 @@ const Agencies = () => {
   }, []);
 
   const fetchAgencies = async () => {
-    setLoading(true);
     const { data, error } = await supabase
       .from('agencies')
       .select('id, name, contact_email, phone, logo_url');
     console.log('Agencias data:', data, 'Error:', error);
     setAgencies(data || []);
-    setLoading(false);
-    if (error) setError(error.message);
+    if (error) console.error(error);
   };
   const fetchAgents = async () => {
     const { data: agentsData, error } = await supabase
@@ -67,23 +62,17 @@ const Agencies = () => {
     );
   });
 
-  const handleEditAgency = (agency: AgencyProfile) => {
-    setSelectedAgency(agency);
-  };
-
   const handleAddAgency = () => {
     setSelectedAgency({ id: '', name: '', contact_email: '', phone: '', logo_url: '' });
-    setEditModalOpen(true);
   };
 
   const handleSaveAgency = async (updated: AgencyProfile) => {
     if (updated.id) {
       await supabase.from('agencies').update(updated).eq('id', updated.id);
     } else {
-      const { data, error } = await supabase.from('agencies').insert([updated]);
+      const { error } = await supabase.from('agencies').insert([updated]);
       if (error) console.error(error);
     }
-    setEditModalOpen(false);
     setSelectedAgency(null);
     // Recargar lista
     const { data } = await supabase
@@ -150,7 +139,7 @@ const Agencies = () => {
                         <button className="text-blue-600" onClick={() => setSelectedAgency(agency)}>
                           <EyeIcon className="w-5 h-5"/>
                         </button>
-                        <button className="text-green-600" onClick={() => { setSelectedAgency(agency); setEditModalOpen(true); }}>
+                        <button className="text-green-600" onClick={() => { setSelectedAgency(agency); }}>
                           <PencilIcon className="w-5 h-5"/>
                         </button>
                       </td>
@@ -171,7 +160,7 @@ const Agencies = () => {
                     <button className="text-blue-600" onClick={() => setSelectedAgency(agency)}>
                       <EyeIcon className="w-6 h-6"/>
                     </button>
-                    <button className="text-green-600" onClick={() => { setSelectedAgency(agency); setEditModalOpen(true); }}>
+                    <button className="text-green-600" onClick={() => { setSelectedAgency(agency); }}>
                       <PencilIcon className="w-6 h-6"/>
                     </button>
                   </div>
@@ -215,13 +204,13 @@ const Agencies = () => {
       )}
       {messagingAgency && (
         <MessagingModal
-          recipientId={messagingAgency.user_id}
-          recipientName={messagingAgency.username || messagingAgency.full_name || 'Agencia'}
+          recipientId={messagingAgency.id}
+          recipientName={messagingAgency.name}
           recipientType="agencies"
           onClose={() => setMessagingAgency(null)}
         />
       )}
-      {editModalOpen && selectedAgency && (
+      {selectedAgency && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
           <div className="bg-white dark:bg-boxdark rounded-lg shadow-xl p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">{selectedAgency.id ? 'Editar Agencia' : 'Añadir Agencia'}</h2>
@@ -261,7 +250,7 @@ const Agencies = () => {
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-6">
-              <button onClick={() => setEditModalOpen(false)} className="px-4 py-2 bg-gray-400 text-white rounded">Cancelar</button>
+              <button onClick={() => setSelectedAgency(null)} className="px-4 py-2 bg-gray-400 text-white rounded">Cancelar</button>
               <button onClick={() => handleSaveAgency(selectedAgency)} className="px-4 py-2 bg-blue-600 text-white rounded">Guardar</button>
             </div>
           </div>

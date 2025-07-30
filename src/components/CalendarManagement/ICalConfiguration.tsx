@@ -29,7 +29,6 @@ type ICalConfig = {
 
 const ICalConfiguration: React.FC<ICalConfigurationProps> = ({ 
   propertyId, 
-  propertyName = "Propiedad" 
 }) => {
   const [configs, setConfigs] = useState<ICalConfig[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);

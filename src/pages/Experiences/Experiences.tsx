@@ -57,9 +57,7 @@ const Experiences = () => {
 
   return (
     <div className="p-4">
-      <PageBreadCrumb
-        crumbs={[{ label: 'Dashboard', path: '/dashboard' }, { label: 'Experiencias' }]}
-      />
+      <PageBreadCrumb pageTitle="Experiencias" />
 
       <div className="flex justify-end mb-4">
         <Button onClick={() => handleOpenModal()}>
