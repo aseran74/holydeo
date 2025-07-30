@@ -18,6 +18,7 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import LandingPage from "./pages/Landing/LandingPage";
 
 // Importar las páginas del proyecto
 import Properties from "./pages/Properties/Properties";
@@ -43,10 +44,14 @@ export default function App() {
       <Router>
         <ScrollToTop />
         <Routes>
+          {/* Landing Page - Sin Layout */}
+          <Route index path="/" element={<LandingPage />} />
+
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
-            <Route index path="/" element={<Home />} />
-
+            {/* Dashboard */}
+            <Route path="/dashboard" element={<Home />} />
+            
             {/* Propiedades y Gestión */}
             <Route path="/properties" element={<Properties />} />
             <Route path="/properties/:id" element={<PropertyDetails />} />

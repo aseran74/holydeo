@@ -5,27 +5,7 @@ import Input from '../form/input/InputField';
 import Label from '../form/Label';
 import Select from '../form/Select';
 import TextArea from '../form/input/TextArea';
-interface Experience {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  duration: number;
-  location: string;
-  max_guests: number;
-  what_is_included: string;
-  what_is_needed: string;
-  photos: string[];
-  created_at: string;
-  external_url?: string;
-  featured?: boolean;
-  recurring_dates?: {
-    type: string;
-    dates: string[];
-    days: string[];
-  };
-}
+import { Experience } from '../../types';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { es } from 'date-fns/locale';
@@ -56,7 +36,7 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
   useEffect(() => {
     if (experience) {
       setFormData({
-        name: experience.name || '',
+        name: experience.title || '',
         category: experience.category || 'Actividad Turística',
         external_url: experience.external_url || '',
         price: experience.price?.toString() || '',
@@ -125,7 +105,7 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
           <div className="md:col-span-1 space-y-4">
             <div>
               <Label>Nombre</Label>
-              <Input name="name" value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} />
+              <Input name="title" value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} />
             </div>
             <div>
               <Label>Categoría</Label>

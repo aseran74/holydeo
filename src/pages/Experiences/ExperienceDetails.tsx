@@ -74,7 +74,7 @@ const ExperienceDetails: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-6 2xl:p-10">
-      <PageBreadCrumb pageTitle={experience.name} />
+              <PageBreadCrumb pageTitle={experience.title} />
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Columna Izquierda: Galería y Descripción */}
@@ -82,12 +82,12 @@ const ExperienceDetails: React.FC = () => {
           {/* Galería de Imágenes */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
             <div className="h-96 mb-4 rounded-lg overflow-hidden">
-                <img src={mainImage} alt={experience.name} className="w-full h-full object-cover"/>
+                <img src={mainImage} alt={experience.title} className="w-full h-full object-cover"/>
             </div>
             <div className="flex space-x-2 overflow-x-auto">
               {experience.photos?.map((photo: string, index: number) => (
                 <button key={index} onClick={() => setSelectedImage(photo)} className={`w-24 h-24 rounded-md overflow-hidden border-2 ${selectedImage === photo ? 'border-blue-500' : 'border-transparent'}`}>
-                  <img src={photo} alt={`${experience.name} ${index + 1}`} className="w-full h-full object-cover"/>
+                  <img src={photo} alt={`${experience.title} ${index + 1}`} className="w-full h-full object-cover"/>
                 </button>
               ))}
             </div>
@@ -95,7 +95,7 @@ const ExperienceDetails: React.FC = () => {
           
           {/* Descripción y Detalles */}
           <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">{experience.name}</h1>
+            <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">{experience.title}</h1>
             <p className="text-md text-primary font-semibold mb-4 flex items-center">
               <Tag className="w-5 h-5 mr-2" />{experience.category}
             </p>

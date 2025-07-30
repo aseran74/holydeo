@@ -4,20 +4,7 @@ import PageBreadCrumb from '../../components/common/PageBreadCrumb';
 import Button from '../../components/ui/button/Button';
 import { PlusIcon } from '../../icons';
 import ExperienceModal from '../../components/experiences/ExperienceModal';
-interface Experience {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  duration: number;
-  location: string;
-  max_guests: number;
-  what_is_included: string;
-  what_is_needed: string;
-  photos: string[];
-  created_at: string;
-}
+import { Experience } from '../../types';
 
 const Experiences = () => {
   const [experiences, setExperiences] = useState<Experience[]>([]);
@@ -83,7 +70,7 @@ const Experiences = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {experiences.map((exp) => (
                   <tr key={exp.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">{exp.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{exp.title}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{exp.category}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{exp.price ? `${exp.price}€` : 'No especificado'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
