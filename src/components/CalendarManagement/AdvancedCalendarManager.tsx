@@ -1,21 +1,16 @@
-import { useEffect, useState, useRef } from "react";
-import Calendar from "react-calendar";
-import 'react-calendar/dist/Calendar.css';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../supabaseClient';
-import ICAL from 'ical.js';
-import { createEvents } from 'ics';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import { 
-  LockIcon, 
-  DollarLineIcon, 
-  DocsIcon, 
-  DownloadIcon, 
+  BoltIcon, 
+  PlugInIcon, 
   UserIcon, 
-  CalenderIcon,
-  PlugInIcon,
-  BoltIcon,
-  TrashBinIcon,
+  CalenderIcon, 
+  TrashBinIcon, 
   PlusIcon
 } from '../../icons';
+import { createEvents } from 'ics';
 
 interface AdvancedCalendarManagerProps {
   propertyId: string;
@@ -74,8 +69,6 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
   const [specialPriceData, setSpecialPriceData] = useState({
     price: ''
   });
-  const [icalUrl, setIcalUrl] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Estados para selección múltiple
   const [isSelecting, setIsSelecting] = useState(false);
@@ -222,25 +215,6 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
     }
     
     return dates;
-  };
-
-  const handleMouseEnter = (date: Date) => {
-    if (isSelecting && selectionStart) {
-      setSelectionEnd(date);
-      const range = getDateRange(selectionStart, date);
-      setSelectedRange(range);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (isSelecting) {
-      setIsSelecting(false);
-      if (selectionStart && selectionEnd) {
-        const range = getDateRange(selectionStart, selectionEnd);
-        setSelectedRange(range);
-        setShowModal(true);
-      }
-    }
   };
 
   const handleBlockDay = async () => {

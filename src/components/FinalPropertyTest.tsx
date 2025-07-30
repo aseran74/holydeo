@@ -32,12 +32,12 @@ export default function FinalPropertyTest() {
           .select();
         
         if (error) {
-          setTestResults(prev => ({
+          setTestResults((prev: any) => ({
             ...prev,
             update: { success: false, error: error.message }
           }));
         } else {
-          setTestResults(prev => ({
+          setTestResults((prev: any) => ({
             ...prev,
             update: { success: true, data }
           }));
@@ -50,21 +50,21 @@ export default function FinalPropertyTest() {
           .select();
         
         if (error) {
-          setTestResults(prev => ({
+          setTestResults((prev: any) => ({
             ...prev,
             create: { success: false, error: error.message }
           }));
         } else {
-          setTestResults(prev => ({
+          setTestResults((prev: any) => ({
             ...prev,
             create: { success: true, data }
           }));
         }
       }
     } catch (err) {
-      setTestResults(prev => ({
+      setTestResults((prev: any) => ({
         ...prev,
-        error: { success: false, error: err.message }
+        error: { success: false, error: (err as any).message }
       }));
     }
     

@@ -143,16 +143,23 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
     const details = await getPlaceDetails(place.place_id);
     
     if (details) {
-      const address = details.formatted_address || place.description;
+      const address = (details as any).formatted_address || place.description;
+      const placeDetails = {
+        description: place.description,
+        place_id: place.place_id,
+        geometry: (details as any).geometry,
+        address_components: (details as any).address_components,
+        name: (details as any).name
+      };
       onChange(address);
       
       if (onPlaceSelect) {
         onPlaceSelect({
           place_id: place.place_id,
           formatted_address: address,
-          geometry: details.geometry,
-          address_components: details.address_components,
-          name: details.name
+          geometry: (details as any).geometry,
+          address_components: (details as any).address_components,
+          name: (details as any).name
         });
       }
     }

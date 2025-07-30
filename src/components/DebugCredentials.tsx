@@ -44,7 +44,7 @@ export default function DebugCredentials() {
         setTestResult({ success: false, error: errorData, status: response.status });
       }
     } catch (error) {
-      setTestResult({ success: false, error: error.message });
+      setTestResult({ success: false, error: (error as any).message });
     }
   };
 

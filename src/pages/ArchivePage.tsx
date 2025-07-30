@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../supabaseClient';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
-import PropertyCard from './Properties/PropertyCard';
-import ExperienceCard from '../components/experiences/ExperienceCard';
 import PageBreadCrumb from '../components/common/PageBreadCrumb';
 
 interface Property {
@@ -147,10 +145,8 @@ const ArchivePage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-6 2xl:p-10">
-      <PageBreadCrumb
-        pageName="Archivo"
-        parentPage="Inicio"
-        parentPath="/"
+      <PageBreadCrumb 
+        pageTitle="Archivo"
       />
 
       <div className="flex flex-col lg:flex-row gap-6 p-4 md:p-8">
@@ -290,7 +286,7 @@ const ArchivePage: React.FC = () => {
           {isLoaded ? (
             <GoogleMap
               mapContainerStyle={MAP_CONTAINER_STYLE}
-              center={mapCenter || { lat: 40.4168, lng: -3.7038 }}
+              center={mapCenter && mapCenter.lat && mapCenter.lng ? mapCenter : { lat: 40.4168, lng: -3.7038 }}
               zoom={filteredResults.length > 0 ? 12 : 5}
             >
               {filteredResults.map((item: any) => (

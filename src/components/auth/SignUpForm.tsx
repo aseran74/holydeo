@@ -132,7 +132,6 @@ export default function SignUpForm() {
                       placeholder="Enter your first name"
                       value={fname}
                       onChange={e => setFname(e.target.value)}
-                      required
                     />
                   </div>
                   {/* <!-- Last Name --> */}
@@ -147,7 +146,6 @@ export default function SignUpForm() {
                       placeholder="Enter your last name"
                       value={lname}
                       onChange={e => setLname(e.target.value)}
-                      required
                     />
                   </div>
                 </div>
@@ -163,7 +161,6 @@ export default function SignUpForm() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    required
                   />
                 </div>
                 {/* <!-- Password --> */}
@@ -177,7 +174,6 @@ export default function SignUpForm() {
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={e => setPassword(e.target.value)}
-                      required
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -203,7 +199,6 @@ export default function SignUpForm() {
                     placeholder="Elige un nombre de usuario único"
                     value={username}
                     onChange={e => setUsername(e.target.value)}
-                    required
                   />
                 </div>
                 {/* <!-- Checkbox --> */}

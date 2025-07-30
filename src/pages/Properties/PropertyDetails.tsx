@@ -1,46 +1,44 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { supabase } from "../../supabaseClient";
-import { getAllImageUrls, getImageUrlWithFallback } from "../../lib/supabaseStorage";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { supabase } from '../../supabaseClient';
 import { 
-  BedDouble, 
-  Bath, 
-  Users, 
-  MapPin, 
   ArrowLeft, 
-  CheckCircle2, 
-  Star, 
+  Heart, 
+  Share2, 
+  Camera, 
+  MapPin, 
+  Users, 
+  Bed, 
+  Bath, 
   Wifi, 
-  ParkingSquare, 
-  Snowflake, 
-  UtensilsCrossed, 
-  Building, 
-  CalendarDays,
-  Euro,
-  Phone,
-  Mail,
+  Car, 
+  Tree, 
+  Utensils, 
+  Dumbbell, 
+  Coffee, 
+  Phone, 
+  Mail, 
   ExternalLink,
-  Heart,
-  Share2,
-  Camera,
-  Car,
-  Tv,
-  Coffee,
-  Dumbbell,
-  TreePine,
+  Star,
+  Building,
+  User,
+  BedDouble,
+  Building2,
+  CalendarDays,
   Waves,
-  Mountain,
+  Snowflake,
+  UtensilsCrossed,
+  ParkingSquare,
+  Tv,
+  TreePine,
   Sun,
   Moon,
-  Clock,
-  Calendar,
-  Tag,
-  Home,
-  Building2,
+  Mountain,
   MapPinIcon
-} from "lucide-react";
-import PageMeta from "../../components/common/PageMeta";
-import PageBreadCrumb from "../../components/common/PageBreadCrumb";
+} from 'lucide-react';
+import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
+import PageMeta from '../../components/common/PageMeta';
+import PageBreadCrumb from '../../components/common/PageBreadCrumb';
 
 // Mapeo de amenities a iconos
 const amenityIcons: { [key: string]: React.ReactElement } = {
@@ -107,8 +105,6 @@ const PropertyDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAllImages, setShowAllImages] = useState(false);
-  const [owner, setOwner] = useState<any>(null);
-  const [agency, setAgency] = useState<any>(null);
 
   useEffect(() => {
     if (id) {
@@ -468,50 +464,48 @@ const PropertyDetails = () => {
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border">
               <h3 className="text-lg font-semibold mb-4">Información de Contacto</h3>
               
-              {owner && (
+              {property.owner_id && (
                 <div className="mb-4">
                   <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Propietario</h4>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <Users size={16} className="text-gray-500" />
-                      <span>{owner.full_name}</span>
+                      <span>{`${property.owner_id}`}</span>
                     </div>
-                    {owner.email && (
-                      <div className="flex items-center gap-2">
-                        <Mail size={16} className="text-gray-500" />
-                        <span className="text-sm">{owner.email}</span>
-                      </div>
-                    )}
+                    {/* TODO: Fetch owner details from supabase */}
+                    {/* <div className="flex items-center gap-2">
+                      <Mail size={16} className="text-gray-500" />
+                      <span className="text-sm">{owner.email}</span>
+                    </div>
                     {owner.phone && (
                       <div className="flex items-center gap-2">
                         <Phone size={16} className="text-gray-500" />
                         <span className="text-sm">{owner.phone}</span>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
               )}
 
-              {agency && (
+              {property.agency_id && (
                 <div className="mb-4">
                   <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Agencia</h4>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <Building2 size={16} className="text-gray-500" />
-                      <span>{agency.name}</span>
+                      <span>{`${property.agency_id}`}</span>
                     </div>
-                    {agency.contact_email && (
-                      <div className="flex items-center gap-2">
-                        <Mail size={16} className="text-gray-500" />
-                        <span className="text-sm">{agency.contact_email}</span>
-                      </div>
-                    )}
+                    {/* TODO: Fetch agency details from supabase */}
+                    {/* <div className="flex items-center gap-2">
+                      <Mail size={16} className="text-gray-500" />
+                      <span className="text-sm">{agency.contact_email}</span>
+                    </div>
                     {agency.phone && (
                       <div className="flex items-center gap-2">
                         <Phone size={16} className="text-gray-500" />
                         <span className="text-sm">{agency.phone}</span>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
               )}

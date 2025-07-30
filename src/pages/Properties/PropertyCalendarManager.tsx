@@ -22,8 +22,6 @@ type SpecialPrice = {
   price: number;
 };
 
-type CalendarMode = 'none' | 'block' | 'special';
-
 const PropertyCalendarManager: React.FC<PropertyCalendarManagerProps> = ({ propertyId }) => {
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([]);
   const [specialPrices, setSpecialPrices] = useState<SpecialPrice[]>([]);

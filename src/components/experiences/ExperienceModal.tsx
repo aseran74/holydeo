@@ -18,6 +18,13 @@ interface Experience {
   what_is_needed: string;
   photos: string[];
   created_at: string;
+  external_url?: string;
+  featured?: boolean;
+  recurring_dates?: {
+    type: string;
+    dates: string[];
+    days: string[];
+  };
 }
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
@@ -123,19 +130,19 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
           <div className="md:col-span-1 space-y-4">
             <div>
               <Label>Nombre</Label>
-              <Input name="name" value={formData.name} onChange={(value) => setFormData(prev => ({ ...prev, name: value }))} />
+              <Input name="name" value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} />
             </div>
             <div>
               <Label>Categoría</Label>
-              <Select name="category" value={formData.category} onChange={(value) => setFormData(prev => ({ ...prev, category: value }))} options={categoryOptions} />
+              <Select value={formData.category} onChange={(value) => setFormData(prev => ({ ...prev, category: value }))} options={categoryOptions} />
             </div>
             <div>
               <Label>URL Externa</Label>
-              <Input name="external_url" value={formData.external_url} onChange={(value) => setFormData(prev => ({ ...prev, external_url: value }))} />
+              <Input name="external_url" value={formData.external_url} onChange={(e) => setFormData(prev => ({ ...prev, external_url: e.target.value }))} />
             </div>
             <div>
               <Label>Precio (€)</Label>
-              <Input name="price" type="number" value={formData.price} onChange={(value) => setFormData(prev => ({ ...prev, price: Number(value) }))} />
+              <Input name="price" type="number" value={formData.price} onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))} />
             </div>
             <div className="flex items-center gap-2">
                 <input

@@ -1,23 +1,38 @@
-import { useState, useEffect, useRef } from "react";
-// --- MEJORA: Importar GoogleMap y Marker ---
-import { useJsApiLoader, Autocomplete, GoogleMap, Marker } from "@react-google-maps/api";
-import {
-  WavesLadder,
-  Droplets,
-  TreePalm,
-  Car,
-  Sun,
-  Snowflake,
-  MoveUpRight,
-  Box,
-  Waves,
-  Accessibility,
-  Gem,
-  Building2,
-  Image as ImageIcon,
-  MapPin,
-} from "lucide-react";
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../supabaseClient';
+import { 
+  Bed, 
+  Bath, 
+  Users, 
+  MapPin, 
+  Calendar, 
+  Star, 
+  Wifi, 
+  Car, 
+  Tree, 
+  Utensils, 
+  Dumbbell, 
+  Coffee, 
+  Phone, 
+  Mail, 
+  ExternalLink,
+  Building,
+  User,
+  BedDouble,
+  Building2,
+  CalendarDays,
+  Waves,
+  Snowflake,
+  UtensilsCrossed,
+  ParkingSquare,
+  Tv,
+  TreePine,
+  Sun,
+  Moon,
+  Mountain,
+  MapPinIcon
+} from 'lucide-react';
+import { useJsApiLoader, Autocomplete, GoogleMap, Marker } from "@react-google-maps/api";
 import PropertyCalendarManager from './PropertyCalendarManager';
 import { getLatLngFromAddress } from '../../lib/geocode';
 
@@ -113,7 +128,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
   const [precioMes, setPrecioMes] = useState(property?.precio_mes ? String(property.precio_mes) : "");
   const [alquilaTemporadaCompleta, setAlquilaTemporadaCompleta] = useState(false);
   const [imagePaths, setImagePaths] = useState<string[]>(property?.image_paths || []);
-  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [description, setDescription] = useState(property?.description || "");
   const [urlIdealista, setUrlIdealista] = useState(property?.url_idealista || "");
@@ -124,7 +138,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
   const [tipo, setTipo] = useState("Piso o apartamento");
   const [region, setRegion] = useState("Andalucia");
   const [destacada, setDestacada] = useState(false);
-  const [seasonError, setSeasonError] = useState("");
   const [featured, setFeatured] = useState(false);
   
   // Nuevos estados para los desplegables
@@ -242,7 +255,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
-    setUploading(true);
     const uploadedUrls: string[] = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -259,7 +271,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
       }
     }
     setImagePaths((prev) => [...prev, ...uploadedUrls]);
-    setUploading(false);
   };
 
   const handleRemoveImage = async (url: string) => {
@@ -737,7 +748,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
                           disabled={selectedMesesTemporada.length === 0}
               required={selectedMesesTemporada.length > 0}
           />
-          {seasonError && <p className="text-red-500 text-sm mt-1">{seasonError}</p>}
+          {/* {seasonError && <p className="text-red-500 text-sm mt-1">{seasonError}</p>} */}
         </div>
         <div className="mb-4">
           <label className="block font-semibold mb-2" htmlFor="rules">Reglas de la casa</label>
