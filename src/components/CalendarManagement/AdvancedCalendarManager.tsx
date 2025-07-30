@@ -76,6 +76,12 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
   });
   const [icalUrl, setIcalUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Estados para selección múltiple
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [selectionStart, setSelectionStart] = useState<Date | null>(null);
+  const [selectionEnd, setSelectionEnd] = useState<Date | null>(null);
+  const [selectedRange, setSelectedRange] = useState<Date[]>([]);
 
   useEffect(() => {
     fetchCalendarData();
@@ -180,101 +186,164 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
   };
 
   const handleDayClick = (date: Date) => {
-    setSelectedDate(date);
-    setShowModal(true);
+    if (calendarMode === 'view') {
+      setSelectedDate(date);
+      setShowModal(true);
+    } else {
+      // Modo de selección múltiple
+      if (!isSelecting) {
+        setIsSelecting(true);
+        setSelectionStart(date);
+        setSelectionEnd(date);
+        setSelectedRange([date]);
+      } else {
+        setIsSelecting(false);
+        setSelectionEnd(date);
+        const range = getDateRange(selectionStart!, date);
+        setSelectedRange(range);
+        setShowModal(true);
+      }
+    }
+  };
+
+  const getDateRange = (start: Date, end: Date): Date[] => {
+    const dates: Date[] = [];
+    const current = new Date(start);
+    const endDate = new Date(end);
+    
+    // Asegurar que start sea la fecha más temprana
+    if (current > endDate) {
+      [current, endDate] = [endDate, current];
+    }
+    
+    while (current <= endDate) {
+      dates.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+    }
+    
+    return dates;
+  };
+
+  const handleMouseEnter = (date: Date) => {
+    if (isSelecting && selectionStart) {
+      setSelectionEnd(date);
+      const range = getDateRange(selectionStart, date);
+      setSelectedRange(range);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isSelecting) {
+      setIsSelecting(false);
+      if (selectionStart && selectionEnd) {
+        const range = getDateRange(selectionStart, selectionEnd);
+        setSelectedRange(range);
+        setShowModal(true);
+      }
+    }
   };
 
   const handleBlockDay = async () => {
-    if (!selectedDate) return;
-    const d = selectedDate.toISOString().slice(0, 10);
+    const datesToBlock = selectedRange.length > 0 ? selectedRange : [selectedDate!];
     
     try {
-      const { error } = await supabase.from('blocked_dates').insert({ 
-        property_id: propertyId, 
-        date: d,
-        source: 'manual'
-      });
+      const dates = datesToBlock.map(date => ({
+        property_id: propertyId,
+        date: date.toISOString().slice(0, 10),
+        source: 'manual' as const
+      }));
+      
+      const { error } = await supabase.from('blocked_dates').insert(dates);
       
       if (error) throw error;
       
       setShowModal(false);
+      setSelectedRange([]);
       fetchCalendarData();
     } catch (error) {
-      console.error('Error bloqueando día:', error);
-      alert('Error al bloquear el día');
+      console.error('Error bloqueando días:', error);
+      alert('Error al bloquear los días');
     }
   };
 
   const handleUnblockDay = async () => {
-    if (!selectedDate) return;
-    const d = selectedDate.toISOString().slice(0, 10);
-    const blocked = blockedDates.find(b => b.date === d);
+    const datesToUnblock = selectedRange.length > 0 ? selectedRange : [selectedDate!];
+    const dates = datesToUnblock.map(date => date.toISOString().slice(0, 10));
     
-    if (blocked) {
-      try {
-        const { error } = await supabase.from('blocked_dates').delete().eq('id', blocked.id);
-        if (error) throw error;
-        
-        setShowModal(false);
-        fetchCalendarData();
-      } catch (error) {
-        console.error('Error desbloqueando día:', error);
-        alert('Error al desbloquear el día');
-      }
+    try {
+      const { error } = await supabase
+        .from('blocked_dates')
+        .delete()
+        .eq('property_id', propertyId)
+        .in('date', dates);
+      
+      if (error) throw error;
+      
+      setShowModal(false);
+      setSelectedRange([]);
+      fetchCalendarData();
+    } catch (error) {
+      console.error('Error desbloqueando días:', error);
+      alert('Error al desbloquear los días');
     }
   };
 
   const handleSetSpecialPrice = async () => {
-    if (!selectedDate || !specialPriceData.price) return;
-    const d = selectedDate.toISOString().slice(0, 10);
-    const existing = specialPrices.find(s => s.date === d);
+    if (!specialPriceData.price) return;
+    const datesToSet = selectedRange.length > 0 ? selectedRange : [selectedDate!];
     
     try {
-      if (existing) {
-        const { error } = await supabase
-          .from('special_prices')
-          .update({ 
-            price: Number(specialPriceData.price)
-          })
-          .eq('id', existing.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from('special_prices')
-          .insert({ 
-            property_id: propertyId, 
-            date: d, 
-            price: Number(specialPriceData.price)
-          });
-        if (error) throw error;
-      }
+      const dates = datesToSet.map(date => ({
+        property_id: propertyId,
+        date: date.toISOString().slice(0, 10),
+        price: Number(specialPriceData.price)
+      }));
+      
+      // Primero eliminar precios existentes para las fechas seleccionadas
+      const existingDates = datesToSet.map(date => date.toISOString().slice(0, 10));
+      const { error: deleteError } = await supabase
+        .from('special_prices')
+        .delete()
+        .eq('property_id', propertyId)
+        .in('date', existingDates);
+      
+      if (deleteError) throw deleteError;
+      
+      // Luego insertar los nuevos precios
+      const { error } = await supabase.from('special_prices').insert(dates);
+      
+      if (error) throw error;
       
       setShowModal(false);
       setSpecialPriceData({ price: '' });
+      setSelectedRange([]);
       fetchCalendarData();
     } catch (error) {
-      console.error('Error estableciendo precio especial:', error);
-      alert('Error al establecer el precio especial');
+      console.error('Error estableciendo precios especiales:', error);
+      alert('Error al establecer los precios especiales');
     }
   };
 
   const handleRemoveSpecialPrice = async () => {
-    if (!selectedDate) return;
-    const d = selectedDate.toISOString().slice(0, 10);
-    const special = specialPrices.find(s => s.date === d);
+    const datesToRemove = selectedRange.length > 0 ? selectedRange : [selectedDate!];
+    const dates = datesToRemove.map(date => date.toISOString().slice(0, 10));
     
-    if (special) {
-      try {
-        const { error } = await supabase.from('special_prices').delete().eq('id', special.id);
-        if (error) throw error;
-        
-        setShowModal(false);
-        setSpecialPriceData({ price: '' });
-        fetchCalendarData();
-      } catch (error) {
-        console.error('Error eliminando precio especial:', error);
-        alert('Error al eliminar el precio especial');
-      }
+    try {
+      const { error } = await supabase
+        .from('special_prices')
+        .delete()
+        .eq('property_id', propertyId)
+        .in('date', dates);
+      
+      if (error) throw error;
+      
+      setShowModal(false);
+      setSpecialPriceData({ price: '' });
+      setSelectedRange([]);
+      fetchCalendarData();
+    } catch (error) {
+      console.error('Error eliminando precios especiales:', error);
+      alert('Error al eliminar los precios especiales');
     }
   };
 
@@ -427,27 +496,41 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
   };
 
   const tileClassName = ({ date, view }: { date: Date; view: string }) => {
-    if (view === 'month' && selectedDate && date.toDateString() === selectedDate.toDateString()) {
-      return 'bg-brand-100 border-2 border-brand-500 rounded-lg';
-    }
+    if (view !== 'month') return '';
     
-    const booking = getBooking(date);
-    if (booking) {
-      return 'bg-green-100 text-green-700 rounded-lg';
-    }
+    const dateStr = date.toISOString().slice(0, 10);
+    const isBlockedDate = blockedDates.some(b => b.date === dateStr);
+    const hasSpecialPrice = specialPrices.some(s => s.date === dateStr);
+    const hasBooking = bookings.some(b => {
+      const bookingStart = new Date(b.start_date);
+      const bookingEnd = new Date(b.end_date);
+      return date >= bookingStart && date <= bookingEnd;
+    });
     
-    const blockedDate = blockedDates.find(b => b.date === date.toISOString().slice(0, 10));
-    if (blockedDate) {
-      return blockedDate.source === 'ical' 
+    // Verificar si la fecha está en el rango seleccionado
+    const isInSelection = selectedRange.some(selectedDate => 
+      selectedDate.toISOString().slice(0, 10) === dateStr
+    );
+    
+    let className = '';
+    
+    if (hasBooking) {
+      className = 'bg-green-100 text-green-700 rounded-lg';
+    } else if (isBlockedDate) {
+      const blockedDate = blockedDates.find(b => b.date === dateStr);
+      className = blockedDate?.source === 'ical' 
         ? 'bg-yellow-100 text-yellow-700 rounded-lg' 
         : 'bg-red-100 text-red-700 rounded-lg';
+    } else if (hasSpecialPrice) {
+      className = 'bg-blue-100 text-blue-700 rounded-lg';
     }
     
-    if (getSpecialPrice(date)) {
-      return 'bg-blue-100 text-blue-700 rounded-lg';
+    // Agregar estilo de selección
+    if (isInSelection && calendarMode !== 'view') {
+      className += ' ring-2 ring-yellow-400 ring-opacity-75 bg-yellow-200 dark:bg-yellow-800';
     }
     
-    return '';
+    return className;
   };
 
   return (
@@ -493,6 +576,11 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
                 tileContent={tileContent}
                 tileClassName={tileClassName}
                 className="w-full react-calendar border-none"
+                onActiveStartDateChange={() => {
+                  // Reset selection when changing month
+                  setIsSelecting(false);
+                  setSelectedRange([]);
+                }}
               />
               {loading && <div className="text-center text-gray-500 mt-2">Cargando...</div>}
             </div>
@@ -517,7 +605,23 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
                     <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                     <span>Precio especial</span>
                   </div>
+                  {calendarMode !== 'view' && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-yellow-400 rounded-full ring-2 ring-yellow-400 ring-opacity-75"></div>
+                      <span>Selección múltiple</span>
+                    </div>
+                  )}
                 </div>
+                
+                {calendarMode !== 'view' && (
+                  <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded border-l-4 border-yellow-400">
+                    <h5 className="font-semibold mb-2 text-yellow-800 dark:text-yellow-200">💡 Selección múltiple</h5>
+                    <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                      Haz clic en el primer día y arrastra hasta el último día para seleccionar un rango. 
+                      Luego confirma la acción en el modal.
+                    </p>
+                  </div>
+                )}
                 
                 <div className="mt-4 p-3 bg-white dark:bg-gray-800 rounded">
                   <h5 className="font-semibold mb-2">Estadísticas</h5>
@@ -576,26 +680,52 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
           </div>
 
           {/* Modal */}
-          {showModal && selectedDate && (
+          {showModal && (selectedDate || selectedRange.length > 0) && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
               <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">
-                <h4 className="font-bold mb-4">{selectedDate.toLocaleDateString()}</h4>
+                {selectedRange.length > 0 ? (
+                  <h4 className="font-bold mb-4">
+                    Rango seleccionado: {selectedRange.length} días
+                    <br />
+                    <span className="text-sm font-normal text-gray-600">
+                      {selectedRange[0].toLocaleDateString()} - {selectedRange[selectedRange.length - 1].toLocaleDateString()}
+                    </span>
+                  </h4>
+                ) : (
+                  <h4 className="font-bold mb-4">{selectedDate?.toLocaleDateString()}</h4>
+                )}
                 
                 {calendarMode === 'block' && (
                   <div>
-                    {isBlocked(selectedDate) ? (
+                    {selectedRange.length > 0 ? (
                       <>
-                        <p className="mb-4 text-red-600">Este día está bloqueado.</p>
-                        <button className="btn btn-primary w-full mb-2" onClick={handleUnblockDay}>
-                          Desbloquear día
+                        <p className="mb-4 text-gray-600">
+                          {selectedRange.length === 1 
+                            ? 'Bloquear este día para reservas.' 
+                            : `Bloquear ${selectedRange.length} días para reservas.`
+                          }
+                        </p>
+                        <button className="btn btn-danger w-full mb-2" onClick={handleBlockDay}>
+                          {selectedRange.length === 1 ? 'Bloquear día' : `Bloquear ${selectedRange.length} días`}
                         </button>
                       </>
                     ) : (
                       <>
-                        <p className="mb-4 text-gray-600">Bloquear este día para reservas.</p>
-                        <button className="btn btn-danger w-full mb-2" onClick={handleBlockDay}>
-                          Bloquear día
-                        </button>
+                        {isBlocked(selectedDate!) ? (
+                          <>
+                            <p className="mb-4 text-red-600">Este día está bloqueado.</p>
+                            <button className="btn btn-primary w-full mb-2" onClick={handleUnblockDay}>
+                              Desbloquear día
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <p className="mb-4 text-gray-600">Bloquear este día para reservas.</p>
+                            <button className="btn btn-danger w-full mb-2" onClick={handleBlockDay}>
+                              Bloquear día
+                            </button>
+                          </>
+                        )}
                       </>
                     )}
                   </div>
@@ -603,25 +733,14 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
 
                 {calendarMode === 'special' && (
                   <div>
-                    {getSpecialPrice(selectedDate) ? (
+                    {selectedRange.length > 0 ? (
                       <>
-                        <p className="mb-2 text-blue-600">Precio especial: €{getSpecialPrice(selectedDate)}</p>
-                        <input
-                          type="number"
-                          className="input input-bordered w-full mb-2"
-                          value={specialPriceData.price}
-                          onChange={e => setSpecialPriceData({...specialPriceData, price: e.target.value})}
-                          placeholder="Nuevo precio especial"
-                        />
-                        <button className="btn btn-primary w-full mb-2" onClick={handleSetSpecialPrice}>
-                          Actualizar precio
-                        </button>
-                        <button className="btn btn-warning w-full mb-2" onClick={handleRemoveSpecialPrice}>
-                          Quitar precio especial
-                        </button>
-                      </>
-                    ) : (
-                      <>
+                        <p className="mb-4 text-gray-600">
+                          {selectedRange.length === 1 
+                            ? 'Asignar precio especial a este día.' 
+                            : `Asignar precio especial a ${selectedRange.length} días.`
+                          }
+                        </p>
                         <input
                           type="number"
                           className="input input-bordered w-full mb-2"
@@ -630,8 +749,45 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
                           placeholder="Precio especial (€)"
                         />
                         <button className="btn btn-primary w-full mb-2" onClick={handleSetSpecialPrice}>
-                          Asignar precio especial
+                          {selectedRange.length === 1 ? 'Asignar precio especial' : `Asignar precio a ${selectedRange.length} días`}
                         </button>
+                        <button className="btn btn-warning w-full mb-2" onClick={handleRemoveSpecialPrice}>
+                          {selectedRange.length === 1 ? 'Quitar precio especial' : `Quitar precios de ${selectedRange.length} días`}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {getSpecialPrice(selectedDate!) ? (
+                          <>
+                            <p className="mb-2 text-blue-600">Precio especial: €{getSpecialPrice(selectedDate!)}</p>
+                            <input
+                              type="number"
+                              className="input input-bordered w-full mb-2"
+                              value={specialPriceData.price}
+                              onChange={e => setSpecialPriceData({...specialPriceData, price: e.target.value})}
+                              placeholder="Nuevo precio especial"
+                            />
+                            <button className="btn btn-primary w-full mb-2" onClick={handleSetSpecialPrice}>
+                              Actualizar precio
+                            </button>
+                            <button className="btn btn-warning w-full mb-2" onClick={handleRemoveSpecialPrice}>
+                              Quitar precio especial
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <input
+                              type="number"
+                              className="input input-bordered w-full mb-2"
+                              value={specialPriceData.price}
+                              onChange={e => setSpecialPriceData({...specialPriceData, price: e.target.value})}
+                              placeholder="Precio especial (€)"
+                            />
+                            <button className="btn btn-primary w-full mb-2" onClick={handleSetSpecialPrice}>
+                              Asignar precio especial
+                            </button>
+                          </>
+                        )}
                       </>
                     )}
                   </div>
