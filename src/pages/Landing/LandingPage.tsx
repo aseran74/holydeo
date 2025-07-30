@@ -13,6 +13,7 @@ import LandingFooter from "../../components/landing/LandingFooter";
 import FeaturedSection from "../../components/shared/FeaturedSection";
 import PropertyCard from "../Properties/PropertyCard";
 import ExperienceCard from "../../components/experiences/ExperienceCard";
+import ClerkDebug from "../../components/ClerkDebug";
 
 const LandingPage = () => {
     const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
@@ -78,6 +79,11 @@ const LandingPage = () => {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <LandingNavbar />
             <LandingHero />
+            
+            {/* Debug temporal para verificar Clerk */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <ClerkDebug />
+            </div>
 
 
 
