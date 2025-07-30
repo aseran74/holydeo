@@ -28,7 +28,9 @@ import {
   Sun,
   Moon,
   Mountain,
-  MapPinIcon
+  MapPinIcon,
+  Coffee,
+  Dumbbell
 } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import PageMeta from '../../components/common/PageMeta';

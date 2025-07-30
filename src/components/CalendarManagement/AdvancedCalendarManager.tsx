@@ -70,6 +70,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
   // Estados para selección múltiple
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectionStart, setSelectionStart] = useState<Date | null>(null);
+  const [selectionEnd, setSelectionEnd] = useState<Date | null>(null);
   const [selectedRange, setSelectedRange] = useState<Date[]>([]);
 
   useEffect(() => {
@@ -412,7 +413,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
       ...blockedDates.map(b => {
         const [year, month, day] = b.date.split('-').map(Number);
         return {
-          start: [year, month, day],
+          start: [year, month, day] as [number, number, number],
           title: 'Bloqueo',
           description: 'Día bloqueado',
           duration: { days: 1 },
@@ -421,7 +422,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
       ...specialPrices.map(s => {
         const [year, month, day] = s.date.split('-').map(Number);
         return {
-          start: [year, month, day],
+          start: [year, month, day] as [number, number, number],
           title: `Precio especial: €${s.price}`,
           description: `Precio especial: €${s.price}`,
           duration: { days: 1 },
@@ -435,7 +436,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
         let days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
         if (days < 1) days = 1;
         return {
-          start: [year, month, day],
+          start: [year, month, day] as [number, number, number],
           title: `Reserva: ${b.guest_name || ''}`,
           description: `Reserva confirmada`,
           duration: { days },
