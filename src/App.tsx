@@ -100,9 +100,7 @@ export default function App() {
             <Route path="/calendar-management/:propertyId" element={<CalendarManagement />} />
           </Route>
 
-          {/* Auth Layout */}
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
+
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
