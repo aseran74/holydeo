@@ -32,6 +32,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
   }, [experience.photos]);
 
   const formatPrice = (price: number) => {
+    if (!price || price <= 0) return 'Precio no especificado';
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR'
@@ -39,6 +40,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
   };
 
   const formatDuration = (duration: number) => {
+    if (!duration || duration <= 0) return 'Duración no especificada';
     if (duration < 60) return `${duration} min`;
     const hours = Math.floor(duration / 60);
     const minutes = duration % 60;
@@ -54,7 +56,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
           <img
             className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer ${isLoading ? 'hidden' : 'block'}`}
             src={imageUrl}
-            alt={experience.title}
+            alt={experience.title || 'Experiencia'}
             onError={() => {
               setImageUrl('/images/cards/card-01.jpg');
             }}
@@ -86,13 +88,13 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
       <div className="p-4">
         <Link to={`/experiences/${experience.id}`} className="block">
           <h3 className="text-xl font-bold mb-2 truncate text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer">
-            {experience.title}
+            {experience.title || 'Sin título'}
           </h3>
         </Link>
         
         <p className="text-gray-600 dark:text-gray-400 text-sm flex items-center mb-3">
           <MapPin className="w-4 h-4 mr-2" />
-          <span className="truncate">{experience.location}</span>
+          <span className="truncate">{experience.location || 'Ubicación no especificada'}</span>
         </p>
         
         <div className="flex justify-between items-center text-gray-700 dark:text-gray-300 mb-3">
@@ -107,7 +109,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
             </span>
           </div>
           <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-            {experience.category}
+            {experience.category || 'Sin categoría'}
           </span>
         </div>
         
