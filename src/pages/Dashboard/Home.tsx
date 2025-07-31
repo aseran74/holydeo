@@ -9,7 +9,7 @@ import SupabaseConnectionTest from "../../components/SupabaseConnectionTest";
 import SimplePropertiesTest from "../../components/SimplePropertiesTest";
 import DebugSupabase from "../../components/DebugSupabase";
 import EnvVarsDebug from "../../components/EnvVarsDebug";
-import ClerkDebug from "../../components/ClerkDebug";
+
 import QuickTest from "../../components/QuickTest";
 import EnvChecker from "../../components/EnvChecker";
 import DebugCredentials from "../../components/DebugCredentials";
