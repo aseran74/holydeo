@@ -7,6 +7,17 @@ const LandingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { currentUser, logout } = useAuth();
 
+  // Debug temporal para ver los datos del usuario
+  if (currentUser) {
+    console.log('Usuario en LandingNavbar:', {
+      email: currentUser.email,
+      displayName: currentUser.displayName,
+      photoURL: currentUser.photoURL,
+      uid: currentUser.uid,
+      providerData: currentUser.providerData
+    });
+  }
+
   const menuItems = [
     { name: "Buscar", href: "/properties" },
     { name: "Como funciona", href: "#how-it-works" },
@@ -21,6 +32,11 @@ const LandingNavbar = () => {
     }
     setIsMenuOpen(false);
   };
+
+  // Pequeña función de ayuda para mantener el JSX limpio
+  const isGoogleProvider = currentUser?.providerData?.some(
+    (p) => p.providerId === "google.com"
+  );
 
   return (
     <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-lg fixed w-full top-0 z-50">
@@ -71,6 +87,10 @@ const LandingNavbar = () => {
                     <span className="text-sm text-gray-700 dark:text-gray-300">
                       {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                     </span>
+                    {/* Logo de Google si el proveedor es Google */}
+                    {isGoogleProvider && (
+                      <img src="/images/google-logo.svg" alt="Google" className="w-4 h-4" />
+                    )}
                   </div>
                   <button
                     onClick={logout}
@@ -138,6 +158,10 @@ const LandingNavbar = () => {
                       <span className="text-sm text-gray-700 dark:text-gray-300">
                         {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                       </span>
+                      {/* Logo de Google si el proveedor es Google */}
+                      {isGoogleProvider && (
+                        <img src="/images/google-logo.svg" alt="Google" className="w-4 h-4" />
+                      )}
                     </div>
                     <button
                       onClick={logout}
@@ -164,4 +188,4 @@ const LandingNavbar = () => {
   );
 };
 
-export default LandingNavbar; 
+export default LandingNavbar;

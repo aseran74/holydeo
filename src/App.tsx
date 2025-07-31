@@ -23,6 +23,8 @@ import LandingPage from "./pages/Landing/LandingPage";
 import Properties from "./pages/Properties/Properties";
 import Bookings from "./pages/Bookings/Bookings";
 import Experiences from "./pages/Experiences/Experiences";
+import ExperiencesCards from "./pages/Experiences/ExperiencesCards";
+import ExperienceDetails from "./pages/Experiences/ExperienceDetails";
 import Agencies from "./pages/Agencies/Agencies";
 import Agents from "./pages/Agents/Agents";
 import Owners from "./pages/Owners/Owners";
@@ -59,6 +61,8 @@ export default function App() {
             <Route path="/properties/:id" element={<PropertyDetails />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/experiences" element={<Experiences />} />
+            <Route path="/experiences/cards" element={<ExperiencesCards />} />
+            <Route path="/experiences/:id" element={<ExperienceDetails />} />
             <Route path="/agencies" element={<Agencies />} />
             <Route path="/agents" element={<Agents />} />
             <Route path="/owners" element={<Owners />} />

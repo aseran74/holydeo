@@ -16,6 +16,15 @@ export default function UserDropdown() {
     return null;
   }
 
+  // Debug temporal para ver los datos del usuario
+  console.log('Usuario actual:', {
+    email: currentUser.email,
+    displayName: currentUser.displayName,
+    photoURL: currentUser.photoURL,
+    uid: currentUser.uid,
+    providerData: currentUser.providerData
+  });
+
   // Obtener el avatar de Google si está disponible
   const userAvatar = currentUser.photoURL;
   const userDisplayName = currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario';
