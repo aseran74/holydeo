@@ -4,7 +4,7 @@ import { supabase } from '../../supabaseClient';
 import PageBreadCrumb from '../../components/common/PageBreadCrumb';
 import Button from '../../components/ui/button/Button';
 import { Experience } from '../../types';
-import { MapPinIcon, ClockIcon, UsersIcon, StarIcon, CalendarIcon, ExternalLinkIcon } from '../../icons';
+import { MapPinIcon, ClockIcon, UsersIcon, CalendarIcon, ExternalLinkIcon } from '../../icons';
 
 const ExperienceDetails = () => {
   const { id } = useParams<{ id: string }>();

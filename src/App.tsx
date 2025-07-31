@@ -61,7 +61,7 @@ export default function App() {
             <Route path="/properties/:id" element={<PropertyDetails />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/experiences" element={<Experiences />} />
-            <Route path="/experiences/cards" element={<ExperiencesCards />} />
+            <Route path="/experiences/cards" element={<Experiences />} />
             <Route path="/experiences/:id" element={<ExperienceDetails />} />
             <Route path="/agencies" element={<Agencies />} />
             <Route path="/agents" element={<Agents />} />
