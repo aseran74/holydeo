@@ -10,7 +10,7 @@ import SimplePropertiesTest from "../../components/SimplePropertiesTest";
 import DebugSupabase from "../../components/DebugSupabase";
 import EnvVarsDebug from "../../components/EnvVarsDebug";
 
-import QuickTest from "../../components/QuickTest";
+
 import EnvChecker from "../../components/EnvChecker";
 import DebugCredentials from "../../components/DebugCredentials";
 import TestPermissions from "../../components/TestPermissions";
@@ -93,10 +93,7 @@ export default function Home() {
           <EnvChecker />
         </div>
 
-        {/* Prueba Rápida */}
-        <div className="col-span-12">
-          <QuickTest />
-        </div>
+
 
 
 
