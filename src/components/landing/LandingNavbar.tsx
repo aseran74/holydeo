@@ -59,9 +59,17 @@ const LandingNavbar = () => {
               {currentUser ? (
                 <div className="flex items-center space-x-2">
                   <div className="flex items-center space-x-2">
-                    <User className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                    {currentUser.photoURL ? (
+                      <img 
+                        src={currentUser.photoURL} 
+                        alt={currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
+                        className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
+                      />
+                    ) : (
+                      <User className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                    )}
                     <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {currentUser.email}
+                      {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                     </span>
                   </div>
                   <button
@@ -118,9 +126,17 @@ const LandingNavbar = () => {
                 {currentUser ? (
                   <div className="flex flex-col items-center space-y-2">
                     <div className="flex items-center space-x-2">
-                      <User className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                      {currentUser.photoURL ? (
+                        <img 
+                          src={currentUser.photoURL} 
+                          alt={currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
+                          className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
+                        />
+                      ) : (
+                        <User className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                      )}
                       <span className="text-sm text-gray-700 dark:text-gray-300">
-                        {currentUser.email}
+                        {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                       </span>
                     </div>
                     <button
