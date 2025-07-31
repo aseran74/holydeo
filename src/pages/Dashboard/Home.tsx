@@ -98,10 +98,7 @@ export default function Home() {
           <QuickTest />
         </div>
 
-        {/* Debug Clerk */}
-        <div className="col-span-12">
-          <ClerkDebug />
-        </div>
+
 
         {/* Debug Detallado */}
         <div className="col-span-12">
