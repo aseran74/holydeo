@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SignIn from "./pages/AuthPages/SignIn";
-import SignUp from "./pages/AuthPages/SignUp";
+import LoginForm from "./components/auth/LoginForm";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
@@ -46,6 +45,9 @@ export default function App() {
         <Routes>
           {/* Landing Page - Sin Layout */}
           <Route index path="/" element={<LandingPage />} />
+          
+          {/* Auth Routes */}
+          <Route path="/login" element={<LoginForm />} />
 
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>

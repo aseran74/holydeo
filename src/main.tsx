@@ -6,16 +6,16 @@ import "flatpickr/dist/flatpickr.css";
 import App from "./App.tsx";
 import { AppWrapper } from "./components/common/PageMeta.tsx";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
-import { ClerkProvider } from '@clerk/clerk-react';
+import { AuthProvider } from "./context/AuthContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
+    <AuthProvider>
       <ThemeProvider>
         <AppWrapper>
           <App />
         </AppWrapper>
       </ThemeProvider>
-    </ClerkProvider>
+    </AuthProvider>
   </StrictMode>,
 );

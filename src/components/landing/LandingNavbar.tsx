@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { UserButton } from "@clerk/clerk-react";
-import { Menu, X } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { Menu, X, User, LogOut } from "lucide-react";
 
 const LandingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { currentUser, logout } = useAuth();
 
   const menuItems = [
     { name: "Buscar", href: "/properties" },
@@ -53,15 +54,32 @@ const LandingNavbar = () => {
 
           {/* User Button and Mobile Menu Button */}
           <div className="flex items-center space-x-4">
-            {/* Clerk User Button */}
+            {/* Firebase User Button */}
             <div className="hidden md:block">
-              <UserButton 
-                appearance={{
-                  elements: {
-                    userButtonAvatarBox: "w-8 h-8"
-                  }
-                }}
-              />
+              {currentUser ? (
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2">
+                    <User className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      {currentUser.email}
+                    </span>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 px-2 py-1 rounded text-sm"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Cerrar</span>
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Iniciar Sesión
+                </Link>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -97,13 +115,30 @@ const LandingNavbar = () => {
             {/* Mobile User Button */}
             <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
               <div className="flex justify-center">
-                <UserButton 
-                  appearance={{
-                    elements: {
-                      userButtonAvatarBox: "w-8 h-8"
-                    }
-                  }}
-                />
+                {currentUser ? (
+                  <div className="flex flex-col items-center space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <User className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        {currentUser.email}
+                      </span>
+                    </div>
+                    <button
+                      onClick={logout}
+                      className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 px-2 py-1 rounded text-sm"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Cerrar Sesión</span>
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  >
+                    Iniciar Sesión
+                  </Link>
+                )}
               </div>
             </div>
           </div>
