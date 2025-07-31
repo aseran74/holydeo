@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { UserButton, SignedIn } from '@clerk/clerk-react';
 
 // Assume these icons are imported from an icon library
 import {
@@ -415,11 +414,7 @@ const AppSidebar: React.FC = () => {
         </nav>
         {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
       </div>
-      <SignedIn>
-        <div className="flex justify-center my-4">
-          <UserButton afterSignOutUrl="/signin" />
-        </div>
-      </SignedIn>
+
     </aside>
   );
 };

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
 import NotificationDropdown from "./NotificationDropdown";
-import { UserButton, SignedIn, SignedOut } from '@clerk/clerk-react';
 import { Link } from "react-router-dom";
 
 // Define the interface for the props
@@ -160,17 +159,12 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
-          <SignedIn>
-            <UserButton afterSignOutUrl="/signin" />
-          </SignedIn>
-          <SignedOut>
-            <Link 
-              to="/signin" 
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-            >
-              Iniciar Sesión
-            </Link>
-          </SignedOut>
+          <Link 
+            to="/login" 
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+          >
+            Iniciar Sesión
+          </Link>
         </div>
       </div>
     </header>
