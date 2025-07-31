@@ -23,7 +23,7 @@ import LandingPage from "./pages/Landing/LandingPage";
 import Properties from "./pages/Properties/Properties";
 import Bookings from "./pages/Bookings/Bookings";
 import Experiences from "./pages/Experiences/Experiences";
-import ExperiencesCards from "./pages/Experiences/ExperiencesCards";
+
 import ExperienceDetails from "./pages/Experiences/ExperienceDetails";
 import Agencies from "./pages/Agencies/Agencies";
 import Agents from "./pages/Agents/Agents";

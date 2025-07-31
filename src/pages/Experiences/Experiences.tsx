@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import PageBreadCrumb from '../../components/common/PageBreadCrumb';
 import PageMeta from '../../components/common/PageMeta';
-import Button from '../../components/ui/button/Button';
+
 import { ListIcon, GridIcon } from '../../icons';
 import ExperienceModal from '../../components/experiences/ExperienceModal';
 import ExperiencesCards from './ExperiencesCards';

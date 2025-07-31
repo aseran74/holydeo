@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Clock, Users, Euro, Eye } from 'lucide-react';
-import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
+
 import { Experience } from '../../types';
 
 interface ExperienceCardProps {
