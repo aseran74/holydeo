@@ -55,6 +55,14 @@ import { ReactComponent as MoreDotIcon } from "./moredot.svg?react";
 import { ReactComponent as AlertHexaIcon } from "./alert-hexa.svg?react";
 import { ReactComponent as ErrorHexaIcon } from "./info-hexa.svg?react";
 
+// Iconos para experiencias
+import { ReactComponent as MapPinIcon } from "./map-pin.svg?react";
+import { ReactComponent as ClockIcon } from "./clock.svg?react";
+import { ReactComponent as UsersIcon } from "./users.svg?react";
+import { ReactComponent as StarIcon } from "./star.svg?react";
+import { ReactComponent as CalendarIcon } from "./calendar.svg?react";
+import { ReactComponent as ExternalLinkIcon } from "./external-link.svg?react";
+
 export {
   ErrorHexaIcon,
   AlertHexaIcon,
@@ -112,4 +120,11 @@ export {
   ChatIcon,
   AngleLeftIcon,
   AngleRightIcon,
+  // Iconos para experiencias
+  MapPinIcon,
+  ClockIcon,
+  UsersIcon,
+  StarIcon,
+  CalendarIcon,
+  ExternalLinkIcon,
 };
