@@ -26,7 +26,7 @@ const LandingHero = () => {
   return (
     <section className="relative text-white">
       {/* Video contenido */}
-      <div className="relative w-full h-screen">
+      <div className="relative w-full h-screen pt-16 sm:pt-0">
         {/* Video para móvil */}
         <video
           autoPlay
@@ -57,18 +57,18 @@ const LandingHero = () => {
         
         {/* Contenido del hero sobre el video */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center max-w-4xl mx-auto px-4">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white">
+          <div className="text-center max-w-4xl mx-auto px-6 sm:px-8 md:px-4">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 sm:mb-6 leading-tight text-white px-4">
               Vive fuera de temporada
             </h1>
             
-            <p className="text-lg md:text-xl mb-12 text-blue-100 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl mb-8 sm:mb-12 text-blue-100 max-w-3xl mx-auto px-4">
               Encuentra alojamientos y planes fuera de temporada a precios imbatibles.
             </p>
 
             {/* Buscador */}
-            <div className="bg-white rounded-2xl p-6 shadow-2xl max-w-4xl mx-auto">
-              <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-2xl max-w-4xl mx-auto mx-4 sm:mx-auto">
+              <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
@@ -117,7 +117,7 @@ const LandingHero = () => {
 
                 <button
                   type="submit"
-                  className="lg:col-span-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 flex items-center justify-center gap-2"
+                  className="lg:col-span-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 sm:px-8 rounded-lg transition duration-300 flex items-center justify-center gap-2"
                 >
                   <Search className="w-5 h-5" />
                   Buscar Propiedades
@@ -126,7 +126,7 @@ const LandingHero = () => {
             </div>
 
             {/* Estadísticas */}
-            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 px-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-yellow-300 mb-2">500+</div>
                 <div className="text-blue-100">Propiedades</div>
