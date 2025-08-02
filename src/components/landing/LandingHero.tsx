@@ -1,145 +1,98 @@
-import React, { useState } from 'react';
-import { Search, MapPin, Calendar, Users } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import DateSearchForm from '../common/DateSearchForm';
 
 const LandingHero = () => {
-  const [searchData, setSearchData] = useState({
-    location: '',
-    checkIn: '',
-    checkOut: '',
-    guests: 1
-  });
-  const navigate = useNavigate();
+  const [showUnderline, setShowUnderline] = useState(false);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Navegar a la página de propiedades con los filtros
-    const params = new URLSearchParams({
-      location: searchData.location,
-      checkIn: searchData.checkIn,
-      checkOut: searchData.checkOut,
-      guests: searchData.guests.toString()
-    });
-    navigate(`/properties?${params.toString()}`);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const heroHeight = windowHeight;
+      
+      // Mostrar el subrayado cuando estamos en la mitad del hero
+      if (scrollY < heroHeight * 0.5) {
+        setShowUnderline(true);
+      } else {
+        setShowUnderline(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Ejecutar una vez al montar
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <section className="relative text-white">
-      {/* Video contenido */}
-      <div className="relative w-full h-screen pt-16 sm:pt-0">
-        {/* Video para móvil */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover md:hidden"
-        >
+      <div className="relative w-full min-h-screen h-screen">
+        {/* Videos y Overlay */}
+        <video autoPlay muted loop playsInline className="w-full h-full object-cover object-center absolute inset-0 md:hidden" style={{ objectPosition: 'center 70%' }}>
           <source src="/video-hero.mp4" type="video/mp4" />
         </video>
-        
-        {/* Video para escritorio */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover hidden md:block"
-        >
+        <video autoPlay muted loop playsInline className="w-full h-full object-cover object-center absolute inset-0 hidden md:block" style={{ objectPosition: 'center 30%' }}>
           <source src="/video-escritorio.mp4" type="video/mp4" />
         </video>
-        
-        {/* Fallback para navegadores que no soportan video */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 hidden"></div>
-        
-        {/* Overlay oscuro para mejorar la legibilidad del texto */}
-        <div className="absolute inset-0 bg-black/50"></div>
-        
-        {/* Contenido del hero sobre el video */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center max-w-4xl mx-auto px-6 sm:px-8 md:px-4">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 sm:mb-6 leading-tight text-white px-4">
-              Vive fuera de temporada
+        <div className="absolute inset-0 bg-black/60"></div>
+
+        {/* Contenido del hero */}
+        <div className="absolute inset-0 flex items-center justify-center py-96 sm:py-24 px-4">
+          <div className="text-center w-full max-w-4xl mx-auto">
+            
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 leading-tight text-white px-6 sm:px-4">
+              Vive fuera de{' '}
+              <span className="relative inline-block">
+                temporada
+                {/* ✨ SVG para el subrayado curvo ✨ */}
+                <svg 
+                  className={`absolute left-0 w-full bottom-[-10px] sm:bottom-[-14px] transition-all duration-1500 ease-in-out ${
+                    showUnderline ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                  }`}
+                  viewBox="0 0 230 18" 
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path 
+                    d="M2 11.1455C41.2483 3.32203 162.656 -5.3339 228 15.493" 
+                    stroke="#60A5FA" // Este es el color 'blue-400' de Tailwind
+                    strokeWidth="4" 
+                    strokeLinecap="round"
+                    className={`transition-all duration-1500 ease-in-out ${
+                      showUnderline ? 'stroke-dasharray-300 stroke-dashoffset-0' : 'stroke-dasharray-300 stroke-dashoffset-300'
+                    }`}
+                  />
+                </svg>
+              </span>
+              <span className="text-blue-400">.</span>
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl mb-8 sm:mb-12 text-blue-100 max-w-3xl mx-auto px-4">
+            <p className="text-base sm:text-lg md:text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
               Encuentra alojamientos y planes fuera de temporada a precios imbatibles.
             </p>
 
             {/* Buscador */}
-            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-2xl max-w-4xl mx-auto mx-4 sm:mx-auto">
-              <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="text"
-                    placeholder="¿Dónde quieres ir?"
-                    value={searchData.location}
-                    onChange={(e) => setSearchData(prev => ({ ...prev, location: e.target.value }))}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="date"
-                    value={searchData.checkIn}
-                    onChange={(e) => setSearchData(prev => ({ ...prev, checkIn: e.target.value }))}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="date"
-                    value={searchData.checkOut}
-                    onChange={(e) => setSearchData(prev => ({ ...prev, checkOut: e.target.value }))}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="relative">
-                  <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <select
-                    value={searchData.guests}
-                    onChange={(e) => setSearchData(prev => ({ ...prev, guests: parseInt(e.target.value) }))}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
-                      <option key={num} value={num}>
-                        {num} {num === 1 ? 'huésped' : 'huéspedes'}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <button
-                  type="submit"
-                  className="lg:col-span-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 sm:px-8 rounded-lg transition duration-300 flex items-center justify-center gap-2"
-                >
-                  <Search className="w-5 h-5" />
-                  Buscar Propiedades
-                </button>
-              </form>
+            <div className="w-full max-w-4xl mx-auto">
+              <DateSearchForm variant="hero" />
             </div>
 
             {/* Estadísticas */}
-            <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 px-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-300 mb-2">500+</div>
-                <div className="text-blue-100">Propiedades</div>
+            <div className="mt-4 sm:mt-16 flex flex-row md:grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full px-6 sm:px-4">
+              <div className="text-center flex-1">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-1 sm:mb-2">500+</div>
+                <div className="text-xs sm:text-sm md:text-base text-blue-100">Propiedades</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-300 mb-2">50+</div>
-                <div className="text-blue-100">Destinos</div>
+              <div className="text-center flex-1">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-1 sm:mb-2">200+</div>
+                <div className="text-xs sm:text-sm md:text-base text-blue-100">Experiencias</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-300 mb-2">10k+</div>
-                <div className="text-blue-100">Clientes Satisfechos</div>
+              <div className="text-center flex-1">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-1 sm:mb-2">600+</div>
+                <div className="text-xs sm:text-sm md:text-base text-blue-100">Clientes Satisfechos</div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -147,4 +100,4 @@ const LandingHero = () => {
   );
 };
 
-export default LandingHero; 
+export default LandingHero;

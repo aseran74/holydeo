@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Menu, X, User, LogOut } from "lucide-react";
 
-const LandingNavbar = () => {
+const SearchNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { currentUser, logout } = useAuth();
 
   // Debug temporal para ver los datos del usuario
   if (currentUser) {
-    console.log('Usuario en LandingNavbar:', {
+    console.log('Usuario en SearchNavbar:', {
       email: currentUser.email,
       displayName: currentUser.displayName,
       photoURL: currentUser.photoURL,
@@ -39,14 +39,14 @@ const LandingNavbar = () => {
   );
 
   return (
-    <nav className="bg-transparent backdrop-blur-sm fixed w-full top-0 z-50">
+    <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
               <img
-                src="/logotrans-white.svg"
+                src="/logotrans.svg"
                 alt="Logo"
                 className="h-8 w-auto"
               />
@@ -60,7 +60,7 @@ const LandingNavbar = () => {
                 <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href.replace("#", ""))}
-                  className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   {item.name}
                 </button>
@@ -82,9 +82,9 @@ const LandingNavbar = () => {
                         className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
                       />
                     ) : (
-                      <User className="w-5 h-5 text-white" />
+                      <User className="w-5 h-5 text-gray-700" />
                     )}
-                    <span className="text-sm text-white">
+                    <span className="text-sm text-gray-700">
                       {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                     </span>
                     {/* Logo de Google si el proveedor es Google */}
@@ -94,7 +94,7 @@ const LandingNavbar = () => {
                   </div>
                   <button
                     onClick={logout}
-                    className="flex items-center space-x-1 text-white hover:text-red-200 px-2 py-1 rounded text-sm"
+                    className="flex items-center space-x-1 text-gray-700 hover:text-red-600 px-2 py-1 rounded text-sm"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Cerrar</span>
@@ -103,7 +103,7 @@ const LandingNavbar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Iniciar Sesión
                 </Link>
@@ -114,7 +114,7 @@ const LandingNavbar = () => {
             <div className="md:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-white hover:text-blue-200 focus:outline-none focus:text-blue-200"
+                className="text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600"
               >
                 {isMenuOpen ? (
                   <X className="h-6 w-6" />
@@ -130,18 +130,18 @@ const LandingNavbar = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/20 dark:bg-gray-900/20 backdrop-blur-md shadow-lg">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg">
             {menuItems.map((item) => (
-                              <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href.replace("#", ""))}
-                  className="text-white hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium transition-colors w-full text-left"
-                >
-                  {item.name}
-                </button>
+              <button
+                key={item.name}
+                onClick={() => scrollToSection(item.href.replace("#", ""))}
+                className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition-colors w-full text-left"
+              >
+                {item.name}
+              </button>
             ))}
             {/* Mobile User Button */}
-            <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
+            <div className="pt-4 pb-3 border-t border-gray-200">
               <div className="flex justify-center">
                 {currentUser ? (
                   <div className="flex flex-col items-center space-y-2">
@@ -152,12 +152,12 @@ const LandingNavbar = () => {
                           alt={currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                           className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
                         />
-                                              ) : (
-                          <User className="w-5 h-5 text-white" />
-                        )}
-                        <span className="text-sm text-white">
-                          {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
-                        </span>
+                      ) : (
+                        <User className="w-5 h-5 text-gray-700" />
+                      )}
+                      <span className="text-sm text-gray-700">
+                        {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
+                      </span>
                       {/* Logo de Google si el proveedor es Google */}
                       {isGoogleProvider && (
                         <img src="/images/google-logo.svg" alt="Google" className="w-4 h-4" />
@@ -165,7 +165,7 @@ const LandingNavbar = () => {
                     </div>
                     <button
                       onClick={logout}
-                      className="flex items-center space-x-1 text-white hover:text-red-200 px-2 py-1 rounded text-sm"
+                      className="flex items-center space-x-1 text-gray-700 hover:text-red-600 px-2 py-1 rounded text-sm"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Cerrar Sesión</span>
@@ -174,7 +174,7 @@ const LandingNavbar = () => {
                 ) : (
                   <Link
                     to="/login"
-                    className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                    className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors"
                   >
                     Iniciar Sesión
                   </Link>
@@ -188,4 +188,4 @@ const LandingNavbar = () => {
   );
 };
 
-export default LandingNavbar;
+export default SearchNavbar; 

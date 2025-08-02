@@ -11,7 +11,7 @@ import FAQ from "../../components/landing/FAQ";
 import ContactSection from "../../components/landing/ContactSection";
 import LandingFooter from "../../components/landing/LandingFooter";
 import FeaturedSection from "../../components/shared/FeaturedSection";
-import PropertyCard from "../Properties/PropertyCard";
+import PublicPropertyCard from "../../components/common/PublicPropertyCard";
 import ExperienceCard from "../../components/experiences/ExperienceCard";
 
 
@@ -96,7 +96,7 @@ const LandingPage = () => {
                 items={featuredProperties}
                 loading={loading}
                 renderItem={(property) => (
-                    <PropertyCard key={property.id} property={property} onEdit={() => {}} onDelete={() => {}} />
+                    <PublicPropertyCard key={property.id} property={property} />
                 )}
             />
 

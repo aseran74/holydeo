@@ -20,6 +20,7 @@ import {
   TaskIcon,
   BoxIconLine,
   ShootingStarIcon,
+  SearchIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -37,21 +38,21 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
-  {
-    icon: <BoxIcon />,
-    name: "Propiedades",
-    path: "/properties",
-  },
+  // {
+  //   icon: <BoxIcon />,
+  //   name: "Propiedades",
+  //   path: "/properties",
+  // },
   {
     icon: <CalenderIcon />,
     name: "Reservas",
     path: "/bookings",
   },
-  {
-    icon: <ShootingStarIcon />,
-    name: "Experiencias",
-    path: "/experiences",
-  },
+  // {
+  //   icon: <ShootingStarIcon />,
+  //   name: "Experiencias",
+  //   path: "/experiences",
+  // },
   {
     icon: <BoxIconLine />,
     name: "Agencias",

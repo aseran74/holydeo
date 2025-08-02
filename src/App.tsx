@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./components/auth/LoginForm";
+import ProtectedSearchRoute from "./components/auth/ProtectedSearchRoute";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
@@ -38,6 +39,7 @@ import ImageDebugger from "./components/ImageDebugger";
 import PropertyImageTest from "./components/PropertyImageTest";
 import ImageTest from "./components/ImageTest";
 import GooglePlacesTest from "./components/GooglePlacesTest";
+import SearchPage from "./pages/Search/SearchPage";
 
 export default function App() {
   return (
@@ -51,18 +53,41 @@ export default function App() {
           {/* Auth Routes */}
           <Route path="/login" element={<LoginForm />} />
 
+          {/* Página de Búsqueda - Sin Layout */}
+          <Route path="/search" element={<SearchPage />} />
+
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             {/* Dashboard */}
             <Route path="/dashboard" element={<Home />} />
             
             {/* Propiedades y Gestión */}
-            <Route path="/properties" element={<Properties />} />
-            <Route path="/properties/:id" element={<PropertyDetails />} />
+            <Route path="/properties" element={
+              <ProtectedSearchRoute>
+                <Properties />
+              </ProtectedSearchRoute>
+            } />
+            <Route path="/properties/:id" element={
+              <ProtectedSearchRoute>
+                <PropertyDetails />
+              </ProtectedSearchRoute>
+            } />
             <Route path="/bookings" element={<Bookings />} />
-            <Route path="/experiences" element={<Experiences />} />
-            <Route path="/experiences/cards" element={<Experiences />} />
-            <Route path="/experiences/:id" element={<ExperienceDetails />} />
+            <Route path="/experiences" element={
+              <ProtectedSearchRoute>
+                <Experiences />
+              </ProtectedSearchRoute>
+            } />
+            <Route path="/experiences/cards" element={
+              <ProtectedSearchRoute>
+                <Experiences />
+              </ProtectedSearchRoute>
+            } />
+            <Route path="/experiences/:id" element={
+              <ProtectedSearchRoute>
+                <ExperienceDetails />
+              </ProtectedSearchRoute>
+            } />
             <Route path="/agencies" element={<Agencies />} />
             <Route path="/agents" element={<Agents />} />
             <Route path="/owners" element={<Owners />} />

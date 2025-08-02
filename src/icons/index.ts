@@ -62,6 +62,7 @@ import { ReactComponent as UsersIcon } from "./users.svg?react";
 import { ReactComponent as StarIcon } from "./star.svg?react";
 import { ReactComponent as CalendarIcon } from "./calendar.svg?react";
 import { ReactComponent as ExternalLinkIcon } from "./external-link.svg?react";
+import { ReactComponent as SearchIcon } from "./search.svg?react";
 
 export {
   ErrorHexaIcon,
@@ -127,4 +128,5 @@ export {
   StarIcon,
   CalendarIcon,
   ExternalLinkIcon,
+  SearchIcon,
 };
