@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { 
   ArrowLeft, 
   Heart, 
@@ -31,12 +32,14 @@ import {
   MapPinIcon,
   Coffee,
   Dumbbell,
+  Map,
+  Compass,
+  Clock,
+  Tag,
 } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import PageMeta from '../../components/common/PageMeta';
-import PageBreadCrumb from '../../components/common/PageBreadCrumb';
 import AvailabilityCalendar from '../../components/common/AvailabilityCalendar';
-import DebugCalendarData from '../../components/DebugCalendarData';
 
 // Mapeo de amenities a iconos
 const amenityIcons: { [key: string]: React.ReactElement } = {
@@ -95,6 +98,19 @@ interface Property {
   region?: string;
 }
 
+interface Experience {
+  id: string;
+  title: string;
+  description?: string;
+  image_url?: string;
+  price?: number;
+  duration?: string;
+  location: string;
+  category: string;
+  rating?: number;
+  distance?: number;
+}
+
 const PropertyDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -103,12 +119,26 @@ const PropertyDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAllImages, setShowAllImages] = useState(false);
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [experiencesLoading, setExperiencesLoading] = useState(false);
+
+  // Configuración de Google Maps
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
+    libraries: ['places']
+  });
 
   useEffect(() => {
     if (id) {
       fetchPropertyDetails();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (property) {
+      fetchExperiences();
+    }
+  }, [property]);
 
   const fetchPropertyDetails = async () => {
     try {
@@ -147,6 +177,73 @@ const PropertyDetails = () => {
       setError('Error al cargar los detalles de la propiedad');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchExperiences = async () => {
+    if (!property) return;
+    
+    try {
+      setExperiencesLoading(true);
+      
+      // Simular experiencias cercanas basadas en la ubicación de la propiedad
+      // En un caso real, esto vendría de una API o base de datos
+      const mockExperiences: Experience[] = [
+        {
+          id: '1',
+          title: 'Tour por el Casco Histórico',
+          description: 'Descubre la historia y arquitectura del centro histórico',
+          image_url: 'https://images.unsplash.com/photo-1555992336-03a23c7b20ee?w=400&h=300&fit=crop',
+          price: 25,
+          duration: '2 horas',
+          location: property.city || property.location,
+          category: 'Cultural',
+          rating: 4.8,
+          distance: 0.5
+        },
+        {
+          id: '2',
+          title: 'Experiencia Gastronómica Local',
+          description: 'Prueba los mejores platos de la región con un chef local',
+          image_url: 'https://images.unsplash.com/photo-1414235077428-338989f2dcd0?w=400&h=300&fit=crop',
+          price: 45,
+          duration: '3 horas',
+          location: property.city || property.location,
+          category: 'Gastronomía',
+          rating: 4.9,
+          distance: 1.2
+        },
+        {
+          id: '3',
+          title: 'Aventura en la Naturaleza',
+          description: 'Explora senderos y paisajes naturales de la zona',
+          image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+          price: 35,
+          duration: '4 horas',
+          location: property.city || property.location,
+          category: 'Aventura',
+          rating: 4.7,
+          distance: 2.1
+        },
+        {
+          id: '4',
+          title: 'Clase de Surf',
+          description: 'Aprende a surfear con instructores certificados',
+          image_url: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=400&h=300&fit=crop',
+          price: 60,
+          duration: '2 horas',
+          location: property.city || property.location,
+          category: 'Deportes',
+          rating: 4.6,
+          distance: 3.5
+        }
+      ];
+
+      setExperiences(mockExperiences);
+    } catch (error) {
+      console.error('Error fetching experiences:', error);
+    } finally {
+      setExperiencesLoading(false);
     }
   };
 
@@ -224,9 +321,8 @@ const PropertyDetails = () => {
     : allImageUrls;
 
   return (
-    <>
-      <PageMeta title={`${property.title} - Detalles`} description={`Detalles completos de la propiedad ${property.title}`} />
-      <PageBreadCrumb pageTitle="Detalles de Propiedad" />
+         <>
+       <PageMeta title={`${property.title} - Detalles`} description={`Detalles completos de la propiedad ${property.title}`} />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header con navegación */}
@@ -454,6 +550,149 @@ const PropertyDetails = () => {
                 )}
               </div>
             </div>
+
+            {/* Mapa */}
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Map size={24} className="text-primary-500" />
+                Ubicación en el Mapa
+              </h3>
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 h-80">
+                {loadError && (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="text-center text-red-500">
+                      <MapPin size={48} className="mx-auto mb-2" />
+                      <p>Error al cargar el mapa</p>
+                      <p className="text-sm mt-1">Verifica tu API key de Google Maps</p>
+                    </div>
+                  </div>
+                )}
+                
+                {!isLoaded ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-2"></div>
+                      <p className="text-gray-600 dark:text-gray-400">Cargando mapa...</p>
+                    </div>
+                  </div>
+                ) : property.lat && property.lng ? (
+                  <GoogleMap
+                    mapContainerClassName="w-full h-full rounded-lg"
+                    center={{ lat: property.lat, lng: property.lng }}
+                    zoom={15}
+                    options={{
+                      zoomControl: true,
+                      streetViewControl: false,
+                      mapTypeControl: false,
+                      fullscreenControl: false,
+                    }}
+                  >
+                    <Marker
+                      position={{ lat: property.lat, lng: property.lng }}
+                      title={property.title}
+                    />
+                  </GoogleMap>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="text-center text-gray-500 dark:text-gray-400">
+                      <MapPin size={48} className="mx-auto mb-2" />
+                      <p>Ubicación no disponible en el mapa</p>
+                      <p className="text-sm mt-1">Esta propiedad no tiene coordenadas configuradas</p>
+                    </div>
+                  </div>
+                )}
+                
+                {property.lat && property.lng && (
+                  <div className="mt-3 text-center">
+                    <a
+                      href={`https://www.google.com/maps?q=${property.lat},${property.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary btn-sm"
+                    >
+                      <ExternalLink size={16} className="mr-1" />
+                      Ver en Google Maps
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Experiencias Cercanas */}
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Compass size={24} className="text-primary-500" />
+                Experiencias Cercanas
+              </h3>
+              
+              {experiencesLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+                </div>
+              ) : experiences.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {experiences.map((experience) => (
+                    <div key={experience.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border overflow-hidden hover:shadow-xl transition-shadow">
+                      <div className="relative h-48">
+                        <img
+                          src={experience.image_url}
+                          alt={experience.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-2 right-2 bg-white dark:bg-gray-800 px-2 py-1 rounded-full text-xs font-medium">
+                          {experience.category}
+                        </div>
+                        {experience.rating && (
+                          <div className="absolute bottom-2 left-2 bg-white dark:bg-gray-800 px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                            <Star size={12} className="text-yellow-500 fill-current" />
+                            <span>{experience.rating}</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="p-4">
+                        <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                          {experience.title}
+                        </h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+                          {experience.description}
+                        </p>
+                        
+                        <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-3">
+                          <div className="flex items-center gap-1">
+                            <Clock size={14} />
+                            <span>{experience.duration}</span>
+                          </div>
+                          {experience.distance && (
+                            <div className="flex items-center gap-1">
+                              <MapPin size={14} />
+                              <span>{experience.distance} km</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          {experience.price && (
+                            <div className="font-semibold text-primary-600">
+                              {formatPrice(experience.price)}
+                            </div>
+                          )}
+                          <button className="btn btn-outline btn-sm">
+                            <Tag size={14} className="mr-1" />
+                            Reservar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                  <Compass size={48} className="mx-auto mb-2" />
+                  <p>No hay experiencias disponibles en esta zona</p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Sidebar */}
@@ -609,16 +848,13 @@ const PropertyDetails = () => {
               </div>
             </div>
 
-            {/* Debug Component - TEMPORAL */}
-            <DebugCalendarData propertyId={property.id} />
-            
-            {/* Calendario de Disponibilidad */}
-            <AvailabilityCalendar propertyId={property.id} />
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
+                         {/* Calendario de Disponibilidad */}
+             <AvailabilityCalendar propertyId={property.id} />
+           </div>
+         </div>
+       </div>
+     </>
+   );
+ };
 
 export default PropertyDetails; 

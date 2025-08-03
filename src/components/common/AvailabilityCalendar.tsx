@@ -9,9 +9,17 @@ interface AvailabilityCalendarProps {
 
 interface Booking {
   id: string;
-  check_in: string;
-  check_out: string;
+  guest_id: string;
+  start_date: string;
+  end_date: string;
   status: 'confirmada' | 'pendiente' | 'cancelada';
+  created_at: string;
+}
+
+interface BlockedDate {
+  id: string;
+  date: string;
+  source: 'manual' | 'ical' | 'booking';
 }
 
 const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({ 
@@ -20,6 +28,7 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,39 +36,53 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
   }, [propertyId]);
 
   const fetchBookings = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
+      console.log('AvailabilityCalendar - Fetching bookings for property:', propertyId);
       
-      console.log('Fetching bookings for property:', propertyId);
-      
-      // Obtener las reservas de esta propiedad
+      // Obtener reservas - Usar la misma consulta que AdvancedCalendarManager
       const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
-        .select('id, check_in, check_out, status')
+        .select('id, guest_id, start_date, end_date, status, created_at')
         .eq('property_id', propertyId)
         .eq('status', 'confirmada');
-
+      
       if (bookingsError) {
-        console.error('Error fetching bookings:', bookingsError);
+        console.error('AvailabilityCalendar - Error fetching bookings:', bookingsError);
       } else {
         console.log('AvailabilityCalendar - Bookings found:', bookingsData?.length || 0);
         console.log('AvailabilityCalendar - Bookings data:', bookingsData);
         setBookings(bookingsData || []);
       }
+
+      // Obtener días bloqueados - Usar la misma consulta que AdvancedCalendarManager
+      const { data: blockedData, error: blockedError } = await supabase
+        .from('blocked_dates')
+        .select('id, date, source')
+        .eq('property_id', propertyId);
+      
+      if (blockedError) {
+        console.error('AvailabilityCalendar - Error fetching blocked dates:', blockedError);
+      } else {
+        console.log('AvailabilityCalendar - Blocked dates found:', blockedData?.length || 0);
+        console.log('AvailabilityCalendar - Blocked dates data:', blockedData);
+        setBlockedDates(blockedData || []);
+      }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('AvailabilityCalendar - Error in fetchBookings:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const isDateBooked = (date: Date) => {
+  // Usar la misma lógica de comparación de fechas que AdvancedCalendarManager
+  const getBooking = (date: Date) => {
     // Normalizar la fecha a medianoche para comparación precisa
     const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
-    const isBooked = bookings.some(booking => {
-      const startDate = new Date(booking.check_in);
-      const endDate = new Date(booking.check_out);
+    return bookings.find(booking => {
+      const startDate = new Date(booking.start_date);
+      const endDate = new Date(booking.end_date);
       
       // Normalizar las fechas de reserva a medianoche
       const bookingStart = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
@@ -68,13 +91,15 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       // Una fecha está ocupada si está entre la fecha de inicio y fin (inclusive)
       return checkDate >= bookingStart && checkDate <= bookingEnd;
     });
-    
-    // Log temporal para debugging (solo para fechas de agosto)
-    if (date.getMonth() === 7 && isBooked) { // Agosto es mes 7 (0-indexed)
-      console.log('Date booked:', date.toDateString(), 'Check date:', checkDate.toDateString());
-    }
-    
-    return isBooked;
+  };
+
+  const isDateBooked = (date: Date) => {
+    return getBooking(date) !== undefined;
+  };
+
+  const isDateBlocked = (date: Date) => {
+    const dateStr = date.toISOString().slice(0, 10);
+    return blockedDates.some(b => b.date === dateStr);
   };
 
   const isDateInPast = (date: Date) => {
@@ -196,6 +221,7 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
         {days.map((day, index) => {
           const isCurrentMonth = day.getMonth() === currentDate.getMonth();
           const isBooked = isDateBooked(day);
+          const isBlocked = isDateBlocked(day);
           const isPast = isDateInPast(day);
           const isToday = isDateToday(day);
 
@@ -206,6 +232,8 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
           } else if (isPast) {
             dayClasses += " text-gray-400 dark:text-gray-500";
           } else if (isBooked) {
+            dayClasses += " bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 font-medium";
+          } else if (isBlocked) {
             dayClasses += " bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 font-medium";
           } else if (isToday) {
             dayClasses += " bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 font-medium";
@@ -228,8 +256,12 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
           <span className="text-gray-600 dark:text-gray-400">Disponible</span>
         </div>
         <div className="flex items-center gap-2">
+          <div className="w-3 h-3 bg-green-100 dark:bg-green-900 rounded"></div>
+          <span className="text-green-600 dark:text-green-400">Reserva</span>
+        </div>
+        <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-red-100 dark:bg-red-900 rounded"></div>
-          <span className="text-red-600 dark:text-red-400">Ocupado</span>
+          <span className="text-red-600 dark:text-red-400">Bloqueado</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-blue-100 dark:bg-blue-900 rounded"></div>

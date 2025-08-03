@@ -30,8 +30,8 @@ type Booking = {
   id: string;
   guest_id: string;
   guest_name?: string;
-  check_in: string;
-  check_out: string;
+  start_date: string;
+  end_date: string;
   status: 'pendiente' | 'confirmada' | 'cancelada';
   created_at: string;
 };
@@ -103,7 +103,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
       // Obtener reservas - Usando consulta simple para sincronizar con AvailabilityCalendar
       const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
-        .select('id, guest_id, check_in, check_out, status, created_at')
+        .select('id, guest_id, start_date, end_date, status, created_at')
         .eq('property_id', propertyId)
         .eq('status', 'confirmada');
       
@@ -168,8 +168,8 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
     const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
     return bookings.find(booking => {
-      const startDate = new Date(booking.check_in);
-      const endDate = new Date(booking.check_out);
+      const startDate = new Date(booking.start_date);
+      const endDate = new Date(booking.end_date);
       
       // Normalizar las fechas de reserva a medianoche
       const bookingStart = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
@@ -330,13 +330,13 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
     const endDateStr = endDate.toISOString().slice(0, 10);
     
     try {
-      const { error } = await supabase.from('bookings').insert({
-        property_id: propertyId,
-        guest_id: selectedGuest,
-                  check_in: startDate,
-          check_out: endDateStr,
-        status: 'confirmada'
-      });
+              const { error } = await supabase.from('bookings').insert({
+          property_id: propertyId,
+          guest_id: selectedGuest,
+          start_date: startDate,
+          end_date: endDateStr,
+          status: 'confirmada'
+        });
       
       if (error) throw error;
       
@@ -432,9 +432,9 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
         };
       }),
       ...bookings.map(b => {
-        const [year, month, day] = b.check_in.split('-').map(Number);
-        const startDate = new Date(b.check_in);
-        const endDate = new Date(b.check_out);
+        const [year, month, day] = b.start_date.split('-').map(Number);
+        const startDate = new Date(b.start_date);
+        const endDate = new Date(b.end_date);
         // Calcular duración en días (mínimo 1)
         let days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
         if (days < 1) days = 1;
@@ -496,20 +496,20 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
     const dateStr = date.toISOString().slice(0, 10);
     const isBlockedDate = blockedDates.some(b => b.date === dateStr);
     const hasSpecialPrice = specialPrices.some(s => s.date === dateStr);
-    const hasBooking = bookings.some(booking => {
-      const startDate = new Date(booking.check_in);
-      const endDate = new Date(booking.check_out);
-      
-      // Normalizar la fecha a verificar a medianoche
-      const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-      
-      // Normalizar las fechas de reserva a medianoche
-      const bookingStart = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-      const bookingEnd = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-      
-      // Una fecha está ocupada si está entre la fecha de inicio y fin (inclusive)
-      return checkDate >= bookingStart && checkDate <= bookingEnd;
-    });
+          const hasBooking = bookings.some(booking => {
+        const startDate = new Date(booking.start_date);
+        const endDate = new Date(booking.end_date);
+        
+        // Normalizar la fecha a verificar a medianoche
+        const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        
+        // Normalizar las fechas de reserva a medianoche
+        const bookingStart = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+        const bookingEnd = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+        
+        // Una fecha está ocupada si está entre la fecha de inicio y fin (inclusive)
+        return checkDate >= bookingStart && checkDate <= bookingEnd;
+      });
     
     // Verificar si la fecha está en el rango seleccionado
     const isInSelection = selectedRange.some(selectedDate => 

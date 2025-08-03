@@ -12,7 +12,7 @@ interface EnhancedSearchFiltersProps {
   setShowFilters: (show: boolean) => void;
   seasons: string[];
   experienceTypes: string[];
-  amenities: string[];
+  amenities: Array<{ id: string; name: string; icon: any }>;
   handleAmenityToggle: (amenity: string) => void;
 }
 
@@ -58,107 +58,134 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
 
         <div className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
           <div className="space-y-6">
-            {/* Filtros de Precio */}
-            <div className="space-y-4">
-              <PriceFilter
-                label="Precio máximo por día"
-                value={searchData.pricePerDay}
-                onChange={(value) => setSearchData((prev: any) => ({ ...prev, pricePerDay: value }))}
-                min={0}
-                max={500}
-                step={25}
-              />
-              
-              <PriceFilter
-                label="Precio máximo por mes"
-                value={searchData.pricePerMonth}
-                onChange={(value) => setSearchData((prev: any) => ({ ...prev, pricePerMonth: value }))}
-                min={0}
-                max={5000}
-                step={100}
-              />
-            </div>
+                         {/* Filtros de Precio */}
+             <div className="space-y-4">
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                   Precio máximo por día
+                 </label>
+                 <p className="text-xs text-gray-500 mb-2">
+                   Elige el precio día que pagarías por medias estancias (15 días mínimo, 60 días máximo)
+                 </p>
+                 <PriceFilter
+                   label=""
+                   value={searchData.pricePerDay}
+                   onChange={(value) => setSearchData((prev: any) => ({ ...prev, pricePerDay: value }))}
+                   min={0}
+                   max={500}
+                   step={25}
+                 />
+               </div>
+               
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                   Precio máximo por mes
+                 </label>
+                 <p className="text-xs text-gray-500 mb-2">
+                   Marca para elegir el precio mes por toda la temporada
+                 </p>
+                 <PriceFilter
+                   label=""
+                   value={searchData.pricePerMonth}
+                   onChange={(value) => setSearchData((prev: any) => ({ ...prev, pricePerMonth: value }))}
+                   min={0}
+                   max={5000}
+                   step={100}
+                 />
+               </div>
+             </div>
 
-            {/* Temporada */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Temporada
-              </label>
-              <select
-                value={searchData.season}
-                onChange={(e) => setSearchData((prev: any) => ({ ...prev, season: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-              >
-                <option value="">Todas las temporadas</option>
-                {seasons.map(season => (
-                  <option key={season} value={season}>
-                    {season}
-                  </option>
-                ))}
-              </select>
-            </div>
+                         {/* Temporada */}
+             <div>
+               <label className="block text-sm font-medium text-gray-700 mb-1">
+                 Temporada
+               </label>
+               <p className="text-xs text-gray-500 mb-2">
+                 Marca si quieres toda una temporada
+               </p>
+               <select
+                 value={searchData.season}
+                 onChange={(e) => setSearchData((prev: any) => ({ ...prev, season: e.target.value }))}
+                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+               >
+                 <option value="">Todas las temporadas</option>
+                 {seasons.map(season => (
+                   <option key={season} value={season}>
+                     {season}
+                   </option>
+                 ))}
+               </select>
+             </div>
 
             {/* Filtros específicos según el tipo */}
             {searchType === 'properties' ? (
               <>
-                {/* Tipo de propiedad */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tipo de vivienda
-                  </label>
-                  <select
-                    value={searchData.propertyType}
-                    onChange={(e) => setSearchData((prev: any) => ({ ...prev, propertyType: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  >
-                    <option value="">Todos los tipos</option>
-                    {dynamicPropertyTypes.map(type => (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                                 {/* Tipo de propiedad */}
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Tipo de vivienda
+                   </label>
+                   <p className="text-xs text-gray-500 mb-2">
+                     Marca para elegir el tipo de vivienda
+                   </p>
+                   <select
+                     value={searchData.propertyType}
+                     onChange={(e) => setSearchData((prev: any) => ({ ...prev, propertyType: e.target.value }))}
+                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                   >
+                     <option value="">Todos los tipos</option>
+                     {dynamicPropertyTypes.map(type => (
+                       <option key={type} value={type}>
+                         {type}
+                       </option>
+                     ))}
+                   </select>
+                 </div>
 
-                {/* Habitaciones y Baños en una sola columna */}
-                <div className="space-y-4">
-                  <NumberStepper
-                    value={searchData.bedrooms}
-                    onChange={(value) => setSearchData((prev: any) => ({ ...prev, bedrooms: value }))}
-                    min={0}
-                    max={6}
-                    label="Habitaciones"
-                  />
+                {/* Habitaciones y Baños lado a lado */}
+                <div className="grid grid-cols-2 gap-4">
+                                     <NumberStepper
+                     value={searchData.bedrooms}
+                     onChange={(value) => setSearchData((prev: any) => ({ ...prev, bedrooms: value }))}
+                     min={0}
+                     max={6}
+                     label="Nº Dormitorios mínimo"
+                     className="w-full"
+                   />
 
-                  <NumberStepper
-                    value={searchData.bathrooms}
-                    onChange={(value) => setSearchData((prev: any) => ({ ...prev, bathrooms: value }))}
-                    min={0}
-                    max={5}
-                    label="Baños"
-                  />
+                   <NumberStepper
+                     value={searchData.bathrooms}
+                     onChange={(value) => setSearchData((prev: any) => ({ ...prev, bathrooms: value }))}
+                     min={0}
+                     max={5}
+                     label="Nº Baños mínimo"
+                     className="w-full"
+                   />
                 </div>
 
                 {/* Amenities */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-2">
                     Comodidades
                   </label>
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {amenities.map(amenity => (
-                      <label key={amenity} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={searchData.amenities.includes(amenity)}
-                          onChange={() => handleAmenityToggle(amenity)}
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="text-sm text-gray-700 flex items-center">
-                          {/* Assuming amenities are strings, not objects with icon */}
-                          {amenity}
-                        </span>
-                      </label>
-                    ))}
+                  <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                    {amenities.map(amenity => {
+                      const IconComponent = amenity.icon;
+                      return (
+                        <label key={amenity.id} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={searchData.amenities.includes(amenity.id)}
+                            onChange={() => handleAmenityToggle(amenity.id)}
+                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          />
+                          <IconComponent className="w-3 h-3 text-gray-500" />
+                          <span className="text-xs text-gray-700 flex items-center">
+                            {amenity.name}
+                          </span>
+                        </label>
+                      );
+                    })}
                   </div>
                 </div>
               </>

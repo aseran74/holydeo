@@ -18,6 +18,7 @@ const SearchPage = () => {
   const [searchData, setSearchData] = useState({
     query: searchParams.get('query') || '',
     location: searchParams.get('location') || '',
+    zone: searchParams.get('zone') || '',
     checkIn: searchParams.get('checkIn') || '',
     checkOut: searchParams.get('checkOut') || '',
     guests: parseInt(searchParams.get('guests') || '1'),
@@ -106,6 +107,11 @@ const SearchPage = () => {
       query = query.ilike('location', `%${searchData.location}%`);
     }
     
+    // Filtro por zona/región
+    if (searchData.zone) {
+      query = query.eq('region', searchData.zone);
+    }
+    
     // Filtro por tipo de propiedad
     if (searchData.propertyType) {
       query = query.eq('tipo', searchData.propertyType);
@@ -152,6 +158,7 @@ const SearchPage = () => {
     console.log('Buscando propiedades con filtros:', {
       query: searchData.query,
       location: searchData.location,
+      zone: searchData.zone,
       propertyType: searchData.propertyType,
       bedrooms: searchData.bedrooms,
       bathrooms: searchData.bathrooms,
@@ -191,25 +198,45 @@ const SearchPage = () => {
         // - Y la fecha de fin de la reserva es posterior o igual a la fecha de llegada de la búsqueda
         const { data: bookings, error: bookingsError } = await supabase
           .from('bookings')
-          .select('property_id, check_in, check_out, status')
-          .or(`and(check_in.lte.${checkOutDate},check_out.gte.${checkInDate})`)
+          .select('property_id, start_date, end_date, status')
+          .or(`and(start_date.lte.${checkOutDate},end_date.gte.${checkInDate})`)
           .eq('status', 'confirmada');
 
         if (bookingsError) {
           console.error('Error obteniendo reservas:', bookingsError);
-        } else {
-          // Obtener IDs únicos de propiedades ocupadas
-          const occupiedPropertyIds = [...new Set(bookings?.map(booking => booking.property_id) || [])];
-          
-          // Filtrar propiedades disponibles
-          availableProperties = (data || []).filter(property => 
-            !occupiedPropertyIds.includes(property.id)
-          );
-          
-          console.log('Reservas encontradas:', bookings?.length || 0);
-          console.log('Propiedades ocupadas:', occupiedPropertyIds);
-          console.log('Propiedades disponibles después del filtro:', availableProperties.length);
         }
+
+        // Obtener días bloqueados que se solapan con las fechas seleccionadas
+        const { data: blockedDates, error: blockedDatesError } = await supabase
+          .from('blocked_dates')
+          .select('property_id, date')
+          .gte('date', searchData.checkIn)
+          .lte('date', searchData.checkOut);
+
+        if (blockedDatesError) {
+          console.error('Error obteniendo días bloqueados:', blockedDatesError);
+        }
+
+        // Obtener IDs únicos de propiedades ocupadas (por reservas)
+        const occupiedPropertyIds = [...new Set(bookings?.map(booking => booking.property_id) || [])];
+        
+        // Obtener IDs únicos de propiedades con días bloqueados
+        const blockedPropertyIds = [...new Set(blockedDates?.map(blocked => blocked.property_id) || [])];
+        
+        // Combinar ambas listas de propiedades no disponibles
+        const unavailablePropertyIds = [...new Set([...occupiedPropertyIds, ...blockedPropertyIds])];
+        
+        // Filtrar propiedades disponibles
+        availableProperties = (data || []).filter(property => 
+          !unavailablePropertyIds.includes(property.id)
+        );
+        
+        console.log('Reservas encontradas:', bookings?.length || 0);
+        console.log('Días bloqueados encontrados:', blockedDates?.length || 0);
+        console.log('Propiedades ocupadas por reservas:', occupiedPropertyIds);
+        console.log('Propiedades con días bloqueados:', blockedPropertyIds);
+        console.log('Propiedades no disponibles total:', unavailablePropertyIds);
+        console.log('Propiedades disponibles después del filtro:', availableProperties.length);
       } catch (error) {
         console.error('Error verificando disponibilidad:', error);
         // En caso de error, mostrar todas las propiedades
@@ -234,6 +261,11 @@ const SearchPage = () => {
     // Filtro por ubicación
     if (searchData.location) {
       query = query.ilike('location', `%${searchData.location}%`);
+    }
+    
+    // Filtro por zona/región
+    if (searchData.zone) {
+      query = query.eq('region', searchData.zone);
     }
     
     // Filtro por categoría
@@ -264,6 +296,7 @@ const SearchPage = () => {
     console.log('Buscando experiencias con filtros:', {
       query: searchData.query,
       location: searchData.location,
+      zone: searchData.zone,
       category: searchData.category,
       experienceType: searchData.experienceType,
       duration: searchData.duration,
@@ -382,43 +415,45 @@ const SearchPage = () => {
 
           {/* Búsqueda principal con DateSearchForm */}
           <div className="max-w-4xl mx-auto mb-8">
-            <DateSearchForm 
-              variant="search" 
-              externalSearchData={{
-                location: searchData.location,
-                checkIn: searchData.checkIn,
-                checkOut: searchData.checkOut,
-                pricePerDay: searchData.pricePerDay,
-                pricePerMonth: searchData.pricePerMonth
-              }}
-              onSearchDataChange={(data) => {
-                setSearchData(prev => ({
-                  ...prev,
-                  location: data.location,
-                  checkIn: data.checkIn,
-                  checkOut: data.checkOut,
-                  pricePerDay: data.pricePerDay || 500,
-                  pricePerMonth: data.pricePerMonth || 5000
-                }));
-              }}
-              onSearch={handleSearch}
-            />
+                         <DateSearchForm 
+               variant="search" 
+               externalSearchData={{
+                 location: searchData.location,
+                 zone: searchData.zone,
+                 checkIn: searchData.checkIn,
+                 checkOut: searchData.checkOut,
+                 pricePerDay: searchData.pricePerDay,
+                 pricePerMonth: searchData.pricePerMonth
+               }}
+               onSearchDataChange={(data) => {
+                 setSearchData(prev => ({
+                   ...prev,
+                   location: data.location,
+                   zone: data.zone || '',
+                   checkIn: data.checkIn,
+                   checkOut: data.checkOut,
+                   pricePerDay: data.pricePerDay || 500,
+                   pricePerMonth: data.pricePerMonth || 5000
+                 }));
+               }}
+               onSearch={handleSearch}
+             />
           </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar de filtros */}
-          <EnhancedSearchFilters
-            searchData={searchData}
-            setSearchData={setSearchData}
-            searchType={searchType}
-            showFilters={showFilters}
-            setShowFilters={setShowFilters}
-            seasons={seasons.map(s => s.value)}
-            experienceTypes={experienceTypes.map(e => e.value)}
-            amenities={amenities.map(a => a.id)}
-            handleAmenityToggle={handleAmenityToggle}
-          />
+                     <EnhancedSearchFilters
+             searchData={searchData}
+             setSearchData={setSearchData}
+             searchType={searchType}
+             showFilters={showFilters}
+             setShowFilters={setShowFilters}
+             seasons={seasons.map(s => s.value)}
+             experienceTypes={experienceTypes.map(e => e.value)}
+             amenities={amenities}
+             handleAmenityToggle={handleAmenityToggle}
+           />
 
           {/* Contenido principal */}
           <div className="flex-1 w-full">

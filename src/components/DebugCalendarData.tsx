@@ -26,7 +26,7 @@ const DebugCalendarData: React.FC<DebugCalendarDataProps> = ({ propertyId }) => 
       console.log('--- AvailabilityCalendar Query ---');
       const { data: availabilityBookings, error: availabilityError } = await supabase
         .from('bookings')
-        .select('id, check_in, check_out, status')
+        .select('id, start_date, end_date, status')
         .eq('property_id', propertyId)
         .eq('status', 'confirmada');
 
@@ -40,8 +40,8 @@ const DebugCalendarData: React.FC<DebugCalendarDataProps> = ({ propertyId }) => 
         .select(`
           id, 
           guest_id, 
-          check_in, 
-          check_out, 
+          start_date, 
+          end_date, 
           status, 
           created_at,
           guests(users(full_name))
@@ -56,7 +56,7 @@ const DebugCalendarData: React.FC<DebugCalendarDataProps> = ({ propertyId }) => 
       console.log('--- Simple Query (No JOIN) ---');
       const { data: simpleBookings, error: simpleError } = await supabase
         .from('bookings')
-        .select('id, guest_id, check_in, check_out, status, created_at')
+        .select('id, guest_id, start_date, end_date, status, created_at')
         .eq('property_id', propertyId)
         .eq('status', 'confirmada');
 
@@ -113,14 +113,14 @@ const DebugCalendarData: React.FC<DebugCalendarDataProps> = ({ propertyId }) => 
 
     // Probar con datos de ejemplo
     const sampleBooking = {
-      check_in: '2024-08-01',
-      check_out: '2024-08-03'
+      start_date: '2024-08-01',
+      end_date: '2024-08-03'
     };
 
     // Lógica de AvailabilityCalendar
     const checkDate = new Date(testDate.getFullYear(), testDate.getMonth(), testDate.getDate());
-    const startDate = new Date(sampleBooking.check_in);
-    const endDate = new Date(sampleBooking.check_out);
+    const startDate = new Date(sampleBooking.start_date);
+    const endDate = new Date(sampleBooking.end_date);
     const bookingStart = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
     const bookingEnd = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
     const isBooked = checkDate >= bookingStart && checkDate <= bookingEnd;
@@ -153,7 +153,7 @@ const DebugCalendarData: React.FC<DebugCalendarDataProps> = ({ propertyId }) => 
             {availabilityData.map(booking => (
               <div key={booking.id} className="border-b py-1">
                 <p><strong>ID:</strong> {booking.id}</p>
-                <p><strong>Dates:</strong> {booking.check_in} to {booking.check_out}</p>
+                <p><strong>Dates:</strong> {booking.start_date} to {booking.end_date}</p>
                 <p><strong>Status:</strong> {booking.status}</p>
               </div>
             ))}
@@ -167,7 +167,7 @@ const DebugCalendarData: React.FC<DebugCalendarDataProps> = ({ propertyId }) => 
             {advancedData.map(booking => (
               <div key={booking.id} className="border-b py-1">
                 <p><strong>ID:</strong> {booking.id}</p>
-                <p><strong>Dates:</strong> {booking.check_in} to {booking.check_out}</p>
+                <p><strong>Dates:</strong> {booking.start_date} to {booking.end_date}</p>
                 <p><strong>Status:</strong> {booking.status}</p>
                 <p><strong>Guest:</strong> {booking.guests?.users?.full_name || 'N/A'}</p>
               </div>

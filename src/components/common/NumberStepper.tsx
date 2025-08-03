@@ -32,11 +32,11 @@ const NumberStepper: React.FC<NumberStepperProps> = ({
     }
   };
 
-  const displayValue = value === 0 ? "Cualquiera" : value.toString();
+  const displayValue = value === 0 ? "" : value.toString();
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="block text-sm font-medium text-gray-700">
+      <label className="block text-xs font-medium text-gray-700">
         {label}
       </label>
       <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3 border border-gray-200">
@@ -53,7 +53,7 @@ const NumberStepper: React.FC<NumberStepperProps> = ({
         </button>
         
         <div className="flex-1 text-center">
-          <span className="text-lg font-semibold text-gray-800">
+          <span className="text-sm font-semibold text-gray-800">
             {displayValue}
           </span>
         </div>
