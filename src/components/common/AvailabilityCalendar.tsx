@@ -42,7 +42,8 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       if (bookingsError) {
         console.error('Error fetching bookings:', bookingsError);
       } else {
-        console.log('Bookings found:', bookingsData);
+        console.log('AvailabilityCalendar - Bookings found:', bookingsData?.length || 0);
+        console.log('AvailabilityCalendar - Bookings data:', bookingsData);
         setBookings(bookingsData || []);
       }
     } catch (error) {

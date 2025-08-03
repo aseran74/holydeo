@@ -110,7 +110,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
           check_out, 
           status, 
           created_at,
-          guests!inner(users!inner(full_name))
+          guests(users(full_name))
         `)
         .eq('property_id', propertyId)
         .eq('status', 'confirmada');
@@ -122,6 +122,8 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
       if (blocked) setBlockedDates(blocked);
       if (specials) setSpecialPrices(specials);
       if (bookingsData) {
+        console.log('AdvancedCalendarManager - Bookings found:', bookingsData.length);
+        console.log('AdvancedCalendarManager - Bookings data:', bookingsData);
         setBookings(bookingsData.map((b: any) => ({
           ...b,
           guest_name: b.guests?.users?.full_name
@@ -170,8 +172,20 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
   };
 
   const getBooking = (date: Date) => {
-    const d = date.toISOString().slice(0, 10);
-          return bookings.find(b => b.check_in <= d && b.check_out >= d);
+    // Normalizar la fecha a medianoche para comparación precisa
+    const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    
+    return bookings.find(booking => {
+      const startDate = new Date(booking.check_in);
+      const endDate = new Date(booking.check_out);
+      
+      // Normalizar las fechas de reserva a medianoche
+      const bookingStart = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const bookingEnd = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+      
+      // Una fecha está ocupada si está entre la fecha de inicio y fin (inclusive)
+      return checkDate >= bookingStart && checkDate <= bookingEnd;
+    });
   };
 
   const handleDayClick = (date: Date) => {
@@ -490,10 +504,19 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
     const dateStr = date.toISOString().slice(0, 10);
     const isBlockedDate = blockedDates.some(b => b.date === dateStr);
     const hasSpecialPrice = specialPrices.some(s => s.date === dateStr);
-    const hasBooking = bookings.some(b => {
-              const bookingStart = new Date(b.check_in);
-        const bookingEnd = new Date(b.check_out);
-      return date >= bookingStart && date <= bookingEnd;
+    const hasBooking = bookings.some(booking => {
+      const startDate = new Date(booking.check_in);
+      const endDate = new Date(booking.check_out);
+      
+      // Normalizar la fecha a verificar a medianoche
+      const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      
+      // Normalizar las fechas de reserva a medianoche
+      const bookingStart = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const bookingEnd = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+      
+      // Una fecha está ocupada si está entre la fecha de inicio y fin (inclusive)
+      return checkDate >= bookingStart && checkDate <= bookingEnd;
     });
     
     // Verificar si la fecha está en el rango seleccionado
