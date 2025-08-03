@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 import { ListIcon, GridIcon, PencilIcon } from "../../icons";
+import RecentBookings from "../../components/common/RecentBookings";
 
 interface Booking {
   id: string;
@@ -105,6 +106,11 @@ const Bookings = () => {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Componente de últimas reservas */}
+      <div className="mb-8">
+        <RecentBookings limit={3} />
       </div>
 
       {viewMode === 'list' ? (

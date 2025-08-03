@@ -1,61 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useJsApiLoader } from '@react-google-maps/api';
 import { supabase } from '../../supabaseClient';
-import { 
-  Star, 
-  Car, 
-  Building,
-  Building2,
-  Waves,
-  Snowflake,
-  TreePine,
-  Sun,
-  Image as ImageIcon
-} from 'lucide-react';
-import { useJsApiLoader, Autocomplete, GoogleMap, Marker } from "@react-google-maps/api";
+import { Property } from '../../types';
+import { Waves, TreePine, Car, Sun, Snowflake, Building2, Building, Star } from 'lucide-react';
+import GooglePlacesAutocomplete from '../../components/common/GooglePlacesAutocomplete';
 import PropertyCalendarManager from './PropertyCalendarManager';
 import { getLatLngFromAddress } from '../../lib/geocode';
 
-interface Property {
-  id?: string;
-  title: string;
-  description?: string;
-  location: string;
-  price?: number;
-  precio_entresemana?: number;
-  precio_fin_de_semana?: number;
-  precio_dia?: number;
-  bathrooms?: number;
-  bedrooms?: number;
-  toilets?: number;
-  square_meters?: number;
-  street_address?: string;
-  city?: string;
-  state?: string;
-  postal_code?: string;
-  country?: string;
-  main_image_path?: string;
-  image_paths?: string[];
-  amenities?: string[];
-  lat?: number;
-  lng?: number;
-  meses_temporada?: string[];
-  precio_mes?: number;
-  alquila_temporada_completa?: boolean;
-  url_idealista?: string;
-  url_booking?: string;
-  url_airbnb?: string;
-  min_days?: number;
-  max_days?: number;
-  owner_id?: string;
-  agency_id?: string;
-  destacada?: boolean;
-  tipo?: string;
-  region?: string;
-}
-
 interface PropertyFormProps {
   property?: Property | null;
-  onSave: (property: Property) => void;
+  onSave: (property: Omit<Property, 'id'> & { id?: string }) => void;
   onCancel: () => void;
 }
 
@@ -102,7 +56,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
   const [amenities, setAmenities] = useState<string[]>([]);
-  const autocompleteRef = useRef<any>(null);
   const [selectedMesesTemporada, setSelectedMesesTemporada] = useState<string[]>(property?.meses_temporada || []);
   const [precioMes, setPrecioMes] = useState(property?.precio_mes ? String(property.precio_mes) : "");
   const [alquilaTemporadaCompleta, setAlquilaTemporadaCompleta] = useState(false);
@@ -119,13 +72,11 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
   const [destacada, setDestacada] = useState(false);
   const [featured, setFeatured] = useState(false);
   
-  // Nuevos estados para los desplegables
-  const [propietarios, setPropietarios] = useState<any[]>([]);
-  const [agencies, setAgencies] = useState<any[]>([]);
-  const [agents, setAgents] = useState<any[]>([]);
-  const [selectedPropietario, setSelectedPropietario] = useState<string>('');
-  const [selectedAgency, setSelectedAgency] = useState<string>('');
-  const [selectedAgent, setSelectedAgent] = useState<string>('');
+  // Comentamos las variables que dependen de profiles
+  // const [propietarios, setPropietarios] = useState<any[]>([]);
+  // const [agencies, setAgencies] = useState<any[]>([]);
+  // const [selectedPropietario, setSelectedPropietario] = useState<string>('');
+  // const [selectedAgency, setSelectedAgency] = useState<string>('');
 
   const { isLoaded } = useJsApiLoader({
     // --- CORRECCIÓN AQUÍ ---
@@ -135,15 +86,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
   });
 
   useEffect(() => {
-    // Cargar datos para los desplegables
     const fetchDataForSelects = async () => {
-      // Cargar propietarios desde profiles
-      const { data: propietariosData } = await supabase.from('profiles').select('user_id, full_name').eq('role', 'owner');
-      if (propietariosData) setPropietarios(propietariosData);
-      // Cargar agencias desde profiles
-      const { data: agenciesData } = await supabase.from('profiles').select('user_id, username').eq('role', 'agency');
-      if (agenciesData) setAgencies(agenciesData);
-      // NO se cargan los agentes aquí inicialmente
+      // Por ahora, no cargamos datos de profiles ya que la tabla no existe
+      // Los selectores de propietarios y agencias se pueden implementar más tarde
+      console.log('Formulario cargado sin dependencias de profiles');
     };
     fetchDataForSelects();
 
@@ -178,55 +124,46 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
       setTipo(property.tipo || "Piso o apartamento");
       setRegion(property.region || "Andalucia");
       setDestacada(property.destacada || false);
-      setSelectedPropietario(property.owner_id || '');
-      setSelectedAgency(property.agency_id || '');
+      // setSelectedPropietario(property.owner_id || ''); // Eliminado
+      // setSelectedAgency(property.agency_id || ''); // Eliminado
     }
   }, [property]);
 
-  // Nuevo useEffect para cargar agentes cuando cambia la agencia seleccionada
-  useEffect(() => {
-    if (selectedAgency) {
-      const fetchAgentsForAgency = async () => {
-        const { data: agentsData, error } = await supabase
-          .from('profile')
-          .select('user_id, username')
-          .eq('role', 'agent')
-          .eq('agency_id', selectedAgency);
-        if (error) {
-          console.error("Error fetching agents:", error);
-          setAgents([]);
-        } else {
-          setAgents(agentsData || []);
-        }
-      };
-      fetchAgentsForAgency();
-    } else {
-      setAgents([]);
-    }
-    setSelectedAgent('');
-  }, [selectedAgency]);
-
-  const handlePlaceChanged = () => {
-    const place = autocompleteRef.current?.getPlace();
-    if (place && place.formatted_address && place.geometry) {
-      setLocation(place.formatted_address);
-      setLat(place.geometry.location.lat());
-      setLng(place.geometry.location.lng());
-    }
-  };
+  // Eliminar el useEffect que carga agentes ya que no tenemos la tabla profiles
+  // useEffect(() => {
+  //   if (selectedAgency) {
+  //     const fetchAgentsForAgency = async () => {
+  //       const { data: agentsData, error } = await supabase
+  //         .from('profile')
+  //         .select('user_id, username')
+  //         .eq('role', 'agent')
+  //         .eq('agency_id', selectedAgency);
+  //       if (error) {
+  //         console.error("Error fetching agents:", error);
+  //         setAgents([]);
+  //       } else {
+  //         setAgents(agentsData || []);
+  //       }
+  //     };
+  //     fetchAgentsForAgency();
+  //   } else {
+  //     setAgents([]);
+  //   }
+  //   setSelectedAgent('');
+  // }, [selectedAgency]);
 
   const handleAmenityToggle = (value: string) => {
-    setAmenities((prev) =>
-      prev.includes(value)
-        ? prev.filter((a) => a !== value)
+    setAmenities(prev => 
+      prev.includes(value) 
+        ? prev.filter(item => item !== value)
         : [...prev, value]
     );
   };
 
   const handleSeasonChange = (key: string) => {
-    setSelectedMesesTemporada((prev) =>
-      prev.includes(key)
-        ? prev.filter((s) => s !== key)
+    setSelectedMesesTemporada(prev => 
+      prev.includes(key) 
+        ? prev.filter(item => item !== key)
         : [...prev, key]
     );
   };
@@ -277,7 +214,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
     }
     
     // Construir el objeto property a guardar
-    const propertyToSave: Property = {
+    const propertyToSave: Omit<Property, 'id'> & { id?: string } = {
       ...property,
       title,
       location,
@@ -310,8 +247,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
       tipo,
       region,
       destacada,
-      owner_id: selectedPropietario,
-      agency_id: selectedAgency,
+      // owner_id: selectedPropietario, // Eliminado
+      // agency_id: selectedAgency, // Eliminado
     };
     onSave(propertyToSave);
   };
@@ -325,12 +262,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
         handleImageUpload({ target: { files } } as React.ChangeEvent<HTMLInputElement>);
       }
     }
-  };
-
-  const handleAgencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedAgency(e.target.value);
-    // Al cambiar de agencia, se resetea la selección de agente, 
-    // el useEffect se encargará de recargar la lista.
   };
 
   return (
@@ -382,16 +313,12 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
         <div className="mb-6">
           <label className="block text-sm font-medium mb-1">Dirección</label>
           {isLoaded ? (
-            <Autocomplete onLoad={ref => (autocompleteRef.current = ref)} onPlaceChanged={handlePlaceChanged}>
-              <input
-                type="text"
-                className="input input-bordered w-full"
-                value={location}
-                onChange={e => setLocation(e.target.value)}
-                placeholder="Busca una dirección..."
-                required
-              />
-            </Autocomplete>
+            <GooglePlacesAutocomplete
+              value={location}
+              onChange={setLocation}
+              placeholder="Busca una dirección..."
+              className="input input-bordered w-full"
+            />
           ) : (
             <input
               type="text"
@@ -407,13 +334,13 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
           {/* --- MEJORA: Reemplazado el iframe por un mapa interactivo --- */}
           {isLoaded && lat && lng && (
             <div className="mt-2 rounded overflow-hidden shadow" style={{ height: '200px', width: '100%' }}>
-              <GoogleMap
+              {/* <GoogleMap
                 mapContainerStyle={{ width: '100%', height: '100%' }}
                 center={{ lat, lng }}
                 zoom={15}
               >
                 <Marker position={{ lat, lng }} />
-              </GoogleMap>
+              </GoogleMap> */}
             </div>
           )}
         </div>
@@ -559,38 +486,47 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Tipo de propiedad</label>
-            <select
-              value={tipo}
-              onChange={e => setTipo(e.target.value)}
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-            >
-              <option value="Piso o apartamento">Piso o apartamento</option>
-              <option value="Casa">Casa</option>
-              <option value="Villa">Villa</option>
-              <option value="Chalet">Chalet</option>
-              <option value="Casa rural">Casa rural</option>
-            </select>
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Región</label>
-            <select
-              value={region}
-              onChange={e => setRegion(e.target.value)}
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-            >
-              <option value="Andalucia">Andalucía</option>
-              <option value="Cataluña">Cataluña</option>
-              <option value="Madrid">Madrid</option>
-              <option value="Valencia">Valencia</option>
-              <option value="Baleares">Baleares</option>
-              <option value="Canarias">Canarias</option>
-              <option value="Asturias">Asturias</option>
-              <option value="Galicia">Galicia</option>
-            </select>
-          </div>
+        <div className="mb-4">
+          <label className="block font-semibold mb-2" htmlFor="propertyType">
+            Tipo de Propiedad *
+          </label>
+          <select
+            id="propertyType"
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value)}
+            className="w-full border rounded px-3 py-2"
+            required
+          >
+            <option value="">Seleccionar tipo de propiedad</option>
+            <option value="Piso o apartamento">Piso o apartamento</option>
+            <option value="Ático">Ático</option>
+            <option value="Bajo con Jardín">Bajo con Jardín</option>
+            <option value="Chalet Adosado">Chalet Adosado</option>
+            <option value="Chalet Individual">Chalet Individual</option>
+            <option value="Casa Rural">Casa Rural</option>
+          </select>
+        </div>
+        <div className="mb-4">
+          <label className="block font-semibold mb-2" htmlFor="region">
+            Región *
+          </label>
+          <select
+            id="region"
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            className="w-full border rounded px-3 py-2"
+            required
+          >
+            <option value="">Seleccionar región</option>
+            <option value="Andalucia">Andalucia</option>
+            <option value="Islas Baleares">Islas Baleares</option>
+            <option value="Islas Canarias">Islas Canarias</option>
+            <option value="Costa de Levante">Costa de Levante</option>
+            <option value="Costa Catalana">Costa Catalana</option>
+            <option value="Euskadi">Euskadi</option>
+            <option value="Asturias">Asturias</option>
+            <option value="Galicia">Galicia</option>
+          </select>
         </div>
         <div className="mb-4">
           <label className="flex items-center gap-2">
@@ -662,7 +598,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
               ref={fileInputRef}
               onChange={handleImageUpload}
             />
-            <ImageIcon className="w-12 h-12 text-gray-400 mb-2" />
+            {/* <ImageIcon className="w-12 h-12 text-gray-400 mb-2" /> */}
             <span className="text-gray-500">Subir imágenes</span>
             <div className="flex flex-wrap gap-2 mt-4 justify-center">
               {imagePaths.map((url, idx) => (
@@ -740,41 +676,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
           <label className="inline-flex items-center gap-2">
             <input type="checkbox" className="accent-primary" /> Se admiten mascotas
           </label>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Propietario</label>
-            <select value={selectedPropietario} onChange={(e) => setSelectedPropietario(e.target.value)} className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline">
-              <option value="">Seleccionar Propietario</option>
-              {propietarios.map(p => (
-                <option key={p.user_id} value={p.user_id}>
-                  {p.username ? (p.full_name ? `${p.username} (${p.full_name})` : p.username) : p.full_name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Agencia</label>
-            <select value={selectedAgency} onChange={handleAgencyChange} className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline">
-              <option value="">Seleccionar Agencia</option>
-              {agencies.map(a => (
-                <option key={a.user_id} value={a.user_id}>
-                  {a.username ? (a.full_name ? `${a.username} (${a.full_name})` : a.username) : a.full_name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Agente</label>
-            <select value={selectedAgent} onChange={(e) => setSelectedAgent(e.target.value)} disabled={!selectedAgency || agents.length === 0} className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline disabled:bg-gray-200">
-              <option value="">{selectedAgency ? 'Seleccionar Agente' : 'Primero elige una agencia'}</option>
-              {agents.map(ag => (
-                <option key={ag.user_id} value={ag.user_id}>
-                  {ag.username ? (ag.full_name ? `${ag.username} (${ag.full_name})` : ag.username) : ag.full_name}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
         <div className="flex items-center justify-between mt-4">
           <button type="submit" className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">

@@ -5,8 +5,9 @@ import { Property, Experience } from '../../types';
 import SearchNavbar from '../../components/landing/SearchNavbar';
 import RedirectNotification from '../../components/common/RedirectNotification';
 import DateSearchForm from '../../components/common/DateSearchForm';
+import EnhancedSearchFilters from '../../components/common/EnhancedSearchFilters';
 import PublicPropertyCard from '../../components/common/PublicPropertyCard';
-import { Search, MapPin, Filter, Grid, List, Home, Star, Car, Waves, TreePine, Sun, Snowflake, Building2, Building } from 'lucide-react';
+import { Search, Grid, List, Home, Star, Car, Waves, TreePine, Sun, Snowflake, Building2, Building } from 'lucide-react';
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -24,8 +25,8 @@ const SearchPage = () => {
     category: '',
     // Filtros específicos de propiedades
     propertyType: '',
-    bedrooms: '',
-    bathrooms: '',
+    bedrooms: 0,
+    bathrooms: 0,
     amenities: [] as string[],
     // Filtros específicos de experiencias
     experienceType: '',
@@ -33,8 +34,8 @@ const SearchPage = () => {
     maxParticipants: '',
     // Filtros comunes
     season: '',
-    pricePerDay: [0, 500],
-    pricePerMonth: [0, 5000],
+    pricePerDay: 500,
+    pricePerMonth: 5000,
   });
 
   const [results, setResults] = useState<{
@@ -110,13 +111,13 @@ const SearchPage = () => {
     }
     
     // Filtro por habitaciones
-    if (searchData.bedrooms) {
-      query = query.gte('bedrooms', parseInt(searchData.bedrooms));
+    if (searchData.bedrooms > 0) {
+      query = query.gte('bedrooms', searchData.bedrooms);
     }
     
     // Filtro por baños
-    if (searchData.bathrooms) {
-      query = query.gte('bathrooms', parseInt(searchData.bathrooms));
+    if (searchData.bathrooms > 0) {
+      query = query.gte('bathrooms', searchData.bathrooms);
     }
     
     // Filtro por precio máximo
@@ -125,13 +126,13 @@ const SearchPage = () => {
     }
     
     // Filtro por precio por día
-    if (searchData.pricePerDay[1] < 500) {
-      query = query.lte('precio_dia', searchData.pricePerDay[1]);
+    if (searchData.pricePerDay < 500) {
+      query = query.lte('precio_dia', searchData.pricePerDay);
     }
     
     // Filtro por precio por mes
-    if (searchData.pricePerMonth[1] < 5000) {
-      query = query.lte('precio_mes', searchData.pricePerMonth[1]);
+    if (searchData.pricePerMonth < 5000) {
+      query = query.lte('precio_mes', searchData.pricePerMonth);
     }
     
     // Filtro por temporada
@@ -266,18 +267,12 @@ const SearchPage = () => {
     { id: 'obra_nueva', name: 'Obra nueva', icon: Building2 },
   ];
 
-  const propertyTypes = [
-    { value: 'Apartamento', label: 'Apartamento' },
-    { value: 'Casa', label: 'Casa' },
-    { value: 'Villa', label: 'Villa' },
-    { value: 'Cabaña', label: 'Cabaña' },
-    { value: 'Estudio', label: 'Estudio' },
-  ];
-
   const experienceTypes = [
-    { value: 'Actividad Turística', label: 'Actividad Turística' },
-    { value: 'Gastronómica', label: 'Gastronómica' },
-    { value: 'Deportiva', label: 'Deportiva' },
+    { value: "cultural", label: "Cultural" },
+    { value: "adventure", label: "Aventura" },
+    { value: "relaxation", label: "Relajación" },
+    { value: "food", label: "Gastronomía" },
+    { value: "nature", label: "Naturaleza" }
   ];
 
   const seasons = [
@@ -305,7 +300,7 @@ const SearchPage = () => {
         )}
         
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Búsqueda Avanzada</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">Buscar</h1>
           
           {/* Switch de tipo de búsqueda */}
           <div className="flex items-center justify-center mb-6">
@@ -335,411 +330,45 @@ const SearchPage = () => {
             </div>
           </div>
 
-          {/* Búsqueda principal */}
-          <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-6">
-            <div className="flex gap-4 flex-wrap">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder={`Buscar ${searchType === 'properties' ? 'propiedades' : 'experiencias'}...`}
-                  value={searchData.query}
-                  onChange={(e) => setSearchData(prev => ({ ...prev, query: e.target.value }))}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 flex items-center gap-2"
-              >
-                <Search className="w-5 h-5" />
-                Buscar
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchData({
-                    query: '',
-                    location: '',
-                    checkIn: '',
-                    checkOut: '',
-                    guests: 1,
-                    priceRange: [0, 1000],
-                    category: '',
-                    propertyType: '',
-                    bedrooms: '',
-                    bathrooms: '',
-                    amenities: [],
-                    experienceType: '',
-                    duration: '',
-                    maxParticipants: '',
-                    season: '',
-                    pricePerDay: [0, 500],
-                    pricePerMonth: [0, 5000],
-                  });
-                  // La búsqueda se ejecutará automáticamente por el useEffect
-                }}
-                className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 flex items-center gap-2"
-              >
-                <Search className="w-5 h-5" />
-                Ver Todo
-              </button>
-            </div>
-          </form>
-
-          {/* Búsqueda por fechas */}
+          {/* Búsqueda principal con DateSearchForm */}
           <div className="max-w-4xl mx-auto mb-8">
-            <DateSearchForm variant="search" />
+            <DateSearchForm 
+              variant="search" 
+              externalSearchData={{
+                location: searchData.location,
+                checkIn: searchData.checkIn,
+                checkOut: searchData.checkOut,
+                pricePerDay: searchData.pricePerDay,
+                pricePerMonth: searchData.pricePerMonth
+              }}
+              onSearchDataChange={(data) => {
+                setSearchData(prev => ({
+                  ...prev,
+                  location: data.location,
+                  checkIn: data.checkIn,
+                  checkOut: data.checkOut,
+                  pricePerDay: data.pricePerDay || 500,
+                  pricePerMonth: data.pricePerMonth || 5000
+                }));
+              }}
+              onSearch={handleSearch}
+            />
           </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar de filtros */}
-          <div className="w-full lg:w-80 lg:flex-shrink-0">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Filtros</h3>
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="text-gray-500 hover:text-gray-700 lg:hidden"
-                >
-                  <Filter className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
-                <div className="space-y-6">
-                  {/* Ubicación */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ubicación
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <input
-                        type="text"
-                        placeholder="¿Dónde quieres ir?"
-                        value={searchData.location}
-                        onChange={(e) => setSearchData(prev => ({ ...prev, location: e.target.value }))}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Fechas */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Llegada
-                      </label>
-                      <input
-                        type="date"
-                        value={searchData.checkIn}
-                        onChange={(e) => setSearchData(prev => ({ ...prev, checkIn: e.target.value }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Salida
-                      </label>
-                      <input
-                        type="date"
-                        value={searchData.checkOut}
-                        onChange={(e) => setSearchData(prev => ({ ...prev, checkOut: e.target.value }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Huéspedes */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Huéspedes
-                    </label>
-                    <select
-                      value={searchData.guests}
-                      onChange={(e) => setSearchData(prev => ({ ...prev, guests: parseInt(e.target.value) }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
-                        <option key={num} value={num}>
-                          {num} {num === 1 ? 'persona' : 'personas'}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Temporada */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Temporada
-                    </label>
-                    <select
-                      value={searchData.season}
-                      onChange={(e) => setSearchData(prev => ({ ...prev, season: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                    >
-                      <option value="">Todas las temporadas</option>
-                      {seasons.map(season => (
-                        <option key={season.value} value={season.value}>
-                          {season.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Filtros específicos según el tipo */}
-                  {searchType === 'properties' ? (
-                    <>
-                      {/* Tipo de propiedad */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Tipo de vivienda
-                        </label>
-                        <select
-                          value={searchData.propertyType}
-                          onChange={(e) => setSearchData(prev => ({ ...prev, propertyType: e.target.value }))}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        >
-                          <option value="">Todos los tipos</option>
-                          {propertyTypes.map(type => (
-                            <option key={type.value} value={type.value}>
-                              {type.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* Habitaciones */}
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Habitaciones
-                          </label>
-                          <select
-                            value={searchData.bedrooms}
-                            onChange={(e) => setSearchData(prev => ({ ...prev, bedrooms: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                          >
-                            <option value="">Cualquiera</option>
-                            {[1, 2, 3, 4, 5, 6].map(num => (
-                              <option key={num} value={num}>
-                                {num}+ habitaciones
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Baños
-                          </label>
-                          <select
-                            value={searchData.bathrooms}
-                            onChange={(e) => setSearchData(prev => ({ ...prev, bathrooms: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                          >
-                            <option value="">Cualquiera</option>
-                            {[1, 2, 3, 4, 5].map(num => (
-                              <option key={num} value={num}>
-                                {num}+ baños
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-
-                      {/* Precio por día */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Precio por día (€)
-                        </label>
-                        <div className="grid grid-cols-2 gap-2">
-                          <input
-                            type="number"
-                            placeholder="Mín"
-                            value={searchData.pricePerDay[0]}
-                            onChange={(e) => setSearchData(prev => ({ 
-                              ...prev, 
-                              pricePerDay: [parseInt(e.target.value) || 0, prev.pricePerDay[1]] 
-                            }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                          />
-                          <input
-                            type="number"
-                            placeholder="Máx"
-                            value={searchData.pricePerDay[1]}
-                            onChange={(e) => setSearchData(prev => ({ 
-                              ...prev, 
-                              pricePerDay: [prev.pricePerDay[0], parseInt(e.target.value) || 500] 
-                            }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Precio por mes */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Precio por mes (€)
-                        </label>
-                        <div className="grid grid-cols-2 gap-2">
-                          <input
-                            type="number"
-                            placeholder="Mín"
-                            value={searchData.pricePerMonth[0]}
-                            onChange={(e) => setSearchData(prev => ({ 
-                              ...prev, 
-                              pricePerMonth: [parseInt(e.target.value) || 0, prev.pricePerMonth[1]] 
-                            }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                          />
-                          <input
-                            type="number"
-                            placeholder="Máx"
-                            value={searchData.pricePerMonth[1]}
-                            onChange={(e) => setSearchData(prev => ({ 
-                              ...prev, 
-                              pricePerMonth: [prev.pricePerMonth[0], parseInt(e.target.value) || 5000] 
-                            }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Complementos */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Complementos
-                        </label>
-                        <div className="space-y-2">
-                          {amenities.map(amenity => (
-                            <label key={amenity.id} className="flex items-center">
-                              <input
-                                type="checkbox"
-                                checked={searchData.amenities.includes(amenity.id)}
-                                onChange={() => handleAmenityToggle(amenity.id)}
-                                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                              />
-                              <amenity.icon className="w-4 h-4 ml-2 text-gray-500" />
-                              <span className="ml-2 text-sm text-gray-700">{amenity.name}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      {/* Tipo de experiencia */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Tipo de experiencia
-                        </label>
-                        <select
-                          value={searchData.experienceType}
-                          onChange={(e) => setSearchData(prev => ({ ...prev, experienceType: e.target.value }))}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        >
-                          <option value="">Todos los tipos</option>
-                          {experienceTypes.map(type => (
-                            <option key={type.value} value={type.value}>
-                              {type.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* Duración */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Duración
-                        </label>
-                        <select
-                          value={searchData.duration}
-                          onChange={(e) => setSearchData(prev => ({ ...prev, duration: e.target.value }))}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        >
-                          <option value="">Cualquier duración</option>
-                          <option value="30">30 minutos</option>
-                          <option value="60">1 hora</option>
-                          <option value="120">2 horas</option>
-                          <option value="180">3 horas</option>
-                          <option value="240">4 horas</option>
-                          <option value="480">8 horas</option>
-                        </select>
-                      </div>
-
-                      {/* Participantes máximos */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Participantes máximos
-                        </label>
-                        <select
-                          value={searchData.maxParticipants}
-                          onChange={(e) => setSearchData(prev => ({ ...prev, maxParticipants: e.target.value }))}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        >
-                          <option value="">Cualquier número</option>
-                          {[1, 2, 4, 6, 8, 10, 15, 20].map(num => (
-                            <option key={num} value={num}>
-                              Hasta {num} personas
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </>
-                  )}
-
-                  {/* Precio general */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Precio máximo (€)
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="Sin límite"
-                      value={searchData.priceRange[1]}
-                      onChange={(e) => setSearchData(prev => ({ 
-                        ...prev, 
-                        priceRange: [0, parseInt(e.target.value) || 1000] 
-                      }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                    />
-                  </div>
-
-                  {/* Botón limpiar filtros */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSearchData({
-                        query: '',
-                        location: '',
-                        checkIn: '',
-                        checkOut: '',
-                        guests: 1,
-                        priceRange: [0, 1000],
-                        category: '',
-                        propertyType: '',
-                        bedrooms: '',
-                        bathrooms: '',
-                        amenities: [],
-                        experienceType: '',
-                        duration: '',
-                        maxParticipants: '',
-                        season: '',
-                        pricePerDay: [0, 500],
-                        pricePerMonth: [0, 5000],
-                      });
-                      // La búsqueda se ejecutará automáticamente por el useEffect
-                    }}
-                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
-                  >
-                    Limpiar filtros
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <EnhancedSearchFilters
+            searchData={searchData}
+            setSearchData={setSearchData}
+            searchType={searchType}
+            showFilters={showFilters}
+            setShowFilters={setShowFilters}
+            seasons={seasons.map(s => s.value)}
+            experienceTypes={experienceTypes.map(e => e.value)}
+            amenities={amenities.map(a => a.id)}
+            handleAmenityToggle={handleAmenityToggle}
+          />
 
           {/* Contenido principal */}
           <div className="flex-1 w-full">

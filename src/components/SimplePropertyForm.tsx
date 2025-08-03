@@ -186,55 +186,14 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
     }
   };
 
-  // Función para manejar la selección de lugar desde Google Places
-  const handlePlaceSelect = (place: any) => {
-    console.log('Lugar seleccionado:', place);
-    
-    // Extraer componentes de dirección
-    if (place.address_components) {
-      let streetNumber = '';
-      let route = '';
-      let locality = '';
-      let administrativeArea = '';
-      let postalCode = '';
-      let country = '';
-
-      place.address_components.forEach((component: any) => {
-        const types = component.types;
-        
-        if (types.includes('street_number')) {
-          streetNumber = component.long_name;
-        } else if (types.includes('route')) {
-          route = component.long_name;
-        } else if (types.includes('locality')) {
-          locality = component.long_name;
-        } else if (types.includes('administrative_area_level_1')) {
-          administrativeArea = component.long_name;
-        } else if (types.includes('postal_code')) {
-          postalCode = component.long_name;
-        } else if (types.includes('country')) {
-          country = component.long_name;
-        }
-      });
-
-      // Actualizar campos de dirección
-      setStreetAddress(streetNumber && route ? `${streetNumber} ${route}` : route);
-      setCity(locality);
-      setState(administrativeArea);
-      setPostalCode(postalCode);
-      setCountry(country);
-    }
-
-    // Actualizar coordenadas si están disponibles
-    if (place.geometry && place.geometry.location) {
-      setLat(place.geometry.location.lat());
-      setLng(place.geometry.location.lng());
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!title || !location || !precioEntresemana || !tipo || !region) {
+      alert('Por favor completa todos los campos obligatorios');
+      return;
+    }
+
     const propertyToSave: SimpleProperty = {
       ...property,
       title,
@@ -333,8 +292,7 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
           <GooglePlacesAutocomplete
             value={location}
             onChange={setLocation}
-            onPlaceSelect={handlePlaceSelect}
-            placeholder="Buscar dirección..."
+            placeholder="Ubicación de la propiedad"
             className="w-full"
           />
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">

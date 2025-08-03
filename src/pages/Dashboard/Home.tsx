@@ -17,6 +17,7 @@ import TestPermissions from "../../components/TestPermissions";
 import PropertyEditDebug from "../../components/PropertyEditDebug";
 import PropertyEditTest from "../../components/PropertyEditTest";
 import PropertyFormTest from "../../components/PropertyFormTest";
+import RecentBookings from '../../components/common/RecentBookings';
 
 export default function Home() {
   return (
@@ -93,8 +94,10 @@ export default function Home() {
           <EnvChecker />
         </div>
 
-
-
+        {/* Reservas Recientes */}
+        <div className="col-span-12 xl:col-span-7">
+          <RecentBookings />
+        </div>
 
 
         {/* Debug Detallado */}

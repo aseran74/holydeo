@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import DateSearchForm from '../common/DateSearchForm';
+import LandingSearchForm from '../common/LandingSearchForm';
 
 const LandingHero = () => {
   const [showUnderline, setShowUnderline] = useState(false);
@@ -73,7 +73,7 @@ const LandingHero = () => {
 
             {/* Buscador */}
             <div className="w-full max-w-4xl mx-auto">
-              <DateSearchForm variant="hero" />
+              <LandingSearchForm />
             </div>
 
             {/* Estadísticas */}

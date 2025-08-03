@@ -9,9 +9,12 @@ import {
   signInWithPopup
 } from 'firebase/auth';
 import { auth } from '../firebase';
+import { supabase } from '../supabaseClient';
 
 interface AuthContextType {
   currentUser: User | null;
+  userRole: string | null;
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -31,6 +34,8 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const signup = async (email: string, password: string) => {
@@ -43,6 +48,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     await signOut(auth);
+    setUserRole(null);
+    setIsAdmin(false);
   };
 
   const loginWithGoogle = async () => {
@@ -50,9 +57,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await signInWithPopup(auth, provider);
   };
 
+  // Función para obtener el rol del usuario desde Supabase
+  const getUserRole = async (email: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('role')
+        .eq('email', email)
+        .single();
+
+      if (error) {
+        console.error('Error obteniendo rol:', error);
+        return null;
+      }
+
+      return data?.role || null;
+    } catch (error) {
+      console.error('Error obteniendo rol:', error);
+      return null;
+    }
+  };
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
+      
+      if (user) {
+        // Obtener rol del usuario desde Supabase
+        const role = await getUserRole(user.email || '');
+        setUserRole(role);
+        setIsAdmin(role === 'admin');
+      } else {
+        setUserRole(null);
+        setIsAdmin(false);
+      }
+      
       setLoading(false);
     });
 
@@ -61,6 +100,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const value = {
     currentUser,
+    userRole,
+    isAdmin,
     login,
     signup,
     logout,

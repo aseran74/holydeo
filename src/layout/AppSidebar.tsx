@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
+import { useAuth } from "../context/AuthContext";
 
 // Assume these icons are imported from an icon library
 import {
@@ -28,115 +29,12 @@ type NavItem = {
   icon: React.ReactNode;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  adminOnly?: boolean;
 };
-
-const navItems: NavItem[] = [
-  {
-    icon: <GridIcon />,
-    name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-  },
-  // {
-  //   icon: <BoxIcon />,
-  //   name: "Propiedades",
-  //   path: "/properties",
-  // },
-  {
-    icon: <CalenderIcon />,
-    name: "Reservas",
-    path: "/bookings",
-  },
-  // {
-  //   icon: <ShootingStarIcon />,
-  //   name: "Experiencias",
-  //   path: "/experiences",
-  // },
-  {
-    icon: <BoxIconLine />,
-    name: "Agencias",
-    path: "/agencies",
-  },
-  {
-    icon: <UserIcon />,
-    name: "Agentes",
-    path: "/agents",
-  },
-  {
-    icon: <BoxIcon />,
-    name: "Propietarios",
-    path: "/owners",
-  },
-  {
-    icon: <GroupIcon />,
-    name: "Huéspedes",
-    path: "/guests",
-  },
-  {
-    icon: <ChatIcon />,
-    name: "Mensajes",
-    path: "/messages",
-  },
-  {
-    icon: <TaskIcon />,
-    name: "Gestión",
-    subItems: [
-      { name: "Gestión de Usuarios", path: "/user-management", pro: false },
-      { name: "Gestión de Calendarios", path: "/calendar", pro: false },
-    ],
-  },
-];
-
-const othersItems: NavItem[] = [
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
-  },
-];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { isAdmin } = useAuth();
   const location = useLocation();
 
   const [openSubmenu, setOpenSubmenu] = useState<{
@@ -154,10 +52,117 @@ const AppSidebar: React.FC = () => {
     [location.pathname]
   );
 
+  // Definir elementos de navegación con soporte para admin
+  const navItems: NavItem[] = [
+    {
+      icon: <GridIcon />,
+      name: "Dashboard",
+      subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    },
+    // Dashboard Administrativo - Solo para admins
+    {
+      icon: <BoxIcon />,
+      name: "Admin Dashboard",
+      path: "/admin",
+      adminOnly: true,
+    },
+    {
+      icon: <CalenderIcon />,
+      name: "Reservas",
+      path: "/bookings",
+    },
+    {
+      icon: <BoxIconLine />,
+      name: "Agencias",
+      path: "/agencies",
+    },
+    {
+      icon: <UserIcon />,
+      name: "Agentes",
+      path: "/agents",
+    },
+    {
+      icon: <BoxIcon />,
+      name: "Propietarios",
+      path: "/owners",
+    },
+    {
+      icon: <GroupIcon />,
+      name: "Huéspedes",
+      path: "/guests",
+    },
+    {
+      icon: <ChatIcon />,
+      name: "Mensajes",
+      path: "/messages",
+    },
+    {
+      icon: <TaskIcon />,
+      name: "Gestión",
+      subItems: [
+        { name: "Gestión de Usuarios", path: "/user-management", pro: false },
+        { name: "Gestión de Calendarios", path: "/calendar", pro: false },
+      ],
+    },
+  ];
+
+  const othersItems: NavItem[] = [
+    {
+      icon: <PieChartIcon />,
+      name: "Charts",
+      subItems: [
+        { name: "Line Chart", path: "/line-chart", pro: false },
+        { name: "Bar Chart", path: "/bar-chart", pro: false },
+      ],
+    },
+    {
+      icon: <BoxCubeIcon />,
+      name: "UI Elements",
+      subItems: [
+        { name: "Alerts", path: "/alerts", pro: false },
+        { name: "Avatar", path: "/avatars", pro: false },
+        { name: "Badge", path: "/badge", pro: false },
+        { name: "Buttons", path: "/buttons", pro: false },
+        { name: "Images", path: "/images", pro: false },
+        { name: "Videos", path: "/videos", pro: false },
+      ],
+    },
+    {
+      name: "Forms",
+      icon: <ListIcon />,
+      subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+    },
+    {
+      name: "Tables",
+      icon: <TableIcon />,
+      subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+    },
+    {
+      name: "Pages",
+      icon: <PageIcon />,
+      subItems: [
+        { name: "Blank Page", path: "/blank", pro: false },
+        { name: "404 Error", path: "/error-404", pro: false },
+      ],
+    },
+    {
+      icon: <PlugInIcon />,
+      name: "Authentication",
+      subItems: [
+        { name: "Sign In", path: "/signin", pro: false },
+        { name: "Sign Up", path: "/signup", pro: false },
+      ],
+    },
+  ];
+
+  // Filtrar elementos según el rol del usuario
+  const filteredNavItems = navItems.filter(item => !item.adminOnly || isAdmin);
+  const filteredOthersItems = othersItems.filter(item => !item.adminOnly || isAdmin);
+
   useEffect(() => {
     let submenuMatched = false;
     ["main", "others"].forEach((menuType) => {
-      const items = menuType === "main" ? navItems : othersItems;
+      const items = menuType === "main" ? filteredNavItems : filteredOthersItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
           nav.subItems.forEach((subItem) => {
@@ -176,7 +181,7 @@ const AppSidebar: React.FC = () => {
     if (!submenuMatched) {
       setOpenSubmenu(null);
     }
-  }, [location, isActive]);
+  }, [location, isActive, filteredNavItems, filteredOthersItems]);
 
   useEffect(() => {
     if (openSubmenu !== null) {
@@ -391,7 +396,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots className="size-6" />
                 )}
               </h2>
-              {renderMenuItems(navItems, "main")}
+              {renderMenuItems(filteredNavItems, "main")}
             </div>
             <div className="">
               <h2
@@ -407,7 +412,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2>
-              {renderMenuItems(othersItems, "others")}
+              {renderMenuItems(filteredOthersItems, "others")}
             </div>
           </div>
         </nav>

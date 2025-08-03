@@ -2,26 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BedDouble, Bath, Users, MapPin, Euro, Calendar } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
+import { Property } from '../../types';
 
 interface PublicPropertyCardProps {
-  property: {
-    id: string;
-    title: string;
-    image_paths?: string[] | null;
-    main_image_path?: string | null;
-    precio_entresemana?: number;
-    precio_fin_de_semana?: number;
-    precio_dia?: number;
-    precio_mes?: number;
-    bedrooms?: number;
-    bathrooms?: number;
-    toilets?: number;
-    location: string;
-    price?: number;
-    square_meters?: number;
-    destacada?: boolean;
-    meses_temporada?: string[] | null;
-  };
+  property: Property;
 }
 
 const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => {

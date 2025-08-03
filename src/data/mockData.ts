@@ -1,43 +1,48 @@
 import { Property } from '../types';
 
-export const featuredPropertiesExample: Property[] = [
+export const properties: Property[] = [
   {
     id: "1",
-    title: "Villa Marina con Vista al Mar",
-    description: "Hermosa villa con vistas espectaculares al mar Mediterráneo",
-    price: 150,
+    title: "Villa de lujo en Marbella",
+    description: "Hermosa villa con vistas al mar y todas las comodidades",
+    price: 250000,
     location: "Marbella, Málaga",
     bedrooms: 4,
     bathrooms: 3,
-    guests: 8,
-    images: ["/images/cards/card-01.jpg"],
-    featured: true,
-    amenities: ["Piscina", "WiFi", "Aire acondicionado", "Cocina equipada"]
+    image_paths: ["/images/property-1.jpg"],
+    amenities: ["Piscina", "Jardín", "Garaje", "Terraza"],
+    owner_id: "owner1",
+    agency_id: "agency1",
+    created_at: "2024-01-15"
   },
   {
     id: "2",
-    title: "Apartamento en el Centro Histórico",
-    description: "Encantador apartamento en el corazón de la ciudad antigua",
-    price: 85,
-    location: "Sevilla, Andalucía",
+    title: "Apartamento en el centro de Madrid",
+    description: "Apartamento moderno en el corazón de Madrid",
+    price: 180000,
+    location: "Madrid Centro",
     bedrooms: 2,
-    bathrooms: 1,
-    guests: 4,
-    images: ["/images/cards/card-02.jpg"],
-    featured: true,
-    amenities: ["Terraza", "WiFi", "Calefacción", "Cocina"]
+    bathrooms: 2,
+    image_paths: ["/images/property-2.jpg"],
+    amenities: ["Ascensor", "Terraza", "Aire Acondicionado"],
+    owner_id: "owner2",
+    agency_id: "agency2",
+    created_at: "2024-01-10"
   },
   {
     id: "3",
-    title: "Casa Rural en la Montaña",
-    description: "Casa tradicional con vistas panorámicas de la sierra",
-    price: 120,
-    location: "Sierra de Grazalema, Cádiz",
+    title: "Casa rural en Asturias",
+    description: "Encantadora casa rural con vistas a las montañas",
+    price: 320000,
+    location: "Asturias",
     bedrooms: 3,
     bathrooms: 2,
-    guests: 6,
-    images: ["/images/cards/card-03.jpg"],
-    featured: true,
-    amenities: ["Chimenea", "Jardín", "WiFi", "Estacionamiento"]
+    image_paths: ["/images/property-3.jpg"],
+    amenities: ["Jardín", "Chimenea", "Vistas", "Senderismo"],
+    owner_id: "owner3",
+    agency_id: "agency3",
+    created_at: "2024-01-05"
   }
-]; 
+];
+
+export const featuredPropertiesExample = properties; 

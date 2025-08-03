@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./components/auth/LoginForm";
 import ProtectedSearchRoute from "./components/auth/ProtectedSearchRoute";
+import AdminRoute from "./components/auth/AdminRoute";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
@@ -18,6 +19,7 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import AdminDashboard from "./pages/Dashboard/AdminDashboard";
 import LandingPage from "./pages/Landing/LandingPage";
 
 // Importar las páginas del proyecto
@@ -40,6 +42,11 @@ import PropertyImageTest from "./components/PropertyImageTest";
 import ImageTest from "./components/ImageTest";
 import GooglePlacesTest from "./components/GooglePlacesTest";
 import SearchPage from "./pages/Search/SearchPage";
+import MuiCalendarPage from "./pages/CalendarManagement/MuiCalendarPage";
+import CalendarDemo from "./pages/CalendarManagement/CalendarDemo";
+import TailGridsDemo from "./pages/CalendarManagement/TailGridsDemo";
+import NumberStepperDemo from "./pages/CalendarManagement/NumberStepperDemo";
+import PriceFilterDemo from "./pages/CalendarManagement/PriceFilterDemo";
 
 export default function App() {
   return (
@@ -58,8 +65,15 @@ export default function App() {
 
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
-            {/* Dashboard */}
+            {/* Dashboard - Solo para usuarios autenticados */}
             <Route path="/dashboard" element={<Home />} />
+            
+            {/* Dashboard Administrativo - Solo para admins */}
+            <Route path="/admin" element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            } />
             
             {/* Propiedades y Gestión */}
             <Route path="/properties" element={
@@ -127,9 +141,12 @@ export default function App() {
             
             {/* Calendar Management */}
             <Route path="/calendar-management/:propertyId" element={<CalendarManagement />} />
+            <Route path="/mui-calendar" element={<MuiCalendarPage />} />
+            <Route path="/calendar-demo" element={<CalendarDemo />} />
+            <Route path="/tailgrids-demo" element={<TailGridsDemo />} />
+            <Route path="/number-stepper-demo" element={<NumberStepperDemo />} />
+            <Route path="/price-filter-demo" element={<PriceFilterDemo />} />
           </Route>
-
-
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

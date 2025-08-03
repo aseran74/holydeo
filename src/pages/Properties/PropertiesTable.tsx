@@ -6,13 +6,7 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import { useState } from "react";
-
-interface Property {
-  id: string;
-  title: string;
-  location: string;
-  price: number | null;
-}
+import { Property } from "../../types";
 
 interface PropertiesTableProps {
   properties: Property[];
