@@ -383,7 +383,6 @@ const SearchPage = () => {
         )}
         
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Buscar</h1>
           
           {/* Switch de tipo de búsqueda */}
           <div className="flex items-center justify-center mb-6">
