@@ -36,6 +36,7 @@ import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStor
 import PageMeta from '../../components/common/PageMeta';
 import PageBreadCrumb from '../../components/common/PageBreadCrumb';
 import AvailabilityCalendar from '../../components/common/AvailabilityCalendar';
+import DebugCalendarData from '../../components/DebugCalendarData';
 
 // Mapeo de amenities a iconos
 const amenityIcons: { [key: string]: React.ReactElement } = {
@@ -608,6 +609,9 @@ const PropertyDetails = () => {
               </div>
             </div>
 
+            {/* Debug Component - TEMPORAL */}
+            <DebugCalendarData propertyId={property.id} />
+            
             {/* Calendario de Disponibilidad */}
             <AvailabilityCalendar propertyId={property.id} />
           </div>

@@ -100,18 +100,10 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
         console.error('Error al obtener precios especiales:', specialsError);
       }
 
-      // Obtener reservas
+      // Obtener reservas - Usando consulta simple para sincronizar con AvailabilityCalendar
       const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
-        .select(`
-          id, 
-          guest_id, 
-          check_in, 
-          check_out, 
-          status, 
-          created_at,
-          guests(users(full_name))
-        `)
+        .select('id, guest_id, check_in, check_out, status, created_at')
         .eq('property_id', propertyId)
         .eq('status', 'confirmada');
       
@@ -126,7 +118,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
         console.log('AdvancedCalendarManager - Bookings data:', bookingsData);
         setBookings(bookingsData.map((b: any) => ({
           ...b,
-          guest_name: b.guests?.users?.full_name
+          guest_name: 'Guest ' + (b.guest_id ? b.guest_id.slice(-4) : 'Unknown')
         })));
       }
     } catch (error) {
