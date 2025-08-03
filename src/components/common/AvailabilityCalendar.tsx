@@ -14,36 +14,50 @@ interface Booking {
   status: 'confirmada' | 'pendiente' | 'cancelada';
 }
 
+interface BlockedDate {
+  date: string;
+}
+
 const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({ 
   propertyId, 
   className = '' 
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchBookings();
+    fetchUnavailableDates();
   }, [propertyId]);
 
-  const fetchBookings = async () => {
+  const fetchUnavailableDates = async () => {
     try {
       setLoading(true);
       
-      console.log('Fetching bookings for property:', propertyId);
+      console.log('Fetching unavailable dates for property:', propertyId);
       
-      // Obtener las reservas de esta propiedad
+      // Obtener las reservas confirmadas
       const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
         .select('id, start_date, end_date, status')
         .eq('property_id', propertyId)
         .eq('status', 'confirmada');
 
-      if (bookingsError) {
+      // Obtener las fechas bloqueadas
+      const { data: blockedDatesData, error: blockedDatesError } = await supabase
+        .from('blocked_dates')
+        .select('date')
+        .eq('property_id', propertyId);
+
+      if (bookingsError || blockedDatesError) {
         console.error('Error fetching bookings:', bookingsError);
+        console.error('Error fetching blocked dates:', blockedDatesError);
       } else {
         console.log('Bookings found:', bookingsData);
         setBookings(bookingsData || []);
+        console.log('Blocked dates found:', blockedDatesData);
+        setBlockedDates(blockedDatesData || []);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -52,28 +66,28 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
     }
   };
 
-  const isDateBooked = (date: Date) => {
-    // Normalizar la fecha a medianoche para comparación precisa
+  const isDateUnavailable = (date: Date) => {
     const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    
+
+    // Comprobar si está dentro de una reserva
     const isBooked = bookings.some(booking => {
       const startDate = new Date(booking.start_date);
       const endDate = new Date(booking.end_date);
-      
-      // Normalizar las fechas de reserva a medianoche
       const bookingStart = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
       const bookingEnd = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-      
-      // Una fecha está ocupada si está entre la fecha de inicio y fin (inclusive)
       return checkDate >= bookingStart && checkDate <= bookingEnd;
     });
-    
-    // Log temporal para debugging (solo para fechas de agosto)
-    if (date.getMonth() === 7 && isBooked) { // Agosto es mes 7 (0-indexed)
-      console.log('Date booked:', date.toDateString(), 'Check date:', checkDate.toDateString());
-    }
-    
-    return isBooked;
+
+    if (isBooked) return true;
+
+    // Comprobar si es una fecha bloqueada explícitamente
+    const isBlocked = blockedDates.some(blockedDate => {
+      const blocked = new Date(blockedDate.date);
+      const blockedDay = new Date(blocked.getFullYear(), blocked.getMonth(), blocked.getDate());
+      return checkDate.getTime() === blockedDay.getTime();
+    });
+
+    return isBlocked;
   };
 
   const isDateInPast = (date: Date) => {
@@ -194,7 +208,7 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       <div className="grid grid-cols-7 gap-1">
         {days.map((day, index) => {
           const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-          const isBooked = isDateBooked(day);
+          const isUnavailable = isDateUnavailable(day);
           const isPast = isDateInPast(day);
           const isToday = isDateToday(day);
 
@@ -204,8 +218,8 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
             dayClasses += " text-gray-300 dark:text-gray-600";
           } else if (isPast) {
             dayClasses += " text-gray-400 dark:text-gray-500";
-          } else if (isBooked) {
-            dayClasses += " bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 font-medium";
+          } else if (isUnavailable) {
+            dayClasses += " bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 font-medium line-through";
           } else if (isToday) {
             dayClasses += " bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 font-medium";
           } else {
