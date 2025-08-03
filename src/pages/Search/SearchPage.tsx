@@ -49,6 +49,7 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(true);
+  const [availabilityFilterApplied, setAvailabilityFilterApplied] = useState(false);
 
   // Búsqueda automática al cargar la página
   useEffect(() => {
@@ -158,7 +159,9 @@ const SearchPage = () => {
       pricePerDay: searchData.pricePerDay,
       pricePerMonth: searchData.pricePerMonth,
       season: searchData.season,
-      amenities: searchData.amenities
+      amenities: searchData.amenities,
+      checkIn: searchData.checkIn,
+      checkOut: searchData.checkOut
     });
 
     const { data, error } = await query;
@@ -167,8 +170,55 @@ const SearchPage = () => {
       console.error('Error en búsqueda de propiedades:', error);
     }
     
-    console.log('Resultados de propiedades:', data);
-    setResults(prev => ({ ...prev, properties: data || [] }));
+    console.log('Resultados de propiedades antes del filtro de disponibilidad:', data?.length || 0);
+    
+    // Filtrar propiedades por disponibilidad si hay fechas seleccionadas
+    let availableProperties = data || [];
+    let filterApplied = false;
+    
+    if (searchData.checkIn && searchData.checkOut) {
+      filterApplied = true;
+      try {
+        // Convertir fechas a formato ISO para la consulta
+        const checkInDate = new Date(searchData.checkIn).toISOString();
+        const checkOutDate = new Date(searchData.checkOut).toISOString();
+        
+        console.log('Verificando disponibilidad para fechas:', { checkInDate, checkOutDate });
+        
+        // Obtener las reservas que se solapan con las fechas seleccionadas
+        // Una reserva se solapa si:
+        // - La fecha de inicio de la reserva es anterior o igual a la fecha de salida de la búsqueda
+        // - Y la fecha de fin de la reserva es posterior o igual a la fecha de llegada de la búsqueda
+        const { data: bookings, error: bookingsError } = await supabase
+          .from('bookings')
+          .select('property_id, start_date, end_date, status')
+          .or(`and(start_date.lte.${checkOutDate},end_date.gte.${checkInDate})`)
+          .eq('status', 'confirmada');
+
+        if (bookingsError) {
+          console.error('Error obteniendo reservas:', bookingsError);
+        } else {
+          // Obtener IDs únicos de propiedades ocupadas
+          const occupiedPropertyIds = [...new Set(bookings?.map(booking => booking.property_id) || [])];
+          
+          // Filtrar propiedades disponibles
+          availableProperties = (data || []).filter(property => 
+            !occupiedPropertyIds.includes(property.id)
+          );
+          
+          console.log('Reservas encontradas:', bookings?.length || 0);
+          console.log('Propiedades ocupadas:', occupiedPropertyIds);
+          console.log('Propiedades disponibles después del filtro:', availableProperties.length);
+        }
+      } catch (error) {
+        console.error('Error verificando disponibilidad:', error);
+        // En caso de error, mostrar todas las propiedades
+        availableProperties = data || [];
+      }
+    }
+    
+    setAvailabilityFilterApplied(filterApplied);
+    setResults(prev => ({ ...prev, properties: availableProperties }));
   };
 
   const searchExperiences = async () => {
@@ -411,6 +461,11 @@ const SearchPage = () => {
                         📅 {searchData.season}
                       </span>
                     )}
+                    {availabilityFilterApplied && searchType === 'properties' && (
+                      <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">
+                        ✅ Solo propiedades disponibles
+                      </span>
+                    )}
                     {searchData.amenities.length > 0 && searchType === 'properties' && (
                       <div className="flex flex-wrap gap-1">
                         {searchData.amenities.map(amenityId => {
@@ -461,8 +516,19 @@ const SearchPage = () => {
                   No se encontraron resultados
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Intenta ajustar tus filtros de búsqueda
+                  {availabilityFilterApplied && searchType === 'properties' 
+                    ? `No hay propiedades disponibles para las fechas seleccionadas (${searchData.checkIn} - ${searchData.checkOut}). Intenta con otras fechas o ajusta tus filtros de búsqueda.`
+                    : 'Intenta ajustar tus filtros de búsqueda'
+                  }
                 </p>
+                {availabilityFilterApplied && searchType === 'properties' && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                    <p className="text-sm text-blue-800">
+                      💡 <strong>Consejo:</strong> Las propiedades ocupadas en las fechas seleccionadas no aparecen en los resultados. 
+                      Prueba con fechas diferentes para ver más opciones.
+                    </p>
+                  </div>
+                )}
               </div>
             ) : (
               <div className={viewMode === 'grid' 
