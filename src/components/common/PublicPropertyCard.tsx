@@ -63,7 +63,7 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
   return (
     <div className="block rounded-lg shadow-lg overflow-hidden bg-white dark:bg-gray-800 transform hover:-translate-y-1 transition-transform duration-300 hover:shadow-xl">
       <div className="relative h-56">
-        <Link to={`/properties/${property.id}`} className="block w-full h-full group">
+        <Link to={`/property/${property.id}`} className="block w-full h-full group">
           {isLoading && <div className="w-full h-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>}
           
           <img
@@ -94,7 +94,7 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
       </div>
       
       <div className="p-4">
-        <Link to={`/properties/${property.id}`} className="block">
+        <Link to={`/property/${property.id}`} className="block">
           <h3 className="text-xl font-bold mb-2 truncate text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">
             {property.title}
           </h3>

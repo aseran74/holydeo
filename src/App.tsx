@@ -63,6 +63,9 @@ export default function App() {
           {/* Página de Búsqueda - Sin Layout */}
           <Route path="/search" element={<SearchPage />} />
 
+          {/* Detalles de Propiedad - Público */}
+          <Route path="/property/:id" element={<PropertyDetails />} />
+
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             {/* Dashboard - Solo para usuarios autenticados */}

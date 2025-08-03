@@ -47,7 +47,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onDelete 
   return (
     <div className="block rounded-lg shadow-lg overflow-hidden bg-white dark:bg-gray-800 transform hover:-translate-y-1 transition-transform duration-300 hover:shadow-xl">
       <div className="relative h-56">
-        <Link to={`/properties/${property.id}`} className="block w-full h-full group">
+        <Link to={`/property/${property.id}`} className="block w-full h-full group">
           {/* Muestra un esqueleto de carga mientras se obtiene la imagen */}
           {isLoading && <div className="w-full h-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>}
           
@@ -78,7 +78,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onDelete 
         </div>
       </div>
       <div className="p-4">
-        <Link to={`/properties/${property.id}`} className="block">
+        <Link to={`/property/${property.id}`} className="block">
           <h3 className="text-xl font-bold mb-2 truncate text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer">{property.title}</h3>
         </Link>
         <p className="text-gray-600 dark:text-gray-400 text-sm flex items-center mb-3">

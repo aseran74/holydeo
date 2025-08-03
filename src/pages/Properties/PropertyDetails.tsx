@@ -595,6 +595,7 @@ const PropertyDetails = () => {
                   <CalendarDays size={16} />
                   Gestionar Calendario
                 </Link>
+                {/* Comentado hasta que se implemente la ruta de edición
                 <Link
                   to={`/properties/edit/${property.id}`}
                   className="btn btn-outline w-full"
@@ -602,6 +603,7 @@ const PropertyDetails = () => {
                   <Building size={16} />
                   Editar Propiedad
                 </Link>
+                */}
               </div>
             </div>
           </div>

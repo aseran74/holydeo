@@ -191,7 +191,7 @@ const Agents = () => {
             {getPropertiesForAgent(selectedAgent.id).length > 0 ? (
               getPropertiesForAgent(selectedAgent.id).map((p) => (
                 <li key={p.id}>
-                  <a href={`/properties/${p.id}`} className="text-blue-600 underline">{p.title}</a>
+                  <a href={`/property/${p.id}`} className="text-blue-600 underline">{p.title}</a>
                 </li>
               ))
             ) : (
