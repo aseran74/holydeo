@@ -69,11 +69,14 @@ const RecentBookings: React.FC<RecentBookingsProps> = ({
 
       if (propertiesError) {
         console.error('Error fetching properties:', propertiesError);
+        setProperties([]);
       } else {
         setProperties(propertiesData || []);
       }
 
       // Obtener huéspedes
+      // Comentado temporalmente - la tabla 'clients' no existe
+      /*
       const { data: guestsData, error: guestsError } = await supabase
         .from('clients')
         .select('id, name, email');
@@ -83,6 +86,10 @@ const RecentBookings: React.FC<RecentBookingsProps> = ({
       } else {
         setGuests(guestsData || []);
       }
+      */
+      
+      // Por ahora, usar datos mock para guests
+      setGuests([]);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -217,7 +224,7 @@ const RecentBookings: React.FC<RecentBookingsProps> = ({
                     </div>
                     <div className="flex items-center gap-1">
                       <Euro className="w-4 h-4" />
-                      <span>€{booking.total_price.toLocaleString()}</span>
+                      <span>€{(booking.total_price || 0).toLocaleString()}</span>
                     </div>
                   </div>
                 </div>

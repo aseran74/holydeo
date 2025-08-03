@@ -42,12 +42,22 @@ const Bookings = () => {
     else setBookings(bookingsData || []);
 
     const { data: propertiesData, error: propertiesError } = await supabase.from("properties").select("id, title");
-    if (propertiesError) console.error("Error fetching properties:", propertiesError);
-    else setProperties(propertiesData || []);
+    if (propertiesError) {
+      console.error("Error fetching properties:", propertiesError);
+      setProperties([]);
+    } else {
+      setProperties(propertiesData || []);
+    }
 
+    // Comentado temporalmente - la tabla 'clients' no existe
+    /*
     const { data: guestsData, error: guestsError } = await supabase.from("clients").select("id, name");
     if (guestsError) console.error("Error fetching guests:", guestsError);
     else setGuests(guestsData || []);
+    */
+    
+    // Por ahora, usar datos mock para guests
+    setGuests([]);
   };
 
   const handleEditBooking = (booking: Booking) => {
