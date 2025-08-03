@@ -7,8 +7,8 @@ interface Booking {
   id: string;
   property_id: string;
   client_id: string;
-  start_date: string;
-  end_date: string;
+  check_in: string;
+  check_out: string;
   status: 'confirmada' | 'pendiente' | 'cancelada';
   total_price: number;
 }
@@ -144,7 +144,7 @@ const Bookings = () => {
                   <tr key={booking.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
                     <td className="px-6 py-3 align-middle">{property?.title || 'N/A'}</td>
                     <td className="px-6 py-3 align-middle">{guest?.name || 'N/A'}</td>
-                    <td className="px-6 py-3 align-middle">{new Date(booking.start_date).toLocaleDateString()} - {new Date(booking.end_date).toLocaleDateString()}</td>
+                    <td className="px-6 py-3 align-middle">{new Date(booking.check_in).toLocaleDateString()} - {new Date(booking.check_out).toLocaleDateString()}</td>
                     <td className="px-6 py-3 align-middle">${booking.total_price.toLocaleString()}</td>
                     <td className="px-6 py-3 align-middle">{getStatusChip(booking.status)}</td>
                     <td className="px-6 py-3 align-middle">
@@ -169,8 +169,8 @@ const Bookings = () => {
                   <h3 className="font-bold text-lg truncate">{property?.title || 'Propiedad no encontrada'}</h3>
                   <p className="text-sm text-gray-600">Huésped: {guest?.name || 'Huésped no encontrado'}</p>
                   <div className="mt-3 text-sm">
-                    <p><strong>Desde:</strong> {new Date(booking.start_date).toLocaleDateString()}</p>
-                    <p><strong>Hasta:</strong> {new Date(booking.end_date).toLocaleDateString()}</p>
+                                  <p><strong>Desde:</strong> {new Date(booking.check_in).toLocaleDateString()}</p>
+              <p><strong>Hasta:</strong> {new Date(booking.check_out).toLocaleDateString()}</p>
                   </div>
                   <p className="mt-2 font-semibold">Precio: ${booking.total_price.toLocaleString()}</p>
                 </div>

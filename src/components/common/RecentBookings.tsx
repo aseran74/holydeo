@@ -6,8 +6,8 @@ interface Booking {
   id: string;
   property_id: string;
   client_id: string;
-  start_date: string;
-  end_date: string;
+  check_in: string;
+  check_out: string;
   status: 'confirmada' | 'pendiente' | 'cancelada';
   total_price: number;
   created_at: string;
@@ -220,7 +220,7 @@ const RecentBookings: React.FC<RecentBookingsProps> = ({
                   <div className="flex items-center gap-4 text-sm text-gray-500">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
-                      <span>{formatDate(booking.start_date)} - {formatDate(booking.end_date)}</span>
+                      <span>{formatDate(booking.check_in)} - {formatDate(booking.check_out)}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Euro className="w-4 h-4" />

@@ -5,8 +5,8 @@ import { supabase } from '../../supabaseClient';
 interface Booking {
   id: string;
   property_id: string;
-  start_date: string;
-  end_date: string;
+  check_in: string;
+  check_out: string;
   total_price: number;
   status?: string;
   property?: { title: string };
@@ -93,9 +93,9 @@ const ClientDashboard: React.FC = () => {
       // Traer reservas con la propiedad asociada
       const { data, error } = await supabase
         .from('bookings')
-        .select('id, property_id, start_date, end_date, total_price, status, properties (title)')
-        .eq('client_id', user.id)
-        .order('start_date', { ascending: false });
+        .select('id, property_id, check_in, check_out, total_price, status, properties (title)')
+        .eq('guest_id', user.id)
+        .order('check_in', { ascending: false });
       if (error) {
         setBookings([]);
       } else {
@@ -172,7 +172,7 @@ const ClientDashboard: React.FC = () => {
                 <li key={b.id} className="py-3">
                   <div className="font-semibold">{b.property?.title || 'Propiedad desconocida'}</div>
                   <div className="text-sm text-gray-600">
-                    {new Date(b.start_date).toLocaleDateString()} - {new Date(b.end_date).toLocaleDateString()}
+                    {new Date(b.check_in).toLocaleDateString()} - {new Date(b.check_out).toLocaleDateString()}
                   </div>
                   <div className="text-sm text-gray-700 mt-1">Coste: <span className="font-bold">{b.total_price} €</span></div>
                   {b.status && <div className="text-xs text-gray-500 mt-1">Estado: {b.status}</div>}

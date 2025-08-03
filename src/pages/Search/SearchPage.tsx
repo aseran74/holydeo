@@ -191,8 +191,8 @@ const SearchPage = () => {
         // - Y la fecha de fin de la reserva es posterior o igual a la fecha de llegada de la búsqueda
         const { data: bookings, error: bookingsError } = await supabase
           .from('bookings')
-          .select('property_id, start_date, end_date, status')
-          .or(`and(start_date.lte.${checkOutDate},end_date.gte.${checkInDate})`)
+          .select('property_id, check_in, check_out, status')
+          .or(`and(check_in.lte.${checkOutDate},check_out.gte.${checkInDate})`)
           .eq('status', 'confirmada');
 
         if (bookingsError) {

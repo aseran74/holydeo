@@ -9,8 +9,8 @@ interface AvailabilityCalendarProps {
 
 interface Booking {
   id: string;
-  start_date: string;
-  end_date: string;
+  check_in: string;
+  check_out: string;
   status: 'confirmada' | 'pendiente' | 'cancelada';
 }
 
@@ -35,7 +35,7 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       // Obtener las reservas de esta propiedad
       const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
-        .select('id, start_date, end_date, status')
+        .select('id, check_in, check_out, status')
         .eq('property_id', propertyId)
         .eq('status', 'confirmada');
 
@@ -57,8 +57,8 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
     const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
     const isBooked = bookings.some(booking => {
-      const startDate = new Date(booking.start_date);
-      const endDate = new Date(booking.end_date);
+      const startDate = new Date(booking.check_in);
+      const endDate = new Date(booking.check_out);
       
       // Normalizar las fechas de reserva a medianoche
       const bookingStart = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());

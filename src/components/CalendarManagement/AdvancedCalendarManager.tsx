@@ -30,8 +30,8 @@ type Booking = {
   id: string;
   guest_id: string;
   guest_name?: string;
-  start_date: string;
-  end_date: string;
+  check_in: string;
+  check_out: string;
   status: 'pendiente' | 'confirmada' | 'cancelada';
   created_at: string;
 };
@@ -106,8 +106,8 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
         .select(`
           id, 
           guest_id, 
-          start_date, 
-          end_date, 
+          check_in, 
+          check_out, 
           status, 
           created_at,
           guests!inner(users!inner(full_name))
@@ -171,7 +171,7 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
 
   const getBooking = (date: Date) => {
     const d = date.toISOString().slice(0, 10);
-    return bookings.find(b => b.start_date <= d && b.end_date >= d);
+          return bookings.find(b => b.check_in <= d && b.check_out >= d);
   };
 
   const handleDayClick = (date: Date) => {
@@ -327,8 +327,8 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
       const { error } = await supabase.from('bookings').insert({
         property_id: propertyId,
         guest_id: selectedGuest,
-        start_date: startDate,
-        end_date: endDateStr,
+                  check_in: startDate,
+          check_out: endDateStr,
         status: 'confirmada'
       });
       
@@ -426,9 +426,9 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
         };
       }),
       ...bookings.map(b => {
-        const [year, month, day] = b.start_date.split('-').map(Number);
-        const startDate = new Date(b.start_date);
-        const endDate = new Date(b.end_date);
+        const [year, month, day] = b.check_in.split('-').map(Number);
+        const startDate = new Date(b.check_in);
+        const endDate = new Date(b.check_out);
         // Calcular duración en días (mínimo 1)
         let days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
         if (days < 1) days = 1;
@@ -491,8 +491,8 @@ const AdvancedCalendarManager: React.FC<AdvancedCalendarManagerProps> = ({
     const isBlockedDate = blockedDates.some(b => b.date === dateStr);
     const hasSpecialPrice = specialPrices.some(s => s.date === dateStr);
     const hasBooking = bookings.some(b => {
-      const bookingStart = new Date(b.start_date);
-      const bookingEnd = new Date(b.end_date);
+              const bookingStart = new Date(b.check_in);
+        const bookingEnd = new Date(b.check_out);
       return date >= bookingStart && date <= bookingEnd;
     });
     
