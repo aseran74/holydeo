@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import { Calendar, X } from 'lucide-react';
 
 interface DateRangePickerProps {
@@ -21,43 +19,30 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   className = ""
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [startDate, setStartDate] = useState<Date | null>(checkIn ? new Date(checkIn) : null);
-  const [endDate, setEndDate] = useState<Date | null>(checkOut ? new Date(checkOut) : null);
-
-  const handleStartDateChange = (date: Date | null) => {
-    setStartDate(date);
-    if (date) {
-      onCheckInChange(date.toISOString().split('T')[0]);
-    } else {
-      onCheckInChange('');
-    }
-  };
-
-  const handleEndDateChange = (date: Date | null) => {
-    setEndDate(date);
-    if (date) {
-      onCheckOutChange(date.toISOString().split('T')[0]);
-    } else {
-      onCheckOutChange('');
-    }
-  };
 
   const clearDates = () => {
-    setStartDate(null);
-    setEndDate(null);
     onCheckInChange('');
     onCheckOutChange('');
   };
 
   const formatDisplayDate = () => {
-    if (startDate && endDate) {
-      const start = startDate.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
-      const end = endDate.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
+    if (checkIn && checkOut) {
+      const start = new Date(checkIn).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
+      const end = new Date(checkOut).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
       return `${start} - ${end}`;
-    } else if (startDate) {
-      return startDate.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
+    } else if (checkIn) {
+      return new Date(checkIn).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
     }
     return placeholder;
+  };
+
+  const getMinDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
+  const getMinCheckOut = () => {
+    return checkIn || getMinDate();
   };
 
   return (
@@ -68,11 +53,11 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
       >
         <div className="flex items-center">
           <Calendar className="absolute left-3 text-gray-400 w-5 h-5" />
-          <span className={`${startDate || endDate ? 'text-gray-800' : 'text-gray-500'}`}>
+          <span className={`${checkIn || checkOut ? 'text-gray-800' : 'text-gray-500'}`}>
             {formatDisplayDate()}
           </span>
         </div>
-        {(startDate || endDate) && (
+        {(checkIn || checkOut) && (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -90,35 +75,23 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <h4 className="text-sm font-medium text-gray-700 mb-2">Fecha de llegada</h4>
-              <DatePicker
-                selected={startDate}
-                onChange={handleStartDateChange}
-                selectsStart
-                startDate={startDate}
-                endDate={endDate}
-                minDate={new Date()}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="Seleccionar llegada"
+              <input
+                type="date"
+                value={checkIn}
+                min={getMinDate()}
+                onChange={(e) => onCheckInChange(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                calendarClassName="border-0 shadow-lg rounded-lg"
-                popperClassName="z-50"
               />
             </div>
             
             <div className="flex-1">
               <h4 className="text-sm font-medium text-gray-700 mb-2">Fecha de salida</h4>
-              <DatePicker
-                selected={endDate}
-                onChange={handleEndDateChange}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate || new Date()}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="Seleccionar salida"
+              <input
+                type="date"
+                value={checkOut}
+                min={getMinCheckOut()}
+                onChange={(e) => onCheckOutChange(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                calendarClassName="border-0 shadow-lg rounded-lg"
-                popperClassName="z-50"
               />
             </div>
           </div>

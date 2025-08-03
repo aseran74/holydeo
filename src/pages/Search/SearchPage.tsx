@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Search, MapPin, Calendar, Users, Filter, Grid, List, Home, Star, Bed, Bath, Car, Wifi, Coffee, Utensils, Waves, TreePine, Sun, Snowflake, Building2, Building } from 'lucide-react';
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { Property, Experience } from '../../types';
@@ -7,6 +6,7 @@ import SearchNavbar from '../../components/landing/SearchNavbar';
 import RedirectNotification from '../../components/common/RedirectNotification';
 import DateSearchForm from '../../components/common/DateSearchForm';
 import PublicPropertyCard from '../../components/common/PublicPropertyCard';
+import { Search, MapPin, Filter, Grid, List, Home, Star, Car, Waves, TreePine, Sun, Snowflake, Building2, Building } from 'lucide-react';
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -250,12 +250,7 @@ const SearchPage = () => {
     }).format(price);
   };
 
-  const formatDuration = (duration: number) => {
-    if (duration < 60) return `${duration} min`;
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-    return minutes > 0 ? `${hours}h ${minutes}min` : `${hours}h`;
-  };
+
 
   const amenities = [
     { id: 'piscina', name: 'Piscina', icon: Waves },
@@ -862,7 +857,7 @@ const SearchPage = () => {
                         <div className={viewMode === 'grid' ? 'mb-4' : 'flex-shrink-0'}>
                           <img
                             src={experience.photos?.[0] || '/images/cards/card-01.jpg'}
-                            alt={experience.name}
+                            alt={experience.title || 'Experiencia'}
                             className={`rounded-lg object-cover ${
                               viewMode === 'grid' ? 'w-full h-48' : 'w-24 h-24'
                             }`}
@@ -870,7 +865,7 @@ const SearchPage = () => {
                         </div>
                         <div className="flex-1">
                           <h4 className="font-semibold text-gray-900 mb-1">
-                            {experience.name}
+                            {experience.title || 'Experiencia'}
                           </h4>
                           <p className="text-gray-600 text-sm mb-2">
                             {experience.location}
@@ -880,7 +875,7 @@ const SearchPage = () => {
                               {formatPrice(experience.price)}
                             </span>
                             <span className="text-gray-500 text-sm">
-                              {experience.duration_hours ? `${experience.duration_hours}h` : ''}
+                              {experience.duration ? `${experience.duration}h` : ''}
                             </span>
                           </div>
                         </div>

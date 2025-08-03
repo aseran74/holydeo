@@ -19,8 +19,6 @@ import {
   ChatIcon,
   TaskIcon,
   BoxIconLine,
-  ShootingStarIcon,
-  SearchIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";

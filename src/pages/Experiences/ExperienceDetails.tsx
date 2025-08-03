@@ -33,7 +33,7 @@ const ExperienceDetails = () => {
 
     fetchExperience();
   }, [id]);
-
+  
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
@@ -87,7 +87,7 @@ const ExperienceDetails = () => {
         <div className="mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Imagen principal */}
-            <div className="lg:col-span-2">
+        <div className="lg:col-span-2">
               <div className="relative h-96 lg:h-[500px] rounded-lg overflow-hidden">
                 {mainImage ? (
                   <img
@@ -160,7 +160,7 @@ const ExperienceDetails = () => {
               </div>
             </div>
           </div>
-
+          
           {/* Galería de imágenes */}
           {experience.photos && experience.photos.length > 1 && (
             <div className="mt-6">
@@ -194,7 +194,7 @@ const ExperienceDetails = () => {
           <p className="text-gray-700 leading-relaxed">
             {experience.description}
           </p>
-        </div>
+          </div>
 
         {/* Información adicional */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -215,7 +215,7 @@ const ExperienceDetails = () => {
               <div className="prose prose-gray max-w-none">
                 <div dangerouslySetInnerHTML={{ __html: experience.what_is_needed }} />
               </div>
-            </div>
+           </div>
           )}
         </div>
 
@@ -246,10 +246,10 @@ const ExperienceDetails = () => {
                     {experience.recurring_dates.days.map((day, index) => (
                       <span key={index} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
                         {day}
-                      </span>
+              </span>
                     ))}
-                  </div>
-                </div>
+            </div>
+                 </div>
               )}
             </div>
           </div>

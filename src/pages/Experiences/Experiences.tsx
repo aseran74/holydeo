@@ -7,6 +7,7 @@ import { ListIcon, GridIcon } from '../../icons';
 import ExperienceModal from '../../components/experiences/ExperienceModal';
 import ExperiencesCards from './ExperiencesCards';
 import { Experience } from '../../types';
+import Button from '../../components/ui/button/Button';
 
 const Experiences = () => {
   const [experiences, setExperiences] = useState<Experience[]>([]);
