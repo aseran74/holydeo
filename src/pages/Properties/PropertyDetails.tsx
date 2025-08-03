@@ -30,11 +30,12 @@ import {
   Mountain,
   MapPinIcon,
   Coffee,
-  Dumbbell
+  Dumbbell,
 } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import PageMeta from '../../components/common/PageMeta';
 import PageBreadCrumb from '../../components/common/PageBreadCrumb';
+import AvailabilityCalendar from '../../components/common/AvailabilityCalendar';
 
 // Mapeo de amenities a iconos
 const amenityIcons: { [key: string]: React.ReactElement } = {
@@ -606,6 +607,9 @@ const PropertyDetails = () => {
                 */}
               </div>
             </div>
+
+            {/* Calendario de Disponibilidad */}
+            <AvailabilityCalendar propertyId={property.id} />
           </div>
         </div>
       </div>
