@@ -186,20 +186,30 @@ const SearchPage = () => {
         console.log('Verificando disponibilidad para fechas:', { checkInDate, checkOutDate });
         
         // Obtener las reservas que se solapan con las fechas seleccionadas
-        // Una reserva se solapa si:
-        // - La fecha de inicio de la reserva es anterior o igual a la fecha de salida de la búsqueda
-        // - Y la fecha de fin de la reserva es posterior o igual a la fecha de llegada de la búsqueda
         const { data: bookings, error: bookingsError } = await supabase
           .from('bookings')
           .select('property_id, start_date, end_date, status')
           .or(`and(start_date.lte.${checkOutDate},end_date.gte.${checkInDate})`)
           .eq('status', 'confirmada');
 
-        if (bookingsError) {
-          console.error('Error obteniendo reservas:', bookingsError);
+        // Obtener las fechas bloqueadas que se solapan con las fechas seleccionadas
+        const { data: blockedDates, error: blockedDatesError } = await supabase
+          .from('blocked_dates')
+          .select('property_id, date')
+          .gte('date', checkInDate)
+          .lte('date', checkOutDate);
+
+        if (bookingsError || blockedDatesError) {
+          console.error('Error obteniendo reservas o fechas bloqueadas:', bookingsError || blockedDatesError);
         } else {
-          // Obtener IDs únicos de propiedades ocupadas
-          const occupiedPropertyIds = [...new Set(bookings?.map(booking => booking.property_id) || [])];
+          // Obtener IDs únicos de propiedades ocupadas por reservas
+          const occupiedByBookings = bookings?.map(booking => booking.property_id) || [];
+          
+          // Obtener IDs únicos de propiedades con fechas bloqueadas
+          const occupiedByBlockedDates = blockedDates?.map(blocked => blocked.property_id) || [];
+
+          // Combinar y obtener IDs únicos
+          const occupiedPropertyIds = [...new Set([...occupiedByBookings, ...occupiedByBlockedDates])];
           
           // Filtrar propiedades disponibles
           availableProperties = (data || []).filter(property => 
@@ -207,7 +217,8 @@ const SearchPage = () => {
           );
           
           console.log('Reservas encontradas:', bookings?.length || 0);
-          console.log('Propiedades ocupadas:', occupiedPropertyIds);
+          console.log('Fechas bloqueadas encontradas:', blockedDates?.length || 0);
+          console.log('Propiedades ocupadas (total):', occupiedPropertyIds);
           console.log('Propiedades disponibles después del filtro:', availableProperties.length);
         }
       } catch (error) {
