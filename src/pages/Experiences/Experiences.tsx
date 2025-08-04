@@ -51,6 +51,10 @@ const Experiences = () => {
     setIsModalOpen(true);
   };
 
+  const handleEditForm = (experience: Experience) => {
+    window.location.href = `/experiences/edit/${experience.id}`;
+  };
+
   const handleDelete = async (experienceId: string) => {
     const { error } = await supabase.from("experiences").delete().eq("id", experienceId);
     if (error) {
@@ -149,9 +153,14 @@ const Experiences = () => {
                             <td className="px-6 py-4 whitespace-nowrap">{exp.category}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{exp.price ? `${exp.price}€` : 'No especificado'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-right">
-                              <Button variant="outline" size="sm" onClick={() => handleEdit(exp)}>
-                                Editar
-                              </Button>
+                              <div className="flex gap-2 justify-end">
+                                <Button variant="outline" size="sm" onClick={() => handleEdit(exp)}>
+                                  Editar (Modal)
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => handleEditForm(exp)}>
+                                  Editar (Form)
+                                </Button>
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -163,6 +172,7 @@ const Experiences = () => {
                 <ExperiencesCards
                   experiences={experiences}
                   onEdit={handleEdit}
+                  onEditForm={handleEditForm}
                   onDelete={handleDelete}
                 />
               )}
