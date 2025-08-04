@@ -80,7 +80,13 @@ const Experiences = () => {
                     onClick={() => handleOpenModal()}
                     className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
                   >
-                    Añadir Experiencia
+                    Añadir Experiencia (Modal)
+                  </button>
+                  <button
+                    onClick={() => window.location.href = '/experiences/new'}
+                    className="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700"
+                  >
+                    Nueva Experiencia (Formulario)
                   </button>
                   <span className="text-sm text-gray-600 dark:text-gray-400">
                     {loading ? "Cargando..." : `${experiences.length} experiencias encontradas`}

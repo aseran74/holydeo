@@ -20,6 +20,7 @@ import {
   ChatIcon,
   TaskIcon,
   BoxIconLine,
+  StarIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -95,6 +96,11 @@ const AppSidebar: React.FC = () => {
       icon: <ChatIcon />,
       name: "Mensajes",
       path: "/messages",
+    },
+    {
+      icon: <StarIcon />,
+      name: "Experiencias",
+      path: "/experiences",
     },
     {
       icon: <TaskIcon />,

@@ -26,7 +26,7 @@ import LandingPage from "./pages/Landing/LandingPage";
 import Properties from "./pages/Properties/Properties";
 import Bookings from "./pages/Bookings/Bookings";
 import Experiences from "./pages/Experiences/Experiences";
-
+import ExperienceForm from "./pages/Experiences/ExperienceForm";
 import ExperienceDetails from "./pages/Experiences/ExperienceDetails";
 import Agencies from "./pages/Agencies/Agencies";
 import Agents from "./pages/Agents/Agents";
@@ -93,6 +93,16 @@ export default function App() {
             <Route path="/experiences" element={
               <ProtectedSearchRoute>
                 <Experiences />
+              </ProtectedSearchRoute>
+            } />
+            <Route path="/experiences/new" element={
+              <ProtectedSearchRoute>
+                <ExperienceForm />
+              </ProtectedSearchRoute>
+            } />
+            <Route path="/experiences/edit/:id" element={
+              <ProtectedSearchRoute>
+                <ExperienceForm />
               </ProtectedSearchRoute>
             } />
             <Route path="/experiences/cards" element={
