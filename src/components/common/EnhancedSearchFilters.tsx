@@ -81,9 +81,9 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                  <label className="block text-sm font-medium text-gray-700 mb-1">
                    Precio máximo por mes
                  </label>
-                 <p className="text-xs text-gray-500 mb-2">
-                   Marca para elegir el precio mes por toda la temporada
-                 </p>
+                               <p className="text-xs text-gray-500 mb-2">
+                Marca para elegir el precio Mes/max por toda la temporada
+              </p>
                  <PriceFilter
                    label=""
                    value={searchData.pricePerMonth}
