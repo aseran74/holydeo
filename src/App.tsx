@@ -27,6 +27,7 @@ import Properties from "./pages/Properties/Properties";
 import Bookings from "./pages/Bookings/Bookings";
 import Experiences from "./pages/Experiences/Experiences";
 import ExperiencesTest from "./pages/Experiences/ExperiencesTest";
+import ExperiencesSimple from "./pages/Experiences/ExperiencesSimple";
 import ExperienceForm from "./pages/Experiences/ExperienceForm";
 import ExperienceDetails from "./pages/Experiences/ExperienceDetails";
 import Agencies from "./pages/Agencies/Agencies";
@@ -93,7 +94,7 @@ export default function App() {
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/experiences" element={
               <ProtectedSearchRoute>
-                <ExperiencesTest />
+                <ExperiencesSimple />
               </ProtectedSearchRoute>
             } />
             <Route path="/experiences/new" element={
