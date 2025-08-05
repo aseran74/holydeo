@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import PageBreadCrumb from '../../components/common/PageBreadCrumb';
 import PageMeta from '../../components/common/PageMeta';
@@ -9,6 +10,7 @@ import { Experience } from '../../types';
 import Button from '../../components/ui/button/Button';
 
 const Experiences = () => {
+  const navigate = useNavigate();
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -29,7 +31,7 @@ const Experiences = () => {
   }, []);
 
   const handleEdit = (experience: Experience) => {
-    window.location.href = `/experiences/edit/${experience.id}`;
+    navigate(`/experiences/edit/${experience.id}`);
   };
 
   const handleDelete = async (experienceId: string) => {
@@ -50,7 +52,7 @@ const Experiences = () => {
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-4">
               <button
-                onClick={() => window.location.href = '/experiences/new'}
+                onClick={() => navigate('/experiences/new')}
                 className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
               >
                 Nueva Experiencia
@@ -91,7 +93,7 @@ const Experiences = () => {
             <div className="text-center py-8">
               <p className="text-gray-500 dark:text-gray-400 mb-4">No se encontraron experiencias</p>
               <button
-                onClick={() => window.location.href = '/experiences/new'}
+                onClick={() => navigate('/experiences/new')}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
               >
                 Crear primera experiencia

@@ -92,7 +92,11 @@ export default function App() {
               </ProtectedSearchRoute>
             } />
             <Route path="/bookings" element={<Bookings />} />
-            <Route path="/experiences" element={<Experiences />} />
+            <Route path="/experiences" element={
+              <ProtectedSearchRoute>
+                <Experiences />
+              </ProtectedSearchRoute>
+            } />
             <Route path="/experiences/new" element={
               <ProtectedSearchRoute>
                 <ExperienceForm />
