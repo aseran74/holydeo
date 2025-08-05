@@ -40,14 +40,14 @@ export interface Property {
 
 export interface Experience {
     id: string;
-    title: string;
-    description: string;
-    price: number;
-    location: string;
-    duration: number;
-    max_participants: number;
-    photos: string[];
-    featured: boolean;
+    name: string;
+    description?: string;
+    price?: number;
+    location?: string;
+    duration_hours?: number;
+    max_participants?: number;
+    photos?: string[];
+    featured?: boolean;
     category: string;
     what_is_included?: string;
     what_is_needed?: string;
@@ -57,6 +57,7 @@ export interface Experience {
         dates: string[];
         days: string[];
     };
+    region?: string;
     created_at?: string;
     updated_at?: string;
 } 

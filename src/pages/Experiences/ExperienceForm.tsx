@@ -24,9 +24,9 @@ const ExperienceForm = () => {
   const [experience, setExperience] = useState<Experience | null>(null);
 
   const [formData, setFormData] = useState({
-    title: '',
+    name: '',
     description: '',
-    category: 'cultural',
+    category: 'Actividad Turística',
     location: '',
     region: '',
     price: '',
@@ -36,7 +36,6 @@ const ExperienceForm = () => {
     what_is_included: '',
     what_is_needed: '',
     featured: false,
-    active: true,
   });
 
   const [photos, setPhotos] = useState<string[]>([]);
@@ -65,9 +64,9 @@ const ExperienceForm = () => {
 
     setExperience(data);
     setFormData({
-      title: data.title || '',
+      name: data.name || '',
       description: data.description || '',
-      category: data.category || 'cultural',
+      category: data.category || 'Actividad Turística',
       location: data.location || '',
       region: data.region || '',
       price: data.price?.toString() || '',
@@ -77,7 +76,6 @@ const ExperienceForm = () => {
       what_is_included: data.what_is_included || '',
       what_is_needed: data.what_is_needed || '',
       featured: data.featured || false,
-      active: data.active !== false,
     });
 
     setPhotos(data.photos || []);
@@ -129,13 +127,9 @@ const ExperienceForm = () => {
   };
 
   const categoryOptions = [
-    { value: 'cultural', label: 'Cultural' },
-    { value: 'adventure', label: 'Aventura' },
-    { value: 'relaxation', label: 'Relajación' },
-    { value: 'food', label: 'Gastronomía' },
-    { value: 'nature', label: 'Naturaleza' },
-    { value: 'sports', label: 'Deportes' },
-    { value: 'entertainment', label: 'Entretenimiento' },
+    { value: 'Actividad Turística', label: 'Actividad Turística' },
+    { value: 'Gastronómica', label: 'Gastronómica' },
+    { value: 'Deportiva', label: 'Deportiva' },
   ];
 
   const regionOptions = [
@@ -182,17 +176,17 @@ const ExperienceForm = () => {
             <h3 className="text-lg font-semibold mb-4">Información Básica</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="title">Título de la Experiencia *</Label>
-                <Input
-                  id="title"
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Ej: Tour por la Ciudad Vieja"
-                  required
-                />
-              </div>
+                             <div>
+                 <Label htmlFor="name">Nombre de la Experiencia *</Label>
+                 <Input
+                   id="name"
+                   type="text"
+                   value={formData.name}
+                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                   placeholder="Ej: Tour por la Ciudad Vieja"
+                   required
+                 />
+               </div>
 
               <div>
                 <Label htmlFor="category">Categoría *</Label>
@@ -353,18 +347,7 @@ const ExperienceForm = () => {
                 </Label>
               </div>
 
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="active"
-                  checked={formData.active}
-                  onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <Label htmlFor="active" className="ml-2">
-                  Experiencia activa
-                </Label>
-              </div>
+              
             </div>
           </div>
 

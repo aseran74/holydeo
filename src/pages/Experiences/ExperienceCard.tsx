@@ -56,7 +56,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
           <img
             className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer ${isLoading ? 'hidden' : 'block'}`}
             src={imageUrl}
-            alt={experience.title || 'Experiencia'}
+                         alt={experience.name || 'Experiencia'}
             onError={() => {
               setImageUrl('/images/cards/card-01.jpg');
             }}
@@ -87,9 +87,9 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
       
       <div className="p-4">
         <Link to={`/experiences/${experience.id}`} className="block">
-          <h3 className="text-xl font-bold mb-2 truncate text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer">
-            {experience.title || 'Sin título'}
-          </h3>
+                     <h3 className="text-xl font-bold mb-2 truncate text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer">
+             {experience.name || 'Sin título'}
+           </h3>
         </Link>
         
         <p className="text-gray-600 dark:text-gray-400 text-sm flex items-center mb-3">
@@ -99,10 +99,10 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
         
         <div className="flex justify-between items-center text-gray-700 dark:text-gray-300 mb-3">
           <div className="flex items-center space-x-3">
-            <span className="flex items-center text-sm">
-              <Clock className="w-5 h-5 mr-1 text-primary" />
-              {formatDuration(experience.duration)}
-            </span>
+                         <span className="flex items-center text-sm">
+               <Clock className="w-5 h-5 mr-1 text-primary" />
+               {formatDuration(experience.duration_hours || 0)}
+             </span>
             <span className="flex items-center text-sm">
               <Users className="w-5 h-5 mr-1 text-primary" />
               {experience.max_participants}

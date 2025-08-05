@@ -115,7 +115,7 @@ const Experiences = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {experiences.map((exp) => (
                       <tr key={exp.id}>
-                        <td className="px-6 py-4 whitespace-nowrap">{exp.title}</td>
+                                                 <td className="px-6 py-4 whitespace-nowrap">{exp.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap">{exp.category}</td>
                         <td className="px-6 py-4 whitespace-nowrap">{exp.location || 'No especificada'}</td>
                         <td className="px-6 py-4 whitespace-nowrap">{exp.price ? `${exp.price}€` : 'No especificado'}</td>
