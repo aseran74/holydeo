@@ -8,7 +8,7 @@ import Input from '../../components/form/input/InputField';
 import Label from '../../components/form/Label';
 import Select from '../../components/form/Select';
 import TextArea from '../../components/form/input/TextArea';
-import ImageUploader from '../../components/common/ImageUploader';
+import MultipleImageUploader from '../../components/common/MultipleImageUploader';
 import GooglePlacesAutocomplete from '../../components/common/GooglePlacesAutocomplete';
 import { Experience } from '../../types';
 import { DayPicker } from 'react-day-picker';
@@ -327,10 +327,11 @@ const ExperienceForm = () => {
           {/* Imágenes */}
           <div className="bg-gray-50 p-6 rounded-lg">
             <h3 className="text-lg font-semibold mb-4">Imágenes</h3>
-            <ImageUploader
+            <MultipleImageUploader
               images={photos}
               onImagesChange={setPhotos}
               maxImages={5}
+              bucketName="experience"
             />
           </div>
 
