@@ -142,6 +142,7 @@ const Experiences = () => {
                         <tr>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Localización</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
                           <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
@@ -151,6 +152,7 @@ const Experiences = () => {
                           <tr key={exp.id}>
                             <td className="px-6 py-4 whitespace-nowrap">{exp.title}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{exp.category}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">{exp.location || 'No especificada'}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{exp.price ? `${exp.price}€` : 'No especificado'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-right">
                               <div className="flex gap-2 justify-end">
