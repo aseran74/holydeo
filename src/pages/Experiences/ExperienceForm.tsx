@@ -301,16 +301,91 @@ const ExperienceForm = () => {
             </div>
           </div>
 
-          {/* Imágenes */}
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4">Imágenes</h3>
-            <MultipleImageUploader
-              images={photos}
-              onImagesChange={setPhotos}
-              maxImages={5}
-              bucketName="experience"
-            />
-          </div>
+                     {/* Calendario de Fechas */}
+           <div className="bg-gray-50 p-6 rounded-lg">
+             <h3 className="text-lg font-semibold mb-4">Fechas de la Experiencia</h3>
+             
+             <div className="space-y-4">
+               <div className="flex items-center space-x-4">
+                 <label className="flex items-center">
+                   <input
+                     type="radio"
+                     name="recurringType"
+                     checked={!isWeekly}
+                     onChange={() => setIsWeekly(false)}
+                     className="mr-2"
+                   />
+                   Fechas específicas
+                 </label>
+                 <label className="flex items-center">
+                   <input
+                     type="radio"
+                     name="recurringType"
+                     checked={isWeekly}
+                     onChange={() => setIsWeekly(true)}
+                     className="mr-2"
+                   />
+                   Recurrencia semanal
+                 </label>
+               </div>
+               
+               {!isWeekly ? (
+                 <div>
+                   <Label>Seleccionar fechas específicas</Label>
+                   <div className="mt-2 p-4 border rounded-lg">
+                     <DayPicker
+                       mode="multiple"
+                       selected={selectedDays}
+                       onSelect={(days) => setSelectedDays(days || [])}
+                       locale={es}
+                       className="border-0"
+                     />
+                   </div>
+                 </div>
+               ) : (
+                 <div>
+                   <Label>Seleccionar días de la semana</Label>
+                   <div className="mt-2 grid grid-cols-7 gap-2">
+                     {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((day, index) => (
+                       <button
+                         key={day}
+                         type="button"
+                         onClick={() => {
+                           const dayIndex = index;
+                           if (selectedDays.some(d => d.getDay() === dayIndex)) {
+                             setSelectedDays(selectedDays.filter(d => d.getDay() !== dayIndex));
+                           } else {
+                             // Crear una fecha de ejemplo para representar el día de la semana
+                             const exampleDate = new Date();
+                             exampleDate.setDate(exampleDate.getDate() + (dayIndex - exampleDate.getDay() + 7) % 7);
+                             setSelectedDays([...selectedDays, exampleDate]);
+                           }
+                         }}
+                         className={`p-2 text-sm rounded ${
+                           selectedDays.some(d => d.getDay() === index)
+                             ? 'bg-blue-500 text-white'
+                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                         }`}
+                       >
+                         {day}
+                       </button>
+                     ))}
+                   </div>
+                 </div>
+               )}
+             </div>
+           </div>
+
+           {/* Imágenes */}
+           <div className="bg-gray-50 p-6 rounded-lg">
+             <h3 className="text-lg font-semibold mb-4">Imágenes</h3>
+             <MultipleImageUploader
+               images={photos}
+               onImagesChange={setPhotos}
+               maxImages={5}
+               bucketName="experience"
+             />
+           </div>
 
           {/* Configuración */}
           <div className="bg-gray-50 p-6 rounded-lg">

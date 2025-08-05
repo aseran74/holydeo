@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Clock, Users, Euro, Eye } from 'lucide-react';
+import { supabase } from '../../supabaseClient';
 
 import { Experience } from '../../types';
 
@@ -20,8 +21,11 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
       let finalUrl: string | null = null;
 
       if (experience.photos && experience.photos.length > 0) {
-        // Usar la primera imagen disponible
-        finalUrl = experience.photos[0];
+        // Obtener la URL pública de la primera imagen
+        const { data } = supabase.storage
+          .from('experience')
+          .getPublicUrl(experience.photos[0]);
+        finalUrl = data.publicUrl;
       }
 
       setImageUrl(finalUrl || '/images/cards/card-01.jpg');
