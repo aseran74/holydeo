@@ -162,6 +162,14 @@ const Experiences = () => {
                                 <Button variant="outline" size="sm" onClick={() => handleEditForm(exp)}>
                                   Editar (Form)
                                 </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => handleDelete(exp.id)}
+                                  className="text-red-600 hover:text-red-700 border-red-600 hover:border-red-700"
+                                >
+                                  Eliminar
+                                </Button>
                               </div>
                             </td>
                           </tr>
