@@ -7,11 +7,10 @@ import { Experience } from '../../types';
 interface ExperienceCardProps {
   experience: Experience;
   onEdit: () => void;
-  onEditForm: () => void;
   onDelete: () => void;
 }
 
-const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onEditForm, onDelete }) => {
+const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onDelete }) => {
   const [imageUrl, setImageUrl] = useState<string>('/images/cards/card-01.jpg');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -122,16 +121,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onE
             }}
             className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
           >
-            Editar (Modal)
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              onEditForm();
-            }}
-            className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
-          >
-            Editar (Form)
+            Editar
           </button>
           <button
             onClick={(e) => {

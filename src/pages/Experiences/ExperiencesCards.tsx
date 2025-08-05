@@ -5,11 +5,10 @@ import { Experience } from "../../types";
 interface ExperiencesCardsProps {
   experiences: Experience[];
   onEdit: (experience: Experience) => void;
-  onEditForm: (experience: Experience) => void;
   onDelete: (experienceId: string) => void;
 }
 
-const ExperiencesCards: React.FC<ExperiencesCardsProps> = ({ experiences, onEdit, onEditForm, onDelete }) => {
+const ExperiencesCards: React.FC<ExperiencesCardsProps> = ({ experiences, onEdit, onDelete }) => {
   const [filter, setFilter] = useState("");
 
   const filtered = experiences.filter((exp) =>
@@ -36,7 +35,6 @@ const ExperiencesCards: React.FC<ExperiencesCardsProps> = ({ experiences, onEdit
             key={experience.id}
             experience={experience}
             onEdit={() => onEdit(experience)}
-            onEditForm={() => onEditForm(experience)}
             onDelete={() => onDelete(experience.id)}
           />
         ))}
