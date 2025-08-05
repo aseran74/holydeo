@@ -9,6 +9,7 @@ import Label from '../../components/form/Label';
 import Select from '../../components/form/Select';
 import TextArea from '../../components/form/input/TextArea';
 import ImageUploader from '../../components/common/ImageUploader';
+import GooglePlacesAutocomplete from '../../components/common/GooglePlacesAutocomplete';
 import { Experience } from '../../types';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
@@ -206,13 +207,11 @@ const ExperienceForm = () => {
 
               <div>
                 <Label htmlFor="location">Ubicación *</Label>
-                <Input
-                  id="location"
-                  type="text"
+                <GooglePlacesAutocomplete
                   value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  placeholder="Ej: Alicante, España"
-                  required
+                  onChange={(value) => setFormData({ ...formData, location: value })}
+                  placeholder="Buscar ubicación..."
+                  className="w-full"
                 />
               </div>
 
