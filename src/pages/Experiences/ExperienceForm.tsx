@@ -28,7 +28,6 @@ const ExperienceForm = () => {
     description: '',
     category: 'Actividad Turística',
     location: '',
-    region: '',
     price: '',
     duration_hours: '',
     max_participants: '',
@@ -68,7 +67,6 @@ const ExperienceForm = () => {
       description: data.description || '',
       category: data.category || 'Actividad Turística',
       location: data.location || '',
-      region: data.region || '',
       price: data.price?.toString() || '',
       duration_hours: data.duration_hours?.toString() || '',
       max_participants: data.max_participants?.toString() || '',
@@ -132,14 +130,7 @@ const ExperienceForm = () => {
     { value: 'Deportiva', label: 'Deportiva' },
   ];
 
-  const regionOptions = [
-    { value: 'Alicante', label: 'Alicante' },
-    { value: 'Valencia', label: 'Valencia' },
-    { value: 'Murcia', label: 'Murcia' },
-    { value: 'Castellón', label: 'Castellón' },
-    { value: 'Barcelona', label: 'Barcelona' },
-    { value: 'Madrid', label: 'Madrid' },
-  ];
+
 
   if (loading) {
     return (
@@ -209,15 +200,7 @@ const ExperienceForm = () => {
                 />
               </div>
 
-              <div>
-                <Label htmlFor="region">Región</Label>
-                <Select
-                  id="region"
-                  value={formData.region}
-                  onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                  options={regionOptions}
-                />
-              </div>
+              
             </div>
 
             <div className="mt-6">
