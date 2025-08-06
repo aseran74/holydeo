@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import { ListIcon, GridIcon } from "../icons";
+import { ListIcon, GridIcon, Phone, Mail, Calendar, User } from "lucide-react";
 
 interface Guest {
   id: string;
   user_id: string;
   phone?: string;
+  created_at?: string;
   users?: {
     full_name?: string;
     email?: string;
   };
+  bookings_count?: number;
 }
 
 const Guests = () => {
@@ -29,56 +31,52 @@ const Guests = () => {
   const fetchGuests = async () => {
     setLoading(true);
     console.log('🔍 Fetching guests...');
-    const { data: guestsData, error } = await supabase
-      .from('guests')
-      .select('id, user_id, phone')
-      .order('user_id');
     
-    if (error) {
-      console.error('❌ Error fetching guests:', error);
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
-
-    console.log('📊 Guests data:', guestsData);
-
-    // Obtener los datos de usuarios para los huéspedes
-    if (guestsData && guestsData.length > 0) {
-      const userIds = guestsData.map(guest => guest.user_id);
-      console.log('👥 User IDs:', userIds);
-      const { data: usersData, error: usersError } = await supabase
-        .from('users')
-        .select('id, full_name, email')
-        .in('id', userIds);
-
-      if (usersError) {
-        console.error('❌ Error fetching users:', usersError);
-        setError(usersError.message);
+    try {
+      // Obtener huéspedes con datos de usuarios y conteo de reservas
+      const { data: guestsData, error } = await supabase
+        .from('guests')
+        .select(`
+          id, 
+          user_id, 
+          phone, 
+          created_at,
+          users!inner(id, full_name, email)
+        `)
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error('❌ Error fetching guests:', error);
+        setError(error.message);
         setLoading(false);
         return;
       }
 
-      console.log('👤 Users data:', usersData);
+      console.log('📊 Guests data:', guestsData);
 
-      // Combinar los datos
-      const combinedData: Guest[] = guestsData.map(guest => {
-        const user = usersData?.find(u => u.id === guest.user_id);
-        return {
-          ...guest,
-          users: user ? {
-            full_name: user.full_name,
-            email: user.email
-          } : undefined
-        };
-      });
+      // Obtener conteo de reservas para cada huésped
+      const guestsWithBookings = await Promise.all(
+        guestsData?.map(async (guest) => {
+          const { count: bookingsCount } = await supabase
+            .from('bookings')
+            .select('*', { count: 'exact', head: true })
+            .eq('guest_id', guest.id);
+          
+          return {
+            ...guest,
+            bookings_count: bookingsCount || 0
+          };
+        }) || []
+      );
 
-      console.log('🎯 Combined data:', combinedData);
-      setGuests(combinedData);
-    } else {
-      setGuests([]);
+      console.log('🎯 Combined data with bookings:', guestsWithBookings);
+      setGuests(guestsWithBookings);
+    } catch (err) {
+      console.error('❌ Error in fetchGuests:', err);
+      setError('Error al cargar los huéspedes');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleAdd = () => {
@@ -118,6 +116,14 @@ const Guests = () => {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   const filteredGuests = filter.trim() === ''
     ? guests
     : guests.filter((g) => {
@@ -131,116 +137,245 @@ const Guests = () => {
 
   return (
     <div className="p-6 md:p-10">
-      <h1 className="text-2xl font-bold mb-6">Huéspedes</h1>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Huéspedes</h1>
+          <p className="text-gray-600 mt-1">Gestiona los huéspedes registrados en el sistema</p>
+        </div>
+        <button 
+          onClick={handleAdd} 
+          className="px-4 py-2 font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-700 transition-colors mt-4 sm:mt-0"
+        >
+          Añadir huésped
+        </button>
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-        <button onClick={handleAdd} className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">Añadir huésped</button>
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <input
             type="text"
-            placeholder="Filtrar por nombre, email o teléfono..."
+            placeholder="Buscar por nombre, email o teléfono..."
             value={filter}
             onChange={e => setFilter(e.target.value)}
             className="border border-gray-300 rounded-lg px-3 py-2 w-full sm:w-80 focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
+        </div>
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setViewMode('list')}
-            className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+            title="Vista de lista"
           >
             <ListIcon className="h-5 w-5" />
           </button>
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+            title="Vista de cuadrícula"
           >
             <GridIcon className="h-5 w-5" />
           </button>
         </div>
       </div>
-      {loading ? <p>Cargando...</p> : null}
-      {error ? <p className="text-red-500">{error}</p> : null}
-      {viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredGuests.map(guest => (
-            <div key={guest.id} className="bg-white rounded-xl shadow p-5 text-center flex flex-col items-center">
-              <img src="/images/user/user-01.jpg" alt={guest.users?.full_name || `Huésped ${guest.user_id.slice(0, 8)}`} className="w-24 h-24 object-cover rounded-full mb-4" />
-              <h3 className="font-bold text-lg">{guest.users?.full_name || `Huésped ${guest.user_id.slice(0, 8)}`}</h3>
-              <p className="text-sm text-gray-500">{guest.users?.email || 'Sin email'}</p>
-              <p className="text-sm text-gray-500 mt-1">{guest.phone || 'Sin teléfono'}</p>
-              <button className="mt-4 text-blue-600 hover:text-blue-800" onClick={() => handleEdit(guest)}>Editar</button>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="bg-white rounded-xl shadow p-4 overflow-x-auto mt-4">
-          <table className="min-w-full">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Foto</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Nombre</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Teléfono</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredGuests.map(guest => (
-                <tr key={guest.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
-                  <td className="px-6 py-3 align-middle">
-                    <img src="/images/user/user-01.jpg" alt={guest.users?.full_name || `Huésped ${guest.user_id.slice(0, 8)}`} className="w-10 h-10 object-cover rounded-full" />
-                  </td>
-                  <td className="px-6 py-3 align-middle">{guest.users?.full_name || `Huésped ${guest.user_id.slice(0, 8)}`}</td>
-                  <td className="px-6 py-3 align-middle">{guest.users?.email || 'Sin email'}</td>
-                  <td className="px-6 py-3 align-middle">{guest.phone || 'Sin teléfono'}</td>
-                  <td className="px-6 py-3 align-middle">
-                    <button className="text-blue-600 hover:text-blue-800" onClick={() => handleEdit(guest)}>
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+      {loading && (
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-2 text-gray-600">Cargando huéspedes...</span>
         </div>
       )}
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <p className="text-red-600">{error}</p>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <>
+          <div className="mb-4 text-sm text-gray-600">
+            Mostrando {filteredGuests.length} de {guests.length} huéspedes
+          </div>
+
+          {viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {filteredGuests.map(guest => (
+                <div key={guest.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                  <div className="text-center mb-4">
+                    <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <User className="w-10 h-10 text-blue-600" />
+                    </div>
+                    <h3 className="font-bold text-lg text-gray-900">
+                      {guest.users?.full_name || `Huésped ${guest.user_id.slice(0, 8)}`}
+                    </h3>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Mail className="w-4 h-4" />
+                      <span className="truncate">{guest.users?.email || 'Sin email'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Phone className="w-4 h-4" />
+                      <span>{guest.phone || 'Sin teléfono'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Calendar className="w-4 h-4" />
+                      <span>Registrado: {guest.created_at ? formatDate(guest.created_at) : 'N/A'}</span>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                      <span className="text-xs text-gray-500">
+                        {guest.bookings_count || 0} reserva{guest.bookings_count !== 1 ? 's' : ''}
+                      </span>
+                      <button 
+                        className="text-blue-600 hover:text-blue-800 text-sm font-medium" 
+                        onClick={() => handleEdit(guest)}
+                      >
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Huésped
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Contacto
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Registro
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Reservas
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Acciones
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredGuests.map(guest => (
+                      <tr key={guest.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                              <User className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">
+                                {guest.users?.full_name || `Huésped ${guest.user_id.slice(0, 8)}`}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                ID: {guest.id.slice(0, 8)}...
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{guest.users?.email || 'Sin email'}</div>
+                          <div className="text-sm text-gray-500">{guest.phone || 'Sin teléfono'}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {guest.created_at ? formatDate(guest.created_at) : 'N/A'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {guest.bookings_count || 0} reserva{guest.bookings_count !== 1 ? 's' : ''}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button 
+                            className="text-blue-600 hover:text-blue-900 transition-colors" 
+                            onClick={() => handleEdit(guest)}
+                          >
+                            Editar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {!loading && !error && filteredGuests.length === 0 && (
+        <div className="text-center py-12">
+          <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No se encontraron huéspedes</h3>
+          <p className="text-gray-500">
+            {filter ? 'Intenta con otros términos de búsqueda.' : 'Aún no hay huéspedes registrados.'}
+          </p>
+        </div>
+      )}
+
       {modalOpen && editingGuest && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">{editingGuest.id ? 'Editar huésped' : 'Añadir huésped'}</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {editingGuest.id ? 'Editar huésped' : 'Añadir huésped'}
+            </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium">ID de Usuario</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  ID de Usuario
+                </label>
                 <input
                   type="text"
                   value={editingGuest.user_id || ''}
                   onChange={e => setEditingGuest({ ...editingGuest, user_id: e.target.value })}
-                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="UUID del usuario"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">Teléfono</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Teléfono
+                </label>
                 <input
                   type="text"
                   value={editingGuest.phone || ''}
                   onChange={e => setEditingGuest({ ...editingGuest, phone: e.target.value })}
-                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Número de teléfono"
                 />
               </div>
               {editingGuest.users && (
-                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
-                  <div className="font-medium">Información del usuario:</div>
-                  <div>Nombre: {editingGuest.users.full_name}</div>
-                  <div>Email: {editingGuest.users.email}</div>
+                <div className="p-3 bg-blue-50 rounded-lg">
+                  <div className="font-medium text-sm text-blue-900 mb-2">Información del usuario:</div>
+                  <div className="text-sm text-blue-800">
+                    <div>Nombre: {editingGuest.users.full_name}</div>
+                    <div>Email: {editingGuest.users.email}</div>
+                  </div>
                 </div>
               )}
             </div>
             <div className="flex justify-end gap-2 mt-6">
-              <button onClick={() => setModalOpen(false)} className="px-4 py-2 bg-gray-400 text-white rounded">Cancelar</button>
-              <button onClick={handleSave} className="px-4 py-2 bg-blue-600 text-white rounded" disabled={saving}>
+              <button 
+                onClick={() => setModalOpen(false)} 
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={handleSave} 
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" 
+                disabled={saving}
+              >
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </div>
-            {error && <p className="text-red-500 mt-2">{error}</p>}
+            {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
           </div>
         </div>
       )}
