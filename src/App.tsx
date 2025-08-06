@@ -92,31 +92,11 @@ export default function App() {
               </ProtectedSearchRoute>
             } />
             <Route path="/bookings" element={<Bookings />} />
-            <Route path="/experiences" element={
-              <ProtectedSearchRoute>
-                <Experiences />
-              </ProtectedSearchRoute>
-            } />
-            <Route path="/experiences/new" element={
-              <ProtectedSearchRoute>
-                <ExperienceForm />
-              </ProtectedSearchRoute>
-            } />
-            <Route path="/experiences/edit/:id" element={
-              <ProtectedSearchRoute>
-                <ExperienceForm />
-              </ProtectedSearchRoute>
-            } />
-            <Route path="/experiences/cards" element={
-              <ProtectedSearchRoute>
-                <Experiences />
-              </ProtectedSearchRoute>
-            } />
-            <Route path="/experiences/:id" element={
-              <ProtectedSearchRoute>
-                <ExperienceDetails />
-              </ProtectedSearchRoute>
-            } />
+            <Route path="/experiences" element={<Experiences />} />
+            <Route path="/experiences/new" element={<ExperienceForm />} />
+            <Route path="/experiences/edit/:id" element={<ExperienceForm />} />
+            <Route path="/experiences/cards" element={<Experiences />} />
+            <Route path="/experiences/:id" element={<ExperienceDetails />} />
             <Route path="/agencies" element={<Agencies />} />
             <Route path="/agents" element={<Agents />} />
             <Route path="/owners" element={<Owners />} />
