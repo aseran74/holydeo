@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 interface ExperienceCardProps {
   experience: {
     id: string;
-    title: string;
+    name: string;
     category?: string;
     photos?: string[];
     price?: number;
@@ -20,7 +20,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience }) => {
   return (
     <Link to={`/experiencias/${experience.id}`} className="block rounded-lg shadow-lg overflow-hidden bg-white dark:bg-gray-800 transform hover:-translate-y-1 transition-transform duration-300">
       <div className="relative h-56">
-        <img className="w-full h-full object-cover" src={imageUrl} alt={experience.title} />
+        <img className="w-full h-full object-cover" src={imageUrl} alt={experience.name} />
         {experience.price && (
           <div className="absolute top-2 right-2 bg-primary text-white text-sm font-bold px-3 py-1 rounded-full">
             <span className="flex items-center">
@@ -37,7 +37,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience }) => {
               {experience.category}
           </p>
         )}
-        <h3 className="text-xl font-bold mb-2 truncate text-gray-900 dark:text-white">{experience.title}</h3>
+        <h3 className="text-xl font-bold mb-2 truncate text-gray-900 dark:text-white">{experience.name}</h3>
         {/* Ejemplo de cómo mostrar una ubicación si estuviera disponible */}
         {experience.location && (
           <p className="text-gray-600 dark:text-gray-400 text-sm flex items-center mb-3">

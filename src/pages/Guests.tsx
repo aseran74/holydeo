@@ -41,7 +41,7 @@ const Guests = () => {
           user_id, 
           phone, 
           created_at,
-          users!inner(id, full_name, email)
+          users(id, full_name, email)
         `)
         .order('created_at', { ascending: false });
       
@@ -55,15 +55,22 @@ const Guests = () => {
       console.log('📊 Guests data:', guestsData);
 
       // Obtener conteo de reservas para cada huésped
-      const guestsWithBookings = await Promise.all(
-        guestsData?.map(async (guest) => {
+      const guestsWithBookings: Guest[] = await Promise.all(
+        guestsData?.map(async (guest: any) => {
           const { count: bookingsCount } = await supabase
             .from('bookings')
             .select('*', { count: 'exact', head: true })
             .eq('guest_id', guest.id);
           
           return {
-            ...guest,
+            id: guest.id,
+            user_id: guest.user_id,
+            phone: guest.phone,
+            created_at: guest.created_at,
+            users: guest.users ? {
+              full_name: guest.users.full_name,
+              email: guest.users.email
+            } : undefined,
             bookings_count: bookingsCount || 0
           };
         }) || []

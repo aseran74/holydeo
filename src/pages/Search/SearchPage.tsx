@@ -586,7 +586,7 @@ const SearchPage = () => {
                         <div className={viewMode === 'grid' ? 'mb-4' : 'flex-shrink-0'}>
                           <img
                             src={experience.photos?.[0] || '/images/cards/card-01.jpg'}
-                            alt={experience.title || 'Experiencia'}
+                            alt={experience.name || 'Experiencia'}
                             className={`rounded-lg object-cover ${
                               viewMode === 'grid' ? 'w-full h-48' : 'w-24 h-24'
                             }`}
@@ -594,17 +594,17 @@ const SearchPage = () => {
                         </div>
                         <div className="flex-1">
                           <h4 className="font-semibold text-gray-900 mb-1">
-                            {experience.title || 'Experiencia'}
+                            {experience.name || 'Experiencia'}
                           </h4>
                           <p className="text-gray-600 text-sm mb-2">
                             {experience.location}
                           </p>
                           <div className="flex items-center justify-between">
                             <span className="text-blue-600 font-semibold">
-                              {formatPrice(experience.price)}
+                              {formatPrice(experience.price || 0)}
                             </span>
                             <span className="text-gray-500 text-sm">
-                              {experience.duration ? `${experience.duration}h` : ''}
+                              {experience.duration_hours ? `${experience.duration_hours}h` : ''}
                             </span>
                           </div>
                         </div>

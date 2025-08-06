@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import PageBreadCrumb from '../../components/common/PageBreadCrumb';
 import PageMeta from '../../components/common/PageMeta';
@@ -54,7 +54,7 @@ const ExperiencesSimple = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {experiences.map((exp) => (
                       <tr key={exp.id}>
-                        <td className="px-6 py-4 whitespace-nowrap">{exp.title}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{exp.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap">{exp.category}</td>
                         <td className="px-6 py-4 whitespace-nowrap">{exp.price ? `${exp.price}€` : 'No especificado'}</td>
                       </tr>

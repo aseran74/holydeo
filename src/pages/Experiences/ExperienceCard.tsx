@@ -84,7 +84,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
         <div className="absolute top-2 right-2 bg-primary text-white text-sm font-bold px-3 py-1 rounded-full">
           <span className="flex items-center">
             <Euro className="w-4 h-4 mr-1" />
-            {formatPrice(experience.price)}
+            {formatPrice(experience.price || 0)}
           </span>
         </div>
       </div>

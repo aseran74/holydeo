@@ -72,7 +72,7 @@ const ExperiencesSection = () => {
             <div className="relative">
               <img
                 src={experience.photos && experience.photos.length > 0 ? experience.photos[0] : "https://placehold.co/600x400/DDDDDD/333333?text=Imagen+No+Disponible"}
-                alt={experience.title || 'Experiencia'}
+                alt={experience.name || 'Experiencia'}
                 className="w-full h-48 object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -86,19 +86,19 @@ const ExperiencesSection = () => {
                 </div>
               )}
               <div className="absolute top-2 right-2 bg-blue-600 text-white text-sm font-bold px-3 py-1 rounded-full">
-                {formatPrice(experience.price)}
+                {formatPrice(experience.price || 0)}
               </div>
             </div>
             <div className="p-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {experience.title || 'Sin título'}
+                {experience.name || 'Sin título'}
               </h3>
               <p className="text-gray-700 text-sm mb-4 line-clamp-3">
                 {experience.description || 'Descripción no disponible'}
               </p>
               <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
                 <span>{experience.location || 'Ubicación no especificada'}</span>
-                <span>{formatDuration(experience.duration)}</span>
+                <span>{formatDuration(experience.duration_hours || 0)}</span>
               </div>
               <Link to={`/experiences/${experience.id}`}>
                 <button className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">

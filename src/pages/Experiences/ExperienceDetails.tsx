@@ -80,7 +80,7 @@ const ExperienceDetails = () => {
 
   return (
     <div className="p-4">
-      <PageBreadCrumb pageTitle={experience.title} />
+      <PageBreadCrumb pageTitle={experience.name} />
 
       <div className="max-w-6xl mx-auto">
         {/* Imágenes */}
@@ -92,7 +92,7 @@ const ExperienceDetails = () => {
                 {mainImage ? (
                   <img
                     src={mainImage}
-                    alt={experience.title}
+                    alt={experience.name}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -119,11 +119,11 @@ const ExperienceDetails = () => {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                  {experience.title}
+                  {experience.name}
                 </h1>
 
                 <div className="text-2xl font-bold text-blue-600 mb-6">
-                  {formatPrice(experience.price)}
+                  {formatPrice(experience.price || 0)}
                 </div>
 
                 <div className="space-y-4 mb-6">
@@ -133,7 +133,7 @@ const ExperienceDetails = () => {
                   </div>
                   <div className="flex items-center text-gray-600">
                     <ClockIcon className="w-5 h-5 mr-3" />
-                    <span>{formatDuration(experience.duration)}</span>
+                    <span>{formatDuration(experience.duration_hours || 0)}</span>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <UsersIcon className="w-5 h-5 mr-3" />
@@ -178,7 +178,7 @@ const ExperienceDetails = () => {
                   >
                     <img
                       src={photo}
-                      alt={`${experience.title} ${index + 1}`}
+                      alt={`${experience.name} ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
                   </button>

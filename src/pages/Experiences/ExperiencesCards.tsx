@@ -12,7 +12,7 @@ const ExperiencesCards: React.FC<ExperiencesCardsProps> = ({ experiences, onEdit
   const [filter, setFilter] = useState("");
 
   const filtered = experiences.filter((exp) =>
-    (exp.title && exp.title.toLowerCase().includes(filter.toLowerCase())) ||
+    (exp.name && exp.name.toLowerCase().includes(filter.toLowerCase())) ||
     (exp.location && exp.location.toLowerCase().includes(filter.toLowerCase())) ||
     (exp.category && exp.category.toLowerCase().includes(filter.toLowerCase()))
   );

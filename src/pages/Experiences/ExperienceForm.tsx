@@ -10,18 +10,18 @@ import Select from '../../components/form/Select';
 import TextArea from '../../components/form/input/TextArea';
 import MultipleImageUploader from '../../components/common/MultipleImageUploader';
 import GooglePlacesAutocomplete from '../../components/common/GooglePlacesAutocomplete';
-import { Experience } from '../../types';
+
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { es } from 'date-fns/locale';
-import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 
 const ExperienceForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [experience, setExperience] = useState<Experience | null>(null);
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -61,7 +61,7 @@ const ExperienceForm = () => {
       return;
     }
 
-    setExperience(data);
+    // setExperience(data);
     setFormData({
       name: data.name || '',
       description: data.description || '',
@@ -175,18 +175,15 @@ const ExperienceForm = () => {
                    value={formData.name}
                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                    placeholder="Ej: Tour por la Ciudad Vieja"
-                   required
                  />
                </div>
 
               <div>
                 <Label htmlFor="category">Categoría *</Label>
                 <Select
-                  id="category"
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  defaultValue={formData.category}
+                  onChange={(value) => setFormData({ ...formData, category: value })}
                   options={categoryOptions}
-                  required
                 />
               </div>
 
@@ -206,12 +203,10 @@ const ExperienceForm = () => {
             <div className="mt-6">
               <Label htmlFor="description">Descripción *</Label>
               <TextArea
-                id="description"
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(value) => setFormData({ ...formData, description: value })}
                 placeholder="Describe la experiencia en detalle..."
                 rows={4}
-                required
               />
             </div>
           </div>
@@ -230,8 +225,7 @@ const ExperienceForm = () => {
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   placeholder="0.00"
                   min="0"
-                  step="0.01"
-                  required
+                  step={0.01}
                 />
               </div>
 
@@ -280,9 +274,8 @@ const ExperienceForm = () => {
               <div>
                 <Label htmlFor="what_is_included">Qué está incluido</Label>
                 <TextArea
-                  id="what_is_included"
                   value={formData.what_is_included}
-                  onChange={(e) => setFormData({ ...formData, what_is_included: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, what_is_included: value })}
                   placeholder="Guía, equipamiento, seguro..."
                   rows={3}
                 />
@@ -291,9 +284,8 @@ const ExperienceForm = () => {
               <div>
                 <Label htmlFor="what_is_needed">Qué necesitas traer</Label>
                 <TextArea
-                  id="what_is_needed"
                   value={formData.what_is_needed}
-                  onChange={(e) => setFormData({ ...formData, what_is_needed: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, what_is_needed: value })}
                   placeholder="Ropa cómoda, calzado..."
                   rows={3}
                 />

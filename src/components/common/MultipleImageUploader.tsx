@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { supabase } from '../../supabaseClient';
-import { Trash2, Upload, X } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 
 interface MultipleImageUploaderProps {
   images: string[];

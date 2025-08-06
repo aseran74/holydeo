@@ -36,7 +36,7 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
   useEffect(() => {
     if (experience) {
       setFormData({
-        name: experience.title || '',
+        name: experience.name || '',
         category: experience.category || 'Actividad Turística',
         external_url: experience.external_url || '',
         price: experience.price?.toString() || '',
