@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { useAuth } from "../context/AuthContext";
+import MessageCounter from "../components/common/MessageCounter";
 
 // Assume these icons are imported from an icon library
 import {
@@ -31,6 +32,7 @@ type NavItem = {
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
   adminOnly?: boolean;
+  badge?: React.ReactNode;
 };
 
 const AppSidebar: React.FC = () => {
@@ -96,6 +98,7 @@ const AppSidebar: React.FC = () => {
       icon: <ChatIcon />,
       name: "Mensajes",
       path: "/messages",
+                        badge: <MessageCounter className="ml-2" />,
     },
     {
       icon: <StarIcon />,
@@ -243,6 +246,9 @@ const AppSidebar: React.FC = () => {
               {(isExpanded || isHovered || isMobileOpen) && (
                 <span className="menu-item-text">{nav.name}</span>
               )}
+              {(isExpanded || isHovered || isMobileOpen) && nav.badge && (
+                <span className="ml-auto">{nav.badge}</span>
+              )}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
                   className={`ml-auto w-5 h-5 transition-transform duration-200 ${
@@ -273,6 +279,9 @@ const AppSidebar: React.FC = () => {
                 </span>
                 {(isExpanded || isHovered || isMobileOpen) && (
                   <span className="menu-item-text">{nav.name}</span>
+                )}
+                {(isExpanded || isHovered || isMobileOpen) && nav.badge && (
+                  <span className="ml-auto">{nav.badge}</span>
                 )}
               </Link>
             )

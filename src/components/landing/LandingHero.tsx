@@ -26,19 +26,23 @@ const LandingHero = () => {
 
   return (
     <section className="relative text-white">
-      <div className="relative w-full min-h-screen h-screen">
-        {/* Videos y Overlay */}
-        <video autoPlay muted loop playsInline className="w-full h-full object-cover object-center absolute inset-0 md:hidden" style={{ objectPosition: 'center 70%' }}>
-          <source src="/video-hero.mp4" type="video/mp4" />
-        </video>
-        <video autoPlay muted loop playsInline className="w-full h-full object-cover object-center absolute inset-0 hidden md:block" style={{ objectPosition: 'center 30%' }}>
+      <div className="relative w-full min-h-screen h-[120vh]">
+        {/* Video para todos los dispositivos */}
+        <video 
+          autoPlay 
+          muted 
+          loop 
+          playsInline 
+          className="w-full h-full object-cover object-center absolute inset-0" 
+          style={{ objectPosition: 'center 30%' }}
+        >
           <source src="/video-escritorio.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/60"></div>
 
         {/* Contenido del hero */}
-        <div className="absolute inset-0 flex items-center justify-center py-96 sm:py-24 px-4">
-          <div className="text-center w-full max-w-4xl mx-auto">
+        <div className="absolute inset-0 flex items-center justify-center py-96 sm:py-32 px-4">
+          <div className="text-center w-full max-w-4xl mx-auto bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 leading-tight text-white px-6 sm:px-4">
               Vive fuera de{' '}
