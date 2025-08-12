@@ -167,7 +167,7 @@ const TailGridsDateRangePicker: React.FC<TailGridsDateRangePickerProps> = ({
   }, []);
 
   return (
-    <div className={`relative ${className}`} ref={datepickerRef}>
+    <div className={`relative z-[999999] ${className}`} ref={datepickerRef}>
       <div className="relative flex items-center">
         <span className="absolute left-0 pl-5 text-gray-400">
           <Calendar className="w-5 h-5" />
@@ -203,7 +203,7 @@ const TailGridsDateRangePicker: React.FC<TailGridsDateRangePickerProps> = ({
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 z-[99999] mt-2 rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-600 dark:bg-gray-800">
+        <div className="absolute top-full left-0 right-0 z-[999999] mt-2 rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-600 dark:bg-gray-800" style={{ zIndex: 999999 }}>
           <div className="p-5">
             <div className="flex items-center justify-between mb-4">
               <button

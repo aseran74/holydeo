@@ -83,12 +83,12 @@ const LandingHero = () => {
             </p>
 
             {/* Buscador */}
-            <div className="w-full max-w-4xl mx-auto">
+            <div className="w-full max-w-4xl mx-auto relative z-50">
               <LandingSearchForm />
             </div>
 
             {/* Estadísticas con efecto de scroll */}
-            <div className={`mt-8 sm:mt-12 flex flex-row md:grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full px-6 sm:px-4 transition-all duration-1000 ease-out transform z-[-1] ${
+            <div className={`mt-8 sm:mt-12 flex flex-row md:grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full px-6 sm:px-4 transition-all duration-1000 ease-out transform z-[-10] ${
               showStats 
                 ? 'translate-y-0 opacity-100' 
                 : 'translate-y-8 opacity-0'
