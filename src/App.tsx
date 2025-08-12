@@ -25,6 +25,7 @@ import MessagesPage from "./pages/Messages/MessagesPage";
 import UserManagement from "./pages/UserManagement";
 import ImageUploadTest from "./components/ImageUploadTest";
 import ExperienceStorageTest from "./components/ExperienceStorageTest";
+import ExperienceDebug from "./components/ExperienceDebug";
 import CalendarManagement from "./pages/CalendarManagement/CalendarManagement";
 import PropertyDetails from "./pages/Properties/PropertyDetails";
 import ImageDebugger from "./components/ImageDebugger";
@@ -101,6 +102,7 @@ export default function App() {
             {/* Debug/Test Routes */}
             <Route path="/image-upload-test" element={<ImageUploadTest />} />
             <Route path="/experience-storage-test" element={<ExperienceStorageTest />} />
+            <Route path="/experience-debug" element={<ExperienceDebug />} />
             <Route path="/image-debug/:propertyId" element={<ImageDebugger />} />
             <Route path="/property-image-test" element={<PropertyImageTest />} />
             <Route path="/image-test" element={<ImageTest />} />
