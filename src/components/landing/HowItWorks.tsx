@@ -13,25 +13,25 @@ interface Step {
 const steps: Step[] = [
   {
     icon: <Search size={36} />,
-    title: 'Más que Vacaciones: Tu Hogar Temporal en un Destino Soñado',
+    title: 'Más que Vacaciones, una Inmersión Total',
     description:
-      'Nuestros alojamientos están pensados para quienes buscan vivir un lugar, no solo visitarlo. Ideal para nómadas digitales, prejubilados amantes del golf, docentes de colegios y universidades, creadores de contenido, profesionales en año sabático o investigadores que quieren disfrutar de una temporada prolongada en un entorno inspirador y tranquilo.',
+      'Nuestros alojamientos están diseñados para viajeros que buscan una experiencia auténtica y prolongada en destinos vacacionales durante temporada baja. Son el refugio perfecto para nómadas digitales, prejubilados apasionados del golf, blogueros de viajes, creativos y profesionales que aprovechan un año sabático o estancia de investigación. Disfruta de la tranquilidad de los destinos fuera de temporada alta: precios más accesibles, menos multitudes y un ritmo de vida más auténtico que te permite conectar verdaderamente con el lugar.',
     color: 'text-blue-500',
     gradient: 'from-blue-100 to-blue-300 dark:from-blue-900/30 dark:to-blue-700/20'
   },
   {
     icon: <PenSquare size={36} />,
-    title: 'Reserva Inteligente: Flexibilidad y Ahorro en Temporada Baja',
+    title: 'Reserva Inteligente: Flexibilidad y Ahorro Real',
     description:
-      'Olvídate de precios inflados y de la rigidez de las grandes plataformas. Ofrecemos contratos de media estancia —desde 15 días hasta 9 meses— con tarifas hasta un 40% más económicas que Airbnb o Booking, condiciones flexibles y precios especiales fuera de temporada alta.',
+      'Olvídate de las tarifas infladas y las restricciones de las grandes plataformas. Ofrecemos contratos de estancia media y larga (mínimo 15 días, máximo 9 meses) con precios significativamente más económicos que Airbnb o Booking, condiciones flexibles y las mejores tarifas de temporada baja. Ventajas exclusivas: sin prisa por checkout, tarifas degresivas según duración, y la libertad de establecer tu propio ritmo de vida en el destino.',
     color: 'text-pink-500',
     gradient: 'from-pink-100 to-pink-300 dark:from-pink-900/30 dark:to-pink-700/20'
   },
   {
     icon: <PartyPopper size={36} />,
-    title: 'Experiencias que Van Más Allá del Alojamiento',
+    title: 'Vive el Destino a Través de Experiencias Inolvidables',
     description:
-      'Tendrás tiempo y oportunidades para sumergirte en la vida local: recorrer mercados y festivales tradicionales, probar la auténtica gastronomía de la región, practicar tu deporte o hobby favorito, aprender nuevas disciplinas como golf, surf o kitesurf, y participar en talleres, rutas y actividades diseñadas para conectar con la comunidad. Porque aquí no solo te hospedas… te integras, exploras y creas recuerdos duraderos.',
+      'Te damos el tiempo y las herramientas para que vivas una experiencia completa más allá del simple alojamiento. Durante tu estancia podrás explorar los encantadores pueblos blancos de Andalucía a tu ritmo, sumergirte en mercados tradicionales y descubrir la auténtica gastronomía local, aprender o perfeccionar tu técnica de golf en campos con tarifas especiales de temporada baja, iniciarte en el kitesurf o mejorar tu nivel con instructores locales, y disfrutar de senderismo, ciclismo y deportes acuáticos sin las aglomeraciones de temporada alta. Con estancias de 15 días a 9 meses, tienes la oportunidad única de vivir como un local, dominar nuevas habilidades, explorar cada rincón del destino y crear recuerdos que durarán toda la vida.',
     color: 'text-green-500',
     gradient: 'from-green-100 to-green-300 dark:from-green-900/30 dark:to-green-700/20'
   }
@@ -53,12 +53,10 @@ const HowItWorks = () => {
             Cómo funciona
           </h2>
           <p className="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight sm:text-4xl">
-            Estancias prolongadas para vivir, trabajar y disfrutar
+            Estancias Largas con Experiencias Únicas
           </p>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-500 dark:text-gray-400">
-            Ya sea que busques un cambio de aire para teletrabajar, aprovechar tu prejubilación o
-            sumergirte en nuevas culturas, nuestro proceso te conecta con el lugar perfecto para
-            quedarte y vivir la experiencia completa.
+            De 15 días a 9 meses en destinos vacacionales fuera de temporada
           </p>
         </div>
 
