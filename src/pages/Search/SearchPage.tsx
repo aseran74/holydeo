@@ -164,7 +164,7 @@ const SearchPage = () => {
     
     // Filtro por temporada
     if (searchData.season) {
-      query = query.eq('temporada', searchData.season);
+      query = query.contains('meses_temporada', [searchData.season]);
     }
     
     // Filtro por amenities
