@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import Button from '../../components/ui/button/Button';
 import { Experience, Property } from '../../types';
-import { MapPinIcon, ClockIcon, UsersIcon, CalendarIcon, ExternalLinkIcon } from '../../icons';
+import { MapPinIcon, CalendarIcon, ExternalLinkIcon } from '../../icons';
 import PublicPropertyCard from '../common/PublicPropertyCard';
 import ExperienceCard from '../experiences/ExperienceCard';
 import SimpleMap from '../common/SimpleMap';
@@ -82,13 +82,7 @@ const ExperienceDetails = () => {
     }).format(price);
   };
 
-  const formatDuration = (duration: number) => {
-    if (!duration || duration <= 0) return 'Duración no especificada';
-    if (duration < 60) return `${duration} min`;
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-    return minutes > 0 ? `${hours}h ${minutes}min` : `${hours}h`;
-  };
+  // Función formatDuration eliminada
 
   // Helper function to get proper image URL for experiences
   const getExperienceImageUrl = (photos: string[] | undefined, index: number = 0) => {
@@ -211,14 +205,7 @@ const ExperienceDetails = () => {
                     <MapPinIcon className="w-5 h-5 mr-3" />
                     <span>{experience.location}</span>
                   </div>
-                  <div className="flex items-center text-gray-600 dark:text-gray-300">
-                    <ClockIcon className="w-5 h-5 mr-3" />
-                    <span>{formatDuration(experience.duration_hours || 0)}</span>
-                  </div>
-                  <div className="flex items-center text-gray-600 dark:text-gray-300">
-                    <UsersIcon className="w-5 h-5 mr-3" />
-                    <span>Máximo {experience.max_participants} participantes</span>
-                  </div>
+                  {/* Duración y participantes eliminados */}
                 </div>
 
                 <div className="space-y-4">

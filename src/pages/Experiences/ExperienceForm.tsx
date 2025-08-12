@@ -119,7 +119,7 @@ const ExperienceForm = () => {
     setSaving(false);
   };
 
-  const categoryOptions = EXPERIENCE_CATEGORIES;
+  const categoryOptions = [...EXPERIENCE_CATEGORIES];
 
 
 

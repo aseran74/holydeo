@@ -4,7 +4,7 @@ export const EXPERIENCE_CATEGORIES = [
   { value: 'Deportiva', label: 'Deportiva' },
   { value: 'Green fees', label: 'Green fees' },
   { value: 'Experiencias de larga duración', label: 'Experiencias de larga duración' },
-] as const;
+];
 
 export type ExperienceCategory = typeof EXPERIENCE_CATEGORIES[number]['value'];
 

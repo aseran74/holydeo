@@ -298,15 +298,7 @@ const SearchPage = () => {
       query = query.eq('category', searchData.experienceType);
     }
     
-    // Filtro por duración
-    if (searchData.duration) {
-      query = query.eq('duration_hours', parseInt(searchData.duration));
-    }
-    
-    // Filtro por participantes máximos
-    if (searchData.maxParticipants) {
-      query = query.lte('max_participants', parseInt(searchData.maxParticipants));
-    }
+    // Filtros de duración y participantes eliminados
     
     // Filtro por precio máximo
     if (searchData.priceRange[1] < 1000) {
@@ -319,8 +311,6 @@ const SearchPage = () => {
       zone: searchData.zone,
       category: searchData.category,
       experienceType: searchData.experienceType,
-      duration: searchData.duration,
-      maxParticipants: searchData.maxParticipants,
       priceRange: searchData.priceRange
     });
 
@@ -627,7 +617,7 @@ const SearchPage = () => {
                               {formatPrice(experience.price || 0)}
                             </span>
                             <span className="text-gray-500 text-sm">
-                              {experience.duration_hours ? `${experience.duration_hours}h` : ''}
+                              {/* Duración eliminada */}
                             </span>
                           </div>
                         </div>

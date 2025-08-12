@@ -48,7 +48,17 @@ const ExperiencesSection = () => {
         if (error) {
           console.error('Error fetching featured experiences:', error);
         } else {
-          console.log('Featured experiences data:', data);
+          console.log('=== DEBUG: Experiencias obtenidas ===');
+          console.log('Total experiencias:', data?.length || 0);
+          data?.forEach((exp, index) => {
+            console.log(`Experiencia ${index + 1}:`, {
+              id: exp.id,
+              name: exp.name,
+              price: exp.price,
+              priceType: typeof exp.price,
+              featured: exp.featured
+            });
+          });
           setFeaturedExperiences(data || []);
         }
       } catch (error) {
@@ -62,15 +72,17 @@ const ExperiencesSection = () => {
   }, []);
 
   const formatPrice = (price: number) => {
-    console.log('Formatting price:', price);
-    if (!price || price <= 0) return 'Precio no especificado';
+    console.log('=== DEBUG: formatPrice llamado ===');
+    console.log('Precio recibido:', price);
+    console.log('Tipo de precio:', typeof price);
+    console.log('¿Es válido?', price && price > 0);
+    
+    if (!price || price <= 0) return 'Consultar'; // Changed for better UX
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR'
     }).format(price);
   };
-
-
 
   if (loading) {
     return (
@@ -90,6 +102,22 @@ const ExperiencesSection = () => {
       <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
         Experiencias Únicas Fuera de Temporada
       </h2>
+      
+      {/* DEBUG INFO TEMPORAL */}
+      <div className="max-w-6xl mx-auto mb-8 p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
+        <h3 className="font-bold text-yellow-800 mb-2">🔍 DEBUG INFO:</h3>
+        <p className="text-yellow-700">Total experiencias: {featuredExperiences.length}</p>
+        <p className="text-yellow-700">Experiencias con precio: {featuredExperiences.filter(exp => exp.price && exp.price > 0).length}</p>
+        <p className="text-yellow-700">Experiencias destacadas: {featuredExperiences.filter(exp => exp.featured).length}</p>
+        <div className="mt-2">
+          {featuredExperiences.map((exp, index) => (
+            <div key={exp.id} className="text-sm text-yellow-600">
+              {index + 1}. {exp.name} - Precio: {exp.price || 'N/A'} - Destacada: {exp.featured ? 'Sí' : 'No'}
+            </div>
+          ))}
+        </div>
+      </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {featuredExperiences.map((experience) => (
           <div key={experience.id} className="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl">
@@ -104,35 +132,37 @@ const ExperiencesSection = () => {
                   target.src = "https://placehold.co/600x400/DDDDDD/333333?text=Imagen+No+Disponible";
                 }}
               />
+              
+              {/* --- ETIQUETA DE DESTACADO --- */}
               {experience.featured && (
-                <div className="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900 text-sm font-bold px-3 py-2 rounded-full shadow-lg border-2 border-yellow-300">
+                <div className="absolute top-4 left-4 bg-yellow-400 text-gray-900 text-sm font-bold px-3 py-1 rounded-full shadow-md">
                   ⭐ Destacada
                 </div>
               )}
-              <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-bold px-4 py-2 rounded-full shadow-lg border-2 border-white">
+
+              {/* --- PRECIO CON NUEVO FONDO --- */}
+              <div className="absolute top-4 right-4 bg-black bg-opacity-70 text-white text-lg font-bold px-4 py-2 rounded-lg shadow-lg">
                 {formatPrice(experience.price || 0)}
               </div>
             </div>
-            <div className="p-6">
+            
+            <div className="p-6 flex flex-col flex-grow">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 {experience.name || 'Sin título'}
               </h3>
               <p className="text-gray-700 text-sm mb-4 line-clamp-3">
                 {experience.description || 'Descripción no disponible'}
               </p>
-              <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+              
+              <div className="flex items-center text-sm text-gray-600 mb-4 mt-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                </svg>
                 <span>{experience.location || 'Ubicación no especificada'}</span>
               </div>
               
-              {/* Precio destacado en la parte inferior */}
-              <div className="mb-4 text-center">
-                <div className="inline-block bg-gradient-to-r from-green-500 to-green-600 text-white text-xl font-bold px-6 py-3 rounded-lg shadow-lg border-2 border-green-400">
-                  {formatPrice(experience.price || 0)}
-                </div>
-              </div>
-              
-              <Link to={`/experiences/${experience.id}`}>
-                <button className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
+              <Link to={`/experiences/${experience.id}`} className="mt-2">
+                <button className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 font-semibold">
                   Ver Detalles
                 </button>
               </Link>
@@ -140,9 +170,9 @@ const ExperiencesSection = () => {
           </div>
         ))}
       </div>
-      {featuredExperiences.length === 0 && (
+      {featuredExperiences.length === 0 && !loading && (
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg mb-4">No hay experiencias destacadas disponibles</p>
+          <p className="text-gray-500 text-lg mb-4">No hay experiencias destacadas disponibles en este momento.</p>
           <Link to="/experiences">
             <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
               Ver Todas las Experiencias

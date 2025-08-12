@@ -22,7 +22,7 @@ interface Property {
   tipo?: string;
   region?: string;
 }
-import { MapPinIcon, ClockIcon, UsersIcon, CalendarIcon, ExternalLinkIcon, ChevronLeftIcon, StarIcon, PaperPlaneIcon } from '../../icons';
+import { MapPinIcon, CalendarIcon, ExternalLinkIcon, ChevronLeftIcon, StarIcon, PaperPlaneIcon } from '../../icons';
 import SimpleMap from '../../components/common/SimpleMap';
 import ExperienceCard from '../../components/experiences/ExperienceCard';
 import PublicPropertyCard from '../../components/common/PublicPropertyCard';
@@ -178,13 +178,7 @@ const ExperienceDetails = () => {
     }).format(price);
   };
 
-  const formatDuration = (duration: number) => {
-    if (!duration || duration <= 0) return 'Duración no especificada';
-    if (duration < 60) return `${duration} min`;
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-    return minutes > 0 ? `${hours}h ${minutes}min` : `${hours}h`;
-  };
+  // Función formatDuration eliminada
 
   // Helper function to get proper image URL for experiences
   const getExperienceImageUrl = (photos: string[] | undefined, index: number = 0) => {
@@ -331,14 +325,7 @@ const ExperienceDetails = () => {
                         <MapPinIcon className="w-5 h-5 mr-3" />
                         <span>{experience.location}</span>
                       </div>
-                      <div className="flex items-center text-gray-600">
-                        <ClockIcon className="w-5 h-5 mr-3" />
-                        <span>{formatDuration(experience.duration_hours || 0)}</span>
-                      </div>
-                      <div className="flex items-center text-gray-600">
-                        <UsersIcon className="w-5 h-5 mr-3" />
-                        <span>Máximo {experience.max_participants} participantes</span>
-                      </div>
+                      {/* Duración y participantes eliminados */}
                     </div>
 
                     <div className="space-y-4">

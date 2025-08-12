@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../supabaseClient';
-import { AlertCircle, CheckCircle, Upload, Trash2 } from 'lucide-react';
+import { AlertCircle, Upload, Trash2 } from 'lucide-react';
 
 const ExperienceStorageTest = () => {
   const [bucketStatus, setBucketStatus] = useState<any>(null);

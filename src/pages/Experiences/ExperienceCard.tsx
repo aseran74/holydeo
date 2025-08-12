@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Clock, Users, Euro, Eye } from 'lucide-react';
+import { MapPin, Euro, Eye } from 'lucide-react';
 import { supabase } from '../../supabaseClient';
 
 import { Experience } from '../../types';
@@ -50,13 +50,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
     }).format(price);
   };
 
-  const formatDuration = (duration: number) => {
-    if (!duration || duration <= 0) return 'Duración no especificada';
-    if (duration < 60) return `${duration} min`;
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-    return minutes > 0 ? `${hours}h ${minutes}min` : `${hours}h`;
-  };
+  // Función formatDuration eliminada
 
   return (
     <div className="block rounded-lg shadow-lg overflow-hidden bg-white dark:bg-gray-800 transform hover:-translate-y-1 transition-transform duration-300 hover:shadow-xl">
@@ -110,14 +104,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
         
         <div className="flex justify-between items-center text-gray-700 dark:text-gray-300 mb-3">
           <div className="flex items-center space-x-3">
-                         <span className="flex items-center text-sm">
-               <Clock className="w-5 h-5 mr-1 text-primary" />
-               {formatDuration(experience.duration_hours || 0)}
-             </span>
-            <span className="flex items-center text-sm">
-              <Users className="w-5 h-5 mr-1 text-primary" />
-              {experience.max_participants}
-            </span>
+            {/* Duración y participantes eliminados */}
           </div>
           <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
             {experience.category || 'Sin categoría'}

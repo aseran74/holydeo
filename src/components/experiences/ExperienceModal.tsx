@@ -92,7 +92,7 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
     setIsSaving(false);
   };
   
-  const categoryOptions = EXPERIENCE_CATEGORIES;
+  const categoryOptions = [...EXPERIENCE_CATEGORIES];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
