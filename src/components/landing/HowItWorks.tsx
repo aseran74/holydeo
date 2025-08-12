@@ -13,25 +13,25 @@ interface Step {
 const steps: Step[] = [
   {
     icon: <Search size={36} />,
-    title: 'Descubre tu Hogar Temporal Perfecto',
+    title: 'Más que Vacaciones, una Inmersión Total',
     description:
-      'Alojamientos  pensados para viajeros que quieren más que unas vacaciones exprés: blogueros de viajes en busca de inspiración , y prejubilados apasionados por el golf , profesores universitarios o personal docente Ideales para teletrabajar, desconectar o vivir una temporada inmersos en un nuevo destino.',
+      'Nuestros alojamientos están diseñados para viajeros que buscan una experiencia auténtica y prolongada. Son el refugio perfecto para nómadas digitales, prejubilados apasionados del golf, blogueros de viajes, creativos y profesionales que aprovechan un año sabático o estancia de investigación.',
     color: 'text-blue-500',
     gradient: 'from-blue-100 to-blue-300 dark:from-blue-900/30 dark:to-blue-700/20'
   },
   {
     icon: <PenSquare size={36} />,
-    title: 'Reserva Fácil y con Ventajas Reales',
+    title: 'Reserva Inteligente: Flexibilidad y Ahorro Real',
     description:
-      'Contratos de media estancia a precios mucho más ventajosos que los de grandes plataformas como Airbnb o Booking. Condiciones flexibles y tarifas fuera de temporada para que puedas quedarte más tiempo y sentirte como en casa, sin pagar de más.',
+      'Olvídate de las tarifas infladas y las restricciones de las grandes plataformas. Ofrecemos contratos de media estancia con precios significativamente más económicos que Airbnb o Booking, condiciones flexibles y tarifas especiales de temporada baja.',
     color: 'text-pink-500',
     gradient: 'from-pink-100 to-pink-300 dark:from-pink-900/30 dark:to-pink-700/20'
   },
   {
     icon: <PartyPopper size={36} />,
-    title: 'Vive la Experiencia Completa',
+    title: 'Vive el Destino, No Solo lo Visites',
     description:
-      'Explora mercados, saborea la gastronomía, Juega al golf , Da clases de Kite surf, conoce gente local y participa en actividades que te conectan con el lugar. Desde clases de cocina hasta rutas guiadas, aquí tendrás tiempo y opciones para vivir tu destino al máximo.',
+      'Te damos el tiempo y las herramientas para que vivas una experiencia completa. Sumérgete en la cultura local: explora mercados tradicionales, saborea la auténtica gastronomía, disfruta de tu deporte favorito y conecta con la comunidad a través de actividades únicas.',
     color: 'text-green-500',
     gradient: 'from-green-100 to-green-300 dark:from-green-900/30 dark:to-green-700/20'
   }
@@ -53,12 +53,12 @@ const HowItWorks = () => {
             Cómo funciona
           </h2>
           <p className="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight sm:text-4xl">
-            Estancias mínimas de 15 días para vivir, trabajar y disfrutar
+            Estancias prolongadas para vivir, trabajar y disfrutar
           </p>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-500 dark:text-gray-400">
             Ya sea que busques un cambio de aire para teletrabajar, aprovechar tu prejubilación o
             sumergirte en nuevas culturas, nuestro proceso te conecta con el lugar perfecto para
-            quedarte y vivir la experiencia.
+            quedarte y vivir la experiencia completa.
           </p>
         </div>
 

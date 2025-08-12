@@ -8,7 +8,6 @@ interface Experience {
   description: string;
   price: number;
   location: string;
-  duration_hours: number;
   photos: string[];
   featured: boolean;
 }
@@ -50,6 +49,7 @@ const ExperiencesSection = () => {
         if (error) {
           console.error('Error fetching featured experiences:', error);
         } else {
+          console.log('Featured experiences data:', data);
           setFeaturedExperiences(data || []);
         }
       } catch (error) {
@@ -63,6 +63,7 @@ const ExperiencesSection = () => {
   }, []);
 
   const formatPrice = (price: number) => {
+    console.log('Formatting price:', price);
     if (!price || price <= 0) return 'Precio no especificado';
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
@@ -70,13 +71,7 @@ const ExperiencesSection = () => {
     }).format(price);
   };
 
-  const formatDuration = (duration: number) => {
-    if (!duration || duration <= 0) return 'Duración no especificada';
-    if (duration < 60) return `${duration} min`;
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-    return minutes > 0 ? `${hours}h ${minutes}min` : `${hours}h`;
-  };
+
 
   if (loading) {
     return (
@@ -111,11 +106,11 @@ const ExperiencesSection = () => {
                 }}
               />
               {experience.featured && (
-                <div className="absolute top-2 left-2 bg-yellow-400 text-yellow-900 text-sm font-bold px-3 py-1 rounded-full">
-                  Destacada
+                <div className="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900 text-sm font-bold px-3 py-2 rounded-full shadow-lg border-2 border-yellow-300">
+                  ⭐ Destacada
                 </div>
               )}
-              <div className="absolute top-2 right-2 bg-blue-600 text-white text-sm font-bold px-3 py-1 rounded-full">
+              <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-bold px-4 py-2 rounded-full shadow-lg border-2 border-white">
                 {formatPrice(experience.price || 0)}
               </div>
             </div>
@@ -128,8 +123,15 @@ const ExperiencesSection = () => {
               </p>
               <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
                 <span>{experience.location || 'Ubicación no especificada'}</span>
-                <span>{formatDuration(experience.duration_hours || 0)}</span>
               </div>
+              
+              {/* Precio destacado en la parte inferior */}
+              <div className="mb-4 text-center">
+                <div className="inline-block bg-gradient-to-r from-green-500 to-green-600 text-white text-xl font-bold px-6 py-3 rounded-lg shadow-lg border-2 border-green-400">
+                  {formatPrice(experience.price || 0)}
+                </div>
+              </div>
+              
               <Link to={`/experiences/${experience.id}`}>
                 <button className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
                   Ver Detalles
