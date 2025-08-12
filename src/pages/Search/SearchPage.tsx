@@ -369,21 +369,12 @@ const SearchPage = () => {
   ];
 
   const seasons = [
-    { value: "sep-mayo", label: "Septiembre a Mayo" },
-    { value: "sep-junio", label: "Septiembre a Junio" },
-    { value: "sep-julio", label: "Septiembre a Julio" },
-    { value: "oct-julio", label: "Octubre a Julio" },
-    { value: "oct-agosto", label: "Octubre a Agosto" },
-    { value: "nov-septiembre", label: "Noviembre a Septiembre" },
-    { value: "dic-octubre", label: "Diciembre a Octubre" },
-    { value: "ene-noviembre", label: "Enero a Noviembre" },
-    { value: "feb-diciembre", label: "Febrero a Diciembre" },
-    { value: "mar-enero", label: "Marzo a Enero" },
-    { value: "abr-febrero", label: "Abril a Febrero" },
-    { value: "may-marzo", label: "Mayo a Marzo" },
-    { value: "jun-abril", label: "Junio a Abril" },
-    { value: "jul-mayo", label: "Julio a Mayo" },
-    { value: "ago-junio", label: "Agosto a Junio" }
+    { value: "sep_may", label: "Septiembre a Mayo" },
+    { value: "sep_jun", label: "Septiembre a Junio" },
+    { value: "sep_jul", label: "Septiembre a Julio" },
+    { value: "oct_may", label: "Octubre a Mayo" },
+    { value: "oct_jun", label: "Octubre a Junio" },
+    { value: "oct_jul", label: "Octubre a Julio" }
   ];
 
 
