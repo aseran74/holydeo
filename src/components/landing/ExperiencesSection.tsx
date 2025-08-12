@@ -43,7 +43,6 @@ const ExperiencesSection = () => {
         const { data, error } = await supabase
           .from('experiences')
           .select('*')
-          .eq('featured', true)
           .limit(6);
 
         if (error) {
