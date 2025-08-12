@@ -369,9 +369,21 @@ const SearchPage = () => {
   ];
 
   const seasons = [
-    { value: "baja", label: "Temporada Baja" },
-    { value: "media", label: "Temporada Media" },
-    { value: "alta", label: "Temporada Alta" }
+    { value: "sep-mayo", label: "Septiembre a Mayo" },
+    { value: "sep-junio", label: "Septiembre a Junio" },
+    { value: "sep-julio", label: "Septiembre a Julio" },
+    { value: "oct-julio", label: "Octubre a Julio" },
+    { value: "oct-agosto", label: "Octubre a Agosto" },
+    { value: "nov-septiembre", label: "Noviembre a Septiembre" },
+    { value: "dic-octubre", label: "Diciembre a Octubre" },
+    { value: "ene-noviembre", label: "Enero a Noviembre" },
+    { value: "feb-diciembre", label: "Febrero a Diciembre" },
+    { value: "mar-enero", label: "Marzo a Enero" },
+    { value: "abr-febrero", label: "Abril a Febrero" },
+    { value: "may-marzo", label: "Mayo a Marzo" },
+    { value: "jun-abril", label: "Junio a Abril" },
+    { value: "jul-mayo", label: "Julio a Mayo" },
+    { value: "ago-junio", label: "Agosto a Junio" }
   ];
 
 
@@ -522,7 +534,7 @@ const SearchPage = () => {
                     )}
                     {searchData.season && searchType === 'properties' && (
                       <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded">
-                        🌤️ {searchData.season === 'baja' ? 'Temporada Baja' : searchData.season === 'media' ? 'Temporada Media' : 'Temporada Alta'}
+                        🌤️ {seasons.find(s => s.value === searchData.season)?.label || searchData.season}
                       </span>
                     )}
                   </div>
