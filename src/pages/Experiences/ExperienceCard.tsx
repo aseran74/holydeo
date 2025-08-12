@@ -21,11 +21,18 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
       let finalUrl: string | null = null;
 
       if (experience.photos && experience.photos.length > 0) {
-        // Obtener la URL pública de la primera imagen
-        const { data } = supabase.storage
-          .from('experience')
-          .getPublicUrl(experience.photos[0]);
-        finalUrl = data.publicUrl;
+        const firstPhoto = experience.photos[0];
+        
+        // Check if it's an external URL (starts with http/https)
+        if (firstPhoto.startsWith('http://') || firstPhoto.startsWith('https://')) {
+          finalUrl = firstPhoto;
+        } else {
+          // It's a Supabase storage path, get the public URL
+          const { data } = supabase.storage
+            .from('experience')
+            .getPublicUrl(firstPhoto);
+          finalUrl = data.publicUrl;
+        }
       }
 
       setImageUrl(finalUrl || '/images/cards/card-01.jpg');

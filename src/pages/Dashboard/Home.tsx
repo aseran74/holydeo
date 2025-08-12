@@ -18,6 +18,7 @@ import PropertyEditDebug from "../../components/PropertyEditDebug";
 import PropertyEditTest from "../../components/PropertyEditTest";
 import PropertyFormTest from "../../components/PropertyFormTest";
 import RecentBookings from '../../components/common/RecentBookings';
+import ExperienceImageTest from "../../components/ExperienceImageTest";
 
 export default function Home() {
   return (
@@ -99,6 +100,10 @@ export default function Home() {
           <RecentBookings />
         </div>
 
+        {/* Prueba de Imágenes de Experiencias */}
+        <div className="col-span-12">
+          <ExperienceImageTest />
+        </div>
 
         {/* Debug Detallado */}
         <div className="col-span-12">

@@ -43,10 +43,8 @@ const MultipleImageUploader: React.FC<MultipleImageUploaderProps> = ({
           continue;
         }
 
-        const { data: urlData } = supabase.storage.from(bucketName).getPublicUrl(filePath);
-        if (urlData?.publicUrl) {
-          newUrls.push(urlData.publicUrl);
-        }
+        // Guardar la ruta del archivo en lugar de la URL completa
+        newUrls.push(filePath);
       } catch (error) {
         console.error('Error procesando imagen:', error);
       }
@@ -62,17 +60,14 @@ const MultipleImageUploader: React.FC<MultipleImageUploaderProps> = ({
   };
 
   const handleRemoveImage = async (index: number) => {
-    const imageUrl = images[index];
+    const imagePath = images[index];
     const newImages = images.filter((_, i) => i !== index);
     onImagesChange(newImages);
 
-    // Intentar eliminar del storage si es una URL de Supabase
-    if (imageUrl.includes('supabase.co')) {
+    // Intentar eliminar del storage si es una ruta de archivo
+    if (imagePath && !imagePath.startsWith('http')) {
       try {
-        const path = imageUrl.split('/').pop();
-        if (path) {
-          await supabase.storage.from(bucketName).remove([path]);
-        }
+        await supabase.storage.from(bucketName).remove([imagePath]);
       } catch (error) {
         console.error('Error eliminando imagen del storage:', error);
       }
@@ -134,26 +129,36 @@ const MultipleImageUploader: React.FC<MultipleImageUploaderProps> = ({
       {/* Galería de imágenes */}
       {images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {images.map((imageUrl, index) => (
-            <div key={index} className="relative group">
-              <img
-                src={imageUrl}
-                alt={`Imagen ${index + 1}`}
-                className="w-full h-32 object-cover rounded-lg shadow-sm"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder.jpg';
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => handleRemoveImage(index)}
-                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-              >
-                <X size={16} />
-              </button>
-            </div>
-          ))}
+          {images.map((imagePath, index) => {
+            // Determinar la URL de la imagen
+            let imageUrl = imagePath;
+            if (imagePath && !imagePath.startsWith('http')) {
+              // Es una ruta de archivo de Supabase, obtener la URL pública
+              const { data } = supabase.storage.from(bucketName).getPublicUrl(imagePath);
+              imageUrl = data.publicUrl || imagePath;
+            }
+
+            return (
+              <div key={index} className="relative group">
+                <img
+                  src={imageUrl}
+                  alt={`Imagen ${index + 1}`}
+                  className="w-full h-32 object-cover rounded-lg shadow-sm"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/images/placeholder.jpg';
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(index)}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

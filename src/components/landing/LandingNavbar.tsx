@@ -34,9 +34,9 @@ const LandingNavbar = () => {
   };
 
   // Pequeña función de ayuda para mantener el JSX limpio
-  const isGoogleProvider = currentUser?.providerData?.some(
-    (p) => p.providerId === "google.com"
-  );
+  // const isGoogleProvider = currentUser?.providerData?.some(
+  //   (p) => p.providerId === "google.com"
+  // );
 
   return (
     <nav className="bg-transparent backdrop-blur-sm fixed w-full top-0 z-50">
@@ -87,10 +87,6 @@ const LandingNavbar = () => {
                     <span className="text-sm text-white">
                       {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                     </span>
-                    {/* Logo de Google si el proveedor es Google */}
-                    {isGoogleProvider && (
-                      <img src="/images/google-logo.svg" alt="Google" className="w-4 h-4" />
-                    )}
                   </div>
                   <button
                     onClick={logout}
@@ -158,11 +154,7 @@ const LandingNavbar = () => {
                         <span className="text-sm text-white">
                           {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                         </span>
-                      {/* Logo de Google si el proveedor es Google */}
-                      {isGoogleProvider && (
-                        <img src="/images/google-logo.svg" alt="Google" className="w-4 h-4" />
-                      )}
-                    </div>
+                      </div>
                     <button
                       onClick={logout}
                       className="flex items-center space-x-1 text-white hover:text-red-200 px-2 py-1 rounded text-sm"

@@ -4,18 +4,7 @@ import ProtectedSearchRoute from "./components/auth/ProtectedSearchRoute";
 import AdminRoute from "./components/auth/AdminRoute";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
-import Videos from "./pages/UiElements/Videos";
-import Images from "./pages/UiElements/Images";
-import Alerts from "./pages/UiElements/Alerts";
-import Badges from "./pages/UiElements/Badges";
-import Avatars from "./pages/UiElements/Avatars";
-import Buttons from "./pages/UiElements/Buttons";
-import LineChart from "./pages/Charts/LineChart";
-import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
-import BasicTables from "./pages/Tables/BasicTables";
-import FormElements from "./pages/Forms/FormElements";
-import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
@@ -35,6 +24,7 @@ import Guests from "./pages/Guests";
 import MessagesPage from "./pages/Messages/MessagesPage";
 import UserManagement from "./pages/UserManagement";
 import ImageUploadTest from "./components/ImageUploadTest";
+import ExperienceStorageTest from "./components/ExperienceStorageTest";
 import CalendarManagement from "./pages/CalendarManagement/CalendarManagement";
 import PropertyDetails from "./pages/Properties/PropertyDetails";
 import ImageDebugger from "./components/ImageDebugger";
@@ -66,6 +56,9 @@ export default function App() {
           {/* Detalles de Propiedad - Público */}
           <Route path="/property/:id" element={<PropertyDetails />} />
 
+          {/* Detalles de Experiencia - Público */}
+          <Route path="/experiences/:id" element={<ExperienceDetails />} />
+
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             {/* Dashboard - Solo para usuarios autenticados */}
@@ -94,7 +87,6 @@ export default function App() {
             <Route path="/experiences/new" element={<ExperienceForm />} />
             <Route path="/experiences/edit/:id" element={<ExperienceForm />} />
             <Route path="/experiences/cards" element={<Experiences />} />
-            <Route path="/experiences/:id" element={<ExperienceDetails />} />
             <Route path="/agencies" element={<Agencies />} />
             <Route path="/agents" element={<Agents />} />
             <Route path="/owners" element={<Owners />} />
@@ -102,31 +94,13 @@ export default function App() {
             <Route path="/messages" element={<MessagesPage />} />
             <Route path="/user-management" element={<UserManagement />} />
 
-            {/* Others Page */}
+            {/* Profile and Calendar */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
-            <Route path="/blank" element={<Blank />} />
-
-            {/* Forms */}
-            <Route path="/form-elements" element={<FormElements />} />
-
-            {/* Tables */}
-            <Route path="/basic-tables" element={<BasicTables />} />
-
-            {/* Ui Elements */}
-            <Route path="/alerts" element={<Alerts />} />
-            <Route path="/avatars" element={<Avatars />} />
-            <Route path="/badge" element={<Badges />} />
-            <Route path="/buttons" element={<Buttons />} />
-            <Route path="/images" element={<Images />} />
-            <Route path="/videos" element={<Videos />} />
-
-            {/* Charts */}
-            <Route path="/line-chart" element={<LineChart />} />
-            <Route path="/bar-chart" element={<BarChart />} />
 
             {/* Debug/Test Routes */}
             <Route path="/image-upload-test" element={<ImageUploadTest />} />
+            <Route path="/experience-storage-test" element={<ExperienceStorageTest />} />
             <Route path="/image-debug/:propertyId" element={<ImageDebugger />} />
             <Route path="/property-image-test" element={<PropertyImageTest />} />
             <Route path="/image-test" element={<ImageTest />} />

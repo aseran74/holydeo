@@ -34,9 +34,9 @@ const SearchPage = () => {
     duration: '',
     maxParticipants: '',
     // Filtros comunes
-    season: '',
     pricePerDay: 500,
     pricePerMonth: 5000,
+    season: '',
   });
 
   const [results, setResults] = useState<{
@@ -51,6 +51,26 @@ const SearchPage = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(true);
   const [availabilityFilterApplied, setAvailabilityFilterApplied] = useState(false);
+
+  // Helper function to get proper image URL for experiences
+  const getExperienceImageUrl = (photos: string[] | undefined) => {
+    if (!photos || photos.length === 0) {
+      return '/images/cards/card-01.jpg';
+    }
+    
+    const firstPhoto = photos[0];
+    
+    // Check if it's an external URL (starts with http/https)
+    if (firstPhoto.startsWith('http://') || firstPhoto.startsWith('https://')) {
+      return firstPhoto;
+    } else {
+      // It's a Supabase storage path, get the public URL
+      const { data } = supabase.storage
+        .from('experience')
+        .getPublicUrl(firstPhoto);
+      return data.publicUrl || '/images/cards/card-01.jpg';
+    }
+  };
 
   // Búsqueda automática al cargar la página
   useEffect(() => {
@@ -144,9 +164,9 @@ const SearchPage = () => {
     
     // Filtro por temporada
     if (searchData.season) {
-      query = query.contains('meses_temporada', [searchData.season]);
+      query = query.eq('temporada', searchData.season);
     }
-
+    
     // Filtro por amenities
     if (searchData.amenities.length > 0) {
       // Para cada amenity seleccionado, verificar que esté en el array de amenities de la propiedad
@@ -359,13 +379,12 @@ const SearchPage = () => {
   ];
 
   const seasons = [
-    { value: 'Septiembre a Mayo', label: 'Septiembre a Mayo' },
-    { value: 'Septiembre a Junio', label: 'Septiembre a Junio' },
-    { value: 'Septiembre a Julio', label: 'Septiembre a Julio' },
-    { value: 'Octubre a Mayo', label: 'Octubre a Mayo' },
-    { value: 'Octubre a Junio', label: 'Octubre a Junio' },
-    { value: 'Octubre a Julio', label: 'Octubre a Julio' },
+    { value: "baja", label: "Temporada Baja" },
+    { value: "media", label: "Temporada Media" },
+    { value: "alta", label: "Temporada Alta" }
   ];
+
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -421,8 +440,7 @@ const SearchPage = () => {
                  zone: searchData.zone,
                  checkIn: searchData.checkIn,
                  checkOut: searchData.checkOut,
-                 pricePerDay: searchData.pricePerDay,
-                 pricePerMonth: searchData.pricePerMonth
+                 pricePerDay: searchData.pricePerDay
                }}
                onSearchDataChange={(data) => {
                  setSearchData(prev => ({
@@ -431,8 +449,7 @@ const SearchPage = () => {
                    zone: data.zone || '',
                    checkIn: data.checkIn,
                    checkOut: data.checkOut,
-                   pricePerDay: data.pricePerDay || 500,
-                   pricePerMonth: data.pricePerMonth || 5000
+                   pricePerDay: data.pricePerDay || 500
                  }));
                }}
                onSearch={handleSearch}
@@ -448,8 +465,8 @@ const SearchPage = () => {
              searchType={searchType}
              showFilters={showFilters}
              setShowFilters={setShowFilters}
-             seasons={seasons.map(s => s.value)}
              experienceTypes={experienceTypes.map(e => e.value)}
+             seasons={seasons}
              amenities={amenities}
              handleAmenityToggle={handleAmenityToggle}
            />
@@ -490,11 +507,7 @@ const SearchPage = () => {
                         ⭐ {searchData.category}
                       </span>
                     )}
-                    {searchData.season && (
-                      <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">
-                        📅 {searchData.season}
-                      </span>
-                    )}
+
                     {availabilityFilterApplied && searchType === 'properties' && (
                       <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">
                         ✅ Solo propiedades disponibles
@@ -511,6 +524,16 @@ const SearchPage = () => {
                           ) : null;
                         })}
                       </div>
+                    )}
+                    {searchData.pricePerMonth < 5000 && searchType === 'properties' && (
+                      <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">
+                        💰 Hasta €{searchData.pricePerMonth}/mes
+                      </span>
+                    )}
+                    {searchData.season && searchType === 'properties' && (
+                      <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded">
+                        🌤️ {searchData.season === 'baja' ? 'Temporada Baja' : searchData.season === 'media' ? 'Temporada Media' : 'Temporada Alta'}
+                      </span>
                     )}
                   </div>
                 )}
@@ -585,7 +608,7 @@ const SearchPage = () => {
                       <div className={viewMode === 'grid' ? 'p-4' : 'flex items-center gap-4'}>
                         <div className={viewMode === 'grid' ? 'mb-4' : 'flex-shrink-0'}>
                           <img
-                            src={experience.photos?.[0] || '/images/cards/card-01.jpg'}
+                            src={getExperienceImageUrl(experience.photos)}
                             alt={experience.name || 'Experiencia'}
                             className={`rounded-lg object-cover ${
                               viewMode === 'grid' ? 'w-full h-48' : 'w-24 h-24'

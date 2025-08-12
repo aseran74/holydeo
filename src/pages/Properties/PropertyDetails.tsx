@@ -40,6 +40,7 @@ import {
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import PageMeta from '../../components/common/PageMeta';
 import AvailabilityCalendar from '../../components/common/AvailabilityCalendar';
+import LandingNavbar from '../../components/landing/LandingNavbar';
 
 // Mapeo de amenities a iconos
 const amenityIcons: { [key: string]: React.ReactElement } = {
@@ -321,10 +322,13 @@ const PropertyDetails = () => {
     : allImageUrls;
 
   return (
-         <>
-       <PageMeta title={`${property.title} - Detalles`} description={`Detalles completos de la propiedad ${property.title}`} />
+    <>
+      <PageMeta title={`${property.title} - Detalles`} description={`Detalles completos de la propiedad ${property.title}`} />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Navbar del landing page */}
+      <LandingNavbar />
+
+      <div className="max-w-7xl mx-auto px-4 py-8 mt-16">
         {/* Header con navegación */}
         <div className="flex items-center justify-between mb-6">
           <button
@@ -346,11 +350,10 @@ const PropertyDetails = () => {
             </button>
           </div>
         </div>
-
-        {/* Galería de imágenes */}
-        <div className="mb-8">
-          <div className="relative h-96 md:h-[500px] rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
-            {allImages.length > 0 ? (
+          {/* Galería de imágenes */}
+          <div className="mb-8">
+            <div className="relative h-96 md:h-[500px] rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+              {allImages.length > 0 ? (
               <>
                 <img
                   src={allImages[currentImageIndex]}
@@ -848,13 +851,13 @@ const PropertyDetails = () => {
               </div>
             </div>
 
-                         {/* Calendario de Disponibilidad */}
-             <AvailabilityCalendar propertyId={property.id} />
-           </div>
-         </div>
-       </div>
-     </>
-   );
- };
+            {/* Calendario de Disponibilidad */}
+            <AvailabilityCalendar propertyId={property.id} />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default PropertyDetails; 

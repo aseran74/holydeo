@@ -10,6 +10,7 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { es } from 'date-fns/locale';
 import ImageUploader from '../common/ImageUploader';
+import { EXPERIENCE_CATEGORIES } from '../../constants/experienceCategories';
 
 interface ExperienceModalProps {
   experience: Experience | null;
@@ -91,11 +92,7 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
     setIsSaving(false);
   };
   
-  const categoryOptions = [
-    { value: 'Actividad Turística', label: 'Actividad Turística' },
-    { value: 'Gastronómica', label: 'Gastronómica' },
-    { value: 'Deportiva', label: 'Deportiva' },
-  ];
+  const categoryOptions = EXPERIENCE_CATEGORIES;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
@@ -116,7 +113,10 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
               <Input name="external_url" value={formData.external_url} onChange={(e) => setFormData(prev => ({ ...prev, external_url: e.target.value }))} />
             </div>
             <div>
-              <Label>Precio (€)</Label>
+              <Label>
+                Precio (€)
+                {formData.category === 'Green fees' || formData.category === 'Experiencias de larga duración' ? '' : ' / día'}
+              </Label>
               <Input name="price" type="number" value={formData.price} onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))} />
             </div>
             <div className="flex items-center gap-2">
@@ -135,11 +135,11 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
             </div>
             <div>
                 <Label>¿Qué entra?</Label>
-                <TextArea value={formData.what_is_included} onChange={(value) => setFormData(prev => ({ ...prev, what_is_included: value }))} rows={3}/>
+                <TextArea value={formData.what_is_included} onChange={(value) => setFormData(prev => ({ ...prev, what_is_included: value }))} rows={5}/>
             </div>
             <div>
                 <Label>¿Qué se necesita?</Label>
-                <TextArea value={formData.what_is_needed} onChange={(value) => setFormData(prev => ({ ...prev, what_is_needed: value }))} rows={3}/>
+                <TextArea value={formData.what_is_needed} onChange={(value) => setFormData(prev => ({ ...prev, what_is_needed: value }))} rows={5}/>
             </div>
           </div>
           
@@ -149,7 +149,7 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
               <ImageUploader
                 initialUrl={photos.join(',')}
                 onUpload={(url: string) => setPhotos(url ? url.split(',').filter(Boolean) : [])}
-                bucketName="experience-images"
+                bucketName="experience"
               />
             </div>
             <div>

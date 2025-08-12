@@ -14,7 +14,7 @@ interface Conversation {
 }
 
 interface RecentConversationsProps {
-  onSelectContact: (contactId: string, contactName: string, contactEmail?: string, contactType: string) => void;
+  onSelectContact: (contactId: string, contactName: string, contactType: string, contactEmail?: string) => void;
 }
 
 const RecentConversations: React.FC<RecentConversationsProps> = ({ onSelectContact }) => {
@@ -257,8 +257,8 @@ const RecentConversations: React.FC<RecentConversationsProps> = ({ onSelectConta
           onClick={() => onSelectContact(
             conversation.contact_id,
             conversation.contact_name,
-            conversation.contact_email,
-            conversation.contact_type
+            conversation.contact_type,
+            conversation.contact_email
           )}
           className="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-colors"
         >

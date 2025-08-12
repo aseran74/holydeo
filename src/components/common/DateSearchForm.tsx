@@ -16,6 +16,7 @@ interface DateSearchFormProps {
     checkOut: string;
     pricePerDay?: number;
     pricePerMonth?: number;
+    season?: string;
   };
   onSearchDataChange?: (data: { 
     location: string; 
@@ -24,6 +25,7 @@ interface DateSearchFormProps {
     checkOut: string;
     pricePerDay?: number;
     pricePerMonth?: number;
+    season?: string;
   }) => void;
   onSearch?: (e: React.FormEvent) => void;
 }
@@ -46,7 +48,8 @@ const DateSearchForm: React.FC<DateSearchFormProps> = ({
     checkOut: '',
     guests: 1,
     pricePerDay: 500,
-    pricePerMonth: 5000
+    pricePerMonth: 5000,
+    season: ''
   });
 
   const searchData = isExternal ? externalSearchData! : internalSearchData;
@@ -70,7 +73,8 @@ const DateSearchForm: React.FC<DateSearchFormProps> = ({
       checkOut: searchData.checkOut,
       guests: '1',
       pricePerDay: (searchData.pricePerDay || 500).toString(),
-      pricePerMonth: (searchData.pricePerMonth || 5000).toString()
+      pricePerMonth: (searchData.pricePerMonth || 5000).toString(),
+      season: searchData.season || ''
     });
     navigate(`/search?${params.toString()}`);
   };
@@ -124,6 +128,14 @@ const DateSearchForm: React.FC<DateSearchFormProps> = ({
     }
   };
 
+  const handleSeasonChange = (season: string) => {
+    if (isExternal) {
+      onSearchDataChange!({ ...searchData, season });
+    } else {
+      setInternalSearchData(prev => ({ ...prev, season }));
+    }
+  };
+
   return (
     <div className={`${isHero ? 'bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-2xl' : 'bg-white rounded-lg p-4 shadow-md'} ${className}`}>
       <form onSubmit={handleSearch} className={`grid ${isHero ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'} gap-3 sm:gap-4 items-center`}>
@@ -172,7 +184,7 @@ const DateSearchForm: React.FC<DateSearchFormProps> = ({
               type="button"
               onClick={() => setShowPriceFilters(!showPriceFilters)}
               className={`flex-1 px-4 py-3 rounded-lg transition-colors flex items-center justify-between text-sm font-medium ${
-                (searchData.pricePerDay !== 500 || searchData.pricePerMonth !== 5000) 
+                (searchData.pricePerDay !== 500 || searchData.pricePerMonth !== 5000 || searchData.season) 
                   ? 'bg-blue-50 text-blue-700 border border-blue-200' 
                   : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
               }`}
@@ -200,6 +212,7 @@ const DateSearchForm: React.FC<DateSearchFormProps> = ({
             <span className="font-medium">Filtros activos:</span>
             <span className="ml-2">
               Día: €{searchData.pricePerDay} | Mes: €{searchData.pricePerMonth}
+              {searchData.season && ` | Temporada: ${searchData.season === 'baja' ? 'Baja' : searchData.season === 'media' ? 'Media' : 'Alta'}`}
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -222,6 +235,23 @@ const DateSearchForm: React.FC<DateSearchFormProps> = ({
               step={100}
               className="mb-0"
             />
+          </div>
+          
+          {/* Filtro de temporada */}
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Temporada
+            </label>
+            <select
+              value={searchData.season || ''}
+              onChange={(e) => handleSeasonChange(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            >
+              <option value="">Cualquier temporada</option>
+              <option value="baja">Temporada Baja</option>
+              <option value="media">Temporada Media</option>
+              <option value="alta">Temporada Alta</option>
+            </select>
           </div>
         </div>
       )}

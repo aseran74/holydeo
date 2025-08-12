@@ -372,7 +372,7 @@ const MessagesPage: React.FC = () => {
           {/* Contact List */}
           {view === 'inbox' && (
             <RecentConversations 
-              onSelectContact={(contactId, contactName, contactEmail, contactType) => {
+              onSelectContact={(contactId, contactName, contactType, contactEmail) => {
                 setSelectedContact({
                   id: contactId,
                   name: contactName,

@@ -229,7 +229,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
 
             {/* Dropdown de zonas */}
             {showZoneSearch && (
-              <div className="absolute z-10 mt-1 right-0 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
+              <div className="absolute z-[9999] mt-1 right-0 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
                 {availableRegions.map((region) => (
                   <button
                     key={region.value}
@@ -297,7 +297,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
 
             {/* Dropdown de tipos de vivienda */}
             {showPropertyType && !isLoading && (
-              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
+              <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
                 {availablePropertyTypes.map((type) => (
                   <button
                     key={type.value}

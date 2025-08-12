@@ -1,11 +1,41 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
-import { Experience } from '../../types';
+
+interface Experience {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  location: string;
+  duration_hours: number;
+  photos: string[];
+  featured: boolean;
+}
 
 const ExperiencesSection = () => {
   const [featuredExperiences, setFeaturedExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Helper function to get proper image URL for experiences
+  const getExperienceImageUrl = (photos: string[] | undefined) => {
+    if (!photos || photos.length === 0) {
+      return "https://placehold.co/600x400/DDDDDD/333333?text=Imagen+No+Disponible";
+    }
+    
+    const firstPhoto = photos[0];
+    
+    // Check if it's an external URL (starts with http/https)
+    if (firstPhoto.startsWith('http://') || firstPhoto.startsWith('https://')) {
+      return firstPhoto;
+    } else {
+      // It's a Supabase storage path, get the public URL
+      const { data } = supabase.storage
+        .from('experience')
+        .getPublicUrl(firstPhoto);
+      return data.publicUrl || "https://placehold.co/600x400/DDDDDD/333333?text=Imagen+No+Disponible";
+    }
+  };
 
   useEffect(() => {
     const fetchFeaturedExperiences = async () => {
@@ -71,7 +101,7 @@ const ExperiencesSection = () => {
           <div key={experience.id} className="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl">
             <div className="relative">
               <img
-                src={experience.photos && experience.photos.length > 0 ? experience.photos[0] : "https://placehold.co/600x400/DDDDDD/333333?text=Imagen+No+Disponible"}
+                src={getExperienceImageUrl(experience.photos)}
                 alt={experience.name || 'Experiencia'}
                 className="w-full h-48 object-cover"
                 onError={(e) => {

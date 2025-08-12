@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tag, Euro, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../../supabaseClient';
 
 interface ExperienceCardProps {
   experience: {
@@ -15,10 +16,29 @@ interface ExperienceCardProps {
 }
 
 const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience }) => {
-  const imageUrl = experience.photos && experience.photos.length > 0 ? experience.photos[0] : '/public/images/cards/card-02.jpg';
+  const getImageUrl = (photos: string[] | undefined) => {
+    if (!photos || photos.length === 0) {
+      return '/images/cards/card-02.jpg';
+    }
+    
+    const firstPhoto = photos[0];
+    
+    // Check if it's an external URL (starts with http/https)
+    if (firstPhoto.startsWith('http://') || firstPhoto.startsWith('https://')) {
+      return firstPhoto;
+    } else {
+      // It's a Supabase storage path, get the public URL
+      const { data } = supabase.storage
+        .from('experience')
+        .getPublicUrl(firstPhoto);
+      return data.publicUrl || '/images/cards/card-02.jpg';
+    }
+  };
+
+  const imageUrl = getImageUrl(experience.photos);
 
   return (
-    <Link to={`/experiencias/${experience.id}`} className="block rounded-lg shadow-lg overflow-hidden bg-white dark:bg-gray-800 transform hover:-translate-y-1 transition-transform duration-300">
+    <Link to={`/experiences/${experience.id}`} className="block rounded-lg shadow-lg overflow-hidden bg-white dark:bg-gray-800 transform hover:-translate-y-1 transition-transform duration-300">
       <div className="relative h-56">
         <img className="w-full h-full object-cover" src={imageUrl} alt={experience.name} />
         {experience.price && (

@@ -10,8 +10,8 @@ interface EnhancedSearchFiltersProps {
   searchType: string;
   showFilters: boolean;
   setShowFilters: (show: boolean) => void;
-  seasons: string[];
   experienceTypes: string[];
+  seasons?: Array<{ value: string; label: string }>;
   amenities: Array<{ id: string; name: string; icon: any }>;
   handleAmenityToggle: (amenity: string) => void;
 }
@@ -22,8 +22,8 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
   searchType,
   showFilters,
   setShowFilters,
-  seasons,
   experienceTypes,
+  seasons,
   amenities,
   handleAmenityToggle
 }) => {
@@ -77,45 +77,52 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                  />
                </div>
                
-               <div>
-                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                   Precio máximo por mes
-                 </label>
-                               <p className="text-xs text-gray-500 mb-2">
-                Marca para elegir el precio Mes/max por toda la temporada
-              </p>
-                 <PriceFilter
-                   label=""
-                   value={searchData.pricePerMonth}
-                   onChange={(value) => setSearchData((prev: any) => ({ ...prev, pricePerMonth: value }))}
-                   min={0}
-                   max={5000}
-                   step={100}
-                 />
-               </div>
+               {/* Filtro de precio por mes solo para propiedades */}
+               {searchType === 'properties' && (
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Precio máximo por mes
+                   </label>
+                   <p className="text-xs text-gray-500 mb-2">
+                     Elige el precio máximo por mes para estancias largas
+                   </p>
+                   <PriceFilter
+                     label=""
+                     value={searchData.pricePerMonth}
+                     onChange={(value) => setSearchData((prev: any) => ({ ...prev, pricePerMonth: value }))}
+                     min={0}
+                     max={5000}
+                     step={100}
+                   />
+                 </div>
+               )}
              </div>
 
-                         {/* Temporada */}
-             <div>
-               <label className="block text-sm font-medium text-gray-700 mb-1">
-                 Temporada
-               </label>
-               <p className="text-xs text-gray-500 mb-2">
-                 Marca si quieres toda una temporada
-               </p>
-               <select
-                 value={searchData.season}
-                 onChange={(e) => setSearchData((prev: any) => ({ ...prev, season: e.target.value }))}
-                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-               >
-                 <option value="">Todas las temporadas</option>
-                 {seasons.map(season => (
-                   <option key={season} value={season}>
-                     {season}
-                   </option>
-                 ))}
-               </select>
-             </div>
+             {/* Filtro de temporada solo para propiedades */}
+             {searchType === 'properties' && seasons && (
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                   Temporada
+                 </label>
+                 <p className="text-xs text-gray-500 mb-2">
+                   Selecciona la temporada preferida
+                 </p>
+                 <select
+                   value={searchData.season}
+                   onChange={(e) => setSearchData((prev: any) => ({ ...prev, season: e.target.value }))}
+                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                 >
+                   <option value="">Cualquier temporada</option>
+                   {seasons.map(season => (
+                     <option key={season.value} value={season.value}>
+                       {season.label}
+                     </option>
+                   ))}
+                 </select>
+               </div>
+             )}
+
+
 
             {/* Filtros específicos según el tipo */}
             {searchType === 'properties' ? (

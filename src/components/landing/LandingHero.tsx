@@ -3,6 +3,7 @@ import LandingSearchForm from '../common/LandingSearchForm';
 
 const LandingHero = () => {
   const [showUnderline, setShowUnderline] = useState(false);
+  const [showStats, setShowStats] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +17,12 @@ const LandingHero = () => {
       } else {
         setShowUnderline(false);
       }
+
+      // Mostrar las estadísticas cuando hacemos scroll y mantenerlas visibles
+      if (scrollY > 100) {
+        setShowStats(true);
+      }
+      // Quitamos el else para que no se oculten una vez que aparezcan
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -42,7 +49,7 @@ const LandingHero = () => {
 
         {/* Contenido del hero */}
         <div className="absolute inset-0 flex items-center justify-center py-96 sm:py-32 px-4">
-          <div className="text-center w-full max-w-4xl mx-auto bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+          <div className="text-center w-full max-w-4xl mx-auto">
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 leading-tight text-white px-6 sm:px-4">
               Vive fuera de{' '}
@@ -80,19 +87,35 @@ const LandingHero = () => {
               <LandingSearchForm />
             </div>
 
-            {/* Estadísticas */}
-            <div className="mt-4 sm:mt-16 flex flex-row md:grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full px-6 sm:px-4">
+            {/* Estadísticas con efecto de scroll */}
+            <div className={`mt-8 sm:mt-12 flex flex-row md:grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full px-6 sm:px-4 transition-all duration-1000 ease-out transform z-[-1] ${
+              showStats 
+                ? 'translate-y-0 opacity-100' 
+                : 'translate-y-8 opacity-0'
+            }`}>
               <div className="text-center flex-1">
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-1 sm:mb-2">500+</div>
-                <div className="text-xs sm:text-sm md:text-base text-blue-100">Propiedades</div>
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-1 sm:mb-2 transition-all duration-700 delay-200">
+                  500+
+                </div>
+                <div className="text-xs sm:text-sm md:text-base text-blue-100 transition-all duration-700 delay-300">
+                  Propiedades
+                </div>
               </div>
               <div className="text-center flex-1">
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-1 sm:mb-2">200+</div>
-                <div className="text-xs sm:text-sm md:text-base text-blue-100">Experiencias</div>
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-1 sm:mb-2 transition-all duration-700 delay-400">
+                  200+
+                </div>
+                <div className="text-xs sm:text-sm md:text-base text-blue-100 transition-all duration-700 delay-500">
+                  Experiencias
+                </div>
               </div>
               <div className="text-center flex-1">
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-1 sm:mb-2">600+</div>
-                <div className="text-xs sm:text-sm md:text-base text-blue-100">Clientes Satisfechos</div>
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-1 sm:mb-2 transition-all duration-700 delay-600">
+                  600+
+                </div>
+                <div className="text-xs sm:text-sm md:text-base text-blue-100 transition-all duration-700 delay-700">
+                  Clientes Satisfechos
+                </div>
               </div>
             </div>
 

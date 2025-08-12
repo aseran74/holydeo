@@ -44,8 +44,6 @@ export interface Experience {
     description?: string;
     price?: number;
     location?: string;
-    duration_hours?: number;
-    max_participants?: number;
     photos?: string[];
     featured?: boolean;
     category: string;

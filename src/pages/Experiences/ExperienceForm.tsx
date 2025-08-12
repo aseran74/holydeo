@@ -10,6 +10,7 @@ import Select from '../../components/form/Select';
 import TextArea from '../../components/form/input/TextArea';
 import MultipleImageUploader from '../../components/common/MultipleImageUploader';
 import GooglePlacesAutocomplete from '../../components/common/GooglePlacesAutocomplete';
+import { EXPERIENCE_CATEGORIES } from '../../constants/experienceCategories';
 
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
@@ -29,8 +30,6 @@ const ExperienceForm = () => {
     category: 'Actividad Turística',
     location: '',
     price: '',
-    duration_hours: '',
-    max_participants: '',
     external_url: '',
     what_is_included: '',
     what_is_needed: '',
@@ -68,8 +67,6 @@ const ExperienceForm = () => {
       category: data.category || 'Actividad Turística',
       location: data.location || '',
       price: data.price?.toString() || '',
-      duration_hours: data.duration_hours?.toString() || '',
-      max_participants: data.max_participants?.toString() || '',
       external_url: data.external_url || '',
       what_is_included: data.what_is_included || '',
       what_is_needed: data.what_is_needed || '',
@@ -105,8 +102,6 @@ const ExperienceForm = () => {
     const experienceData = {
       ...formData,
       price: parseFloat(formData.price) || null,
-      duration_hours: parseInt(formData.duration_hours) || null,
-      max_participants: parseInt(formData.max_participants) || null,
       recurring_dates,
       photos,
     };
@@ -124,11 +119,7 @@ const ExperienceForm = () => {
     setSaving(false);
   };
 
-  const categoryOptions = [
-    { value: 'Actividad Turística', label: 'Actividad Turística' },
-    { value: 'Gastronómica', label: 'Gastronómica' },
-    { value: 'Deportiva', label: 'Deportiva' },
-  ];
+  const categoryOptions = EXPERIENCE_CATEGORIES;
 
 
 
@@ -217,7 +208,10 @@ const ExperienceForm = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <Label htmlFor="price">Precio (€) *</Label>
+                <Label htmlFor="price">
+                  Precio (€) *
+                  {formData.category === 'Green fees' || formData.category === 'Experiencias de larga duración' ? '' : ' / día'}
+                </Label>
                 <Input
                   id="price"
                   type="number"
@@ -229,29 +223,7 @@ const ExperienceForm = () => {
                 />
               </div>
 
-              <div>
-                <Label htmlFor="duration_hours">Duración (horas)</Label>
-                <Input
-                  id="duration_hours"
-                  type="number"
-                  value={formData.duration_hours}
-                  onChange={(e) => setFormData({ ...formData, duration_hours: e.target.value })}
-                  placeholder="2"
-                  min="0"
-                />
-              </div>
 
-              <div>
-                <Label htmlFor="max_participants">Máximo Participantes</Label>
-                <Input
-                  id="max_participants"
-                  type="number"
-                  value={formData.max_participants}
-                  onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })}
-                  placeholder="10"
-                  min="1"
-                />
-              </div>
             </div>
 
             <div className="mt-6">
@@ -277,7 +249,7 @@ const ExperienceForm = () => {
                   value={formData.what_is_included}
                   onChange={(value) => setFormData({ ...formData, what_is_included: value })}
                   placeholder="Guía, equipamiento, seguro..."
-                  rows={3}
+                  rows={5}
                 />
               </div>
 
@@ -287,7 +259,7 @@ const ExperienceForm = () => {
                   value={formData.what_is_needed}
                   onChange={(value) => setFormData({ ...formData, what_is_needed: value })}
                   placeholder="Ropa cómoda, calzado..."
-                  rows={3}
+                  rows={5}
                 />
               </div>
             </div>
