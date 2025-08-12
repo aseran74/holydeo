@@ -13,25 +13,25 @@ interface Step {
 const steps: Step[] = [
   {
     icon: <Search size={36} />,
-    title: 'Más que Vacaciones, una Inmersión Total',
+    title: 'Más que Vacaciones: Tu Hogar Temporal en un Destino Soñado',
     description:
-      'Nuestros alojamientos están diseñados para viajeros que buscan una experiencia auténtica y prolongada. Son el refugio perfecto para nómadas digitales, prejubilados apasionados del golf, blogueros de viajes, creativos y profesionales que aprovechan un año sabático o estancia de investigación.',
+      'Nuestros alojamientos están pensados para quienes buscan vivir un lugar, no solo visitarlo. Ideal para nómadas digitales, prejubilados amantes del golf, docentes de colegios y universidades, creadores de contenido, profesionales en año sabático o investigadores que quieren disfrutar de una temporada prolongada en un entorno inspirador y tranquilo.',
     color: 'text-blue-500',
     gradient: 'from-blue-100 to-blue-300 dark:from-blue-900/30 dark:to-blue-700/20'
   },
   {
     icon: <PenSquare size={36} />,
-    title: 'Reserva Inteligente: Flexibilidad y Ahorro Real',
+    title: 'Reserva Inteligente: Flexibilidad y Ahorro en Temporada Baja',
     description:
-      'Olvídate de las tarifas infladas y las restricciones de las grandes plataformas. Ofrecemos contratos de media estancia con precios significativamente más económicos que Airbnb o Booking, condiciones flexibles y tarifas especiales de temporada baja.',
+      'Olvídate de precios inflados y de la rigidez de las grandes plataformas. Ofrecemos contratos de media estancia —desde 15 días hasta 9 meses— con tarifas hasta un 40% más económicas que Airbnb o Booking, condiciones flexibles y precios especiales fuera de temporada alta.',
     color: 'text-pink-500',
     gradient: 'from-pink-100 to-pink-300 dark:from-pink-900/30 dark:to-pink-700/20'
   },
   {
     icon: <PartyPopper size={36} />,
-    title: 'Vive el Destino, No Solo lo Visites',
+    title: 'Experiencias que Van Más Allá del Alojamiento',
     description:
-      'Te damos el tiempo y las herramientas para que vivas una experiencia completa. Sumérgete en la cultura local: explora mercados tradicionales, saborea la auténtica gastronomía, disfruta de tu deporte favorito y conecta con la comunidad a través de actividades únicas.',
+      'Tendrás tiempo y oportunidades para sumergirte en la vida local: recorrer mercados y festivales tradicionales, probar la auténtica gastronomía de la región, practicar tu deporte o hobby favorito, aprender nuevas disciplinas como golf, surf o kitesurf, y participar en talleres, rutas y actividades diseñadas para conectar con la comunidad. Porque aquí no solo te hospedas… te integras, exploras y creas recuerdos duraderos.',
     color: 'text-green-500',
     gradient: 'from-green-100 to-green-300 dark:from-green-900/30 dark:to-green-700/20'
   }
