@@ -15,25 +15,49 @@ const steps: Step[] = [
     icon: <Search size={36} />,
     title: 'Más que Vacaciones, una Inmersión Total',
     description:
-      'Nuestros alojamientos están diseñados para viajeros que buscan una experiencia auténtica y prolongada en destinos vacacionales durante temporada baja. Son el refugio perfecto para nómadas digitales, prejubilados apasionados del golf, blogueros de viajes, creativos y profesionales que aprovechan un año sabático o estancia de investigación. Disfruta de la tranquilidad de los destinos fuera de temporada alta: precios más accesibles, menos multitudes y un ritmo de vida más auténtico que te permite conectar verdaderamente con el lugar.',
+      'Alojamientos diseñados para viajeros que buscan experiencias auténticas y prolongadas en destinos vacacionales durante temporada baja. Perfectos para nómadas digitales, prejubilados, creativos y profesionales en año sabático.',
     color: 'text-blue-500',
     gradient: 'from-blue-100 to-blue-300 dark:from-blue-900/30 dark:to-blue-700/20'
   },
   {
     icon: <PenSquare size={36} />,
+    title: 'Tranquilidad Fuera de Temporada',
+    description:
+      'Disfruta la tranquilidad fuera de temporada alta: precios accesibles, menos multitudes y conexión auténtica con el destino.',
+    color: 'text-green-500',
+    gradient: 'from-green-100 to-green-300 dark:from-green-900/30 dark:to-green-700/20'
+  },
+  {
+    icon: <PartyPopper size={36} />,
     title: 'Reserva Inteligente: Flexibilidad y Ahorro Real',
     description:
-      'Olvídate de las tarifas infladas y las restricciones de las grandes plataformas. Ofrecemos contratos de estancia media y larga (mínimo 15 días, máximo 9 meses) con precios significativamente más económicos que Airbnb o Booking, condiciones flexibles y las mejores tarifas de temporada baja. Ventajas exclusivas: sin prisa por checkout, tarifas degresivas según duración, y la libertad de establecer tu propio ritmo de vida en el destino.',
+      'Olvídate de tarifas infladas de grandes plataformas. Contratos de 15 días a 9 meses con precios significativamente más económicos que Airbnb o Booking, condiciones flexibles y tarifas especiales de temporada baja.',
     color: 'text-pink-500',
     gradient: 'from-pink-100 to-pink-300 dark:from-pink-900/30 dark:to-pink-700/20'
   },
   {
-    icon: <PartyPopper size={36} />,
-    title: 'Vive el Destino a Través de Experiencias Inolvidables',
+    icon: <Search size={36} />,
+    title: 'Cultura y Tradición',
     description:
-      'Te damos el tiempo y las herramientas para que vivas una experiencia completa más allá del simple alojamiento. Durante tu estancia podrás explorar los encantadores pueblos blancos de Andalucía a tu ritmo, sumergirte en mercados tradicionales y descubrir la auténtica gastronomía local, aprender o perfeccionar tu técnica de golf en campos con tarifas especiales de temporada baja, iniciarte en el kitesurf o mejorar tu nivel con instructores locales, y disfrutar de senderismo, ciclismo y deportes acuáticos sin las aglomeraciones de temporada alta. Con estancias de 15 días a 9 meses, tienes la oportunidad única de vivir como un local, dominar nuevas habilidades, explorar cada rincón del destino y crear recuerdos que durarán toda la vida.',
-    color: 'text-green-500',
-    gradient: 'from-green-100 to-green-300 dark:from-green-900/30 dark:to-green-700/20'
+      'Recorre pueblos blancos, mercados locales y gastronomía auténtica.',
+    color: 'text-purple-500',
+    gradient: 'from-purple-100 to-purple-300 dark:from-purple-900/30 dark:to-purple-700/20'
+  },
+  {
+    icon: <PenSquare size={36} />,
+    title: 'Deporte y Aventura',
+    description:
+      'Aprende golf o kitesurf con instructores locales y tarifas especiales de temporada baja.',
+    color: 'text-orange-500',
+    gradient: 'from-orange-100 to-orange-300 dark:from-orange-900/30 dark:to-orange-700/20'
+  },
+  {
+    icon: <PartyPopper size={36} />,
+    title: 'Tu Ritmo',
+    description:
+      'De 15 días a 9 meses para vivir como un local y dominar nuevas experiencias.',
+    color: 'text-indigo-500',
+    gradient: 'from-indigo-100 to-indigo-300 dark:from-indigo-900/30 dark:to-indigo-700/20'
   }
 ];
 
@@ -61,7 +85,7 @@ const HowItWorks = () => {
         </div>
 
         {/* Pasos */}
-        <div className="mt-20 relative grid grid-cols-1 md:grid-cols-3 gap-y-12 sm:gap-y-16 md:gap-x-8">
+        <div className="mt-20 relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-12 sm:gap-y-16 md:gap-x-8">
           {steps.map((step, index) => (
             <motion.div
               key={index}
