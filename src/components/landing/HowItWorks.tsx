@@ -11,51 +11,53 @@ interface Step {
 }
 
 const steps: Step[] = [
+  // 1-3: Lo que hacemos
   {
     icon: <Search size={36} />,
-    title: 'Más que Vacaciones, una Inmersión Total',
+    title: 'Alojamientos en lugares idílicos fuera de temporada',
     description:
-      'Alojamientos diseñados para viajeros que buscan experiencias auténticas y prolongadas en destinos vacacionales durante temporada baja. Perfectos para nómadas digitales, prejubilados, creativos y profesionales en año sabático.',
+      'Casas, apartamentos y villas seleccionadas en destinos únicos, disponibles de septiembre a julio, a precios asequibles.',
     color: 'text-blue-500',
     gradient: 'from-blue-100 to-blue-300 dark:from-blue-900/30 dark:to-blue-700/20'
   },
   {
     icon: <PenSquare size={36} />,
-    title: 'Tranquilidad Fuera de Temporada',
+    title: 'Experiencias inmersivas',
     description:
-      'Disfruta la tranquilidad fuera de temporada alta: precios accesibles, menos multitudes y conexión auténtica con el destino.',
+      'Aprende golf o kitesurf, recorre la Alhambra, la Mezquita de Córdoba, Sevilla o los Pueblos Blancos, con planes que se adaptan a tu estancia.',
     color: 'text-green-500',
     gradient: 'from-green-100 to-green-300 dark:from-green-900/30 dark:to-green-700/20'
   },
   {
     icon: <PartyPopper size={36} />,
-    title: 'Reserva Inteligente: Flexibilidad y Ahorro Real',
+    title: 'Flexibilidad y comunidad',
     description:
-      'Olvídate de tarifas infladas de grandes plataformas. Contratos de 15 días a 9 meses con precios significativamente más económicos que Airbnb o Booking, condiciones flexibles y tarifas especiales de temporada baja.',
+      'Combina destinos, conoce a otros viajeros con intereses afines y participa en actividades locales exclusivas.',
+    color: 'text-purple-500',
+    gradient: 'from-purple-100 to-purple-300 dark:from-purple-900/30 dark:to-purple-700/20'
+  },
+  // 4-6: Cómo funciona
+  {
+    icon: <Search size={36} />,
+    title: 'Explora y elige tu destino',
+    description:
+      'Filtra por ubicación, duración y tipo de experiencia en nuestra web o app.',
     color: 'text-pink-500',
     gradient: 'from-pink-100 to-pink-300 dark:from-pink-900/30 dark:to-pink-700/20'
   },
   {
-    icon: <Search size={36} />,
-    title: 'Cultura y Tradición',
-    description:
-      'Recorre pueblos blancos, mercados locales y gastronomía auténtica.',
-    color: 'text-purple-500',
-    gradient: 'from-purple-100 to-purple-300 dark:from-purple-900/30 dark:to-purple-700/20'
-  },
-  {
     icon: <PenSquare size={36} />,
-    title: 'Deporte y Aventura',
+    title: 'Reserva fácil y segura',
     description:
-      'Aprende golf o kitesurf con instructores locales y tarifas especiales de temporada baja.',
+      'Selecciona fechas, alojamiento y experiencias. Contrato digital y pago inicial seguro.',
     color: 'text-orange-500',
     gradient: 'from-orange-100 to-orange-300 dark:from-orange-900/30 dark:to-orange-700/20'
   },
   {
     icon: <PartyPopper size={36} />,
-    title: 'Tu Ritmo',
+    title: 'Disfruta tu estancia y actividades',
     description:
-      'De 15 días a 9 meses para vivir como un local y dominar nuevas experiencias.',
+      'Alojamiento preparado, calendario de experiencias y soporte durante toda tu estancia.',
     color: 'text-indigo-500',
     gradient: 'from-indigo-100 to-indigo-300 dark:from-indigo-900/30 dark:to-indigo-700/20'
   }
@@ -84,41 +86,88 @@ const HowItWorks = () => {
           </p>
         </div>
 
-        {/* Pasos */}
-        <div className="mt-20 relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-12 sm:gap-y-16 md:gap-x-8">
-          {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ y: -8, scale: 1.03 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-              className="relative p-6 sm:p-8 bg-white dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl"
-            >
-              {/* Número */}
-              <div className="absolute -top-6 left-4 md:-left-6 w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-lg">
-                {index + 1}
-              </div>
-
-              {/* Icono animado */}
+        {/* Sección: Lo que hacemos */}
+        <div className="mt-20">
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-12">
+            Lo que hacemos
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-12 sm:gap-y-16 md:gap-x-8">
+            {steps.slice(0, 3).map((step, index) => (
               <motion.div
-                whileHover={{ rotate: 8, scale: 1.15 }}
-                className={`mb-5 flex justify-center`}
+                key={index}
+                whileHover={{ y: -8, scale: 1.03 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+                className="relative p-6 sm:p-8 bg-white dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl"
               >
-                <div
-                  className={`p-4 rounded-full bg-gradient-to-br ${step.gradient} shadow-lg ${step.color}`}
-                >
-                  {step.icon}
+                {/* Número */}
+                <div className="absolute -top-6 left-4 md:-left-6 w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-lg">
+                  {index + 1}
                 </div>
-              </motion.div>
 
-              {/* Título y descripción */}
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center">
-                {step.title}
-              </h3>
-              <p className="mt-3 text-base text-gray-600 dark:text-gray-300 text-center leading-relaxed">
-                {step.description}
-              </p>
-            </motion.div>
-          ))}
+                {/* Icono animado */}
+                <motion.div
+                  whileHover={{ rotate: 8, scale: 1.15 }}
+                  className={`mb-5 flex justify-center`}
+                >
+                  <div
+                    className={`p-4 rounded-full bg-gradient-to-br ${step.gradient} shadow-lg ${step.color}`}
+                  >
+                    {step.icon}
+                  </div>
+                </motion.div>
+
+                {/* Título y descripción */}
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center">
+                  {step.title}
+                </h3>
+                <p className="mt-3 text-base text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                  {step.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Sección: Cómo funciona */}
+        <div className="mt-20">
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-12">
+            Cómo funciona
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-12 sm:gap-y-16 md:gap-x-8">
+            {steps.slice(3, 6).map((step, index) => (
+              <motion.div
+                key={index + 3}
+                whileHover={{ y: -8, scale: 1.03 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+                className="relative p-6 sm:p-8 bg-white dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl"
+              >
+                {/* Número */}
+                <div className="absolute -top-6 left-4 md:-left-6 w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-lg">
+                  {index + 4}
+                </div>
+
+                {/* Icono animado */}
+                <motion.div
+                  whileHover={{ rotate: 8, scale: 1.15 }}
+                  className={`mb-5 flex justify-center`}
+                >
+                  <div
+                    className={`p-4 rounded-full bg-gradient-to-br ${step.gradient} shadow-lg ${step.color}`}
+                  >
+                    {step.icon}
+                  </div>
+                </motion.div>
+
+                {/* Título y descripción */}
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center">
+                  {step.title}
+                </h3>
+                <p className="mt-3 text-base text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                  {step.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* CTA final */}
