@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { 
@@ -832,12 +832,10 @@ const PropertyDetails = () => {
             {/* Calendario de Reservas por Días Sueltos */}
             <BookingCalendar
               propertyId={property.id}
-              propertyName={property.title}
-              precioDia={property.precio_dia}
-              precioEntresemana={property.precio_entresemana}
-              precioFinDeSemana={property.precio_fin_de_semana}
-              minDays={property.min_days}
-              maxDays={property.max_days}
+              onBookingComplete={(bookingData) => {
+                console.log('Reserva completada:', bookingData);
+                // Aquí puedes manejar la reserva completada
+              }}
             />
 
             {/* Formulario de Alquiler de Temporada Completa */}
@@ -845,8 +843,11 @@ const PropertyDetails = () => {
               propertyId={property.id}
               propertyName={property.title}
               precioMes={property.precio_mes}
-              mesesTemporada={property.meses_temporada}
               alquilaTemporadaCompleta={property.alquila_temporada_completa}
+              onSuccess={(rentalData) => {
+                console.log('Alquiler de temporada solicitado:', rentalData);
+                // Aquí puedes manejar la solicitud de alquiler
+              }}
             />
           </div>
         </div>

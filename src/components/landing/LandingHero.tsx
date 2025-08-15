@@ -5,7 +5,7 @@ const LandingHero = () => {
   const [showUnderline, setShowUnderline] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [mobileVideoPlaying, setMobileVideoPlaying] = useState(false);
+  const [mobileVideoPlaying] = useState(false);
   const [mobileVideoRef, setMobileVideoRef] = useState<HTMLVideoElement | null>(null);
   const [scrollY, setScrollY] = useState(0);
 

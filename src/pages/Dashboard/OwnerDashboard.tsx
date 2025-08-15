@@ -3,8 +3,6 @@ import { supabase } from '../../supabaseClient';
 import { 
   Home, 
   Calendar, 
-  Euro, 
-  Users, 
   TrendingUp, 
   Star,
   Building,
@@ -14,7 +12,7 @@ import {
 } from 'lucide-react';
 import PageMeta from '../../components/common/PageMeta';
 import OwnerBookingsPanel from '../../components/dashboard/OwnerBookingsPanel';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface Property {
