@@ -84,11 +84,11 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
           </div>
         </Link>
         
-        {/* Badge de precio por día */}
-        <div className="absolute top-2 right-2 bg-blue-600 text-white text-sm font-bold px-3 py-1 rounded-full">
+        {/* Badge de precio mensual destacado */}
+        <div className="absolute top-2 right-2 bg-gradient-to-r from-green-600 to-green-700 text-white text-base font-bold px-4 py-2 rounded-xl shadow-lg border-2 border-white/20">
           <span className="flex items-center">
-            <Euro className="w-4 h-4 mr-1" />
-            {formatPrice(property.precio_dia || property.precio_entresemana)} / día
+            <Euro className="w-5 h-5 mr-1" />
+            {formatPrice(property.precio_mes)} / mes
           </span>
         </div>
       </div>
@@ -123,28 +123,12 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
           </div>
         </div>
         
-        {/* Precios */}
-        <div className="space-y-2 mb-3">
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-gray-600">Precio mensual:</span>
-            <span className="font-semibold text-green-600">
-              {formatPrice(property.precio_mes)}€
-            </span>
-          </div>
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-gray-600">Entre semana:</span>
-            <span className="font-semibold text-blue-600">
-              {formatPrice(property.precio_entresemana)}€
-            </span>
-          </div>
-          {property.precio_fin_de_semana && (
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">Fin de semana:</span>
-              <span className="font-semibold text-purple-600">
-                {formatPrice(property.precio_fin_de_semana)}€
-              </span>
-            </div>
-          )}
+        {/* Precio por día */}
+        <div className="flex justify-between items-center text-sm mb-3 p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <span className="text-gray-600">Precio por día:</span>
+          <span className="font-semibold text-blue-600">
+            {formatPrice(property.precio_dia || property.precio_entresemana)}€
+          </span>
         </div>
         
         {/* Temporadas disponibles */}
