@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BedDouble, Bath, Users, MapPin, Euro, Calendar, Eye } from 'lucide-react';
+import { BedDouble, Bath, Users, MapPin, Euro, Eye } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import { Property } from '../../types';
 
