@@ -36,7 +36,7 @@ const SearchPage = () => {
     // Filtros comunes
     pricePerDay: 500,
     pricePerMonth: 5000,
-    season: '',
+    seasons: [] as string[],
   });
 
   const [results, setResults] = useState<{
@@ -49,7 +49,7 @@ const SearchPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [availabilityFilterApplied, setAvailabilityFilterApplied] = useState(false);
 
   // Helper function to get proper image URL for experiences
@@ -162,10 +162,8 @@ const SearchPage = () => {
       query = query.lte('precio_mes', searchData.pricePerMonth);
     }
     
-    // Filtro por temporada
-    if (searchData.season) {
-      query = query.contains('meses_temporada', [searchData.season]);
-    }
+    // Nota: El filtro de temporadas se aplicará después de obtener los resultados
+    // para evitar problemas con múltiples filtros .contains en Supabase
     
     // Filtro por amenities
     if (searchData.amenities.length > 0) {
@@ -185,7 +183,7 @@ const SearchPage = () => {
       priceRange: searchData.priceRange,
       pricePerDay: searchData.pricePerDay,
       pricePerMonth: searchData.pricePerMonth,
-      season: searchData.season,
+      seasons: searchData.seasons,
       amenities: searchData.amenities,
       checkIn: searchData.checkIn,
       checkOut: searchData.checkOut
@@ -199,8 +197,23 @@ const SearchPage = () => {
     
     console.log('Resultados de propiedades antes del filtro de disponibilidad:', data?.length || 0);
     
+    // Aplicar filtro de temporadas en JavaScript después de obtener los resultados
+    let filteredProperties = data || [];
+    if (searchData.seasons && searchData.seasons.length > 0) {
+      filteredProperties = (data || []).filter(property => {
+        // Verificar si la propiedad tiene al menos una de las temporadas seleccionadas
+        if (property.meses_temporada && Array.isArray(property.meses_temporada)) {
+          return searchData.seasons.some(selectedSeason => 
+            property.meses_temporada.includes(selectedSeason)
+          );
+        }
+        return false;
+      });
+      console.log('Propiedades después del filtro de temporadas:', filteredProperties.length);
+    }
+    
     // Filtrar propiedades por disponibilidad si hay fechas seleccionadas
-    let availableProperties = data || [];
+    let availableProperties = filteredProperties;
     let filterApplied = false;
     
     if (searchData.checkIn && searchData.checkOut) {
@@ -523,10 +536,17 @@ const SearchPage = () => {
                         💰 Hasta €{searchData.pricePerMonth}/mes
                       </span>
                     )}
-                    {searchData.season && searchType === 'properties' && (
-                      <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded">
-                        🌤️ {seasons.find(s => s.value === searchData.season)?.label || searchData.season}
-                      </span>
+                    {searchData.seasons && searchData.seasons.length > 0 && searchType === 'properties' && (
+                      <div className="flex flex-wrap gap-1">
+                        {searchData.seasons.map(season => {
+                          const seasonLabel = seasons.find(s => s.value === season)?.label || season;
+                          return (
+                            <span key={season} className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded">
+                              🌤️ {seasonLabel}
+                            </span>
+                          );
+                        })}
+                      </div>
                     )}
                   </div>
                 )}

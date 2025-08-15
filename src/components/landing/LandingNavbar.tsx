@@ -1,11 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Menu, X, User, LogOut } from "lucide-react";
 
 const LandingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { currentUser, logout } = useAuth();
+
+  // Efecto para detectar scroll y cambiar el estilo de la navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Debug temporal para ver los datos del usuario
   if (currentUser) {
@@ -39,16 +51,20 @@ const LandingNavbar = () => {
   // );
 
   return (
-    <nav className="bg-transparent backdrop-blur-sm fixed w-full top-0 z-50">
+    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+      isScrolled 
+        ? 'bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-md' 
+        : 'bg-transparent backdrop-blur-sm'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
               <img
-                src="/logotrans-white.svg"
+                src={isScrolled ? "/logotrans.svg" : "/logotrans-white.svg"}
                 alt="Logo"
-                className="h-8 w-auto"
+                className="h-8 w-auto transition-all duration-300"
               />
             </Link>
           </div>
@@ -60,7 +76,11 @@ const LandingNavbar = () => {
                 <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href.replace("#", ""))}
-                  className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+                    isScrolled
+                      ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                      : 'text-white hover:text-blue-200'
+                  }`}
                 >
                   {item.name}
                 </button>
@@ -82,15 +102,21 @@ const LandingNavbar = () => {
                         className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
                       />
                     ) : (
-                      <User className="w-5 h-5 text-white" />
+                      <User className={`w-5 h-5 ${isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'}`} />
                     )}
-                    <span className="text-sm text-white">
+                    <span className={`text-sm transition-all duration-300 ${
+                      isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
+                    }`}>
                       {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                     </span>
                   </div>
                   <button
                     onClick={logout}
-                    className="flex items-center space-x-1 text-white hover:text-red-200 px-2 py-1 rounded text-sm"
+                    className={`flex items-center space-x-1 px-2 py-1 rounded text-sm transition-all duration-300 ${
+                      isScrolled 
+                        ? 'text-gray-700 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400' 
+                        : 'text-white hover:text-red-200'
+                    }`}
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Cerrar</span>
@@ -99,7 +125,11 @@ const LandingNavbar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+                    isScrolled
+                      ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                      : 'text-white hover:text-blue-200'
+                  }`}
                 >
                   Iniciar Sesión
                 </Link>
@@ -110,7 +140,9 @@ const LandingNavbar = () => {
             <div className="md:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-white hover:text-blue-200 focus:outline-none focus:text-blue-200"
+                className={`hover:text-blue-200 focus:outline-none focus:text-blue-200 transition-all duration-300 ${
+                  isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
+                }`}
               >
                 {isMenuOpen ? (
                   <X className="h-6 w-6" />
@@ -126,12 +158,18 @@ const LandingNavbar = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/20 dark:bg-gray-900/20 backdrop-blur-md shadow-lg">
+          <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 backdrop-blur-md shadow-lg transition-all duration-300 ${
+            isScrolled 
+              ? 'bg-white/95 dark:bg-gray-900/95' 
+              : 'bg-white/20 dark:bg-gray-900/20'
+          }`}>
             {menuItems.map((item) => (
                               <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href.replace("#", ""))}
-                  className="text-white hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium transition-colors w-full text-left"
+                  className={`hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 w-full text-left ${
+                    isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
+                  }`}
                 >
                   {item.name}
                 </button>
@@ -149,15 +187,21 @@ const LandingNavbar = () => {
                           className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
                         />
                                               ) : (
-                          <User className="w-5 h-5 text-white" />
+                          <User className={`w-5 h-5 ${isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'}`} />
                         )}
-                        <span className="text-sm text-white">
+                        <span className={`text-sm transition-all duration-300 ${
+                          isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
+                        }`}>
                           {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                         </span>
                       </div>
                     <button
                       onClick={logout}
-                      className="flex items-center space-x-1 text-white hover:text-red-200 px-2 py-1 rounded text-sm"
+                      className={`flex items-center space-x-1 px-2 py-1 rounded text-sm transition-all duration-300 ${
+                        isScrolled 
+                          ? 'text-gray-700 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400' 
+                          : 'text-white hover:text-red-200'
+                      }`}
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Cerrar Sesión</span>
@@ -166,7 +210,11 @@ const LandingNavbar = () => {
                 ) : (
                   <Link
                     to="/login"
-                    className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                    className={`px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ${
+                      isScrolled
+                        ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                        : 'text-white hover:text-blue-200'
+                    }`}
                   >
                     Iniciar Sesión
                   </Link>

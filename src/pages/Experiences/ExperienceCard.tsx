@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Euro, Eye } from 'lucide-react';
+import { MapPin, Eye } from 'lucide-react';
 import { supabase } from '../../supabaseClient';
+import PriceTag from '../../components/common/PriceTag';
 
 import { Experience } from '../../types';
 
@@ -42,14 +43,6 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
     fetchImageUrl();
   }, [experience.photos]);
 
-  const formatPrice = (price: number) => {
-    if (!price || price <= 0) return 'Precio no especificado';
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(price);
-  };
-
   // Función formatDuration eliminada
 
   return (
@@ -82,12 +75,11 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
           </div>
         )}
         
-        <div className="absolute top-2 right-2 bg-primary text-white text-sm font-bold px-3 py-1 rounded-full">
-          <span className="flex items-center">
-            <Euro className="w-4 h-4 mr-1" />
-            {formatPrice(experience.price || 0)}
-          </span>
-        </div>
+        <PriceTag 
+          price={experience.price || 0} 
+          size="sm" 
+          className="absolute top-2 right-2"
+        />
       </div>
       
       <div className="p-4">

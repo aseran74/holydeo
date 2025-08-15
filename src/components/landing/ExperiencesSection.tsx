@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
+import PriceTag from '../common/PriceTag';
 
 interface Experience {
   id: string;
@@ -71,19 +72,6 @@ const ExperiencesSection = () => {
     fetchFeaturedExperiences();
   }, []);
 
-  const formatPrice = (price: number) => {
-    console.log('=== DEBUG: formatPrice llamado ===');
-    console.log('Precio recibido:', price);
-    console.log('Tipo de precio:', typeof price);
-    console.log('¿Es válido?', price && price > 0);
-    
-    if (!price || price <= 0) return 'Consultar'; // Changed for better UX
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(price);
-  };
-
   if (loading) {
     return (
       <section id="experiences" className="py-20 px-4 md:px-8 bg-gray-50">
@@ -140,9 +128,22 @@ const ExperiencesSection = () => {
                 </div>
               )}
 
-              {/* --- PRECIO CON NUEVO FONDO --- */}
-              <div className="absolute top-4 right-4 bg-black bg-opacity-70 text-white text-lg font-bold px-4 py-2 rounded-lg shadow-lg">
-                {formatPrice(experience.price || 0)}
+              {/* --- PRECIO RESPONSIVE: ICONO EN MÓVIL, PRICETAG EN ESCRITORIO --- */}
+              <div className="absolute top-4 right-4">
+                {/* Icono simple para móvil */}
+                <div className="md:hidden bg-white/90 backdrop-blur-sm text-blue-600 p-2 rounded-full shadow-lg border border-white/20">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                  </svg>
+                </div>
+                
+                {/* PriceTag completo para tablet y escritorio */}
+                <div className="hidden md:block">
+                  <PriceTag 
+                    price={experience.price || 0} 
+                    size="lg" 
+                  />
+                </div>
               </div>
             </div>
             

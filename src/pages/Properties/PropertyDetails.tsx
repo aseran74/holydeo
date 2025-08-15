@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { 
@@ -19,7 +19,7 @@ import {
   Building,
   BedDouble,
   Building2,
-  CalendarDays,
+
   Waves,
   Snowflake,
   UtensilsCrossed,
@@ -39,7 +39,8 @@ import {
 } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import PageMeta from '../../components/common/PageMeta';
-import AvailabilityCalendar from '../../components/common/AvailabilityCalendar';
+import BookingCalendar from '../../components/common/BookingCalendar';
+import SeasonRentalForm from '../../components/common/SeasonRentalForm';
 import LandingNavbar from '../../components/landing/LandingNavbar';
 
 // Mapeo de amenities a iconos
@@ -828,31 +829,25 @@ const PropertyDetails = () => {
               </div>
             )}
 
-            {/* Acciones */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border">
-              <h3 className="text-lg font-semibold mb-4">Acciones</h3>
-              <div className="space-y-3">
-                <Link
-                  to={`/calendar-management/${property.id}`}
-                  className="btn btn-primary w-full"
-                >
-                  <CalendarDays size={16} />
-                  Gestionar Calendario
-                </Link>
-                {/* Comentado hasta que se implemente la ruta de edición
-                <Link
-                  to={`/properties/edit/${property.id}`}
-                  className="btn btn-outline w-full"
-                >
-                  <Building size={16} />
-                  Editar Propiedad
-                </Link>
-                */}
-              </div>
-            </div>
+            {/* Calendario de Reservas por Días Sueltos */}
+            <BookingCalendar
+              propertyId={property.id}
+              propertyName={property.title}
+              precioDia={property.precio_dia}
+              precioEntresemana={property.precio_entresemana}
+              precioFinDeSemana={property.precio_fin_de_semana}
+              minDays={property.min_days}
+              maxDays={property.max_days}
+            />
 
-            {/* Calendario de Disponibilidad */}
-            <AvailabilityCalendar propertyId={property.id} />
+            {/* Formulario de Alquiler de Temporada Completa */}
+            <SeasonRentalForm
+              propertyId={property.id}
+              propertyName={property.title}
+              precioMes={property.precio_mes}
+              mesesTemporada={property.meses_temporada}
+              alquilaTemporadaCompleta={property.alquila_temporada_completa}
+            />
           </div>
         </div>
       </div>

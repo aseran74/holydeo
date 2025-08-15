@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Search, PenSquare, PartyPopper } from 'lucide-react';
+import { Search, PenSquare, PartyPopper, MapPin, CreditCard, CheckCircle } from 'lucide-react';
 
 interface Step {
   icon: React.ReactNode;
@@ -38,7 +38,7 @@ const steps: Step[] = [
   },
   // 4-6: Cómo funciona
   {
-    icon: <Search size={36} />,
+    icon: <MapPin size={36} />,
     title: 'Explora y elige tu destino',
     description:
       'Filtra por ubicación, duración y tipo de experiencia en nuestra web o app.',
@@ -46,7 +46,7 @@ const steps: Step[] = [
     gradient: 'from-pink-100 to-pink-300 dark:from-pink-900/30 dark:to-pink-700/20'
   },
   {
-    icon: <PenSquare size={36} />,
+    icon: <CreditCard size={36} />,
     title: 'Reserva fácil y segura',
     description:
       'Selecciona fechas, alojamiento y experiencias. Contrato digital y pago inicial seguro.',
@@ -54,7 +54,7 @@ const steps: Step[] = [
     gradient: 'from-orange-100 to-orange-300 dark:from-orange-900/30 dark:to-orange-700/20'
   },
   {
-    icon: <PartyPopper size={36} />,
+    icon: <CheckCircle size={36} />,
     title: 'Disfruta tu estancia y actividades',
     description:
       'Alojamiento preparado, calendario de experiencias y soporte durante toda tu estancia.',

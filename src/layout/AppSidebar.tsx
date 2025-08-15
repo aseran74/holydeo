@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
+import { Home } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import MessageCounter from "../components/common/MessageCounter";
+import { useOwnerStatus } from "../hooks/useOwnerStatus";
 
 // Assume these icons are imported from an icon library
 import {
@@ -32,6 +34,7 @@ type NavItem = {
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const { isAdmin } = useAuth();
+  const { isOwner } = useOwnerStatus();
   const location = useLocation();
 
   const [openSubmenu, setOpenSubmenu] = useState<{
@@ -62,6 +65,12 @@ const AppSidebar: React.FC = () => {
       name: "Admin Dashboard",
       path: "/admin",
       adminOnly: true,
+    },
+    // Dashboard de Propietarios
+    {
+      icon: <Home size={20} />,
+      name: "Mi Dashboard",
+      path: "/owner-dashboard",
     },
     {
       icon: <CalenderIcon />,
@@ -112,7 +121,15 @@ const AppSidebar: React.FC = () => {
 
 
   // Filtrar elementos según el rol del usuario
-  const filteredNavItems = navItems.filter(item => !item.adminOnly || isAdmin);
+  const filteredNavItems = navItems.filter(item => {
+    // Mostrar elementos admin solo para admins
+    if (item.adminOnly && !isAdmin) return false;
+    
+    // Mostrar dashboard de propietarios solo para propietarios
+    if (item.path === '/owner-dashboard' && !isOwner) return false;
+    
+    return true;
+  });
 
   useEffect(() => {
     let submenuMatched = false;

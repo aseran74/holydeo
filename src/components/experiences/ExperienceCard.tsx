@@ -1,7 +1,8 @@
 import React from 'react';
-import { Tag, Euro, MapPin } from 'lucide-react';
+import { Tag, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
+import PriceTag from '../common/PriceTag';
 
 interface ExperienceCardProps {
   experience: {
@@ -42,12 +43,11 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience }) => {
       <div className="relative h-56">
         <img className="w-full h-full object-cover" src={imageUrl} alt={experience.name} />
         {experience.price && (
-          <div className="absolute top-2 right-2 bg-primary text-white text-sm font-bold px-3 py-1 rounded-full">
-            <span className="flex items-center">
-              <Euro className="w-4 h-4 mr-1" />
-              {experience.price}
-            </span>
-          </div>
+          <PriceTag 
+            price={experience.price} 
+            size="sm" 
+            className="absolute top-3 right-3"
+          />
         )}
       </div>
       <div className="p-4">

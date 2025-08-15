@@ -4,22 +4,36 @@ import LandingSearchForm from '../common/LandingSearchForm';
 const LandingHero = () => {
   const [showUnderline, setShowUnderline] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileVideoPlaying, setMobileVideoPlaying] = useState(false);
+  const [mobileVideoRef, setMobileVideoRef] = useState<HTMLVideoElement | null>(null);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
+    const checkMobile = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 640);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     const handleScroll = () => {
-      const scrollY = window.scrollY;
+      const currentScrollY = window.scrollY;
+      setScrollY(currentScrollY);
+      
       const windowHeight = window.innerHeight;
       const heroHeight = windowHeight;
       
       // Mostrar el subrayado cuando estamos en la mitad del hero
-      if (scrollY < heroHeight * 0.5) {
+      if (currentScrollY < heroHeight * 0.5) {
         setShowUnderline(true);
       } else {
         setShowUnderline(false);
       }
 
       // Mostrar las estadísticas cuando hacemos scroll y mantenerlas visibles
-      if (scrollY > 100) {
+      if (currentScrollY > 100) {
         setShowStats(true);
       }
       // Quitamos el else para que no se oculten una vez que aparezcan
@@ -28,23 +42,66 @@ const LandingHero = () => {
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // Ejecutar una vez al montar
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
 
   return (
     <section className="relative text-white">
       <div className="relative w-full min-h-screen h-[120vh]">
-        {/* Video para todos los dispositivos */}
-        <video 
-          autoPlay 
-          muted 
-          loop 
-          playsInline 
-          className="w-full h-full object-cover object-center absolute inset-0" 
-          style={{ objectPosition: 'center 30%' }}
-        >
-          <source src="/video-escritorio.mp4" type="video/mp4" />
-        </video>
+        {/* Video para móvil y escritorio con diferentes archivos */}
+        {isMobile ? (
+          // Video para móvil (< 640px)
+          <div className="relative w-full h-full">
+            <video 
+              ref={setMobileVideoRef}
+              autoPlay 
+              muted 
+              loop 
+              playsInline 
+              preload="auto"
+              className="w-full h-full object-cover object-center absolute inset-0"
+              style={{ objectPosition: 'center 30%' }}
+            >
+              <source src="/video-movil.mp4" type="video/mp4" />
+              {/* Fallback por si el video no carga */}
+              <img 
+                src="/immovil.jpg"
+                alt="Hero móvil fallback"
+                className="w-full h-full object-cover object-center"
+              />
+            </video>
+            
+            {/* Botón de play manual si el video no se reproduce automáticamente */}
+            {!mobileVideoPlaying && mobileVideoRef && (
+              <button
+                onClick={() => {
+                  if (mobileVideoRef) {
+                    mobileVideoRef.play();
+                  }
+                }}
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full border border-white/30 hover:bg-white/30 transition-all duration-300 z-10"
+              >
+                ▶️ Reproducir Video
+              </button>
+            )}
+          </div>
+        ) : (
+          // Video para tablet y escritorio (≥ 640px)
+          <video 
+            autoPlay 
+            muted 
+            loop 
+            playsInline 
+            className="w-full h-full object-cover object-center absolute inset-0" 
+            style={{ objectPosition: 'center 30%' }}
+          >
+            <source src="/video-escritorio.mp4" type="video/mp4" />
+          </video>
+        )}
+        
         <div className="absolute inset-0 bg-black/60"></div>
 
         {/* Contenido del hero */}
@@ -72,10 +129,16 @@ const LandingHero = () => {
                     className={`transition-all duration-1500 ease-in-out ${
                       showUnderline ? 'stroke-dasharray-300 stroke-dashoffset-0' : 'stroke-dasharray-300 stroke-dashoffset-300'
                     }`}
+                    style={{
+                      strokeDasharray: 300,
+                      strokeDashoffset: showUnderline ? 0 : 300,
+                      transform: `translateX(${scrollY * 0.1}px)`
+                    }}
                   />
                 </svg>
               </span>
-              <span className="text-blue-400">.</span>
+              {/* Punto azul solo en tablet y escritorio */}
+              <span className="hidden sm:inline text-blue-400">.</span>
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl mb-8 text-blue-100 max-w-3xl mx-auto">

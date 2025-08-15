@@ -9,6 +9,7 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
+import OwnerDashboard from "./pages/Dashboard/OwnerDashboard";
 import LandingPage from "./pages/Landing/LandingPage";
 
 // Importar las páginas del proyecto
@@ -71,6 +72,9 @@ export default function App() {
                 <AdminDashboard />
               </AdminRoute>
             } />
+            
+            {/* Dashboard de Propietarios - Solo para propietarios */}
+            <Route path="/owner-dashboard" element={<OwnerDashboard />} />
             
             {/* Propiedades y Gestión */}
             <Route path="/properties" element={

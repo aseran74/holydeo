@@ -84,7 +84,7 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                      Precio máximo por mes
                    </label>
                    <p className="text-xs text-gray-500 mb-2">
-                     Elige el precio máximo por mes para estancias largas
+                     Elige el precio máximo por mes para estancias largas (60 días mínimo, 9 meses máximo)
                    </p>
                    <PriceFilter
                      label=""
@@ -98,29 +98,45 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                )}
              </div>
 
-             {/* Filtro de temporada solo para propiedades */}
-             {searchType === 'properties' && seasons && (
-               <div>
-                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                   Temporada
-                 </label>
-                 <p className="text-xs text-gray-500 mb-2">
-                   Selecciona la temporada preferida
-                 </p>
-                 <select
-                   value={searchData.season}
-                   onChange={(e) => setSearchData((prev: any) => ({ ...prev, season: e.target.value }))}
-                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                 >
-                   <option value="">Cualquier temporada</option>
-                   {seasons.map(season => (
-                     <option key={season.value} value={season.value}>
-                       {season.label}
-                     </option>
-                   ))}
-                 </select>
-               </div>
-             )}
+                           {/* Filtro de temporada solo para propiedades */}
+              {searchType === 'properties' && seasons && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Temporada
+                  </label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Marca las temporadas que te interesan
+                  </p>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {seasons.map(season => (
+                      <label key={season.value} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={searchData.seasons && searchData.seasons.includes(season.value)}
+                          onChange={(e) => {
+                            const currentSeasons = searchData.seasons || [];
+                            if (e.target.checked) {
+                              setSearchData((prev: any) => ({
+                                ...prev,
+                                seasons: [...currentSeasons, season.value]
+                              }));
+                            } else {
+                              setSearchData((prev: any) => ({
+                                ...prev,
+                                seasons: currentSeasons.filter((s: string) => s !== season.value)
+                              }));
+                            }
+                          }}
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-xs text-gray-700">
+                          {season.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
 
 
 
