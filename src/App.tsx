@@ -12,6 +12,7 @@ import Home from "./pages/Dashboard/Home";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
 import OwnerDashboard from "./pages/Dashboard/OwnerDashboard";
 import LandingPage from "./pages/Landing/LandingPage";
+import SocialPage from "./pages/Social/SocialPage";
 
 // Importar las páginas del proyecto
 import Properties from "./pages/Properties/Properties";
@@ -111,6 +112,7 @@ export default function App() {
             {/* Profile and Calendar */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
+            <Route path="/social" element={<SocialPage />} />
 
             {/* Debug/Test Routes */}
             <Route path="/image-upload-test" element={<ImageUploadTest />} />

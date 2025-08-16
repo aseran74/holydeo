@@ -109,6 +109,11 @@ const AppSidebar: React.FC = () => {
       path: "/experiences",
     },
     {
+      icon: <GroupIcon />,
+      name: "Red Social",
+      path: "/social",
+    },
+    {
       icon: <TaskIcon />,
       name: "Gestión",
       subItems: [

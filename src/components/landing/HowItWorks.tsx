@@ -24,7 +24,7 @@ const steps: Step[] = [
     icon: <PenSquare size={36} />,
     title: 'Experiencias inmersivas',
     description:
-      'Escoge tambien entre expericnias de larga estancia como clases de golf mensuales o de Kitesurf o Green fees o las de corta estancia como ver los grandes monumentos como la Alhambra, la Mezquita de Córdoba, Sevilla o los Pueblos Blancos ir de pinchos por Donosti o recorrer en Globo Toledo',
+      'Tenemos experiencias de larga estancia como clases de golf mensuales,  o de Kitesurf o Green fees , o las de corta estancia como ver los grandes monumentos como la Alhambra, la Mezquita de Córdoba, Sevilla o conocer los Pueblos Blancos ir de pinchos por Donosti o recorrer en Globo Toledo',
     color: 'text-green-500',
     gradient: 'from-green-100 to-green-300 dark:from-green-900/30 dark:to-green-700/20'
   },
@@ -32,7 +32,7 @@ const steps: Step[] = [
     icon: <PartyPopper size={36} />,
     title: 'Flexibilidad y comunidad',
     description:
-      'Combina destinos, conoce a otros viajeros con intereses afines y participa en actividades locales exclusivas.',
+      'Combina destinos, conoce a otros viajeros en nuestra red social con intereses afines y participa en actividades locales exclusivas.',
     color: 'text-purple-500',
     gradient: 'from-purple-100 to-purple-300 dark:from-purple-900/30 dark:to-purple-700/20'
   },
@@ -41,7 +41,7 @@ const steps: Step[] = [
     icon: <MapPin size={36} />,
     title: 'Explora y elige tu destino',
     description:
-      'Filtra por ubicación, duración y tipo de experiencia en nuestra web o app.',
+      'Filtra por ubicación, duración y tipo de experiencia o alojamiento  en nuestra web o app.',
     color: 'text-pink-500',
     gradient: 'from-pink-100 to-pink-300 dark:from-pink-900/30 dark:to-pink-700/20'
   },
@@ -57,7 +57,7 @@ const steps: Step[] = [
     icon: <CheckCircle size={36} />,
     title: 'Disfruta tu estancia y actividades',
     description:
-      'Alojamiento preparado, calendario de experiencias y soporte durante toda tu estancia.',
+      'No te preocupes por nada alojamiento preparado, calendario de experiencias y soporte durante toda tu estancia.',
     color: 'text-indigo-500',
     gradient: 'from-indigo-100 to-indigo-300 dark:from-indigo-900/30 dark:to-indigo-700/20'
   }
