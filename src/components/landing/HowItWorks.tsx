@@ -24,7 +24,7 @@ const steps: Step[] = [
     icon: <PenSquare size={36} />,
     title: 'Experiencias inmersivas',
     description:
-      'Aprende golf o kitesurf, recorre la Alhambra, la Mezquita de Córdoba, Sevilla o los Pueblos Blancos, con planes que se adaptan a tu estancia.',
+      'Escoge tambien entre expericnias de larga estancia como clases de golf mensuales o de Kitesurf o Green fees o las de corta estancia como ver los grandes monumentos como la Alhambra, la Mezquita de Córdoba, Sevilla o los Pueblos Blancos ir de pinchos por Donosti o recorrer en Globo Toledo',
     color: 'text-green-500',
     gradient: 'from-green-100 to-green-300 dark:from-green-900/30 dark:to-green-700/20'
   },
