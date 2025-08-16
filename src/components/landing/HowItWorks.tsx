@@ -16,7 +16,7 @@ const steps: Step[] = [
     icon: <Search size={36} />,
     title: 'Alojamientos en lugares idílicos fuera de temporada',
     description:
-      'Casas, apartamentos y villas seleccionadas en destinos únicos, disponibles de septiembre a julio, a precios asequibles.',
+      'Buscamos Casas, apartamentos y villas seleccionadas en destinos únicos,vacacionales  disponibles de septiembre a julio, a precios imbatibles',
     color: 'text-blue-500',
     gradient: 'from-blue-100 to-blue-300 dark:from-blue-900/30 dark:to-blue-700/20'
   },
