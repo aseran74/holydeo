@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./components/auth/LoginForm";
 import ProtectedSearchRoute from "./components/auth/ProtectedSearchRoute";
 import AdminRoute from "./components/auth/AdminRoute";
+import DashboardRoute from "./components/auth/DashboardRoute";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
 import Calendar from "./pages/Calendar";
@@ -64,7 +65,11 @@ export default function App() {
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             {/* Dashboard - Solo para usuarios autenticados */}
-            <Route path="/dashboard" element={<Home />} />
+            <Route path="/dashboard" element={
+              <DashboardRoute>
+                <Home />
+              </DashboardRoute>
+            } />
             
             {/* Dashboard Administrativo - Solo para admins */}
             <Route path="/admin" element={
@@ -74,7 +79,11 @@ export default function App() {
             } />
             
             {/* Dashboard de Propietarios - Solo para propietarios */}
-            <Route path="/owner-dashboard" element={<OwnerDashboard />} />
+            <Route path="/owner-dashboard" element={
+              <DashboardRoute>
+                <OwnerDashboard />
+              </DashboardRoute>
+            } />
             
             {/* Propiedades y Gestión */}
             <Route path="/properties" element={

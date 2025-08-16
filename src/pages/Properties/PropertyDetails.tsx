@@ -832,6 +832,7 @@ const PropertyDetails = () => {
             {/* Calendario de Reservas por Días Sueltos */}
             <BookingCalendar
               propertyId={property.id}
+              precioDia={property.precio_dia || property.precio_entresemana}
               onBookingComplete={(bookingData) => {
                 console.log('Reserva completada:', bookingData);
                 // Aquí puedes manejar la reserva completada
