@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Menu, X, User, LogOut } from "lucide-react";
 
@@ -7,6 +7,10 @@ const LandingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { currentUser, logout } = useAuth();
+  const location = useLocation();
+  
+  // Detectar si estamos en la landing page
+  const isLandingPage = location.pathname === '/';
 
   // Efecto para detectar scroll y cambiar el estilo de la navbar
   useEffect(() => {
@@ -54,7 +58,9 @@ const LandingNavbar = () => {
     <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${
       isScrolled 
         ? 'bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-md' 
-        : 'bg-transparent backdrop-blur-sm'
+        : isLandingPage 
+          ? 'bg-transparent backdrop-blur-sm'
+          : 'bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-sm'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -62,9 +68,13 @@ const LandingNavbar = () => {
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
               <img
-                src={isScrolled ? "/logotrans.svg" : "/logotrans-white.svg"}
+                src={isLandingPage && !isScrolled ? "/logotrans-white.svg" : "/logotrans.svg"}
                 alt="Logo"
-                className="h-8 w-auto transition-all duration-300"
+                className="h-8 w-auto transition-opacity duration-200 ease-in-out"
+                style={{ 
+                  filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1))',
+                  willChange: 'opacity'
+                }}
               />
             </Link>
           </div>
@@ -79,7 +89,9 @@ const LandingNavbar = () => {
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                     isScrolled
                       ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                      : 'text-white hover:text-blue-200'
+                      : isLandingPage
+                        ? 'text-white hover:text-blue-200'
+                        : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                   }`}
                 >
                   {item.name}
@@ -102,10 +114,10 @@ const LandingNavbar = () => {
                         className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
                       />
                     ) : (
-                      <User className={`w-5 h-5 ${isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'}`} />
+                      <User className={`w-5 h-5 ${isScrolled ? 'text-gray-700 dark:text-gray-200' : isLandingPage ? 'text-white' : 'text-gray-800 dark:text-gray-200'}`} />
                     )}
                     <span className={`text-sm transition-all duration-300 ${
-                      isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
+                      isScrolled ? 'text-gray-700 dark:text-gray-200' : isLandingPage ? 'text-white' : 'text-gray-800 dark:text-gray-200'
                     }`}>
                       {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                     </span>
@@ -115,7 +127,9 @@ const LandingNavbar = () => {
                     className={`flex items-center space-x-1 px-2 py-1 rounded text-sm transition-all duration-300 ${
                       isScrolled 
                         ? 'text-gray-700 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400' 
-                        : 'text-white hover:text-red-200'
+                        : isLandingPage
+                          ? 'text-white hover:text-red-200'
+                          : 'text-gray-800 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400'
                     }`}
                   >
                     <LogOut className="w-4 h-4" />
@@ -128,7 +142,9 @@ const LandingNavbar = () => {
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                     isScrolled
                       ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                      : 'text-white hover:text-blue-200'
+                      : isLandingPage
+                        ? 'text-white hover:text-blue-200'
+                        : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                   }`}
                 >
                   Iniciar Sesión

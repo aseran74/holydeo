@@ -48,7 +48,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
 
   const fetchCalendarData = async () => {
     try {
-      setLoading(true);
+    setLoading(true);
       
       // Obtener fechas bloqueadas
       const { data: blocked, error: blockedError } = await supabase
@@ -396,7 +396,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
               return (
                 <div key={index} className="min-h-[50px] flex items-center justify-center">
                   <button
-                    onClick={() => handleDateClick(day)}
+                  onClick={() => handleDateClick(day)}
                     disabled={status !== 'available'}
                     className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 ${bgColor} ${textColor} ${cursor} ${borderStyle}`}
                     title={
@@ -408,8 +408,8 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       status === 'past' ? 'Fecha pasada' :
                       'Disponible para reservar'
                     }
-                  >
-                    {day.getDate()}
+                >
+                  {day.getDate()}
                   </button>
                 </div>
               );
@@ -430,7 +430,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                 >
                   <X size={16} />
                 </button>
-              </div>
+            </div>
               
               <div className="flex flex-wrap gap-2 mb-3">
                 <div className="flex items-center gap-2 bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded-full">
@@ -443,19 +443,19 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                   <span className="text-sm text-blue-800 dark:text-blue-200">
                     {selectedEndDate.toLocaleDateString('es-ES')}
                   </span>
-                </div>
-              </div>
-              
+            </div>
+          </div>
+
               <div className="flex items-center justify-between">
                 <div className="text-lg font-semibold text-blue-900 dark:text-blue-100">
                   Precio total: €{totalPrice}
-                </div>
-                <button
-                  onClick={() => setShowBookingForm(true)}
+              </div>
+              <button
+                onClick={() => setShowBookingForm(true)}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                >
+              >
                   Reservar Ahora
-                </button>
+              </button>
               </div>
             </div>
           )}
@@ -473,7 +473,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                     <X size={20} />
                   </button>
                 </div>
-                
+
                 <form onSubmit={handleBookingSubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -487,7 +487,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Email *
@@ -500,7 +500,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Teléfono
@@ -512,7 +512,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Notas adicionales
@@ -524,7 +524,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
-                  
+
                   <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                     <div className="flex justify-between text-sm mb-2">
                       <span>Noches:</span>

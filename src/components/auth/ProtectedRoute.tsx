@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../../supabaseClient';
 import { Navigate, Outlet } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../context/AuthContext';
 
 interface ProtectedRouteProps {
   allowedRoles: string[];
@@ -12,37 +12,36 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, redirectTo, toastMessage }) => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { currentUser, userRole, loading: authLoading } = useAuth();
 
   useEffect(() => {
     const checkAuthStatus = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      // Si Firebase aún está cargando, esperar
+      if (authLoading) {
+        return;
+      }
 
-      if (user) {
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('user_id', user.id)
-          .single();
-        
-        console.log('[ProtectedRoute] Perfil obtenido:', profile);
+      if (currentUser && userRole) {
+        console.log('[ProtectedRoute] Usuario autenticado:', currentUser.email);
+        console.log('[ProtectedRoute] Rol del usuario:', userRole);
+        console.log('[ProtectedRoute] Roles permitidos:', allowedRoles);
 
-        if (error) {
-          console.error("Error fetching profile for auth check:", error);
-          setIsAuthorized(false);
-        } else if (profile && allowedRoles.includes(profile.role)) {
+        if (allowedRoles.includes(userRole)) {
           setIsAuthorized(true);
         } else {
+          console.log('[ProtectedRoute] Usuario no autorizado. Rol:', userRole, 'Roles permitidos:', allowedRoles);
           setIsAuthorized(false);
         }
       } else {
-        // No hay usuario logueado
+        console.log('[ProtectedRoute] No hay usuario autenticado o rol no disponible');
         setIsAuthorized(false);
       }
+      
       setLoading(false);
     };
 
     checkAuthStatus();
-  }, [allowedRoles]);
+  }, [currentUser, userRole, allowedRoles, authLoading]);
 
   useEffect(() => {
     if (!loading && !isAuthorized && toastMessage) {
@@ -50,7 +49,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, redirectT
     }
   }, [loading, isAuthorized, toastMessage]);
 
-  if (loading) {
+  // Mostrar loading mientras Firebase se inicializa
+  if (authLoading || loading) {
     return (
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
             <svg className="animate-spin h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -63,9 +63,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, redirectT
   }
 
   if (!isAuthorized) {
+    console.log('[ProtectedRoute] Redirigiendo a:', redirectTo || "/");
     return <Navigate to={redirectTo || "/"} replace />;
   }
 
+  console.log('[ProtectedRoute] Usuario autorizado, renderizando contenido');
   return <Outlet />;
 };
 

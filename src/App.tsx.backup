@@ -1,0 +1,136 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AppLayout from './layout/AppLayout';
+import Home from './pages/Dashboard/Home';
+import Properties from './pages/Properties/Properties';
+import PropertyDetails from './pages/Properties/PropertyDetails';
+import Experiences from './pages/Experiences/Experiences';
+import ExperienceDetails from './pages/Experiences/ExperienceDetails';
+import ExperienceForm from './pages/Experiences/ExperienceForm';
+import Bookings from './pages/Bookings/Bookings';
+import Agencies from './pages/Agencies/Agencies';
+import Agents from './pages/Agents/Agents';
+import Owners from './pages/Owners/Owners';
+import AdminDashboard from './pages/Dashboard/AdminDashboard';
+import OwnerDashboard from './pages/Dashboard/OwnerDashboard';
+import UserManagement from './pages/Admin/UserManagement';
+import SocialPage from './pages/Social/SocialPage';
+import SocialManagement from './pages/Admin/SocialManagement';
+import LoginForm from './components/auth/LoginForm';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import AdminRoute from './components/auth/AdminRoute';
+import DashboardRoute from './components/auth/DashboardRoute';
+import LandingPage from './pages/Landing/LandingPage';
+import SearchPage from './pages/Search/SearchPage';
+import NotFound from './pages/OtherPage/NotFound';
+import './index.css';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        {/* Landing Page */}
+        <Route path="/" element={<LandingPage />} />
+        
+        {/* Search Page */}
+        <Route path="/search" element={<SearchPage />} />
+        
+        {/* Login */}
+        <Route path="/login" element={<LoginForm />} />
+        
+        {/* Dashboard Layout Routes */}
+        <Route path="/dashboard" element={
+          <DashboardRoute>
+            <AppLayout />
+          </DashboardRoute>
+        }>
+          <Route index element={<Home />} />
+        </Route>
+        
+        <Route path="/owner-dashboard" element={
+          <DashboardRoute>
+            <AppLayout />
+          </DashboardRoute>
+        }>
+          <Route index element={<OwnerDashboard />} />
+        </Route>
+        
+        {/* Admin Layout Routes */}
+        <Route path="/admin" element={
+          <AdminRoute>
+            <AppLayout />
+          </AdminRoute>
+        }>
+          <Route index element={<AdminDashboard />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="social" element={<SocialManagement />} />
+        </Route>
+        
+        {/* Protected App Routes */}
+        <Route path="/properties" element={
+          <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']}>
+            <AppLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Properties />} />
+          <Route path=":id" element={<PropertyDetails />} />
+        </Route>
+        
+        <Route path="/experiences" element={
+          <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']}>
+            <AppLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Experiences />} />
+          <Route path=":id" element={<ExperienceDetails />} />
+          <Route path="new" element={<ExperienceForm />} />
+        </Route>
+        
+        <Route path="/bookings" element={
+          <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']}>
+            <AppLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Bookings />} />
+        </Route>
+        
+        <Route path="/agencies" element={
+          <ProtectedRoute allowedRoles={['admin', 'owner']}>
+            <AppLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Agencies />} />
+        </Route>
+        
+        <Route path="/agents" element={
+          <ProtectedRoute allowedRoles={['admin', 'owner']}>
+            <AppLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Agents />} />
+        </Route>
+        
+        <Route path="/owners" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AppLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Owners />} />
+        </Route>
+        
+        {/* Social Network */}
+        <Route path="/social" element={
+          <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']}>
+            <AppLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<SocialPage />} />
+        </Route>
+        
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;

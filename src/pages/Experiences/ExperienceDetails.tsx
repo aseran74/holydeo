@@ -4,6 +4,7 @@ import { supabase } from '../../supabaseClient';
 import Button from '../../components/ui/button/Button';
 import { Experience } from '../../types';
 import LandingNavbar from '../../components/landing/LandingNavbar';
+import { useAuth } from '../../context/AuthContext';
 
 interface Property {
   id: string;
@@ -22,14 +23,15 @@ interface Property {
   tipo?: string;
   region?: string;
 }
-import { MapPinIcon, CalendarIcon, ExternalLinkIcon, ChevronLeftIcon, StarIcon, PaperPlaneIcon } from '../../icons';
-import SimpleMap from '../../components/common/SimpleMap';
+import { MapPinIcon, CalendarIcon, ExternalLinkIcon, ChevronLeftIcon, StarIcon, PaperPlaneIcon, PencilIcon } from '../../icons';
+import GoogleMap from '../../components/common/GoogleMap';
 import ExperienceCard from '../../components/experiences/ExperienceCard';
 import PublicPropertyCard from '../../components/common/PublicPropertyCard';
 
 const ExperienceDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [experience, setExperience] = useState<Experience | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -251,6 +253,16 @@ const ExperienceDetails = () => {
             </button>
             
             <div className="flex gap-2">
+              {/* Botón de edición para administradores */}
+              {isAdmin && (
+                <Link to={`/experiences/${experience.id}/edit`}>
+                  <button className="btn btn-primary btn-sm">
+                    <PencilIcon className="w-4 h-4 mr-2" />
+                    Editar
+                  </button>
+                </Link>
+              )}
+              
               <button 
                 onClick={refreshExperienceData}
                 disabled={isRefreshing}
@@ -389,7 +401,13 @@ const ExperienceDetails = () => {
                 <MapPinIcon className="w-5 h-5 mr-2" />
                 Ubicación
               </h3>
-              <SimpleMap location={experience.location || 'Ubicación no especificada'} />
+              <GoogleMap 
+          location={experience.location || 'Ubicación no especificada'} 
+          height="h-96"
+          zoom={15}
+          showMarker={true}
+          showInfoWindow={true}
+        />
             </div>
 
             {/* Información adicional */}

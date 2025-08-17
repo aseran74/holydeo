@@ -24,7 +24,7 @@ const steps: Step[] = [
     icon: <PenSquare size={36} />,
     title: 'Experiencias inmersivas',
     description:
-      'Tenemos experiencias de larga estancia como clases de golf mensuales,  o de Kitesurf o Green fees , o las de corta estancia como ver los grandes monumentos como la Alhambra, la Mezquita de Córdoba, Sevilla o conocer los Pueblos Blancos ir de pinchos por Donosti o recorrer en Globo Toledo',
+      'Tenemos experiencias de larga estancia como clases de golf mensuales, o de Kitesurf o Green fees cuotas mensuales a precios imbatibles, o las de corta estancia como ver los grandes monumentos como la Alhambra, la Mezquita de Córdoba, Sevilla o conocer los Pueblos Blancos ir de pinchos por Donosti o recorrer en Globo Toledo',
     color: 'text-green-500',
     gradient: 'from-green-100 to-green-300 dark:from-green-900/30 dark:to-green-700/20'
   },

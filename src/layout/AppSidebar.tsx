@@ -1,390 +1,103 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router";
-import { Home } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import MessageCounter from "../components/common/MessageCounter";
-import { useOwnerStatus } from "../hooks/useOwnerStatus";
-
-// Assume these icons are imported from an icon library
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import {
-  CalenderIcon,
-  ChevronDownIcon,
-  GridIcon,
-  HorizontaLDots,
-  UserIcon,
-  BoxIcon,
-  GroupIcon,
-  ChatIcon,
-  TaskIcon,
-  BoxIconLine,
-  StarIcon,
-} from "../icons";
-import { useSidebar } from "../context/SidebarContext";
-
-
-type NavItem = {
-  name: string;
-  icon: React.ReactNode;
-  path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
-  adminOnly?: boolean;
-  badge?: React.ReactNode;
-};
+  Home, 
+  Building2, 
+  Calendar, 
+  Users, 
+  User, 
+  BarChart3, 
+  Globe,
+  Group,
+  Trash2
+} from 'lucide-react';
 
 const AppSidebar: React.FC = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  const { isAdmin } = useAuth();
-  const { isOwner } = useOwnerStatus();
   const location = useLocation();
+  const { currentUser, userRole, isAdmin } = useAuth();
 
-  const [openSubmenu, setOpenSubmenu] = useState<{
-    type: "main";
-    index: number;
-  } | null>(null);
-  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
-  );
-  const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  // Logs para depuración
+  console.log('[AppSidebar] Usuario actual:', currentUser?.email);
+  console.log('[AppSidebar] Rol del usuario:', userRole);
+  console.log('[AppSidebar] ¿Es admin?:', isAdmin);
 
-  // const isActive = (path: string) => location.pathname === path;
-  const isActive = useCallback(
-    (path: string) => location.pathname === path,
-    [location.pathname]
-  );
-
-  // Definir elementos de navegación con soporte para admin
-  const navItems: NavItem[] = [
-    {
-      icon: <GridIcon />,
-      name: "Dashboard",
-      subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-    },
-    // Dashboard Administrativo - Solo para admins
-    {
-      icon: <BoxIcon />,
-      name: "Admin Dashboard",
-      path: "/admin",
-      adminOnly: true,
-    },
-    // Dashboard de Propietarios
-    {
-      icon: <Home size={20} />,
-      name: "Mi Dashboard",
-      path: "/owner-dashboard",
-    },
-    {
-      icon: <CalenderIcon />,
-      name: "Reservas",
-      path: "/bookings",
-    },
-    {
-      icon: <BoxIconLine />,
-      name: "Agencias",
-      path: "/agencies",
-    },
-    {
-      icon: <UserIcon />,
-      name: "Agentes",
-      path: "/agents",
-    },
-    {
-      icon: <BoxIcon />,
-      name: "Propietarios",
-      path: "/owners",
-    },
-    {
-      icon: <GroupIcon />,
-      name: "Huéspedes",
-      path: "/guests",
-    },
-    {
-      icon: <ChatIcon />,
-      name: "Mensajes",
-      path: "/messages",
-                        badge: <MessageCounter className="ml-2" />,
-    },
-    {
-      icon: <StarIcon />,
-      name: "Experiencias",
-      path: "/experiences",
-    },
-    {
-      icon: <GroupIcon />,
-      name: "Red Social",
-      path: "/social",
-    },
-    {
-      icon: <TaskIcon />,
-      name: "Gestión",
-      subItems: [
-        { name: "Gestión de Usuarios", path: "/user-management", pro: false },
-        { name: "Gestión de Calendarios", path: "/calendar", pro: false },
-      ],
-    },
-  ];
-
-
-
-  // Filtrar elementos según el rol del usuario
-  const filteredNavItems = navItems.filter(item => {
-    // Mostrar elementos admin solo para admins
-    if (item.adminOnly && !isAdmin) return false;
-    
-    // Mostrar dashboard de propietarios solo para propietarios
-    if (item.path === '/owner-dashboard' && !isOwner) return false;
-    
-    return true;
-  });
-
-  useEffect(() => {
-    let submenuMatched = false;
-    filteredNavItems.forEach((nav, index) => {
-      if (nav.subItems) {
-        nav.subItems.forEach((subItem) => {
-          if (isActive(subItem.path)) {
-            setOpenSubmenu({
-              type: "main",
-              index,
-            });
-            submenuMatched = true;
-          }
-        });
-      }
-    });
-
-    if (!submenuMatched) {
-      setOpenSubmenu(null);
-    }
-  }, [location, isActive, filteredNavItems]);
-
-  useEffect(() => {
-    if (openSubmenu !== null) {
-      const key = `${openSubmenu.type}-${openSubmenu.index}`;
-      if (subMenuRefs.current[key]) {
-        setSubMenuHeight((prevHeights) => ({
-          ...prevHeights,
-          [key]: subMenuRefs.current[key]?.scrollHeight || 0,
-        }));
-      }
-    }
-  }, [openSubmenu]);
-
-  const handleSubmenuToggle = (index: number) => {
-    setOpenSubmenu((prevOpenSubmenu) => {
-      if (
-        prevOpenSubmenu &&
-        prevOpenSubmenu.type === "main" &&
-        prevOpenSubmenu.index === index
-      ) {
-        return null;
-      }
-      return { type: "main", index };
-    });
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
-  const renderMenuItems = (items: NavItem[]) => (
-    <ul className="flex flex-col gap-4">
-      {items.map((nav, index) => (
-        <li key={nav.name}>
-          {nav.subItems ? (
-                         <button
-               onClick={() => handleSubmenuToggle(index)}
-               className={`menu-item group ${
-                 openSubmenu?.type === "main" && openSubmenu?.index === index
-                   ? "menu-item-active"
-                   : "menu-item-inactive"
-               } cursor-pointer ${
-                 !isExpanded && !isHovered
-                   ? "lg:justify-center"
-                   : "lg:justify-start"
-               }`}
-             >
-               <span
-                 className={`menu-item-icon-size  ${
-                   openSubmenu?.type === "main" && openSubmenu?.index === index
-                     ? "menu-item-icon-active"
-                     : "menu-item-icon-inactive"
-                 }`}
-               >
-                {nav.icon}
-              </span>
-              {(isExpanded || isHovered || isMobileOpen) && (
-                <span className="menu-item-text">{nav.name}</span>
-              )}
-              {(isExpanded || isHovered || isMobileOpen) && nav.badge && (
-                <span className="ml-auto">{nav.badge}</span>
-              )}
-                             {(isExpanded || isHovered || isMobileOpen) && (
-                 <ChevronDownIcon
-                   className={`ml-auto w-5 h-5 transition-transform duration-200 ${
-                     openSubmenu?.type === "main" &&
-                     openSubmenu?.index === index
-                       ? "rotate-180 text-brand-500"
-                       : ""
-                   }`}
-                 />
-               )}
-            </button>
-          ) : (
-            nav.path && (
-              <Link
-                to={nav.path}
-                className={`menu-item group ${
-                  isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
-                }`}
-              >
-                <span
-                  className={`menu-item-icon-size ${
-                    isActive(nav.path)
-                      ? "menu-item-icon-active"
-                      : "menu-item-icon-inactive"
-                  }`}
-                >
-                  {nav.icon}
-                </span>
-                {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className="menu-item-text">{nav.name}</span>
-                )}
-                {(isExpanded || isHovered || isMobileOpen) && nav.badge && (
-                  <span className="ml-auto">{nav.badge}</span>
-                )}
-              </Link>
-            )
-          )}
-          {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
-                         <div
-               ref={(el) => {
-                 subMenuRefs.current[`main-${index}`] = el;
-               }}
-               className="overflow-hidden transition-all duration-300"
-               style={{
-                 height:
-                   openSubmenu?.type === "main" && openSubmenu?.index === index
-                     ? `${subMenuHeight[`main-${index}`]}px`
-                     : "0px",
-               }}
-             >
-              <ul className="mt-2 space-y-1 ml-9">
-                {nav.subItems.map((subItem) => (
-                  <li key={subItem.name}>
-                    <Link
-                      to={subItem.path}
-                      className={`menu-dropdown-item ${
-                        isActive(subItem.path)
-                          ? "menu-dropdown-item-active"
-                          : "menu-dropdown-item-inactive"
-                      }`}
-                    >
-                      {subItem.name}
-                      <span className="flex items-center gap-1 ml-auto">
-                        {subItem.new && (
-                          <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge`}
-                          >
-                            new
-                          </span>
-                        )}
-                        {subItem.pro && (
-                          <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge`}
-                          >
-                            pro
-                          </span>
-                        )}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </li>
-      ))}
-    </ul>
-  );
+  const navigationItems = [
+    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Propiedades', href: '/properties', icon: Building2 },
+    { name: 'Experiencias', href: '/experiences', icon: Globe },
+    { name: 'Reservas', href: '/bookings', icon: Calendar },
+    { name: 'Agencias', href: '/agencies', icon: Users },
+    { name: 'Agentes', href: '/agents', icon: Users },
+    { name: 'Propietarios', href: '/owners', icon: User },
+    { name: 'Red Social', href: '/social', icon: Group },
+  ];
+
+  const adminItems = [
+    { name: 'Admin Dashboard', href: '/admin', icon: BarChart3 },
+    { name: 'Gestión Usuarios', href: '/admin/users', icon: Users },
+    { name: 'Gestión Social', href: '/admin/social', icon: Trash2 },
+  ];
 
   return (
-    <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
-        ${
-          isExpanded || isMobileOpen
-            ? "w-[290px]"
-            : isHovered
-            ? "w-[290px]"
-            : "w-[90px]"
-        }
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0`}
-      onMouseEnter={() => !isExpanded && setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div
-        className={`py-8 flex ${
-          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-        }`}
-      >
-        <Link to="/">
-          {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <img
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-              <img
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-            </>
-          ) : (
-            <img
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
-          )}
-        </Link>
-      </div>
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
-        <nav className="mb-6">
-          <div className="flex flex-col gap-4">
-            <div>
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
-                ) : (
-                  <HorizontaLDots className="size-6" />
-                )}
-              </h2>
-              {renderMenuItems(filteredNavItems)}
-            </div>
-
+    <div className="bg-white dark:bg-gray-800 w-64 min-h-screen shadow-lg">
+      <div className="p-6">
+        <div className="flex items-center space-x-3 mb-8">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-lg">H</span>
           </div>
-        </nav>
-        
-      </div>
+          <span className="text-xl font-bold text-gray-900 dark:text-white">Holydeo</span>
+        </div>
 
-    </aside>
+        <nav className="space-y-2">
+          {navigationItems.map((item) => (
+              <Link
+              key={item.name}
+              to={item.href}
+              className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                isActive(item.href)
+                  ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
+              <item.icon className="w-5 h-5" />
+              <span>{item.name}</span>
+            </Link>
+          ))}
+
+          {/* Separador para sección de administración */}
+          {isAdmin && (
+            <>
+              <div className="border-t border-gray-200 dark:border-gray-700 my-4"></div>
+              <div className="px-4 py-2">
+                <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Administración
+                </span>
+              </div>
+              
+              {adminItems.map((item) => (
+                    <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                    isActive(item.href)
+                      ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <item.icon className="w-5 h-5" />
+                  <span>{item.name}</span>
+                    </Link>
+              ))}
+            </>
+          )}
+        </nav>
+          </div>
+      </div>
   );
 };
 
