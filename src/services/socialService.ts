@@ -91,7 +91,7 @@ export class SocialService {
     }
 
     // Verificar si el usuario actual ha dado like a cada post
-    const postsWithLikes = await this.checkUserLikes(data || []);
+    const postsWithLikes = await this.checkUserLikes(data || [], null); // Pass null for currentUser as it's not directly available here
 
     return {
       posts: postsWithLikes,
@@ -100,19 +100,17 @@ export class SocialService {
   }
 
   // Crear un nuevo post
-  static async createPost(postData: CreatePostData): Promise<SocialPost> {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
+  static async createPost(postData: CreatePostData, currentUser: any): Promise<SocialPost> {
+    if (!currentUser) {
       throw new Error('Usuario no autenticado');
     }
 
     const { data, error } = await supabase
       .from('social_posts')
       .insert({
-        author_id: user.id,
-        author_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuario',
-        author_avatar: user.user_metadata?.avatar_url,
+        author_id: currentUser.uid,
+        author_name: currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario',
+        author_avatar: currentUser.photoURL,
         category_id: postData.category_id,
         content: postData.content,
         location: postData.location,
@@ -133,10 +131,8 @@ export class SocialService {
   }
 
   // Dar/quitar like a un post
-  static async toggleLike(postId: string): Promise<{ liked: boolean; likes_count: number }> {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
+  static async toggleLike(postId: string, currentUser: any): Promise<{ liked: boolean; likes_count: number }> {
+    if (!currentUser) {
       throw new Error('Usuario no autenticado');
     }
 
@@ -145,7 +141,7 @@ export class SocialService {
       .from('social_likes')
       .select('id')
       .eq('post_id', postId)
-      .eq('user_id', user.id)
+      .eq('user_id', currentUser.uid)
       .single();
 
     if (existingLike) {
@@ -154,7 +150,7 @@ export class SocialService {
         .from('social_likes')
         .delete()
         .eq('post_id', postId)
-        .eq('user_id', user.id);
+        .eq('user_id', currentUser.uid);
 
       if (error) {
         console.error('Error removing like:', error);
@@ -175,7 +171,7 @@ export class SocialService {
         .from('social_likes')
         .insert({
           post_id: postId,
-          user_id: user.id
+          user_id: currentUser.uid
         });
 
       if (error) {
@@ -195,10 +191,8 @@ export class SocialService {
   }
 
   // Crear un comentario
-  static async createComment(commentData: CreateCommentData): Promise<any> {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
+  static async createComment(commentData: CreateCommentData, currentUser: any): Promise<any> {
+    if (!currentUser) {
       throw new Error('Usuario no autenticado');
     }
 
@@ -206,9 +200,9 @@ export class SocialService {
       .from('social_comments')
       .insert({
         post_id: commentData.post_id,
-        author_id: user.id,
-        author_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuario',
-        author_avatar: user.user_metadata?.avatar_url,
+        author_id: currentUser.uid,
+        author_name: currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario',
+        author_avatar: currentUser.photoURL,
         content: commentData.content
       })
       .select()
@@ -239,10 +233,8 @@ export class SocialService {
   }
 
   // Verificar si el usuario actual ha dado like a los posts
-  private static async checkUserLikes(posts: SocialPost[]): Promise<SocialPost[]> {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user || posts.length === 0) {
+  private static async checkUserLikes(posts: SocialPost[], currentUser: any): Promise<SocialPost[]> {
+    if (!currentUser || posts.length === 0) {
       return posts;
     }
 
@@ -250,7 +242,7 @@ export class SocialService {
     const { data: userLikes } = await supabase
       .from('social_likes')
       .select('post_id')
-      .eq('user_id', user.id)
+      .eq('user_id', currentUser.uid)
       .in('post_id', postIds);
 
     const likedPostIds = new Set(userLikes?.map(like => like.post_id) || []);
@@ -262,15 +254,13 @@ export class SocialService {
   }
 
   // Subir imagen
-  static async uploadImage(file: File): Promise<string> {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
+  static async uploadImage(file: File, currentUser: any): Promise<string> {
+    if (!currentUser) {
       throw new Error('Usuario no autenticado');
     }
 
     const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+    const fileName = `${currentUser.uid}/${Date.now()}.${fileExt}`;
 
     const { error } = await supabase.storage
       .from('social-images')

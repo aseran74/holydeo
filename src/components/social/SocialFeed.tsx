@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import CreatePostModal from './CreatePostModal';
 import { SocialService, SocialCategory, SocialPost, CreatePostData } from '../../services/socialService';
+import { useAuth } from '../../context/AuthContext';
 
 const SocialFeed: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'digital' | 'prejubilados' | 'larga-estancia'>('all');
@@ -21,6 +22,7 @@ const SocialFeed: React.FC = () => {
   const [showNewPostForm, setShowNewPostForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { currentUser } = useAuth();
 
   // Cargar categorías y posts al montar el componente
   useEffect(() => {
@@ -55,7 +57,10 @@ const SocialFeed: React.FC = () => {
       setLoading(true);
       const categorySlug = selectedCategory === 'all' ? undefined : selectedCategory;
       const { posts: postsData } = await SocialService.getPosts(categorySlug);
-      setPosts(postsData);
+      
+      // Verificar likes del usuario actual
+      const postsWithLikes = await SocialService['checkUserLikes'](postsData, currentUser);
+      setPosts(postsWithLikes);
     } catch (err) {
       console.error('Error loading posts:', err);
       setError('Error al cargar las publicaciones');
@@ -65,8 +70,14 @@ const SocialFeed: React.FC = () => {
   };
 
   const handleLike = async (postId: string) => {
+    if (!currentUser) {
+      // Mostrar mensaje de que debe iniciar sesión
+      alert('Debes iniciar sesión para dar like');
+      return;
+    }
+
     try {
-      const { liked, likes_count } = await SocialService.toggleLike(postId);
+      const { liked, likes_count } = await SocialService.toggleLike(postId, currentUser);
       
       setPosts(prev => prev.map(post => 
         post.id === postId 
@@ -80,8 +91,13 @@ const SocialFeed: React.FC = () => {
   };
 
   const handleCreatePost = async (postData: CreatePostData) => {
+    if (!currentUser) {
+      alert('Debes iniciar sesión para crear un post');
+      return;
+    }
+
     try {
-      const newPost = await SocialService.createPost(postData);
+      const newPost = await SocialService.createPost(postData, currentUser);
       setPosts(prev => [newPost, ...prev]);
       setShowNewPostForm(false);
     } catch (err) {
@@ -200,13 +216,27 @@ const SocialFeed: React.FC = () => {
 
         {/* Botón Nueva Publicación */}
         <div className="text-center mb-8">
-          <button
-            onClick={() => setShowNewPostForm(true)}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto"
-          >
-            <Plus className="w-6 h-6" />
-            Crear Nueva Publicación
-          </button>
+          {currentUser ? (
+            <button
+              onClick={() => setShowNewPostForm(true)}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto"
+            >
+              <Plus className="w-6 h-6" />
+              Crear Nueva Publicación
+            </button>
+          ) : (
+            <div className="text-center">
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+                Inicia sesión para compartir tu experiencia
+              </p>
+              <button
+                onClick={() => window.location.href = '/login'}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Iniciar Sesión
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Feed de Publicaciones */}
@@ -338,6 +368,7 @@ const SocialFeed: React.FC = () => {
         onClose={() => setShowNewPostForm(false)}
         onSubmit={handleCreatePost}
         categories={categories}
+        currentUser={currentUser}
       />
     </div>
   );

@@ -8,9 +8,10 @@ interface CreatePostModalProps {
   onClose: () => void;
   onSubmit: (postData: CreatePostData) => void;
   categories: SocialCategory[];
+  currentUser: any;
 }
 
-const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSubmit, categories }) => {
+const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSubmit, categories, currentUser }) => {
   const [formData, setFormData] = useState<CreatePostData>({
     content: '',
     category_id: categories[0]?.id || 1,
@@ -34,6 +35,11 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSu
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!currentUser) {
+      alert('Debes iniciar sesión para crear un post');
+      return;
+    }
+
     if (formData.content.trim() && formData.location.trim()) {
       setIsSubmitting(true);
       try {
@@ -41,7 +47,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSu
         let imageUrl = formData.image_url;
         if (selectedImage) {
           try {
-            imageUrl = await SocialService.uploadImage(selectedImage);
+            imageUrl = await SocialService.uploadImage(selectedImage, currentUser);
           } catch (uploadError) {
             console.error('Error uploading image:', uploadError);
             // Continuar sin imagen si falla la subida
