@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, 
@@ -8,174 +8,132 @@ import {
   MessageCircle, 
   Share2, 
   MoreHorizontal,
-  Plus
+  Plus,
+  Loader2
 } from 'lucide-react';
 import CreatePostModal from './CreatePostModal';
-
-interface Post {
-  id: string;
-  author: {
-    name: string;
-    avatar: string;
-    category: 'digital' | 'prejubilados' | 'larga-estancia';
-    location: string;
-  };
-  content: string;
-  image?: string;
-  likes: number;
-  comments: number;
-  shares: number;
-  timestamp: string;
-  category: 'digital' | 'prejubilados' | 'larga-estancia';
-}
-
-interface CreatePostData {
-  content: string;
-  category: 'digital' | 'prejubilados' | 'larga-estancia';
-  location: string;
-  image?: File;
-}
-
-interface Category {
-  id: 'digital' | 'prejubilados' | 'larga-estancia';
-  name: string;
-  icon: React.ReactNode;
-  color: string;
-  description: string;
-}
-
-const categories: Category[] = [
-  {
-    id: 'digital',
-    name: 'Nómadas Digitales',
-    icon: <Globe className="w-5 h-5" />,
-    color: 'bg-blue-500',
-    description: 'Comparte tu vida trabajando desde cualquier lugar'
-  },
-  {
-    id: 'prejubilados',
-    name: 'Prejubilados',
-    icon: <Users className="w-5 h-5" />,
-    color: 'bg-green-500',
-    description: 'Disfruta de tu tiempo libre en destinos únicos'
-  },
-  {
-    id: 'larga-estancia',
-    name: 'Experiencias Larga Estancia',
-    icon: <Calendar className="w-5 h-5" />,
-    color: 'bg-purple-500',
-    description: 'Vive experiencias inmersivas de 15 días a 9 meses'
-  }
-];
-
-// Datos de ejemplo para el feed
-const mockPosts: Post[] = [
-  {
-    id: '1',
-    author: {
-      name: 'María García',
-      avatar: '/images/user/user-01.jpg',
-      category: 'digital',
-      location: 'Altea Hills, Alicante'
-    },
-    content: '¡Increíble trabajar desde esta villa con vistas al mar! La conexión WiFi es perfecta y el ambiente es ideal para concentrarse. #nómadadigital #altea #trabajoremoto',
-    image: '/images/cards/card-01.jpg',
-    likes: 24,
-    comments: 8,
-    shares: 3,
-    timestamp: '2h',
-    category: 'digital'
-  },
-  {
-    id: '2',
-    author: {
-      name: 'Carlos Rodríguez',
-      avatar: '/images/user/user-02.jpg',
-      category: 'prejubilados',
-      location: 'Pueblos Blancos, Málaga'
-    },
-    content: 'Después de 30 años trabajando, por fin puedo disfrutar de la vida. Los Pueblos Blancos son mágicos, llenos de historia y tradición. ¡Recomendado 100%!',
-    image: '/images/cards/card-02.jpg',
-    likes: 31,
-    comments: 12,
-    shares: 5,
-    timestamp: '4h',
-    category: 'prejubilados'
-  },
-  {
-    id: '3',
-    author: {
-      name: 'Ana Martínez',
-      avatar: '/images/user/user-03.jpg',
-      category: 'larga-estancia',
-      location: 'Sevilla'
-    },
-    content: '3 meses viviendo en Sevilla y cada día descubro algo nuevo. Las clases de flamenco, la gastronomía, la arquitectura... ¡Es una experiencia que cambia la vida!',
-    image: '/images/cards/card-03.jpg',
-    likes: 45,
-    comments: 15,
-    shares: 8,
-    timestamp: '6h',
-    category: 'larga-estancia'
-  },
-  {
-    id: '4',
-    author: {
-      name: 'Luis Fernández',
-      avatar: '/images/user/user-04.jpg',
-      category: 'digital',
-      location: 'Córdoba'
-    },
-    content: 'Mezquita por la mañana, coworking por la tarde. Córdoba es perfecta para nómadas digitales. La historia te inspira y la modernidad te conecta.',
-    likes: 18,
-    comments: 6,
-    shares: 2,
-    timestamp: '8h',
-    category: 'digital'
-  }
-];
+import { SocialService, SocialCategory, SocialPost, CreatePostData } from '../../services/socialService';
 
 const SocialFeed: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'digital' | 'prejubilados' | 'larga-estancia'>('all');
-  const [posts, setPosts] = useState<Post[]>(mockPosts);
+  const [posts, setPosts] = useState<SocialPost[]>([]);
+  const [categories, setCategories] = useState<SocialCategory[]>([]);
   const [showNewPostForm, setShowNewPostForm] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredPosts = selectedCategory === 'all' 
-    ? posts 
-    : posts.filter(post => post.category === selectedCategory);
+  // Cargar categorías y posts al montar el componente
+  useEffect(() => {
+    loadInitialData();
+  }, []);
 
-  const handleLike = (postId: string) => {
-    setPosts(prev => prev.map(post => 
-      post.id === postId 
-        ? { ...post, likes: post.likes + 1 }
-        : post
-    ));
+  // Cargar posts cuando cambie la categoría
+  useEffect(() => {
+    if (categories.length > 0) {
+      loadPosts();
+    }
+  }, [selectedCategory, categories]);
+
+  const loadInitialData = async () => {
+    try {
+      setLoading(true);
+      const [categoriesData] = await Promise.all([
+        SocialService.getCategories()
+      ]);
+      
+      setCategories(categoriesData);
+    } catch (err) {
+      console.error('Error loading initial data:', err);
+      setError('Error al cargar los datos');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCreatePost = (postData: CreatePostData) => {
-    const newPost: Post = {
-      id: Date.now().toString(),
-      author: {
-        name: 'Tú', // En una implementación real, esto vendría del usuario autenticado
-        avatar: '/images/user/user-01.jpg',
-        category: postData.category,
-        location: postData.location
-      },
-      content: postData.content,
-      image: postData.image ? URL.createObjectURL(postData.image) : undefined,
-      likes: 0,
-      comments: 0,
-      shares: 0,
-      timestamp: 'Ahora',
-      category: postData.category
-    };
+  const loadPosts = async () => {
+    try {
+      setLoading(true);
+      const categorySlug = selectedCategory === 'all' ? undefined : selectedCategory;
+      const { posts: postsData } = await SocialService.getPosts(categorySlug);
+      setPosts(postsData);
+    } catch (err) {
+      console.error('Error loading posts:', err);
+      setError('Error al cargar las publicaciones');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    setPosts(prev => [newPost, ...prev]);
+  const handleLike = async (postId: string) => {
+    try {
+      const { liked, likes_count } = await SocialService.toggleLike(postId);
+      
+      setPosts(prev => prev.map(post => 
+        post.id === postId 
+          ? { ...post, likes_count, is_liked: liked }
+          : post
+      ));
+    } catch (err) {
+      console.error('Error toggling like:', err);
+      // Mostrar error al usuario
+    }
+  };
+
+  const handleCreatePost = async (postData: CreatePostData) => {
+    try {
+      const newPost = await SocialService.createPost(postData);
+      setPosts(prev => [newPost, ...prev]);
+      setShowNewPostForm(false);
+    } catch (err) {
+      console.error('Error creating post:', err);
+      // Mostrar error al usuario
+    }
   };
 
   const formatTimestamp = (timestamp: string) => {
-    return timestamp;
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Ahora';
+    if (diffInHours < 24) return `${diffInHours}h`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays}d`;
+    
+    return date.toLocaleDateString('es-ES');
   };
+
+  const getCategoryBySlug = (slug: string) => {
+    return categories.find(c => c.slug === slug);
+  };
+
+  if (loading && posts.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-blue-600" />
+          <p className="text-lg text-gray-600 dark:text-gray-400">Cargando comunidad...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg text-red-600 dark:text-red-400 mb-4">{error}</p>
+          <button 
+            onClick={loadInitialData}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -208,14 +166,19 @@ const SocialFeed: React.FC = () => {
             {categories.map((category) => (
               <button
                 key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
+                onClick={() => setSelectedCategory(category.slug as any)}
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 flex items-center gap-2 ${
-                  selectedCategory === category.id
-                    ? `${category.color} text-white shadow-lg scale-105`
+                  selectedCategory === category.slug
+                    ? `text-white shadow-lg scale-105`
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
+                style={{
+                  backgroundColor: selectedCategory === category.slug ? category.color : undefined
+                }}
               >
-                {category.icon}
+                {category.slug === 'digital' && <Globe className="w-5 h-5" />}
+                {category.slug === 'prejubilados' && <Users className="w-5 h-5" />}
+                {category.slug === 'larga-estancia' && <Calendar className="w-5 h-5" />}
                 {category.name}
               </button>
             ))}
@@ -229,7 +192,7 @@ const SocialFeed: React.FC = () => {
               className="text-center mb-8"
             >
               <p className="text-lg text-gray-600 dark:text-gray-400">
-                {categories.find(c => c.id === selectedCategory)?.description}
+                {getCategoryBySlug(selectedCategory)?.description}
               </p>
             </motion.div>
           )}
@@ -248,8 +211,15 @@ const SocialFeed: React.FC = () => {
 
         {/* Feed de Publicaciones */}
         <div className="space-y-6">
+          {loading && (
+            <div className="text-center py-8">
+              <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2 text-blue-600" />
+              <p className="text-gray-600 dark:text-gray-400">Actualizando...</p>
+            </div>
+          )}
+          
           <AnimatePresence>
-            {filteredPosts.map((post, index) => (
+            {posts.map((post, index) => (
               <motion.div
                 key={post.id}
                 initial={{ opacity: 0, y: 50 }}
@@ -263,29 +233,32 @@ const SocialFeed: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <img
-                        src={post.author.avatar}
-                        alt={post.author.name}
+                        src={post.author_avatar || '/images/user/user-01.jpg'}
+                        alt={post.author_name}
                         className="w-12 h-12 rounded-full object-cover"
                       />
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="font-semibold text-gray-900 dark:text-white">
-                            {post.author.name}
+                            {post.author_name}
                           </h3>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium text-white ${
-                            post.category === 'digital' ? 'bg-blue-500' :
-                            post.category === 'prejubilados' ? 'bg-green-500' :
-                            'bg-purple-500'
-                          }`}>
-                            {categories.find(c => c.id === post.category)?.name}
-                          </span>
+                          {post.category && (
+                            <span 
+                              className="px-2 py-1 rounded-full text-xs font-medium text-white"
+                              style={{ backgroundColor: post.category.color }}
+                            >
+                              {post.category.name}
+                            </span>
+                          )}
                         </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                          <Globe className="w-3 h-3" />
-                          {post.author.location}
-                        </p>
+                        {post.location && (
+                          <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                            <Globe className="w-3 h-3" />
+                            {post.location}
+                          </p>
+                        )}
                         <p className="text-xs text-gray-400 dark:text-gray-500">
-                          {formatTimestamp(post.timestamp)}
+                          {formatTimestamp(post.created_at)}
                         </p>
                       </div>
                     </div>
@@ -301,10 +274,10 @@ const SocialFeed: React.FC = () => {
                     {post.content}
                   </p>
                   
-                  {post.image && (
+                  {post.image_url && (
                     <div className="mb-4">
                       <img
-                        src={post.image}
+                        src={post.image_url}
                         alt="Post content"
                         className="w-full rounded-xl object-cover max-h-96"
                       />
@@ -318,18 +291,22 @@ const SocialFeed: React.FC = () => {
                     <div className="flex items-center space-x-6">
                       <button
                         onClick={() => handleLike(post.id)}
-                        className="flex items-center gap-2 text-gray-500 hover:text-red-500 transition-colors duration-200"
+                        className={`flex items-center gap-2 transition-colors duration-200 ${
+                          post.is_liked 
+                            ? 'text-red-500' 
+                            : 'text-gray-500 hover:text-red-500'
+                        }`}
                       >
-                        <Heart className="w-5 h-5" />
-                        <span>{post.likes}</span>
+                        <Heart className={`w-5 h-5 ${post.is_liked ? 'fill-current' : ''}`} />
+                        <span>{post.likes_count}</span>
                       </button>
                       <button className="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors duration-200">
                         <MessageCircle className="w-5 h-5" />
-                        <span>{post.comments}</span>
+                        <span>{post.comments_count}</span>
                       </button>
                       <button className="flex items-center gap-2 text-gray-500 hover:text-green-500 transition-colors duration-200">
                         <Share2 className="w-5 h-5" />
-                        <span>{post.shares}</span>
+                        <span>{post.shares_count}</span>
                       </button>
                     </div>
                   </div>
@@ -340,7 +317,7 @@ const SocialFeed: React.FC = () => {
         </div>
 
         {/* Mensaje si no hay posts */}
-        {filteredPosts.length === 0 && (
+        {!loading && posts.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -360,6 +337,7 @@ const SocialFeed: React.FC = () => {
         isOpen={showNewPostForm}
         onClose={() => setShowNewPostForm(false)}
         onSubmit={handleCreatePost}
+        categories={categories}
       />
     </div>
   );

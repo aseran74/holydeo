@@ -1,52 +1,24 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Image, MapPin, Globe, Users, Calendar, Send } from 'lucide-react';
+import { X, Image, MapPin, Globe, Users, Calendar, Send, Loader2 } from 'lucide-react';
+import { SocialCategory, CreatePostData, SocialService } from '../../services/socialService';
 
 interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (postData: CreatePostData) => void;
+  categories: SocialCategory[];
 }
 
-interface CreatePostData {
-  content: string;
-  category: 'digital' | 'prejubilados' | 'larga-estancia';
-  location: string;
-  image?: File;
-}
-
-const categories = [
-  {
-    id: 'digital' as const,
-    name: 'Nómadas Digitales',
-    icon: <Globe className="w-4 h-4" />,
-    color: 'bg-blue-500',
-    description: 'Trabajando desde cualquier lugar'
-  },
-  {
-    id: 'prejubilados' as const,
-    name: 'Prejubilados',
-    icon: <Users className="w-4 h-4" />,
-    color: 'bg-green-500',
-    description: 'Disfrutando del tiempo libre'
-  },
-  {
-    id: 'larga-estancia' as const,
-    name: 'Experiencias Larga Estancia',
-    icon: <Calendar className="w-4 h-4" />,
-    color: 'bg-purple-500',
-    description: 'Viviendo experiencias inmersivas'
-  }
-];
-
-const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSubmit, categories }) => {
   const [formData, setFormData] = useState<CreatePostData>({
     content: '',
-    category: 'digital',
+    category_id: categories[0]?.id || 1,
     location: ''
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -60,26 +32,61 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSu
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.content.trim() && formData.location.trim()) {
-      onSubmit({
-        ...formData,
-        image: selectedImage || undefined
-      });
-      handleClose();
+      setIsSubmitting(true);
+      try {
+        // Si hay imagen seleccionada, subirla primero
+        let imageUrl = formData.image_url;
+        if (selectedImage) {
+          try {
+            imageUrl = await SocialService.uploadImage(selectedImage);
+          } catch (uploadError) {
+            console.error('Error uploading image:', uploadError);
+            // Continuar sin imagen si falla la subida
+          }
+        }
+        
+        const postDataWithImage = {
+          ...formData,
+          image_url: imageUrl
+        };
+        
+        await onSubmit(postDataWithImage);
+        handleClose();
+      } catch (error) {
+        console.error('Error creating post:', error);
+        // Aquí podrías mostrar un toast de error
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
   const handleClose = () => {
     setFormData({
       content: '',
-      category: 'digital',
+      category_id: categories[0]?.id || 1,
       location: ''
     });
     setSelectedImage(null);
     setImagePreview('');
+    setIsSubmitting(false);
     onClose();
+  };
+
+  const getCategoryIcon = (slug: string) => {
+    switch (slug) {
+      case 'digital':
+        return <Globe className="w-4 h-4" />;
+      case 'prejubilados':
+        return <Users className="w-4 h-4" />;
+      case 'larga-estancia':
+        return <Calendar className="w-4 h-4" />;
+      default:
+        return <Globe className="w-4 h-4" />;
+    }
   };
 
   return (
@@ -124,15 +131,18 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSu
                     <button
                       key={category.id}
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, category: category.id }))}
+                      onClick={() => setFormData(prev => ({ ...prev, category_id: category.id }))}
                       className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                        formData.category === category.id
-                          ? `${category.color} border-transparent text-white`
+                        formData.category_id === category.id
+                          ? 'border-transparent text-white'
                           : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500'
                       }`}
+                      style={{
+                        backgroundColor: formData.category_id === category.id ? category.color : undefined
+                      }}
                     >
                       <div className="flex items-center gap-2 mb-2">
-                        {category.icon}
+                        {getCategoryIcon(category.slug)}
                         <span className="font-medium">{category.name}</span>
                       </div>
                       <p className="text-xs opacity-80">{category.description}</p>
@@ -221,17 +231,27 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSu
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  disabled={isSubmitting}
+                  className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  disabled={!formData.content.trim() || !formData.location.trim()}
+                  disabled={!formData.content.trim() || !formData.location.trim() || isSubmitting}
                   className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  <Send className="w-4 h-4" />
-                  Publicar
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Publicando...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      Publicar
+                    </>
+                  )}
                 </button>
               </div>
             </form>
