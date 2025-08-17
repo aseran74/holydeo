@@ -9,11 +9,22 @@ import {
   Share2, 
   MoreHorizontal,
   Plus,
-  Loader2
+  Loader2,
+  Send
 } from 'lucide-react';
 import CreatePostModal from './CreatePostModal';
 import { SocialService, SocialCategory, SocialPost, CreatePostData } from '../../services/socialService';
 import { useAuth } from '../../context/AuthContext';
+
+interface Comment {
+  id: string;
+  post_id: string;
+  author_id: string;
+  author_name: string;
+  author_avatar?: string;
+  content: string;
+  created_at: string;
+}
 
 const SocialFeed: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'digital' | 'prejubilados' | 'larga-estancia'>('all');
@@ -22,6 +33,10 @@ const SocialFeed: React.FC = () => {
   const [showNewPostForm, setShowNewPostForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showComments, setShowComments] = useState<string | null>(null);
+  const [comments, setComments] = useState<{ [postId: string]: Comment[] }>({});
+  const [commentText, setCommentText] = useState<{ [postId: string]: string }>({});
+  const [submittingComment, setSubmittingComment] = useState<string | null>(null);
   const { currentUser } = useAuth();
 
   // Cargar categorías y posts al montar el componente
@@ -71,7 +86,6 @@ const SocialFeed: React.FC = () => {
 
   const handleLike = async (postId: string) => {
     if (!currentUser) {
-      // Mostrar mensaje de que debe iniciar sesión
       alert('Debes iniciar sesión para dar like');
       return;
     }
@@ -86,7 +100,6 @@ const SocialFeed: React.FC = () => {
       ));
     } catch (err) {
       console.error('Error toggling like:', err);
-      // Mostrar error al usuario
     }
   };
 
@@ -102,7 +115,66 @@ const SocialFeed: React.FC = () => {
       setShowNewPostForm(false);
     } catch (err) {
       console.error('Error creating post:', err);
-      // Mostrar error al usuario
+    }
+  };
+
+  const toggleComments = async (postId: string) => {
+    if (showComments === postId) {
+      setShowComments(null);
+      return;
+    }
+
+    try {
+      const commentsData = await SocialService.getComments(postId);
+      setComments(prev => ({
+        ...prev,
+        [postId]: commentsData
+      }));
+      setShowComments(postId);
+    } catch (err) {
+      console.error('Error loading comments:', err);
+    }
+  };
+
+  const handleCommentSubmit = async (postId: string) => {
+    if (!currentUser) {
+      alert('Debes iniciar sesión para comentar');
+      return;
+    }
+
+    const text = commentText[postId]?.trim();
+    if (!text) return;
+
+    try {
+      setSubmittingComment(postId);
+      const newComment = await SocialService.createComment({
+        post_id: postId,
+        content: text
+      }, currentUser);
+
+      // Agregar el nuevo comentario a la lista
+      setComments(prev => ({
+        ...prev,
+        [postId]: [...(prev[postId] || []), newComment]
+      }));
+
+      // Limpiar el texto del comentario
+      setCommentText(prev => ({
+        ...prev,
+        [postId]: ''
+      }));
+
+      // Actualizar el contador de comentarios en el post
+      setPosts(prev => prev.map(post => 
+        post.id === postId 
+          ? { ...post, comments_count: post.comments_count + 1 }
+          : post
+      ));
+    } catch (err) {
+      console.error('Error creating comment:', err);
+      alert('Error al crear el comentario');
+    } finally {
+      setSubmittingComment(null);
     }
   };
 
@@ -330,7 +402,10 @@ const SocialFeed: React.FC = () => {
                         <Heart className={`w-5 h-5 ${post.is_liked ? 'fill-current' : ''}`} />
                         <span>{post.likes_count}</span>
                       </button>
-                      <button className="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors duration-200">
+                      <button 
+                        onClick={() => toggleComments(post.id)}
+                        className="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors duration-200"
+                      >
                         <MessageCircle className="w-5 h-5" />
                         <span>{post.comments_count}</span>
                       </button>
@@ -341,6 +416,99 @@ const SocialFeed: React.FC = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Sección de Comentarios */}
+                {showComments === post.id && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700"
+                  >
+                    <div className="p-6">
+                      {/* Lista de comentarios */}
+                      <div className="space-y-4 mb-6">
+                        {comments[post.id]?.map((comment) => (
+                          <div key={comment.id} className="flex items-start space-x-3">
+                            <img
+                              src={comment.author_avatar || '/images/user/user-01.jpg'}
+                              alt={comment.author_name}
+                              className="w-8 h-8 rounded-full object-cover"
+                            />
+                            <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg p-3">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium text-sm text-gray-900 dark:text-white">
+                                  {comment.author_name}
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  {formatTimestamp(comment.created_at)}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-700 dark:text-gray-300">
+                                {comment.content}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {(!comments[post.id] || comments[post.id].length === 0) && (
+                          <p className="text-center text-gray-500 dark:text-gray-400 py-4">
+                            No hay comentarios aún. ¡Sé el primero en comentar!
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Formulario para nuevo comentario */}
+                      {currentUser && (
+                        <div className="flex items-center space-x-3">
+                          <img
+                            src={currentUser.photoURL || '/images/user/user-01.jpg'}
+                            alt={currentUser.displayName || 'Usuario'}
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                          <div className="flex-1 relative">
+                            <input
+                              type="text"
+                              value={commentText[post.id] || ''}
+                              onChange={(e) => setCommentText(prev => ({
+                                ...prev,
+                                [post.id]: e.target.value
+                              }))}
+                              placeholder="Escribe un comentario..."
+                              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white pr-12"
+                              onKeyPress={(e) => e.key === 'Enter' && handleCommentSubmit(post.id)}
+                            />
+                            <button
+                              onClick={() => handleCommentSubmit(post.id)}
+                              disabled={!commentText[post.id]?.trim() || submittingComment === post.id}
+                              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-blue-600 hover:text-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {submittingComment === post.id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <Send className="w-4 h-4" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {!currentUser && (
+                        <div className="text-center py-4">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                            Inicia sesión para comentar
+                          </p>
+                          <button
+                            onClick={() => window.location.href = '/login'}
+                            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                          >
+                            Iniciar Sesión
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
               </motion.div>
             ))}
           </AnimatePresence>
