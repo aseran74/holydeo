@@ -1000,7 +1000,7 @@ const PropertyDetails = () => {
         </div>
 
         {/* Calculadora de Precios */}
-        {property.precio_entresemana && property.precio_fin_de_semana && (
+        {(property.precio_dia || property.precio_entresemana) && (
           <PriceCalculator
             pricing={{
               precio_entresemana: property.precio_entresemana,

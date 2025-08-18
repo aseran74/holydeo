@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Calculator, Euro, CalendarDays, Clock } from 'lucide-react';
+import { Calendar, Calculator, Euro, CalendarDays } from 'lucide-react';
 import { PriceCalculationService, PropertyPricing, PriceCalculationResult } from '../../services/priceCalculationService';
 
 interface PriceCalculatorProps {
@@ -105,19 +105,19 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
 
       {/* Información de precios base */}
       <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
-        <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Precios por noche</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-center gap-2">
-            <CalendarDays className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 dark:text-gray-400">Entresemana:</span>
-            <span className="font-medium">{PriceCalculationService.formatPrice(pricing.precio_entresemana)}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 dark:text-gray-400">Fin de semana:</span>
-            <span className="font-medium">{PriceCalculationService.formatPrice(pricing.precio_fin_de_semana)}</span>
-          </div>
+        <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Precio por noche</h4>
+        <div className="flex items-center gap-2">
+          <CalendarDays className="h-4 w-4 text-gray-500" />
+          <span className="text-sm text-gray-600 dark:text-gray-400">Precio por día:</span>
+          <span className="font-medium text-lg">
+            {PriceCalculationService.formatPrice(pricing.precio_dia || pricing.precio_entresemana)}
+          </span>
         </div>
+        {pricing.precio_dia ? (
+          <p className="text-xs text-gray-500 mt-2">Usando precio por día configurado</p>
+        ) : (
+          <p className="text-xs text-gray-500 mt-2">Usando precio de entresemana como referencia</p>
+        )}
       </div>
 
       {/* Resultado del cálculo */}
@@ -149,18 +149,10 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600 dark:text-gray-400">
-                {calculationResult.details.weekdaysCount} noches entresemana
+                {calculationResult.details.totalDays} noches × {PriceCalculationService.formatPrice(calculationResult.details.pricePerDay)}
               </span>
               <span className="font-medium">
-                {PriceCalculationService.formatPrice(calculationResult.details.weekdaysPrice)}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">
-                {calculationResult.details.weekendDaysCount} noches fin de semana
-              </span>
-              <span className="font-medium">
-                {PriceCalculationService.formatPrice(calculationResult.details.weekendPrice)}
+                {PriceCalculationService.formatPrice(calculationResult.totalPrice)}
               </span>
             </div>
           </div>

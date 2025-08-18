@@ -8,30 +8,18 @@ export interface PropertyPricing {
 export interface PriceCalculationResult {
   totalPrice: number;
   breakdown: {
-    weekdays: number;
-    weekendDays: number;
     totalDays: number;
     averagePricePerDay: number;
   };
   details: {
-    weekdaysCount: number;
-    weekendDaysCount: number;
-    weekdaysPrice: number;
-    weekendPrice: number;
+    totalDays: number;
+    pricePerDay: number;
   };
 }
 
 export class PriceCalculationService {
   /**
-   * Calcular si una fecha es fin de semana (sábado o domingo)
-   */
-  static isWeekend(date: Date): boolean {
-    const day = date.getDay();
-    return day === 0 || day === 6; // 0 = domingo, 6 = sábado
-  }
-
-  /**
-   * Calcular el precio total para un rango de fechas
+   * Calcular el precio total para un rango de fechas usando precio_dia
    */
   static calculatePriceForDateRange(
     checkIn: Date,
@@ -39,38 +27,22 @@ export class PriceCalculationService {
     pricing: PropertyPricing
   ): PriceCalculationResult {
     const dates = this.getDatesBetween(checkIn, checkOut);
-    let weekdaysCount = 0;
-    let weekendDaysCount = 0;
-
-    // Contar días de entresemana y fin de semana
-    dates.forEach(date => {
-      if (this.isWeekend(date)) {
-        weekendDaysCount++;
-      } else {
-        weekdaysCount++;
-      }
-    });
-
-    // Calcular precios
-    const weekdaysPrice = weekdaysCount * pricing.precio_entresemana;
-    const weekendPrice = weekendDaysCount * pricing.precio_fin_de_semana;
-    const totalPrice = weekdaysPrice + weekendPrice;
     const totalDays = dates.length;
+    
+    // Usar precio_dia si está disponible, sino usar precio_entresemana como fallback
+    const pricePerDay = pricing.precio_dia || pricing.precio_entresemana;
+    const totalPrice = totalDays * pricePerDay;
     const averagePricePerDay = totalDays > 0 ? totalPrice / totalDays : 0;
 
     return {
       totalPrice,
       breakdown: {
-        weekdays: weekdaysCount,
-        weekendDays: weekendDaysCount,
         totalDays,
         averagePricePerDay
       },
       details: {
-        weekdaysCount,
-        weekendDaysCount,
-        weekdaysPrice,
-        weekendPrice
+        totalDays,
+        pricePerDay
       }
     };
   }
@@ -103,20 +75,17 @@ export class PriceCalculationService {
   }
 
   /**
-   * Calcular precio por noche individual
+   * Calcular precio por noche individual usando precio_dia
    */
-  static calculatePricePerNight(
-    date: Date,
-    pricing: PropertyPricing
-  ): number {
-    return this.isWeekend(date) ? pricing.precio_fin_de_semana : pricing.precio_entresemana;
+  static calculatePricePerNight(pricing: PropertyPricing): number {
+    return pricing.precio_dia || pricing.precio_entresemana;
   }
 
   /**
-   * Obtener descripción del tipo de día
+   * Obtener descripción del tipo de día (ahora siempre es "por día")
    */
-  static getDayTypeDescription(date: Date): string {
-    return this.isWeekend(date) ? 'Fin de semana' : 'Entresemana';
+  static getDayTypeDescription(): string {
+    return 'Por día';
   }
 
   /**
