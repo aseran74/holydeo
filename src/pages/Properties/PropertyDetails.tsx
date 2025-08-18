@@ -187,59 +187,52 @@ const PropertyDetails = () => {
       if (propertyData.owner_id) {
         console.log('Fetching owner with ID:', propertyData.owner_id);
         
-        // DIAGNÓSTICO: Verificar si la tabla users existe y qué campos tiene
         try {
-          console.log('=== DIAGNÓSTICO TABLA USERS ===');
-          
-          // 1. Intentar consultar la tabla users completa
-          const { data: allUsers, error: allUsersError } = await supabase
-            .from('users')
-            .select('*')
-            .limit(1);
-          
-          console.log('Test tabla users completa:', { allUsers, allUsersError });
-          
-          // 2. Intentar consultar solo el owner específico
-          const { data: owner, error: ownerError } = await supabase
-            .from('users')
-            .select('*')
+          // Primero obtener la información del owner desde la tabla owners
+          const { data: ownerRecord, error: ownerError } = await supabase
+            .from('owners')
+            .select('*, users(*)')
             .eq('id', propertyData.owner_id)
             .single();
           
-          console.log('Consulta owner específico:', { owner, ownerError });
+          console.log('Owner record from owners table:', { ownerRecord, ownerError });
           
-          // 3. Si falla, intentar con auth.users (tabla de Supabase Auth)
-          if (ownerError) {
-            console.log('Intentando con auth.users...');
-            const { data: authUser, error: authError } = await supabase.auth.getUser(propertyData.owner_id);
-            console.log('Consulta auth.users:', { authUser, authError });
-          }
-          
-          // 4. Si falla, intentar con profiles (tabla común en Supabase)
-          if (ownerError) {
-            console.log('Intentando con profiles...');
-            const { data: profile, error: profileError } = await supabase
-              .from('profiles')
+          if (ownerRecord && !ownerError) {
+            // Si encontramos el owner, obtener la información del usuario asociado
+            if (ownerRecord.users) {
+              ownerData = {
+                id: ownerRecord.users.id,
+                full_name: ownerRecord.users.full_name || 'Nombre no disponible',
+                email: ownerRecord.users.email || 'Email no disponible',
+                phone: ownerRecord.phone || null
+              };
+              console.log('Owner data from users table:', ownerData);
+            }
+          } else {
+            console.log('No se encontró owner en owners table, intentando con users directamente...');
+            
+            // Si no encontramos en owners, intentar directamente en users
+            const { data: userRecord, error: userError } = await supabase
+              .from('users')
               .select('*')
               .eq('id', propertyData.owner_id)
               .single();
-            console.log('Consulta profiles:', { profile, profileError });
+            
+            console.log('User record from users table:', { userRecord, userError });
+            
+            if (userRecord && !userError) {
+              ownerData = {
+                id: userRecord.id,
+                full_name: userRecord.full_name || 'Nombre no disponible',
+                email: userRecord.email || 'Email no disponible',
+                phone: null // No tenemos phone en users
+              };
+              console.log('Owner data from users table directly:', ownerData);
+            }
           }
           
-          console.log('=== FIN DIAGNÓSTICO ===');
-          
-          // Si encontramos datos, mapearlos
-          if (owner && !ownerError) {
-            ownerData = {
-              id: owner.id,
-              full_name: owner.full_name || owner.name || owner.display_name || 'Nombre no disponible',
-              email: owner.email || owner.contact_email || 'Email no disponible',
-              phone: owner.phone || owner.phone_number || owner.contact_phone || null
-            };
-            console.log('Owner data mapped successfully:', ownerData);
-          }
         } catch (ownerError) {
-          console.error('Exception en diagnóstico owner:', ownerError);
+          console.error('Exception en consulta owner:', ownerError);
         }
       }
 
@@ -248,51 +241,49 @@ const PropertyDetails = () => {
       if (propertyData.agency_id) {
         console.log('Fetching agency with ID:', propertyData.agency_id);
         
-        // DIAGNÓSTICO: Verificar si la tabla users existe y qué campos tiene
         try {
-          console.log('=== DIAGNÓSTICO AGENCIA ===');
-          
-          // 1. Intentar consultar solo la agencia específica
-          const { data: agency, error: agencyError } = await supabase
-            .from('users')
+          // Obtener información de la agencia desde la tabla agencies
+          const { data: agencyRecord, error: agencyError } = await supabase
+            .from('agencies')
             .select('*')
             .eq('id', propertyData.agency_id)
             .single();
           
-          console.log('Consulta agency específica:', { agency, agencyError });
+          console.log('Agency record from agencies table:', { agencyRecord, agencyError });
           
-          // 2. Si falla, intentar con auth.users (tabla de Supabase Auth)
-          if (agencyError) {
-            console.log('Intentando con auth.users para agencia...');
-            const { data: authUser, error: authError } = await supabase.auth.getUser(propertyData.agency_id);
-            console.log('Consulta auth.users agencia:', { authUser, authError });
-          }
-          
-          // 3. Si falla, intentar con profiles (tabla común en Supabase)
-          if (agencyError) {
-            console.log('Intentando con profiles para agencia...');
-            const { data: profile, error: profileError } = await supabase
-              .from('profiles')
+          if (agencyRecord && !agencyError) {
+            agencyData = {
+              id: agencyRecord.id,
+              full_name: agencyRecord.name || 'Nombre no disponible',
+              email: agencyRecord.contact_email || 'Email no disponible',
+              phone: agencyRecord.phone || null
+            };
+            console.log('Agency data from agencies table:', agencyData);
+          } else {
+            console.log('No se encontró agency en agencies table, intentando con users...');
+            
+            // Si no encontramos en agencies, intentar en users
+            const { data: userRecord, error: userError } = await supabase
+              .from('users')
               .select('*')
               .eq('id', propertyData.agency_id)
               .single();
-            console.log('Consulta profiles agencia:', { profile, profileError });
+            
+            console.log('User record for agency from users table:', { userRecord, userError });
+            
+            if (userRecord && !userError) {
+              agencyData = {
+                id: userRecord.id,
+                full_name: userRecord.full_name || 'Nombre no disponible',
+                email: userRecord.email || 'Email no disponible',
+                phone: null
+              };
+              console.log('Agency data from users table:', agencyData);
+            }
           }
           
-          console.log('=== FIN DIAGNÓSTICO AGENCIA ===');
-          
-          // Si encontramos datos, mapearlos
-          if (agency && !agencyError) {
-            agencyData = {
-              id: agency.id,
-              full_name: agency.full_name || agency.name || agency.display_name || 'Nombre no disponible',
-              email: agency.email || agency.contact_email || 'Email no disponible',
-              phone: agency.phone || agency.phone_number || agency.contact_phone || null
-            };
-            console.log('Agency data mapped successfully:', agencyData);
-          }
         } catch (agencyError) {
-          console.error('Exception en diagnóstico agency:', agencyError);
+          console.error('Exception en consulta agency:', agencyError);
         }
       }
 
