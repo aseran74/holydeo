@@ -21,136 +21,147 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import LandingPage from './pages/Landing/LandingPage';
 import SearchPage from './pages/Search/SearchPage';
 import NotFound from './pages/OtherPage/NotFound';
+import ToastContainer from './components/ui/ToastContainer';
+import ToastDemo from './components/ui/ToastDemo';
 import './index.css';
+import './styles/toast.css';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-                 {/* Landing Page */}
-         <Route path="/" element={<LandingPage />} />
-         
-         {/* Search Page */}
-         <Route path="/search" element={<SearchPage />} />
-         
-         {/* Login */}
-         <Route path="/login" element={<LoginForm />} />
-         
-         {/* Public Property Details Routes (accessible from landing page) */}
-         <Route path="/property/:id" element={<PropertyDetails />} />
-         <Route path="/properties/:id" element={<PropertyDetails />} />
-         
-         {/* Public Experience Details Routes (accessible from landing page) */}
-         <Route path="/experiences/:id" element={<PublicExperienceDetails />} />
-         
-         {/* Dashboard Routes */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
-        }>
-          <Route element={<AppLayout />}>
-            <Route index element={<Home />} />
+    <>
+      <Router>
+        <Routes>
+          {/* Landing Page */}
+          <Route path="/" element={<LandingPage />} />
+          
+          {/* Search Page */}
+          <Route path="/search" element={<SearchPage />} />
+          
+          {/* Login */}
+          <Route path="/login" element={<LoginForm />} />
+          
+          {/* Toast Demo */}
+          <Route path="/toast-demo" element={<ToastDemo />} />
+          
+          {/* Public Property Details Routes (accessible from landing page) */}
+          <Route path="/property/:id" element={<PropertyDetails />} />
+          <Route path="/properties/:id" element={<PropertyDetails />} />
+          
+          {/* Public Experience Details Routes (accessible from landing page) */}
+          <Route path="/experiences/:id" element={<PublicExperienceDetails />} />
+          
+          {/* Dashboard Routes */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<Home />} />
+            </Route>
           </Route>
-        </Route>
-        
-        <Route path="/owner-dashboard" element={
-          <ProtectedRoute allowedRoles={['admin', 'owner']} />
-        }>
-          <Route element={<AppLayout />}>
-            <Route index element={<OwnerDashboard />} />
+          
+          <Route path="/owner-dashboard" element={
+            <ProtectedRoute allowedRoles={['admin', 'owner']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<OwnerDashboard />} />
+            </Route>
           </Route>
-        </Route>
-        
-        {/* Admin Routes */}
-        <Route path="/admin" element={
-          <ProtectedRoute allowedRoles={['admin']} />
-        }>
-          <Route element={<AppLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="users" element={<UserManagement />} />
-            <Route path="social" element={<SocialManagement />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin" element={
+            <ProtectedRoute allowedRoles={['admin']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="social" element={<SocialManagement />} />
+            </Route>
           </Route>
-        </Route>
-        
-        {/* Properties Routes */}
-        <Route path="/properties" element={
-          <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
-        }>
-          <Route element={<AppLayout />}>
-            <Route index element={<Properties />} />
-            <Route path=":id" element={<PropertyDetails />} />
+          
+          {/* Properties Routes */}
+          <Route path="/properties" element={
+            <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<Properties />} />
+              <Route path=":id" element={<PropertyDetails />} />
+            </Route>
           </Route>
-        </Route>
-        
-        {/* Property Details Route (singular for compatibility) */}
-        <Route path="/property" element={
-          <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
-        }>
-          <Route element={<AppLayout />}>
-            <Route path=":id" element={<PropertyDetails />} />
+          
+          {/* Property Details Route (singular for compatibility) */}
+          <Route path="/property" element={
+            <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route path=":id" element={<PropertyDetails />} />
+            </Route>
           </Route>
-        </Route>
-        
-        {/* Experiences Routes */}
-        <Route path="/experiences" element={
-          <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
-        }>
-          <Route element={<AppLayout />}>
-            <Route index element={<Experiences />} />
-            <Route path=":id" element={<ExperienceDetails />} />
-            <Route path="new" element={<ExperienceForm />} />
-            <Route path=":id/edit" element={<ExperienceForm />} />
+          
+          {/* Experiences Routes */}
+          <Route path="/experiences" element={
+            <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<Experiences />} />
+              <Route path=":id" element={<ExperienceDetails />} />
+              <Route path="new" element={<ExperienceForm />} />
+              <Route path=":id/edit" element={<ExperienceForm />} />
+            </Route>
           </Route>
-        </Route>
-        
-        {/* Bookings Routes */}
-        <Route path="/bookings" element={
-          <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
-        }>
-          <Route element={<AppLayout />}>
-            <Route index element={<Bookings />} />
+          
+          {/* Bookings Routes */}
+          <Route path="/bookings" element={
+            <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<Bookings />} />
+            </Route>
           </Route>
-        </Route>
-        
-        {/* Agencies Routes */}
-        <Route path="/agencies" element={
-          <ProtectedRoute allowedRoles={['admin', 'owner']} />
-        }>
-          <Route element={<AppLayout />}>
-            <Route index element={<Agencies />} />
+          
+          {/* Agencies Routes */}
+          <Route path="/agencies" element={
+            <ProtectedRoute allowedRoles={['admin', 'owner']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<Agencies />} />
+            </Route>
           </Route>
-        </Route>
-        
-        {/* Agents Routes */}
-        <Route path="/agents" element={
-          <ProtectedRoute allowedRoles={['admin', 'owner']} />
-        }>
-          <Route element={<AppLayout />}>
-            <Route index element={<Agents />} />
+          
+          {/* Agents Routes */}
+          <Route path="/agents" element={
+            <ProtectedRoute allowedRoles={['admin', 'owner']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<Agents />} />
+            </Route>
           </Route>
-        </Route>
-        
-        {/* Owners Routes */}
-        <Route path="/owners" element={
-          <ProtectedRoute allowedRoles={['admin']} />
-        }>
-          <Route element={<AppLayout />}>
-            <Route index element={<Owners />} />
+          
+          {/* Owners Routes */}
+          <Route path="/owners" element={
+            <ProtectedRoute allowedRoles={['admin']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<Owners />} />
+            </Route>
           </Route>
-        </Route>
-        
-                 {/* Social Network Routes */}
-         <Route path="/social" element={
-           <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
-         }>
-           <Route element={<AppLayout />}>
-             <Route index element={<SocialPage />} />
-           </Route>
-         </Route>
-         
-         {/* 404 */}
-         <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+          
+          {/* Social Network Routes */}
+          <Route path="/social" element={
+            <ProtectedRoute allowedRoles={['admin', 'owner', 'agent', 'guest']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<SocialPage />} />
+            </Route>
+          </Route>
+          
+          {/* 404 */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+      
+      {/* Contenedor de Toasts Global */}
+      <ToastContainer position="top-right" />
+    </>
   );
 }
 

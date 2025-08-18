@@ -22,12 +22,28 @@ export default function UserDropdown() {
     displayName: currentUser.displayName,
     photoURL: currentUser.photoURL,
     uid: currentUser.uid,
-    providerData: currentUser.providerData
+    providerData: currentUser.providerData,
+    // Información adicional para debug
+    isAnonymous: currentUser.isAnonymous,
+    emailVerified: currentUser.emailVerified,
+    phoneNumber: currentUser.phoneNumber
   });
 
   // Obtener el avatar de Google si está disponible
   const userAvatar = currentUser.photoURL;
   const userDisplayName = currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario';
+  
+  // Debug adicional para la foto
+  console.log('Avatar del usuario:', {
+    userAvatar,
+    hasPhotoURL: !!currentUser.photoURL,
+    photoURLType: typeof currentUser.photoURL,
+    providerData: currentUser.providerData?.map(p => ({
+      providerId: p.providerId,
+      photoURL: p.photoURL,
+      displayName: p.displayName
+    }))
+  });
 
   return (
     <div className="flex items-center gap-3">
@@ -37,6 +53,14 @@ export default function UserDropdown() {
             src={userAvatar} 
             alt={userDisplayName}
             className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
+            onError={(e) => {
+              console.error('Error cargando imagen del perfil:', e);
+              // Ocultar la imagen si hay error
+              e.currentTarget.style.display = 'none';
+            }}
+            onLoad={() => {
+              console.log('Imagen del perfil cargada exitosamente');
+            }}
           />
         ) : (
           <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
@@ -52,6 +76,17 @@ export default function UserDropdown() {
               {currentUser.email}
             </p>
           )}
+          {/* Debug visual */}
+          <div className="text-xs text-gray-400 mt-1">
+            {currentUser.providerData?.[0]?.providerId === 'google.com' ? (
+              <span className="text-green-600">🔗 Google</span>
+            ) : (
+              <span className="text-blue-600">📧 Email</span>
+            )}
+            {currentUser.photoURL && (
+              <span className="ml-2 text-green-600">📸 Foto disponible</span>
+            )}
+          </div>
         </div>
       </div>
       <button

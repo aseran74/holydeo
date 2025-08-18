@@ -1,113 +1,48 @@
-import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
-import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
-import StatisticsChart from "../../components/ecommerce/StatisticsChart";
-import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
-import RecentOrders from "../../components/ecommerce/RecentOrders";
-import DemographicCard from "../../components/ecommerce/DemographicCard";
-import PageMeta from "../../components/common/PageMeta";
-import SupabaseConnectionTest from "../../components/SupabaseConnectionTest";
-import SimplePropertiesTest from "../../components/SimplePropertiesTest";
-import DebugSupabase from "../../components/DebugSupabase";
-import EnvVarsDebug from "../../components/EnvVarsDebug";
-
-
-import EnvChecker from "../../components/EnvChecker";
-import DebugCredentials from "../../components/DebugCredentials";
-import TestPermissions from "../../components/TestPermissions";
-import PropertyEditDebug from "../../components/PropertyEditDebug";
-import PropertyEditTest from "../../components/PropertyEditTest";
-import PropertyFormTest from "../../components/PropertyFormTest";
+import PropertyMetrics from "../../components/dashboard/PropertyMetrics";
 import RecentBookings from '../../components/common/RecentBookings';
-import ExperienceImageTest from "../../components/ExperienceImageTest";
+import PageMeta from "../../components/common/PageMeta";
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
+  const navigate = useNavigate();
   return (
     <>
       <PageMeta
-        title="React.js Ecommerce Dashboard | TailAdmin - React.js Admin Dashboard Template"
-        description="This is React.js Ecommerce Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+        title="Dashboard | HolyDeo - Sistema de Gestión de Alojamientos"
+        description="Dashboard principal del sistema de gestión de alojamientos y experiencias"
       />
       <div className="grid grid-cols-12 gap-4 md:gap-6">
-        <div className="col-span-12 space-y-6 xl:col-span-7">
-          <EcommerceMetrics />
-
-          <MonthlySalesChart />
-        </div>
-
-        <div className="col-span-12 xl:col-span-5">
-          <MonthlyTarget />
-        </div>
-
+        {/* Métricas del Sistema */}
         <div className="col-span-12">
-          <StatisticsChart />
-        </div>
-
-        <div className="col-span-12 xl:col-span-5">
-          <DemographicCard />
-        </div>
-
-        <div className="col-span-12 xl:col-span-7">
-          <RecentOrders />
-        </div>
-
-        {/* Prueba de Conexión Supabase */}
-        <div className="col-span-12">
-          <SupabaseConnectionTest />
-        </div>
-
-        {/* Prueba Simple de Propiedades */}
-        <div className="col-span-12">
-          <SimplePropertiesTest />
-        </div>
-
-        {/* Variables de Entorno */}
-        <div className="col-span-12">
-          <EnvVarsDebug />
-        </div>
-
-        {/* Debug Detallado de Credenciales */}
-        <div className="col-span-12">
-          <DebugCredentials />
-        </div>
-
-        {/* Prueba de Permisos */}
-        <div className="col-span-12">
-          <TestPermissions />
-        </div>
-
-        {/* Debug de Edición de Propiedades */}
-        <div className="col-span-12">
-          <PropertyEditDebug />
-        </div>
-
-        {/* Prueba de Edición de Propiedades */}
-        <div className="col-span-12">
-          <PropertyEditTest />
-        </div>
-
-        {/* Prueba del Formulario de Propiedades */}
-        <div className="col-span-12">
-          <PropertyFormTest />
-        </div>
-
-        {/* Verificación de Credenciales */}
-        <div className="col-span-12">
-          <EnvChecker />
+          <PropertyMetrics />
         </div>
 
         {/* Reservas Recientes */}
-        <div className="col-span-12 xl:col-span-7">
+        <div className="col-span-12 xl:col-span-8">
           <RecentBookings />
         </div>
 
-        {/* Prueba de Imágenes de Experiencias */}
-        <div className="col-span-12">
-          <ExperienceImageTest />
-        </div>
-
-        {/* Debug Detallado */}
-        <div className="col-span-12">
-          <DebugSupabase />
+        {/* Panel de Acciones Rápidas */}
+        <div className="col-span-12 xl:col-span-4">
+          <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">
+              Acciones Rápidas
+            </h3>
+            <div className="space-y-3">
+              <button type="button" onClick={() => navigate('/bookings')} className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Ver Todas las Reservas
+              </button>
+              <button type="button" onClick={() => navigate('/properties')} className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                Gestionar Propiedades
+              </button>
+              <button type="button" onClick={() => navigate('/experiences')} className="w-full px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                Administrar Experiencias
+              </button>
+              <button type="button" onClick={() => navigate('/social')} className="w-full px-4 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                Ver Mensajes Sociales
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </>

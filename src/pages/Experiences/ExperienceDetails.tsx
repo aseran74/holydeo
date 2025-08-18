@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import Button from '../../components/ui/button/Button';
 import { Experience } from '../../types';
-import LandingNavbar from '../../components/landing/LandingNavbar';
 import { useAuth } from '../../context/AuthContext';
 
 interface Property {
@@ -237,10 +236,7 @@ const ExperienceDetails = () => {
 
   return (
     <>
-      {/* Navbar del landing page */}
-      <LandingNavbar />
-
-      <div className="p-4 mt-16">
+      <div className="p-4">
         <div className="max-w-6xl mx-auto">
           {/* Header con botones de acción */}
           <div className="flex items-center justify-between mb-6">

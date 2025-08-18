@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useSidebar } from '../context/SidebarContext';
 import {
   Home, 
   Building2, 
@@ -16,11 +17,13 @@ import {
 const AppSidebar: React.FC = () => {
   const location = useLocation();
   const { currentUser, userRole, isAdmin } = useAuth();
+  const { isMobileOpen } = useSidebar();
 
   // Logs para depuración
   console.log('[AppSidebar] Usuario actual:', currentUser?.email);
   console.log('[AppSidebar] Rol del usuario:', userRole);
   console.log('[AppSidebar] ¿Es admin?:', isAdmin);
+  console.log('[AppSidebar] ¿Sidebar móvil abierto?:', isMobileOpen);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -44,13 +47,21 @@ const AppSidebar: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-800 w-64 min-h-screen shadow-lg">
+    <div className={`fixed lg:relative inset-y-0 left-0 z-50 bg-white dark:bg-gray-800 w-64 min-h-screen shadow-lg transform transition-transform duration-300 ease-in-out ${
+      isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+    }`}>
       <div className="p-6">
         <div className="flex items-center space-x-3 mb-8">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">H</span>
-          </div>
-          <span className="text-xl font-bold text-gray-900 dark:text-white">Holydeo</span>
+          <img
+            src="/images/logo/logo.svg"
+            alt="Holydeo"
+            className="h-8 w-auto dark:hidden"
+          />
+          <img
+            src="/images/logo/logo-dark.svg"
+            alt="Holydeo"
+            className="h-8 w-auto hidden dark:block"
+          />
         </div>
 
         <nav className="space-y-2">

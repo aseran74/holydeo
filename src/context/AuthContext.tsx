@@ -54,7 +54,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    
+    // Solicitar permisos específicos
+    provider.addScope('profile');
+    provider.addScope('email');
+    
+    // Configurar para solicitar siempre la selección de cuenta
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
+    
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log('Login con Google exitoso:', {
+        user: result.user,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL,
+        email: result.user.email,
+        providerData: result.user.providerData
+      });
+    } catch (error) {
+      console.error('Error en login con Google:', error);
+      throw error;
+    }
   };
 
   // Función para obtener el rol del usuario desde Supabase

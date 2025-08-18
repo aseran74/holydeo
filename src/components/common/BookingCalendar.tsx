@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import { ChevronLeft, ChevronRight, X, Calendar } from 'lucide-react';
+import useToast from '../../hooks/useToast';
 
 interface BookingCalendarProps {
   propertyId: string;
@@ -27,6 +28,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
   precioDia = 100,
   onBookingComplete
 }) => {
+  const toast = useToast();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
@@ -217,7 +219,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
 
       if (error) {
         console.error('Error creating booking:', error);
-        alert('Error al crear la reserva');
+        toast.error('Error al crear la reserva', 'Por favor, intenta nuevamente.');
         return;
       }
 
@@ -241,10 +243,10 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
         onBookingComplete(booking);
       }
 
-      alert('Reserva creada exitosamente');
+      toast.success('¡Reserva creada exitosamente!', 'Tu reserva ha sido confirmada.');
     } catch (error) {
       console.error('Error:', error);
-      alert('Error al crear la reserva');
+      toast.error('Error al crear la reserva', 'Por favor, intenta nuevamente.');
     } finally {
       setLoading(false);
     }
