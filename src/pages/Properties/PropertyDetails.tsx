@@ -827,16 +827,7 @@ const PropertyDetails = () => {
             {/* Información de contacto */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border">
               <h3 className="text-lg font-semibold mb-4">Información de Contacto</h3>
-              
-              {/* Debug info - temporal */}
-              <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded text-xs">
-                <p><strong>Debug Info:</strong></p>
-                <p>Owner ID: {property.owner_id || 'No definido'}</p>
-                <p>Agency ID: {property.agency_id || 'No definido'}</p>
-                <p>Owner Data: {property.owner ? JSON.stringify(property.owner) : 'No disponible'}</p>
-                <p>Agency Data: {property.agency ? JSON.stringify(property.agency) : 'No disponible'}</p>
-              </div>
-              
+
               {property.owner && (
                 <div className="mb-4">
                   <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Propietario</h4>
