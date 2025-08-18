@@ -185,6 +185,7 @@ const PropertyDetails = () => {
       // Si hay owner_id, obtener información del propietario
       let ownerData = null;
       if (propertyData.owner_id) {
+        console.log('Fetching owner with ID:', propertyData.owner_id);
         try {
           const { data: owner, error: ownerError } = await supabase
             .from('users')
@@ -192,18 +193,23 @@ const PropertyDetails = () => {
             .eq('id', propertyData.owner_id)
             .single();
           
-          if (!ownerError && owner) {
+          console.log('Owner query result:', { owner, ownerError });
+          
+          if (ownerError) {
+            console.error('Error fetching owner:', ownerError);
+          } else if (owner) {
             ownerData = owner;
-            console.log('Owner data:', owner);
+            console.log('Owner data fetched successfully:', owner);
           }
         } catch (ownerError) {
-          console.warn('Could not fetch owner details:', ownerError);
+          console.error('Exception fetching owner:', ownerError);
         }
       }
 
       // Si hay agency_id, obtener información de la agencia
       let agencyData = null;
       if (propertyData.agency_id) {
+        console.log('Fetching agency with ID:', propertyData.agency_id);
         try {
           const { data: agency, error: agencyError } = await supabase
             .from('users')
@@ -211,12 +217,16 @@ const PropertyDetails = () => {
             .eq('id', propertyData.agency_id)
             .single();
           
-          if (!agencyError && agency) {
+          console.log('Agency query result:', { agency, agencyError });
+          
+          if (agencyError) {
+            console.error('Error fetching agency:', agencyError);
+          } else if (agency) {
             agencyData = agency;
-            console.log('Agency data:', agency);
+            console.log('Agency data fetched successfully:', agency);
           }
         } catch (agencyError) {
-          console.warn('Could not fetch agency details:', agencyError);
+          console.error('Exception fetching agency:', agencyError);
         }
       }
 
@@ -227,6 +237,7 @@ const PropertyDetails = () => {
         agency: agencyData
       };
 
+      console.log('Final enriched property:', enrichedProperty);
       setProperty(enrichedProperty);
       
     } catch (error) {
@@ -759,6 +770,15 @@ const PropertyDetails = () => {
             {/* Información de contacto */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border">
               <h3 className="text-lg font-semibold mb-4">Información de Contacto</h3>
+              
+              {/* Debug info - temporal */}
+              <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded text-xs">
+                <p><strong>Debug Info:</strong></p>
+                <p>Owner ID: {property.owner_id || 'No definido'}</p>
+                <p>Agency ID: {property.agency_id || 'No definido'}</p>
+                <p>Owner Data: {property.owner ? JSON.stringify(property.owner) : 'No disponible'}</p>
+                <p>Agency Data: {property.agency ? JSON.stringify(property.agency) : 'No disponible'}</p>
+              </div>
               
               {property.owner && (
                 <div className="mb-4">
