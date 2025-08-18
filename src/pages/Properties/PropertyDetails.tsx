@@ -98,6 +98,19 @@ interface Property {
   agency_id?: string;
   tipo?: string;
   region?: string;
+  // Campos para información del propietario y agencia
+  owner?: {
+    id: string;
+    full_name: string;
+    email: string;
+    phone?: string;
+  };
+  agency?: {
+    id: string;
+    full_name: string;
+    email: string;
+    phone?: string;
+  };
 }
 
 interface Experience {
@@ -147,7 +160,7 @@ const PropertyDetails = () => {
       setLoading(true);
       console.log('Fetching property with ID:', id);
       
-      // Obtener detalles de la propiedad
+      // Primero obtener la propiedad básica
       const { data: propertyData, error: propertyError } = await supabase
         .from("properties")
         .select("*")
@@ -169,11 +182,53 @@ const PropertyDetails = () => {
         return;
       }
 
-      setProperty(propertyData);
-      
-      // Por ahora no cargamos propietario y agencia para evitar errores
-      // TODO: Implementar carga de propietario y agencia cuando esté disponible
+      // Si hay owner_id, obtener información del propietario
+      let ownerData = null;
+      if (propertyData.owner_id) {
+        try {
+          const { data: owner, error: ownerError } = await supabase
+            .from('users')
+            .select('id, full_name, email, phone')
+            .eq('id', propertyData.owner_id)
+            .single();
+          
+          if (!ownerError && owner) {
+            ownerData = owner;
+            console.log('Owner data:', owner);
+          }
+        } catch (ownerError) {
+          console.warn('Could not fetch owner details:', ownerError);
+        }
+      }
 
+      // Si hay agency_id, obtener información de la agencia
+      let agencyData = null;
+      if (propertyData.agency_id) {
+        try {
+          const { data: agency, error: agencyError } = await supabase
+            .from('users')
+            .select('id, full_name, email, phone')
+            .eq('id', propertyData.agency_id)
+            .single();
+          
+          if (!agencyError && agency) {
+            agencyData = agency;
+            console.log('Agency data:', agency);
+          }
+        } catch (agencyError) {
+          console.warn('Could not fetch agency details:', agencyError);
+        }
+      }
+
+      // Combinar los datos
+      const enrichedProperty = {
+        ...propertyData,
+        owner: ownerData,
+        agency: agencyData
+      };
+
+      setProperty(enrichedProperty);
+      
     } catch (error) {
       console.error('Error:', error);
       setError('Error al cargar los detalles de la propiedad');
@@ -705,48 +760,71 @@ const PropertyDetails = () => {
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border">
               <h3 className="text-lg font-semibold mb-4">Información de Contacto</h3>
               
-              {property.owner_id && (
+              {property.owner && (
                 <div className="mb-4">
                   <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Propietario</h4>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <Users size={16} className="text-gray-500" />
-                      <span>{`${property.owner_id}`}</span>
+                      <span className="font-medium">{property.owner.full_name}</span>
                     </div>
-                    {/* TODO: Fetch owner details from supabase */}
-                    {/* <div className="flex items-center gap-2">
-                      <Mail size={16} className="text-gray-500" />
-                      <span className="text-sm">{owner.email}</span>
-                    </div>
-                    {owner.phone && (
+                    {property.owner.email && (
+                      <div className="flex items-center gap-2">
+                        <Mail size={16} className="text-gray-500" />
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{property.owner.email}</span>
+                      </div>
+                    )}
+                    {property.owner.phone && (
                       <div className="flex items-center gap-2">
                         <Phone size={16} className="text-gray-500" />
-                        <span className="text-sm">{owner.phone}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{property.owner.phone}</span>
                       </div>
-                    )} */}
+                    )}
                   </div>
                 </div>
               )}
 
-              {property.agency_id && (
+              {property.agency && (
                 <div className="mb-4">
                   <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Agencia</h4>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <Building2 size={16} className="text-gray-500" />
-                      <span>{`${property.agency_id}`}</span>
+                      <span className="font-medium">{property.agency.full_name}</span>
                     </div>
-                    {/* TODO: Fetch agency details from supabase */}
-                    {/* <div className="flex items-center gap-2">
-                      <Mail size={16} className="text-gray-500" />
-                      <span className="text-sm">{agency.contact_email}</span>
-                    </div>
-                    {agency.phone && (
+                    {property.agency.email && (
+                      <div className="flex items-center gap-2">
+                        <Mail size={16} className="text-gray-500" />
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{property.agency.email}</span>
+                      </div>
+                    )}
+                    {property.agency.phone && (
                       <div className="flex items-center gap-2">
                         <Phone size={16} className="text-gray-500" />
-                        <span className="text-sm">{agency.phone}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{property.agency.phone}</span>
                       </div>
-                    )} */}
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Mostrar IDs como fallback si no hay información completa */}
+              {!property.owner && property.owner_id && (
+                <div className="mb-4">
+                  <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Propietario</h4>
+                  <div className="flex items-center gap-2">
+                    <Users size={16} className="text-gray-500" />
+                    <span className="text-sm text-gray-500">ID: {property.owner_id}</span>
+                  </div>
+                </div>
+              )}
+
+              {!property.agency && property.agency_id && (
+                <div className="mb-4">
+                  <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Agencia</h4>
+                  <div className="flex items-center gap-2">
+                    <Building2 size={16} className="text-gray-500" />
+                    <span className="text-sm text-gray-500">ID: {property.agency_id}</span>
                   </div>
                 </div>
               )}

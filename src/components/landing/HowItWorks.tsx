@@ -16,7 +16,7 @@ const steps: Step[] = [
     icon: <Search size={36} />,
     title: 'Alojamientos en lugares idílicos fuera de temporada',
     description:
-      'Buscamos Casas, apartamentos y villas seleccionadas en destinos únicos,vacacionales  disponibles de septiembre a julio, a precios imbatibles',
+      'Buscamos casas, apartamentos y villas seleccionadas en destinos únicos vacacionales,   disponibles de septiembre a julio, a precios imbatibles',
     color: 'text-blue-500',
     gradient: 'from-blue-100 to-blue-300 dark:from-blue-900/30 dark:to-blue-700/20'
   },
@@ -24,7 +24,7 @@ const steps: Step[] = [
     icon: <PenSquare size={36} />,
     title: 'Experiencias inmersivas',
     description:
-      'Tenemos experiencias de larga estancia como clases de golf mensuales, o de Kitesurf o Green fees cuotas mensuales a precios imbatibles, o las de corta estancia como ver los grandes monumentos como la Alhambra, la Mezquita de Córdoba, Sevilla o conocer los Pueblos Blancos ir de pinchos por Donosti o recorrer en Globo Toledo',
+      'Tenemos experiencias de larga estancia como clases de golf , o de Kitesurf o Green fees con cuotas mensuales de fuera de temporada a precios imbatibles, o las de corta estancia como ver los grandes monumentos como la Alhambra, la Mezquita de Córdoba, o conocer los Pueblos Blancos , o ir de pinchos por Donosti o recorrer en Globo Toledo , o ir a bodegas espectaculares.',
     color: 'text-green-500',
     gradient: 'from-green-100 to-green-300 dark:from-green-900/30 dark:to-green-700/20'
   },
@@ -57,7 +57,7 @@ const steps: Step[] = [
     icon: <CheckCircle size={36} />,
     title: 'Disfruta tu estancia y actividades',
     description:
-      'No te preocupes por nada alojamiento preparado, calendario de experiencias y soporte durante toda tu estancia.',
+      'Cuando llegues  estara tu alojamiento preparado , un  calendario de experiencias y soporte durante toda tu estancia, para que no te preocupes por nada.',
     color: 'text-indigo-500',
     gradient: 'from-indigo-100 to-indigo-300 dark:from-indigo-900/30 dark:to-indigo-700/20'
   }
