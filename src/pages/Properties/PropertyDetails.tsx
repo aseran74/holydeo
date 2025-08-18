@@ -186,33 +186,50 @@ const PropertyDetails = () => {
       let ownerData = null;
       if (propertyData.owner_id) {
         console.log('Fetching owner with ID:', propertyData.owner_id);
+        
+        // DIAGNÓSTICO: Verificar si la tabla users existe y qué campos tiene
         try {
-          // Primero intentar con campos estándar
-          let { data: owner, error: ownerError } = await supabase
+          console.log('=== DIAGNÓSTICO TABLA USERS ===');
+          
+          // 1. Intentar consultar la tabla users completa
+          const { data: allUsers, error: allUsersError } = await supabase
             .from('users')
-            .select('*')  // Seleccionar todos los campos para ver qué hay
+            .select('*')
+            .limit(1);
+          
+          console.log('Test tabla users completa:', { allUsers, allUsersError });
+          
+          // 2. Intentar consultar solo el owner específico
+          const { data: owner, error: ownerError } = await supabase
+            .from('users')
+            .select('*')
             .eq('id', propertyData.owner_id)
             .single();
           
-          console.log('Owner query result (all fields):', { owner, ownerError });
+          console.log('Consulta owner específico:', { owner, ownerError });
           
+          // 3. Si falla, intentar con auth.users (tabla de Supabase Auth)
           if (ownerError) {
-            console.error('Error fetching owner:', ownerError);
-            // Intentar con campos alternativos
-            const { data: ownerAlt, error: ownerAltError } = await supabase
-              .from('users')
-              .select('id, name, email, phone_number, contact_email')
-              .eq('id', propertyData.owner_id)
-              .single();
-            
-            console.log('Owner alternative query result:', { ownerAlt, ownerAltError });
-            if (!ownerAltError && ownerAlt) {
-              owner = ownerAlt;
-            }
+            console.log('Intentando con auth.users...');
+            const { data: authUser, error: authError } = await supabase.auth.getUser(propertyData.owner_id);
+            console.log('Consulta auth.users:', { authUser, authError });
           }
           
-          if (owner) {
-            // Mapear los campos disponibles
+          // 4. Si falla, intentar con profiles (tabla común en Supabase)
+          if (ownerError) {
+            console.log('Intentando con profiles...');
+            const { data: profile, error: profileError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', propertyData.owner_id)
+              .single();
+            console.log('Consulta profiles:', { profile, profileError });
+          }
+          
+          console.log('=== FIN DIAGNÓSTICO ===');
+          
+          // Si encontramos datos, mapearlos
+          if (owner && !ownerError) {
             ownerData = {
               id: owner.id,
               full_name: owner.full_name || owner.name || owner.display_name || 'Nombre no disponible',
@@ -222,7 +239,7 @@ const PropertyDetails = () => {
             console.log('Owner data mapped successfully:', ownerData);
           }
         } catch (ownerError) {
-          console.error('Exception fetching owner:', ownerError);
+          console.error('Exception en diagnóstico owner:', ownerError);
         }
       }
 
@@ -230,33 +247,42 @@ const PropertyDetails = () => {
       let agencyData = null;
       if (propertyData.agency_id) {
         console.log('Fetching agency with ID:', propertyData.agency_id);
+        
+        // DIAGNÓSTICO: Verificar si la tabla users existe y qué campos tiene
         try {
-          // Primero intentar con campos estándar
-          let { data: agency, error: agencyError } = await supabase
+          console.log('=== DIAGNÓSTICO AGENCIA ===');
+          
+          // 1. Intentar consultar solo la agencia específica
+          const { data: agency, error: agencyError } = await supabase
             .from('users')
-            .select('*')  // Seleccionar todos los campos para ver qué hay
+            .select('*')
             .eq('id', propertyData.agency_id)
             .single();
           
-          console.log('Agency query result (all fields):', { agency, agencyError });
+          console.log('Consulta agency específica:', { agency, agencyError });
           
+          // 2. Si falla, intentar con auth.users (tabla de Supabase Auth)
           if (agencyError) {
-            console.error('Error fetching agency:', agencyError);
-            // Intentar con campos alternativos
-            const { data: agencyAlt, error: agencyAltError } = await supabase
-              .from('users')
-              .select('id, name, email, phone_number, contact_email')
-              .eq('id', propertyData.agency_id)
-              .single();
-            
-            console.log('Agency alternative query result:', { agencyAlt, agencyAltError });
-            if (!agencyAltError && agencyAlt) {
-              agency = agencyAlt;
-            }
+            console.log('Intentando con auth.users para agencia...');
+            const { data: authUser, error: authError } = await supabase.auth.getUser(propertyData.agency_id);
+            console.log('Consulta auth.users agencia:', { authUser, authError });
           }
           
-          if (agency) {
-            // Mapear los campos disponibles
+          // 3. Si falla, intentar con profiles (tabla común en Supabase)
+          if (agencyError) {
+            console.log('Intentando con profiles para agencia...');
+            const { data: profile, error: profileError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', propertyData.agency_id)
+              .single();
+            console.log('Consulta profiles agencia:', { profile, profileError });
+          }
+          
+          console.log('=== FIN DIAGNÓSTICO AGENCIA ===');
+          
+          // Si encontramos datos, mapearlos
+          if (agency && !agencyError) {
             agencyData = {
               id: agency.id,
               full_name: agency.full_name || agency.name || agency.display_name || 'Nombre no disponible',
@@ -266,7 +292,7 @@ const PropertyDetails = () => {
             console.log('Agency data mapped successfully:', agencyData);
           }
         } catch (agencyError) {
-          console.error('Exception fetching agency:', agencyError);
+          console.error('Exception en diagnóstico agency:', agencyError);
         }
       }
 
