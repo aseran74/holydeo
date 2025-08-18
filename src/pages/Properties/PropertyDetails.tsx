@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+import { PriceCalculator } from '../../components/properties/PriceCalculator';
 import { 
   ArrowLeft, 
   Heart, 
@@ -66,7 +67,7 @@ interface Property {
   title: string;
   description?: string;
   location: string;
-  price?: number;
+  price: number;
   bedrooms: number;
   bathrooms: number;
   toilets: number;
@@ -76,15 +77,15 @@ interface Property {
   state?: string;
   postal_code?: string;
   country?: string;
-  main_image_path?: string | null;
-  image_paths?: string[] | null;
-  amenities?: string[] | null;
+  main_image_path?: string;
+  image_paths?: string[];
+  amenities?: string[];
   precio_mes: number;
   precio_entresemana: number;
-  precio_fin_de_semana: number;
   precio_dia?: number;
+  precio_fin_de_semana: number;
   alquila_temporada_completa?: boolean;
-  meses_temporada?: string[] | null;
+  meses_temporada?: string[];
   lat?: number;
   lng?: number;
   url_idealista?: string;
@@ -93,11 +94,10 @@ interface Property {
   min_days?: number;
   max_days?: number;
   destacada?: boolean;
-  created_at: string;
-  owner_id?: string;
-  agency_id?: string;
   tipo?: string;
   region?: string;
+  owner_id?: string;
+  agency_id?: string;
   // Campos para información del propietario y agencia
   owner?: {
     id: string;
@@ -998,6 +998,23 @@ const PropertyDetails = () => {
             />
           </div>
         </div>
+
+        {/* Calculadora de Precios */}
+        {property.precio_entresemana && property.precio_fin_de_semana && (
+          <PriceCalculator
+            pricing={{
+              precio_entresemana: property.precio_entresemana,
+              precio_fin_de_semana: property.precio_fin_de_semana,
+              precio_dia: property.precio_dia,
+              precio_mes: property.precio_mes
+            }}
+            onPriceCalculated={(result) => {
+              console.log('Precio calculado:', result);
+            }}
+          />
+        )}
+
+        {/* Información de la Propiedad */}
       </div>
     </>
   );
