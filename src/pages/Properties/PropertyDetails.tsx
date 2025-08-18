@@ -187,19 +187,39 @@ const PropertyDetails = () => {
       if (propertyData.owner_id) {
         console.log('Fetching owner with ID:', propertyData.owner_id);
         try {
-          const { data: owner, error: ownerError } = await supabase
+          // Primero intentar con campos estándar
+          let { data: owner, error: ownerError } = await supabase
             .from('users')
-            .select('id, full_name, email, phone')
+            .select('*')  // Seleccionar todos los campos para ver qué hay
             .eq('id', propertyData.owner_id)
             .single();
           
-          console.log('Owner query result:', { owner, ownerError });
+          console.log('Owner query result (all fields):', { owner, ownerError });
           
           if (ownerError) {
             console.error('Error fetching owner:', ownerError);
-          } else if (owner) {
-            ownerData = owner;
-            console.log('Owner data fetched successfully:', owner);
+            // Intentar con campos alternativos
+            const { data: ownerAlt, error: ownerAltError } = await supabase
+              .from('users')
+              .select('id, name, email, phone_number, contact_email')
+              .eq('id', propertyData.owner_id)
+              .single();
+            
+            console.log('Owner alternative query result:', { ownerAlt, ownerAltError });
+            if (!ownerAltError && ownerAlt) {
+              owner = ownerAlt;
+            }
+          }
+          
+          if (owner) {
+            // Mapear los campos disponibles
+            ownerData = {
+              id: owner.id,
+              full_name: owner.full_name || owner.name || owner.display_name || 'Nombre no disponible',
+              email: owner.email || owner.contact_email || 'Email no disponible',
+              phone: owner.phone || owner.phone_number || owner.contact_phone || null
+            };
+            console.log('Owner data mapped successfully:', ownerData);
           }
         } catch (ownerError) {
           console.error('Exception fetching owner:', ownerError);
@@ -211,19 +231,39 @@ const PropertyDetails = () => {
       if (propertyData.agency_id) {
         console.log('Fetching agency with ID:', propertyData.agency_id);
         try {
-          const { data: agency, error: agencyError } = await supabase
+          // Primero intentar con campos estándar
+          let { data: agency, error: agencyError } = await supabase
             .from('users')
-            .select('id, full_name, email, phone')
+            .select('*')  // Seleccionar todos los campos para ver qué hay
             .eq('id', propertyData.agency_id)
             .single();
           
-          console.log('Agency query result:', { agency, agencyError });
+          console.log('Agency query result (all fields):', { agency, agencyError });
           
           if (agencyError) {
             console.error('Error fetching agency:', agencyError);
-          } else if (agency) {
-            agencyData = agency;
-            console.log('Agency data fetched successfully:', agency);
+            // Intentar con campos alternativos
+            const { data: agencyAlt, error: agencyAltError } = await supabase
+              .from('users')
+              .select('id, name, email, phone_number, contact_email')
+              .eq('id', propertyData.agency_id)
+              .single();
+            
+            console.log('Agency alternative query result:', { agencyAlt, agencyAltError });
+            if (!agencyAltError && agencyAlt) {
+              agency = agencyAlt;
+            }
+          }
+          
+          if (agency) {
+            // Mapear los campos disponibles
+            agencyData = {
+              id: agency.id,
+              full_name: agency.full_name || agency.name || agency.display_name || 'Nombre no disponible',
+              email: agency.email || agency.contact_email || 'Email no disponible',
+              phone: agency.phone || agency.phone_number || agency.contact_phone || null
+            };
+            console.log('Agency data mapped successfully:', agencyData);
           }
         } catch (agencyError) {
           console.error('Exception fetching agency:', agencyError);
