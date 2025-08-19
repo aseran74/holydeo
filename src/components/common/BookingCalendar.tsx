@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
-import { ChevronLeft, ChevronRight, X, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Calendar, User } from 'lucide-react';
 import useToast from '../../hooks/useToast';
+import { useAuth } from '../../context/AuthContext';
 
 interface BookingCalendarProps {
   propertyId: string;
@@ -29,6 +30,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
   onBookingComplete
 }) => {
   const toast = useToast();
+  const { currentUser } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
@@ -47,6 +49,19 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
   useEffect(() => {
     fetchCalendarData();
   }, [propertyId]);
+
+  // Efecto para auto-completar el formulario cuando se abra
+  useEffect(() => {
+    if (showBookingForm && currentUser) {
+      // Auto-completar con datos del usuario logueado
+      setBookingForm(prev => ({
+        ...prev,
+        guestName: currentUser.displayName || currentUser.email?.split('@')[0] || '',
+        guestEmail: currentUser.email || '',
+        guestPhone: currentUser.phoneNumber || ''
+      }));
+    }
+  }, [showBookingForm, currentUser]);
 
   const fetchCalendarData = async () => {
     try {
@@ -212,7 +227,9 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
           notes: bookingForm.notes,
           status: 'pending',
           total_price: calculateTotalPrice(),
-          nights: Math.ceil((selectedEndDate.getTime() - selectedStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1
+          nights: Math.ceil((selectedEndDate.getTime() - selectedStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1,
+          // Agregar user_id si el usuario está logueado
+          ...(currentUser && { user_id: currentUser.uid })
         })
         .select()
         .single();
@@ -477,6 +494,21 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                 </div>
 
                 <form onSubmit={handleBookingSubmit} className="space-y-4">
+                  {/* Indicador de usuario logueado */}
+                  {currentUser && (
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
+                      <div className="flex items-center space-x-2">
+                        <User className="w-4 h-4 text-blue-600" />
+                        <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                          Datos auto-completados de tu perfil
+                        </span>
+                      </div>
+                      <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                        Puedes modificar estos datos si lo deseas
+                      </p>
+                    </div>
+                  )}
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Nombre completo *
@@ -486,7 +518,9 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       required
                       value={bookingForm.guestName}
                       onChange={(e) => setBookingForm(prev => ({ ...prev, guestName: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        currentUser ? 'border-blue-300 bg-blue-50 dark:bg-blue-900/10' : 'border-gray-300'
+                      }`}
                     />
                   </div>
 
@@ -499,7 +533,9 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       required
                       value={bookingForm.guestEmail}
                       onChange={(e) => setBookingForm(prev => ({ ...prev, guestEmail: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        currentUser ? 'border-blue-300 bg-blue-50 dark:bg-blue-900/10' : 'border-gray-300'
+                      }`}
                     />
                   </div>
 
@@ -511,7 +547,9 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       type="tel"
                       value={bookingForm.guestPhone}
                       onChange={(e) => setBookingForm(prev => ({ ...prev, guestPhone: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        currentUser ? 'border-blue-300 bg-blue-50 dark:bg-blue-900/10' : 'border-gray-300'
+                      }`}
                     />
                   </div>
 
@@ -526,6 +564,26 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
+
+                  {/* Botón para restaurar datos del usuario */}
+                  {currentUser && (
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setBookingForm({
+                            guestName: currentUser.displayName || currentUser.email?.split('@')[0] || '',
+                            guestEmail: currentUser.email || '',
+                            guestPhone: currentUser.phoneNumber || '',
+                            notes: ''
+                          });
+                        }}
+                        className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+                      >
+                        Restaurar datos del perfil
+                      </button>
+                    </div>
+                  )}
 
                   <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                     <div className="flex justify-between text-sm mb-2">

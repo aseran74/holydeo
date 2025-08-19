@@ -72,6 +72,14 @@ const SearchPage = () => {
     }
   };
 
+  // Detectar el tipo de búsqueda desde la URL
+  useEffect(() => {
+    const typeParam = searchParams.get('type');
+    if (typeParam === 'properties' || typeParam === 'experiences') {
+      setSearchType(typeParam);
+    }
+  }, [searchParams]);
+
   // Búsqueda automática al cargar la página
   useEffect(() => {
     handleSearch();

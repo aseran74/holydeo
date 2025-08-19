@@ -13,6 +13,9 @@ import Agents from './pages/Agents/Agents';
 import Owners from './pages/Owners/Owners';
 import AdminDashboard from './pages/Dashboard/AdminDashboard';
 import OwnerDashboard from './pages/Dashboard/OwnerDashboard';
+import GuestDashboard from './pages/Dashboard/GuestDashboard';
+import GuestBookings from './pages/Bookings/GuestBookings';
+import DebugBookingsStructure from './components/DebugBookingsStructure';
 import UserManagement from './pages/Admin/UserManagement';
 import SocialPage from './pages/Social/SocialPage';
 import SocialManagement from './pages/Admin/SocialManagement';
@@ -56,6 +59,15 @@ function App() {
           }>
             <Route element={<AppLayout />}>
               <Route index element={<Home />} />
+            </Route>
+          </Route>
+          
+          {/* Guest Dashboard Route */}
+          <Route path="/guest-dashboard" element={
+            <ProtectedRoute allowedRoles={['guest']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<GuestDashboard />} />
             </Route>
           </Route>
           
@@ -115,6 +127,24 @@ function App() {
           }>
             <Route element={<AppLayout />}>
               <Route index element={<Bookings />} />
+            </Route>
+          </Route>
+          
+          {/* Guest Bookings Route - Solo sus propias reservas */}
+          <Route path="/guest-bookings" element={
+            <ProtectedRoute allowedRoles={['guest']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<GuestBookings />} />
+            </Route>
+          </Route>
+          
+          {/* Debug Route - Temporal para verificar estructura */}
+          <Route path="/debug-bookings" element={
+            <ProtectedRoute allowedRoles={['guest']} />
+          }>
+            <Route element={<AppLayout />}>
+              <Route index element={<DebugBookingsStructure />} />
             </Route>
           </Route>
           

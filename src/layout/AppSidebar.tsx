@@ -11,7 +11,8 @@ import {
   BarChart3, 
   Globe,
   Group,
-  Trash2
+  Trash2,
+  Star
 } from 'lucide-react';
 
 const AppSidebar: React.FC = () => {
@@ -29,7 +30,12 @@ const AppSidebar: React.FC = () => {
     return location.pathname === path;
   };
 
-  const navigationItems = [
+  const navigationItems = userRole === 'guest' ? [
+    { name: 'Mis Reservas', href: '/guest-bookings', icon: Calendar },
+    { name: 'Red Social', href: '/social', icon: Group },
+    { name: 'Buscar Propiedades', href: '/search?type=properties', icon: Building2 },
+    { name: 'Buscar Experiencias', href: '/search?type=experiences', icon: Star },
+  ] : [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
     { name: 'Propiedades', href: '/properties', icon: Building2 },
     { name: 'Experiencias', href: '/experiences', icon: Globe },
@@ -63,6 +69,35 @@ const AppSidebar: React.FC = () => {
             className="h-8 w-auto hidden dark:block"
           />
         </div>
+        
+        {/* Indicador del rol del usuario */}
+        {userRole && (
+          <div className="mb-6 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1">
+              Rol del Usuario
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                userRole === 'admin' ? 'bg-red-100 text-red-800' :
+                userRole === 'owner' ? 'bg-purple-100 text-purple-800' :
+                userRole === 'agent' ? 'bg-blue-100 text-blue-800' :
+                userRole === 'guest' ? 'bg-green-100 text-green-800' :
+                'bg-gray-100 text-gray-800'
+              }`}>
+                {userRole === 'admin' ? 'Administrador' :
+                 userRole === 'owner' ? 'Propietario' :
+                 userRole === 'agent' ? 'Agente' :
+                 userRole === 'guest' ? 'Huésped' :
+                 userRole}
+              </span>
+              {userRole === 'guest' && (
+                <span className="text-xs text-gray-500">
+                  (Acceso limitado)
+                </span>
+              )}
+            </div>
+          </div>
+        )}
 
         <nav className="space-y-2">
           {navigationItems.map((item) => (

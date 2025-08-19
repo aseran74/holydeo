@@ -15,6 +15,7 @@ import {
 import CreatePostModal from './CreatePostModal';
 import { SocialService, SocialCategory, SocialPost, CreatePostData } from '../../services/socialService';
 import { useAuth } from '../../context/AuthContext';
+import GuestNotificationDropdown from '../notifications/GuestNotificationDropdown';
 
 interface Comment {
   id: string;
@@ -228,7 +229,10 @@ const SocialFeed: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 py-8">
         
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 relative">
+          <div className="absolute top-0 right-0">
+            <GuestNotificationDropdown />
+          </div>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Comunidad Holydeo
           </h1>

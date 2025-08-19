@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
-import NotificationDropdown from "../components/header/NotificationDropdown";
+import GuestNotificationDropdown from "../components/notifications/GuestNotificationDropdown";
 import UserDropdown from "../components/header/UserDropdown";
+import { useAuth } from "../context/AuthContext";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
+  const { currentUser } = useAuth();
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
@@ -160,7 +162,11 @@ const AppHeader: React.FC = () => {
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
-            <NotificationDropdown />
+            {currentUser ? (
+              <GuestNotificationDropdown />
+            ) : (
+              <GuestNotificationDropdown />
+            )}
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}

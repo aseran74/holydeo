@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
-import NotificationDropdown from "./NotificationDropdown";
+import GuestNotificationDropdown from "../notifications/GuestNotificationDropdown";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 // Define the interface for the props
 interface HeaderProps {
@@ -10,6 +11,7 @@ interface HeaderProps {
 }
 const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
+  const { currentUser } = useAuth();
 
   const toggleApplicationMenu = () => {
     setApplicationMenuOpen(!isApplicationMenuOpen);
@@ -154,17 +156,40 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
           <div className="flex items-center gap-2 2xsm:gap-3">
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
-            {/* <!-- Dark Mode Toggler --> */}
-            <NotificationDropdown />
             {/* <!-- Notification Menu Area --> */}
+            {currentUser ? (
+              <GuestNotificationDropdown />
+            ) : (
+              <div className="relative">
+                <button className="relative flex items-center justify-center w-10 h-10 text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-gray-700 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM9 7H4a2 2 0 00-2 2v10a2 2 0 002 2h5l5-5V9a2 2 0 00-2-2z" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
           {/* <!-- User Area --> */}
-          <Link 
-            to="/login" 
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-          >
-            Iniciar Sesión
-          </Link>
+          {currentUser ? (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                {currentUser.email}
+              </span>
+              <Link 
+                to="/logout" 
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
+              >
+                Cerrar Sesión
+              </Link>
+            </div>
+          ) : (
+            <Link 
+              to="/login" 
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+            >
+              Iniciar Sesión
+            </Link>
+          )}
         </div>
       </div>
     </header>
