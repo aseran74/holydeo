@@ -115,15 +115,12 @@ const LandingNavbar = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              <img
-                src={isLandingPage && !isScrolled ? "/logotrans-white.svg" : "/logotrans.svg"}
-                alt="Logo"
-                className="h-8 w-auto transition-opacity duration-200 ease-in-out"
-                style={{ 
-                  filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1))',
-                  willChange: 'opacity'
-                }}
-              />
+              <div className={`flex items-center space-x-2 transition-all duration-200 ease-in-out ${
+                isLandingPage && !isScrolled ? 'text-white' : 'text-blue-600 dark:text-blue-400'
+              }`}>
+                <Home className="h-8 w-8" />
+                <span className="text-xl font-bold tracking-tight">Holydeo</span>
+              </div>
             </Link>
           </div>
 

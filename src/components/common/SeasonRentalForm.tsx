@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, Users, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { Calendar } from 'lucide-react';
 
 interface SeasonRentalFormProps {
   propertyId: string;
@@ -45,7 +45,49 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
   const daysDifference = calculateDays(formData.startDate, formData.endDate);
   const isLongTerm = daysDifference > 90;
 
-  // Temporadas disponibles con información detallada
+  // Función para convertir claves de temporada en información visual atractiva
+  const getSeasonDisplayInfo = (seasonKey: string) => {
+    const seasonLabels: { [key: string]: { displayName: string; duration: number; months: string } } = {
+      'sep_may': { displayName: 'Septiembre a Mayo', duration: 9, months: 'Sep a Mayo' },
+      'sep_jun': { displayName: 'Septiembre a Junio', duration: 10, months: 'Sep a Junio' },
+      'sep_jul': { displayName: 'Septiembre a Julio', duration: 11, months: 'Sep a Julio' },
+      'oct_jun': { displayName: 'Octubre a Junio', duration: 9, months: 'Oct a Junio' },
+      'oct_jul': { displayName: 'Octubre a Julio', duration: 10, months: 'Oct a Julio' },
+      'oct_may': { displayName: 'Octubre a Mayo', duration: 8, months: 'Oct a Mayo' },
+      'nov_aug': { displayName: 'Noviembre a Agosto', duration: 10, months: 'Nov a Agosto' },
+      'dec_sep': { displayName: 'Diciembre a Septiembre', duration: 10, months: 'Dic a Sep' },
+      'jan_oct': { displayName: 'Enero a Octubre', duration: 10, months: 'Ene a Oct' },
+      'feb_nov': { displayName: 'Febrero a Noviembre', duration: 10, months: 'Feb a Nov' },
+      'mar_dec': { displayName: 'Marzo a Diciembre', duration: 10, months: 'Mar a Dic' },
+      'apr_jan': { displayName: 'Abril a Enero', duration: 10, months: 'Abr a Ene' },
+      'may_feb': { displayName: 'Mayo a Febrero', duration: 10, months: 'Mayo a Feb' },
+      'jun_mar': { displayName: 'Junio a Marzo', duration: 10, months: 'Junio a Mar' },
+      'jul_apr': { displayName: 'Julio a Abril', duration: 10, months: 'Julio a Abr' },
+      'aug_may': { displayName: 'Agosto a Mayo', duration: 10, months: 'Ago a Mayo' },
+      'pct_mayo': { displayName: 'Octubre a Mayo', duration: 8, months: 'Oct a Mayo' },
+      // Fallbacks para meses individuales
+      'enero': { displayName: 'Enero', duration: 1, months: 'Enero' },
+      'febrero': { displayName: 'Febrero', duration: 1, months: 'Febrero' },
+      'marzo': { displayName: 'Marzo', duration: 1, months: 'Marzo' },
+      'abril': { displayName: 'Abril', duration: 1, months: 'Abril' },
+      'mayo': { displayName: 'Mayo', duration: 1, months: 'Mayo' },
+      'junio': { displayName: 'Junio', duration: 1, months: 'Junio' },
+      'julio': { displayName: 'Julio', duration: 1, months: 'Julio' },
+      'agosto': { displayName: 'Agosto', duration: 1, months: 'Agosto' },
+      'septiembre': { displayName: 'Septiembre', duration: 1, months: 'Septiembre' },
+      'octubre': { displayName: 'Octubre', duration: 1, months: 'Octubre' },
+      'noviembre': { displayName: 'Noviembre', duration: 1, months: 'Noviembre' },
+      'diciembre': { displayName: 'Diciembre', duration: 1, months: 'Diciembre' }
+    };
+    
+    return seasonLabels[seasonKey] || { 
+      displayName: seasonKey, 
+      duration: 1, 
+      months: seasonKey 
+    };
+  };
+
+  // Temporadas disponibles con información detallada (para el formulario)
   const seasonInfo = {
     'enero': { name: 'Enero', duration: 31, description: 'Invierno - Año Nuevo' },
     'febrero': { name: 'Febrero', duration: 28, description: 'Invierno - Carnavales' },
@@ -106,6 +148,12 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validar que se haya seleccionado una temporada si es tipo 'season'
+    if (rentalType === 'season' && !selectedSeason) {
+      alert('Por favor selecciona una temporada');
+      return;
+    }
+    
     const rentalData = {
       propertyId,
       propertyName,
@@ -147,48 +195,32 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
         Esta propiedad está disponible para alquiler de temporada completa.
       </p>
 
-      {/* Mostrar temporadas disponibles */}
-      {mesesTemporada.length > 0 && (
-        <div className="mb-6">
-          <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-            <Clock className="w-4 h-4" />
-            Temporadas Disponibles:
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {mesesTemporada.map((mes) => (
-              <button
-                key={mes}
-                onClick={() => handleSeasonSelect(mes)}
-                className={`p-2 text-sm rounded-lg border transition-colors ${
-                  selectedSeason === mes
-                    ? 'bg-blue-100 border-blue-300 text-blue-700'
-                    : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
-                }`}
-              >
-                <div className="font-medium">{seasonInfo[mes as keyof typeof seasonInfo]?.name || mes}</div>
-                <div className="text-xs text-gray-500">
-                  {seasonInfo[mes as keyof typeof seasonInfo]?.duration} días
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+
 
       {/* Información de precios */}
       <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-3">
           <span className="text-sm text-gray-600 dark:text-gray-400">Precio mensual:</span>
           <span className="font-semibold text-blue-600">{new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(precioMes)}</span>
         </div>
-        {selectedSeason && (
-          <div className="flex items-center justify-between mt-1">
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              {seasonInfo[selectedSeason as keyof typeof seasonInfo]?.name}:
-            </span>
-            <span className="font-semibold text-blue-600">
-              {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(precioMes)}
-            </span>
+        
+        {/* Información de temporadas disponibles */}
+        {mesesTemporada.length > 0 && (
+          <div className="pt-3 border-t border-blue-200">
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Temporadas disponibles:</p>
+            <div className="flex flex-wrap gap-2">
+              {mesesTemporada.map((seasonKey) => {
+                const seasonData = getSeasonDisplayInfo(seasonKey);
+                return (
+                  <span
+                    key={seasonKey}
+                    className="inline-block px-2 py-1 bg-white dark:bg-blue-800 text-xs text-blue-700 dark:text-blue-300 rounded-full border border-blue-200 dark:border-blue-600"
+                  >
+                    {seasonData.displayName}
+                  </span>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
@@ -231,25 +263,41 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
             </div>
           </div>
 
-          {/* Selección de temporada */}
+          {/* Selección visual de temporadas */}
           {rentalType === 'season' && mesesTemporada.length > 0 && (
             <div>
-              <label className="block text-sm font-medium mb-2">Seleccionar Temporada:</label>
-              <select
-                value={selectedSeason}
-                onChange={(e) => handleSeasonSelect(e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Selecciona una temporada</option>
-                {mesesTemporada.map((mes) => (
-                  <option key={mes} value={mes}>
-                    {seasonInfo[mes as keyof typeof seasonInfo]?.name} - {seasonInfo[mes as keyof typeof seasonInfo]?.description}
-                  </option>
-                ))}
-              </select>
+              <label className="block text-sm font-medium mb-3">Seleccionar Temporada:</label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {mesesTemporada.map((seasonKey) => {
+                  const seasonData = getSeasonDisplayInfo(seasonKey);
+                  return (
+                    <button
+                      key={seasonKey}
+                      type="button"
+                      onClick={() => handleSeasonSelect(seasonKey)}
+                      className={`p-4 text-center rounded-lg border transition-all duration-200 ${
+                        selectedSeason === seasonKey
+                          ? 'bg-blue-100 border-blue-300 text-blue-700 ring-2 ring-blue-500 shadow-md'
+                          : 'bg-white border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:shadow-md'
+                      }`}
+                    >
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <Calendar className="w-5 h-5 text-white" />
+                      </div>
+                      <h5 className="font-semibold text-sm">
+                        {seasonData.displayName}
+                      </h5>
+                    </button>
+                  );
+                })}
+              </div>
+              {!selectedSeason && (
+                <p className="text-sm text-red-500 mt-2">* Selecciona una temporada</p>
+              )}
             </div>
           )}
+
+
 
           {/* Fechas personalizadas */}
           {rentalType === 'custom' && (
