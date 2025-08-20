@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { Property, Experience } from '../../types';
@@ -7,7 +7,8 @@ import RedirectNotification from '../../components/common/RedirectNotification';
 import DateSearchForm from '../../components/common/DateSearchForm';
 import EnhancedSearchFilters from '../../components/common/EnhancedSearchFilters';
 import PublicPropertyCard from '../../components/common/PublicPropertyCard';
-import { Search, Grid, List, Home, Star, Car, Waves, TreePine, Sun, Snowflake, Building2, Building } from 'lucide-react';
+import { Search, Grid, List, Map, Home, Star, Car, Waves, TreePine, Sun, Snowflake, Building2, Building } from 'lucide-react';
+import { GoogleMap, useLoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -48,9 +49,58 @@ const SearchPage = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const [availabilityFilterApplied, setAvailabilityFilterApplied] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const mapRef = useRef<google.maps.Map | null>(null);
+
+  // Hook para cargar Google Maps API
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
+    libraries: ['places'],
+  });
+
+  // Función para cargar el mapa y ajustar límites
+  const onLoadMap = (map: google.maps.Map) => {
+    mapRef.current = map;
+
+    if (results.properties.length > 0) {
+      const bounds = new window.google.maps.LatLngBounds();
+      results.properties.forEach((property) => {
+        if (property.lat && property.lng) {
+          bounds.extend({ lat: property.lat, lng: property.lng });
+        }
+      });
+      map.fitBounds(bounds);
+    }
+  };
+
+  // Componente de minitarjeta para el mapa
+  const MiniPropertyCard = ({ property }: { property: Property }) => (
+    <div className="p-3 w-56 bg-white rounded-lg shadow-lg">
+      <img
+        src={property.main_image_path || property.image_paths?.[0] || "/images/cards/card-01.jpg"}
+        alt={property.title}
+        className="w-full h-24 object-cover rounded-md mb-2"
+      />
+      <h3 className="text-sm font-semibold truncate mb-1">{property.title}</h3>
+      <p className="text-gray-600 text-xs mb-2">{property.location}</p>
+      <div className="flex items-center gap-2 mb-2 text-xs text-gray-500">
+        {property.bedrooms && <span>🛏️ {property.bedrooms} habs.</span>}
+        {property.bathrooms && <span>🚿 {property.bathrooms} baños</span>}
+      </div>
+      <p className="text-blue-600 font-semibold text-sm mb-2">
+        €{property.precio_dia || property.price || 0}/día
+      </p>
+      <Link
+        to={`/property/${property.id}`}
+        className="text-blue-600 underline text-xs hover:text-blue-800"
+      >
+        Ver detalles
+      </Link>
+    </div>
+  );
 
   // Helper function to get proper image URL for experiences
   const getExperienceImageUrl = (photos: string[] | undefined) => {
@@ -577,6 +627,14 @@ const SearchPage = () => {
                 >
                   <List className="w-5 h-5" />
                 </button>
+                <button
+                  onClick={() => setViewMode('map')}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === 'map' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
+                  }`}
+                >
+                  <Map className="w-5 h-5" />
+                </button>
               </div>
             </div>
 
@@ -608,7 +666,63 @@ const SearchPage = () => {
                   </div>
                 )}
               </div>
+                         ) : viewMode === 'map' ? (
+               // Vista del mapa
+               <div className="mb-8 rounded-lg overflow-hidden shadow">
+                 {!isLoaded ? (
+                   <div className="flex items-center justify-center h-96 bg-gray-100">
+                     <div className="text-center">
+                       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                       <p className="text-gray-600">Cargando mapa...</p>
+                     </div>
+                   </div>
+                 ) : loadError ? (
+                   <div className="flex items-center justify-center h-96 bg-gray-100">
+                     <div className="text-center text-red-600">
+                       <p>Error al cargar el mapa</p>
+                       <p className="text-sm">{loadError.message}</p>
+                     </div>
+                   </div>
+                 ) : (
+                   <GoogleMap
+                     mapContainerStyle={{ width: "100%", height: "500px" }}
+                     onLoad={onLoadMap}
+                     center={{ lat: 40.4168, lng: -3.7038 }} // Centro de España
+                     zoom={6}
+                   >
+                     {results.properties.map((property) =>
+                       property.lat && property.lng ? (
+                         <Marker
+                           key={property.id}
+                           position={{ lat: property.lat, lng: property.lng }}
+                           onClick={() => setSelectedProperty(property)}
+                           icon={{
+                             url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+                               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                 <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" fill="#3B82F6" stroke="#1E40AF" stroke-width="2"/>
+                                 <path d="M9 22V12H15V22" fill="white"/>
+                               </svg>
+                             `)}`,
+                             scaledSize: new window.google.maps.Size(32, 32),
+                             anchor: new window.google.maps.Point(16, 32)
+                           }}
+                         />
+                       ) : null
+                     )}
+
+                     {selectedProperty && selectedProperty.lat && selectedProperty.lng && (
+                       <InfoWindow
+                         position={{ lat: selectedProperty.lat, lng: selectedProperty.lng }}
+                         onCloseClick={() => setSelectedProperty(null)}
+                       >
+                         <MiniPropertyCard property={selectedProperty} />
+                       </InfoWindow>
+                     )}
+                   </GoogleMap>
+                 )}
+               </div>
             ) : (
+              // Vista de grid o lista
               <div className={viewMode === 'grid' 
                 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 : "space-y-4"
@@ -661,6 +775,28 @@ const SearchPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Botón flotante para mapa en móvil */}
+      {viewMode !== 'map' && (
+        <button
+          onClick={() => setViewMode('map')}
+          className="fixed bottom-6 right-6 z-50 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 md:hidden"
+          aria-label="Ver mapa"
+        >
+          <Map className="w-6 h-6" />
+        </button>
+      )}
+
+      {/* Botón flotante para volver a vista normal desde mapa en móvil */}
+      {viewMode === 'map' && (
+        <button
+          onClick={() => setViewMode('grid')}
+          className="fixed bottom-6 right-6 z-50 bg-gray-600 text-white p-4 rounded-full shadow-lg hover:bg-gray-700 transition-all duration-300 md:hidden"
+          aria-label="Volver a vista normal"
+        >
+          <Grid className="w-6 h-6" />
+        </button>
+      )}
     </div>
   );
 };
