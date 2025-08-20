@@ -6,6 +6,7 @@ interface SeasonRentalFormProps {
   propertyName: string;
   precioMes: number;
   alquilaTemporadaCompleta?: boolean;
+  mesesTemporada?: string[];
   onSuccess: (data: any) => void;
   className?: string;
 }
@@ -15,10 +16,12 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
   propertyName,
   precioMes,
   alquilaTemporadaCompleta = false,
+  mesesTemporada = [],
   onSuccess,
   className = ''
 }) => {
   const [showForm, setShowForm] = useState(false);
+  const [selectedSeason, setSelectedSeason] = useState<string>('');
   const [formData, setFormData] = useState({
     startDate: '',
     endDate: '',
@@ -39,15 +42,23 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validar que se haya seleccionado una temporada si hay disponibles
+    if (mesesTemporada && mesesTemporada.length > 0 && !selectedSeason) {
+      alert('Por favor, selecciona una temporada');
+      return;
+    }
+    
     const rentalData = {
       propertyId,
       propertyName,
       precioMes,
+      selectedSeason,
       ...formData
     };
     
     onSuccess(rentalData);
     setShowForm(false);
+    setSelectedSeason('');
     setFormData({
       startDate: '',
       endDate: '',
@@ -73,6 +84,25 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
         Esta propiedad está disponible para alquiler de temporada completa.
       </p>
 
+      {/* Mostrar temporadas disponibles */}
+      {mesesTemporada && mesesTemporada.length > 0 && (
+        <div className="mb-4">
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Temporadas disponibles:
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {mesesTemporada.map((season, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full border border-blue-200"
+              >
+                {season}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {!showForm ? (
         <button
           onClick={() => setShowForm(true)}
@@ -82,6 +112,28 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
         </button>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Selector de temporada */}
+          {mesesTemporada && mesesTemporada.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Seleccionar temporada <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={selectedSeason}
+                onChange={(e) => setSelectedSeason(e.target.value)}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Selecciona una temporada</option>
+                {mesesTemporada.map((season, index) => (
+                  <option key={index} value={season}>
+                    {season}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1">Fecha de inicio</label>

@@ -991,6 +991,7 @@ const PropertyDetails = () => {
               propertyName={property.title}
               precioMes={property.precio_mes}
               alquilaTemporadaCompleta={property.alquila_temporada_completa}
+              mesesTemporada={property.meses_temporada}
               onSuccess={(rentalData) => {
                 console.log('Alquiler de temporada solicitado:', rentalData);
                 // Aquí puedes manejar la solicitud de alquiler
