@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wifi, WifiOff, CheckCircle, AlertCircle } from 'lucide-react';
+import { WifiOff, CheckCircle } from 'lucide-react';
 import { useNetworkStatus } from '../../hooks/useNetworkStatus';
 
 const NetworkStatus: React.FC = () => {

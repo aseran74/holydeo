@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { WifiOff, RefreshCw, Image as ImageIcon } from 'lucide-react';
+import { RefreshCw, Image as ImageIcon } from 'lucide-react';
 
 interface ImageWithFallbackProps {
   src: string;
