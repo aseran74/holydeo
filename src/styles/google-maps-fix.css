@@ -1,0 +1,289 @@
+/* Estilos para evitar conflictos de React DOM con Google Maps */
+
+.google-maps-wrapper {
+  /* Aislar el contenedor de Google Maps del DOM de React */
+  isolation: isolate;
+  contain: layout style paint;
+}
+
+.google-maps-wrapper > div {
+  /* Prevenir que React manipule el DOM interno */
+  contain: layout style paint;
+}
+
+/* Evitar que React elimine nodos del mapa */
+.google-maps-wrapper [data-google-maps] {
+  contain: layout style paint;
+}
+
+/* Estilos para el contenedor del mapa */
+.google-maps-wrapper .relative {
+  /* Asegurar que el contenedor mantenga su estructura */
+  contain: layout style paint;
+}
+
+/* Estilos para marcadores del mapa */
+.google-maps-wrapper .google-maps-marker {
+  /* Prevenir manipulación de React */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para InfoWindow */
+.google-maps-wrapper .gm-style {
+  /* Aislar InfoWindow de React */
+  contain: layout style paint;
+  z-index: 1000;
+}
+
+/* Estilos para controles del mapa */
+.google-maps-wrapper .gm-control-active {
+  /* Prevenir conflictos con controles de React */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para pantalla completa */
+.google-maps-wrapper .fullscreen {
+  /* Aislar modo pantalla completa */
+  contain: layout style paint;
+  z-index: 9999;
+}
+
+/* Estilos para botones del mapa */
+.google-maps-wrapper button {
+  /* Asegurar que los botones funcionen correctamente */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para información del mapa */
+.google-maps-wrapper .map-info {
+  /* Aislar información del mapa */
+  contain: layout style paint;
+  z-index: 100;
+}
+
+/* Estilos para botón móvil */
+.google-maps-wrapper .map-mobile-button {
+  /* Aislar botón móvil */
+  contain: layout style paint;
+  z-index: 100;
+}
+
+/* Estilos para debug info */
+.google-maps-wrapper .debug-info {
+  /* Aislar información de debug */
+  contain: layout style paint;
+  z-index: 200;
+}
+
+/* Estilos para indicadores de carga */
+.google-maps-wrapper .loading-indicator {
+  /* Aislar indicadores de carga */
+  contain: layout style paint;
+  z-index: 150;
+}
+
+/* Estilos para mensajes de error */
+.google-maps-wrapper .error-message {
+  /* Aislar mensajes de error */
+  contain: layout style paint;
+  z-index: 150;
+}
+
+/* Estilos para estado de conexión */
+.google-maps-wrapper .connection-status {
+  /* Aislar estado de conexión */
+  contain: layout style paint;
+  z-index: 150;
+}
+
+/* Estilos para fallback */
+.google-maps-wrapper .fallback {
+  /* Aislar fallback */
+  contain: layout style paint;
+  z-index: 100;
+}
+
+/* Estilos para mapa temporal */
+.google-maps-wrapper .temp-map {
+  /* Aislar mapa temporal */
+  contain: layout style paint;
+  z-index: 50;
+}
+
+/* Estilos para botón de pantalla completa */
+.google-maps-wrapper .fullscreen-button {
+  /* Aislar botón de pantalla completa */
+  contain: layout style paint;
+  z-index: 200;
+}
+
+/* Estilos para botón flotante móvil */
+.google-maps-wrapper .mobile-button {
+  /* Aislar botón móvil */
+  contain: layout style paint;
+  z-index: 200;
+}
+
+/* Estilos para información del mapa */
+.google-maps-wrapper .map-stats {
+  /* Aislar estadísticas del mapa */
+  contain: layout style paint;
+  z-index: 100;
+}
+
+/* Estilos para scripts del InfoWindow */
+.google-maps-wrapper script {
+  /* Aislar scripts del InfoWindow */
+  contain: layout style paint;
+}
+
+/* Estilos para evitar conflictos de React */
+.google-maps-wrapper * {
+  /* Aplicar contain a todos los elementos dentro del wrapper */
+  contain: layout style paint;
+}
+
+/* Estilos específicos para evitar removeChild errors */
+.google-maps-wrapper .react-safe {
+  /* Elementos seguros para React */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos que no deben ser manipulados por React */
+.google-maps-wrapper .no-react-manipulation {
+  /* Prevenir manipulación de React */
+  contain: layout style paint;
+  pointer-events: auto;
+  user-select: none;
+}
+
+/* Estilos para contenedores de Google Maps */
+.google-maps-wrapper .google-maps-container {
+  /* Contenedor principal de Google Maps */
+  contain: layout style paint;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Estilos para evitar que React elimine nodos */
+.google-maps-wrapper .persistent-node {
+  /* Nodos que deben persistir */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de Google Maps */
+.google-maps-wrapper .google-maps-element {
+  /* Elementos específicos de Google Maps */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para evitar conflictos de z-index */
+.google-maps-wrapper .z-index-safe {
+  /* Elementos con z-index seguro */
+  contain: layout style paint;
+  z-index: auto;
+}
+
+/* Estilos para elementos de interfaz del mapa */
+.google-maps-wrapper .map-ui {
+  /* Interfaz del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de navegación del mapa */
+.google-maps-wrapper .map-navigation {
+  /* Navegación del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de información del mapa */
+.google-maps-wrapper .map-information {
+  /* Información del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de control del mapa */
+.google-maps-wrapper .map-controls {
+  /* Controles del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de estado del mapa */
+.google-maps-wrapper .map-status {
+  /* Estado del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de debug del mapa */
+.google-maps-wrapper .map-debug {
+  /* Debug del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de error del mapa */
+.google-maps-wrapper .map-error {
+  /* Errores del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de carga del mapa */
+.google-maps-wrapper .map-loading {
+  /* Carga del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de fallback del mapa */
+.google-maps-wrapper .map-fallback {
+  /* Fallback del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos temporales del mapa */
+.google-maps-wrapper .map-temp {
+  /* Elementos temporales del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de pantalla completa del mapa */
+.google-maps-wrapper .map-fullscreen {
+  /* Pantalla completa del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos móviles del mapa */
+.google-maps-wrapper .map-mobile {
+  /* Elementos móviles del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de estadísticas del mapa */
+.google-maps-wrapper .map-stats {
+  /* Estadísticas del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}
+
+/* Estilos para elementos de scripts del mapa */
+.google-maps-wrapper .map-scripts {
+  /* Scripts del mapa */
+  contain: layout style paint;
+  pointer-events: auto;
+}

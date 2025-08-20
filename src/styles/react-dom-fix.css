@@ -1,0 +1,204 @@
+/* SOLUCIÓN EXTREMA: AISLAMIENTO COMPLETO DEL DOM DE GOOGLE MAPS */
+
+/* Wrapper principal con aislamiento extremo */
+.google-maps-isolated-wrapper {
+  /* Aislamiento completo del contexto de apilamiento */
+  isolation: isolate !important;
+  
+  /* Contención completa del layout */
+  contain: layout style paint !important;
+  
+  /* Posicionamiento estable */
+  position: relative !important;
+  
+  /* Prevenir interferencias de React */
+  transform: translateZ(0) !important;
+  
+  /* Aislar del flujo normal */
+  z-index: 1 !important;
+  
+  /* Prevenir modificaciones del DOM */
+  pointer-events: auto !important;
+  
+  /* Asegurar que el contenido persista */
+  overflow: visible !important;
+}
+
+/* Aplicar aislamiento a TODOS los elementos del wrapper */
+.google-maps-isolated-wrapper *,
+.google-maps-isolated-wrapper *::before,
+.google-maps-isolated-wrapper *::after {
+  /* Aislamiento completo */
+  isolation: isolate !important;
+  
+  /* Contención completa */
+  contain: layout style paint !important;
+  
+  /* Posicionamiento estable */
+  position: relative !important;
+  
+  /* Prevenir transformaciones no deseadas */
+  transform: none !important;
+  
+  /* Aislar del flujo normal */
+  z-index: auto !important;
+  
+  /* Prevenir modificaciones del DOM */
+  pointer-events: auto !important;
+  
+  /* Asegurar que los elementos persistan */
+  box-sizing: border-box !important;
+  
+  /* Prevenir animaciones no deseadas */
+  animation: none !important;
+  transition: none !important;
+}
+
+/* OVERRIDE ESPECÍFICO PARA GOOGLE MAPS */
+.google-maps-isolated-wrapper .gm-style,
+.google-maps-isolated-wrapper .gm-style *,
+.google-maps-isolated-wrapper .gm-style *::before,
+.google-maps-isolated-wrapper .gm-style *::after {
+  /* Estilos específicos de Google Maps */
+  isolation: isolate !important;
+  contain: layout style paint !important;
+  position: relative !important;
+  
+  /* Prevenir que React elimine estos elementos */
+  transform: none !important;
+  z-index: auto !important;
+  pointer-events: auto !important;
+  
+  /* Asegurar que los elementos persistan */
+  box-sizing: border-box !important;
+  animation: none !important;
+  transition: none !important;
+  
+  /* Prevenir modificaciones del DOM */
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* SOLUCIÓN DEFINITIVA: PREVENIR TODOS LOS CONFLICTOS */
+.google-maps-isolated-wrapper *,
+.google-maps-isolated-wrapper *::before,
+.google-maps-isolated-wrapper *::after,
+.google-maps-isolated-wrapper .gm-style *,
+.google-maps-isolated-wrapper .gm-style *::before,
+.google-maps-isolated-wrapper .gm-style *::after {
+  /* Aplicar a todos los elementos y pseudo-elementos */
+  contain: layout style paint !important;
+  isolation: isolate !important;
+  
+  /* Prevenir eliminación */
+  position: relative !important;
+  
+  /* Asegurar que los elementos persistan */
+  box-sizing: border-box !important;
+  
+  /* Prevenir transformaciones */
+  transform: none !important;
+  
+  /* Prevenir modificaciones del DOM */
+  pointer-events: auto !important;
+  
+  /* Prevenir animaciones */
+  animation: none !important;
+  transition: none !important;
+  
+  /* Asegurar visibilidad */
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* Prevenir interferencias de React */
+  z-index: auto !important;
+}
+
+/* OVERRIDE ESPECÍFICO PARA ELEMENTOS CRÍTICOS */
+.google-maps-isolated-wrapper div[role="button"],
+.google-maps-isolated-wrapper div[role="dialog"],
+.google-maps-isolated-wrapper div[role="tooltip"],
+.google-maps-isolated-wrapper div[role="presentation"] {
+  /* Elementos críticos de Google Maps */
+  isolation: isolate !important;
+  contain: layout style paint !important;
+  position: relative !important;
+  
+  /* Prevenir eliminación */
+  transform: none !important;
+  z-index: auto !important;
+  pointer-events: auto !important;
+  
+  /* Asegurar persistencia */
+  box-sizing: border-box !important;
+  animation: none !important;
+  transition: none !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* PREVENIR CONFLICTOS CON REACT STRICT MODE */
+@media (prefers-reduced-motion: no-preference) {
+  .google-maps-isolated-wrapper * {
+    /* Prevenir animaciones en modo estricto */
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* SOLUCIÓN PARA COMPONENTES DESMONTADOS */
+.google-maps-isolated-wrapper[data-unmounted="true"] {
+  /* Cuando el componente se desmonta */
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  
+  /* Limpiar completamente */
+  contain: strict !important;
+  isolation: isolate !important;
+}
+
+/* PREVENIR CONFLICTOS DE Z-INDEX */
+.google-maps-isolated-wrapper {
+  /* Aislar completamente del contexto de apilamiento */
+  z-index: 1 !important;
+  position: relative !important;
+  
+  /* Crear nuevo contexto de apilamiento */
+  transform: translateZ(0) !important;
+  
+  /* Prevenir interferencias */
+  isolation: isolate !important;
+}
+
+/* OVERRIDE FINAL: PREVENIR CUALQUIER INTERFERENCIA */
+.google-maps-isolated-wrapper,
+.google-maps-isolated-wrapper *,
+.google-maps-isolated-wrapper *::before,
+.google-maps-isolated-wrapper *::after {
+  /* Aislamiento completo y final */
+  contain: layout style paint !important;
+  isolation: isolate !important;
+  position: relative !important;
+  
+  /* Prevenir cualquier modificación */
+  transform: none !important;
+  z-index: auto !important;
+  pointer-events: auto !important;
+  
+  /* Asegurar persistencia */
+  box-sizing: border-box !important;
+  animation: none !important;
+  transition: none !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* Prevenir conflictos de React */
+  will-change: auto !important;
+  backface-visibility: visible !important;
+  perspective: none !important;
+}

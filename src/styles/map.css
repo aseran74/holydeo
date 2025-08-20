@@ -1,0 +1,161 @@
+/* Estilos para el mapa interactivo */
+
+.map-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.map-container.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  border-radius: 0;
+}
+
+.map-marker {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.map-marker:hover {
+  transform: scale(1.1);
+  z-index: 20;
+}
+
+.map-marker.property {
+  filter: drop-shadow(0 4px 6px rgba(59, 130, 246, 0.3));
+}
+
+.map-marker.experience {
+  filter: drop-shadow(0 4px 6px rgba(34, 197, 94, 0.3));
+}
+
+.map-popup {
+  animation: slideIn 0.3s ease-out;
+  backdrop-filter: blur(8px);
+}
+
+.map-popup img {
+  transition: transform 0.2s ease-in-out;
+}
+
+.map-popup img:hover {
+  transform: scale(1.05);
+}
+
+.map-grid {
+  background-image: 
+    linear-gradient(rgba(156, 163, 175, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(156, 163, 175, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.map-controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+}
+
+.map-info {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+}
+
+.map-mobile-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Animaciones */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Estados de carga */
+.map-loading {
+  animation: pulse 2s infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .map-container {
+    height: 24rem;
+  }
+  
+  .map-popup {
+    left: 0.5rem !important;
+    right: 0.5rem !important;
+    max-width: none !important;
+  }
+  
+  .map-mobile-button {
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+
+/* Mejoras de accesibilidad */
+.map-marker:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.map-popup button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Transiciones suaves */
+.map-container * {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Efectos de hover mejorados */
+.map-marker:hover .map-tooltip {
+  opacity: 1;
+  transform: translateY(-5px);
+}
+
+.map-tooltip {
+  opacity: 0;
+  transform: translateY(0);
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
+}

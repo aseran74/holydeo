@@ -1,0 +1,10 @@
+[33mc9ee3da[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m feat: implementar sistema completo de gestión de usuarios para admin dashboard
+[33mb3d1831[m feat: añadir logo animado con efectos en página de login
+[33ma64410d[m feat: implementar sistema de notificaciones persistente con tabla real en Supabase
+[33me54bd72[m Update README.md
+[33m2917f4c[m Update README.md
+[33m5556327[m refactor: Simplificar calculadora de precios para usar precio_dia
+[33mf3a422c[m feat: Agregar calculadora de precios inteligente para propiedades
+[33m3a68d6a[m cleanup: Quitar información de debug de PropertyDetails
+[33m06d2a88[m fix: Usar tablas existentes para obtener información de owner y agency
+[33m095530d[m feat: Agregar diagnóstico completo para identificar problema con tabla users
