@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
@@ -9,18 +9,10 @@ import {
   Share2, 
   Camera, 
   MapPin, 
-  Users, 
-  Bath, 
   Wifi, 
   Car, 
   Phone, 
-  Mail, 
-  ExternalLink,
   Star,
-  Building,
-  BedDouble,
-  Building2,
-
   Waves,
   Snowflake,
   UtensilsCrossed,
@@ -30,13 +22,8 @@ import {
   Sun,
   Moon,
   Mountain,
-  MapPinIcon,
   Coffee,
   Dumbbell,
-  Map,
-  Compass,
-  Clock,
-  Tag,
 } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import PageMeta from '../../components/common/PageMeta';
@@ -113,96 +100,19 @@ interface Property {
   };
 }
 
-interface Experience {
-  id: string;
-  title: string;
-  description?: string;
-  image_url?: string;
-  price?: number;
-  duration?: string;
-  location: string;
-  category: string;
-  rating?: number;
-  distance?: number;
-}
+
 
 const PropertyDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
+
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAllImages, setShowAllImages] = useState(false);
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [experiencesLoading, setExperiencesLoading] = useState(false);
 
-  // Función para convertir claves de temporada en información visual atractiva
-  const getSeasonDisplayInfo = (seasonKey: string) => {
-    const seasonLabels: { [key: string]: { displayName: string; duration: number; months: string } } = {
-      'sep_may': { displayName: 'Septiembre a Mayo', duration: 9, months: 'Sep a Mayo' },
-      'sep_jun': { displayName: 'Septiembre a Junio', duration: 10, months: 'Sep a Junio' },
-      'sep_jul': { displayName: 'Septiembre a Julio', duration: 11, months: 'Sep a Julio' },
-      'oct_jun': { displayName: 'Octubre a Junio', duration: 9, months: 'Oct a Junio' },
-      'oct_jul': { displayName: 'Octubre a Julio', duration: 10, months: 'Oct a Julio' },
-      'oct_may': { displayName: 'Octubre a Mayo', duration: 8, months: 'Oct a Mayo' },
-      'nov_aug': { displayName: 'Noviembre a Agosto', duration: 10, months: 'Nov a Agosto' },
-      'dec_sep': { displayName: 'Diciembre a Septiembre', duration: 10, months: 'Dic a Sep' },
-      'jan_oct': { displayName: 'Enero a Octubre', duration: 10, months: 'Ene a Oct' },
-      'feb_nov': { displayName: 'Febrero a Noviembre', duration: 10, months: 'Feb a Nov' },
-      'mar_dec': { displayName: 'Marzo a Diciembre', duration: 10, months: 'Mar a Dic' },
-      'apr_jan': { displayName: 'Abril a Enero', duration: 10, months: 'Abr a Ene' },
-      'may_feb': { displayName: 'Mayo a Febrero', duration: 10, months: 'Mayo a Feb' },
-      'jun_mar': { displayName: 'Junio a Marzo', duration: 10, months: 'Junio a Mar' },
-      'jul_apr': { displayName: 'Julio a Abril', duration: 10, months: 'Julio a Abr' },
-      'aug_may': { displayName: 'Agosto a Mayo', duration: 10, months: 'Ago a Mayo' },
-      'pct_mayo': { displayName: 'Octubre a Mayo', duration: 8, months: 'Oct a Mayo' },
-      // Fallbacks para meses individuales
-      'enero': { displayName: 'Enero', duration: 1, months: 'Enero' },
-      'febrero': { displayName: 'Febrero', duration: 1, months: 'Febrero' },
-      'marzo': { displayName: 'Marzo', duration: 1, months: 'Marzo' },
-      'abril': { displayName: 'Abril', duration: 1, months: 'Abril' },
-      'mayo': { displayName: 'Mayo', duration: 1, months: 'Mayo' },
-      'junio': { displayName: 'Junio', duration: 1, months: 'Junio' },
-      'julio': { displayName: 'Julio', duration: 1, months: 'Julio' },
-      'agosto': { displayName: 'Agosto', duration: 1, months: 'Agosto' },
-      'septiembre': { displayName: 'Septiembre', duration: 1, months: 'Septiembre' },
-      'octubre': { displayName: 'Octubre', duration: 1, months: 'Octubre' },
-      'noviembre': { displayName: 'Noviembre', duration: 1, months: 'Noviembre' },
-      'diciembre': { displayName: 'Diciembre', duration: 1, months: 'Diciembre' }
-    };
-    
-    // Si encontramos la temporada en nuestro mapeo, la devolvemos
-    if (seasonLabels[seasonKey]) {
-      return seasonLabels[seasonKey];
-    }
-    
-    // Si no la encontramos, intentamos formatear la clave
-    if (seasonKey.includes('_')) {
-      const [start, end] = seasonKey.split('_');
-      const monthNames: { [key: string]: string } = {
-        'sep': 'Septiembre', 'oct': 'Octubre', 'nov': 'Noviembre', 'dec': 'Diciembre',
-        'jan': 'Enero', 'feb': 'Febrero', 'mar': 'Marzo', 'apr': 'Abril',
-        'may': 'Mayo', 'jun': 'Junio', 'jul': 'Julio', 'aug': 'Agosto'
-      };
-      
-      const startMonth = monthNames[start] || start;
-      const endMonth = monthNames[end] || end;
-      
-      return {
-        displayName: `${startMonth} a ${endMonth}`,
-        duration: 0,
-        months: `${startMonth} a ${endMonth}`
-      };
-    }
-    
-    // Fallback final
-    return { 
-      displayName: seasonKey, 
-      duration: 0, 
-      months: seasonKey 
-    };
-  };
+
+
 
   // Configuración de Google Maps
   const { isLoaded, loadError } = useJsApiLoader({
@@ -216,11 +126,7 @@ const PropertyDetails = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    if (property) {
-      fetchExperiences();
-    }
-  }, [property]);
+
 
   const fetchPropertyDetails = async () => {
     try {
@@ -372,72 +278,7 @@ const PropertyDetails = () => {
     }
   };
 
-  const fetchExperiences = async () => {
-    if (!property) return;
-    
-    try {
-      setExperiencesLoading(true);
-      
-      // Simular experiencias cercanas basadas en la ubicación de la propiedad
-      // En un caso real, esto vendría de una API o base de datos
-      const mockExperiences: Experience[] = [
-        {
-          id: '1',
-          title: 'Tour por el Casco Histórico',
-          description: 'Descubre la historia y arquitectura del centro histórico',
-          image_url: 'https://images.unsplash.com/photo-1555992336-03a23c7b20ee?w=400&h=300&fit=crop',
-          price: 25,
-          duration: '2 horas',
-          location: property.city || property.location,
-          category: 'Cultural',
-          rating: 4.8,
-          distance: 0.5
-        },
-        {
-          id: '2',
-          title: 'Experiencia Gastronómica Local',
-          description: 'Prueba los mejores platos de la región con un chef local',
-          image_url: 'https://images.unsplash.com/photo-1414235077428-338989f2dcd0?w=400&h=300&fit=crop',
-          price: 45,
-          duration: '3 horas',
-          location: property.city || property.location,
-          category: 'Gastronomía',
-          rating: 4.9,
-          distance: 1.2
-        },
-        {
-          id: '3',
-          title: 'Aventura en la Naturaleza',
-          description: 'Explora senderos y paisajes naturales de la zona',
-          image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-          price: 35,
-          duration: '4 horas',
-          location: property.city || property.location,
-          category: 'Aventura',
-          rating: 4.7,
-          distance: 2.1
-        },
-        {
-          id: '4',
-          title: 'Clase de Surf',
-          description: 'Aprende a surfear con instructores certificados',
-          image_url: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=400&h=300&fit=crop',
-          price: 60,
-          duration: '2 horas',
-          location: property.city || property.location,
-          category: 'Deportes',
-          rating: 4.6,
-          distance: 3.5
-        }
-      ];
 
-      setExperiences(mockExperiences);
-    } catch (error) {
-      console.error('Error fetching experiences:', error);
-    } finally {
-      setExperiencesLoading(false);
-    }
-  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-ES', {

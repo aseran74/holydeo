@@ -87,21 +87,7 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
     };
   };
 
-  // Temporadas disponibles con información detallada (para el formulario)
-  const seasonInfo = {
-    'enero': { name: 'Enero', duration: 31, description: 'Invierno - Año Nuevo' },
-    'febrero': { name: 'Febrero', duration: 28, description: 'Invierno - Carnavales' },
-    'marzo': { name: 'Marzo', duration: 31, description: 'Primavera - Semana Santa' },
-    'abril': { name: 'Abril', duration: 30, description: 'Primavera - Fiestas' },
-    'mayo': { name: 'Mayo', duration: 31, description: 'Primavera - Puentes' },
-    'junio': { name: 'Junio', duration: 30, description: 'Verano - Inicio' },
-    'julio': { name: 'Julio', duration: 31, description: 'Verano - Vacaciones' },
-    'agosto': { name: 'Agosto', duration: 31, description: 'Verano - Vacaciones' },
-    'septiembre': { name: 'Septiembre', duration: 30, description: 'Verano - Fin' },
-    'octubre': { name: 'Octubre', duration: 31, description: 'Otoño - Puentes' },
-    'noviembre': { name: 'Noviembre', duration: 30, description: 'Otoño - Fiestas' },
-    'diciembre': { name: 'Diciembre', duration: 31, description: 'Invierno - Navidad' }
-  };
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
