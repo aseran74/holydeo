@@ -57,18 +57,6 @@ const AppSidebar: React.FC = () => {
       isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     }`}>
       <div className="p-6">
-        <div className="flex items-center space-x-3 mb-8">
-          <img
-            src="/logotrans.svg"
-            alt="CHISREACT Logo"
-            className="h-8 w-auto max-w-[120px] object-contain dark:hidden"
-          />
-          <img
-            src="/logotrans-white.svg"
-            alt="CHISREACT Logo"
-            className="h-8 w-auto max-w-[120px] object-contain hidden dark:block"
-          />
-        </div>
         
         {/* Indicador del rol del usuario */}
         {userRole && (
@@ -142,8 +130,8 @@ const AppSidebar: React.FC = () => {
             </>
           )}
         </nav>
-          </div>
       </div>
+    </div>
   );
 };
 

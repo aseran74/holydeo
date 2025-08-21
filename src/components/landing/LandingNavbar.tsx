@@ -119,7 +119,7 @@ const LandingNavbar = () => {
                 className={`h-10 w-auto max-w-[160px] object-contain transition-all duration-200 ${
                   isLandingPage && !isScrolled ? 'filter brightness-0 invert' : ''
                 }`}
-                src="/logotrans.svg"
+               src="/logotrans.svg"
                 alt="CHISREACT Logo"
               />
             </Link>
