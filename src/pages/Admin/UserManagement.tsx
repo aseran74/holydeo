@@ -44,7 +44,7 @@ export default function UserManagement() {
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [stats, setStats] = useState<{ total: number; byRole: Record<string, number> }>({ total: 0, byRole: {} });
+  const [stats, setStats] = useState<{ total: number; active: number; inactive: number }>({ total: 0, active: 0, inactive: 0 });
   const [showActions, setShowActions] = useState<string | null>(null);
 
   const fetchUsers = async () => {
@@ -191,25 +191,29 @@ export default function UserManagement() {
             </div>
           </motion.div>
 
-          {Object.entries(stats.byRole).map(([role, count]) => (
-            <motion.div
-              key={role}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * Object.keys(stats.byRole).indexOf(role) }}
-              className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
-            >
-              <div className="flex items-center space-x-3">
-                                 <div className={`p-2 ${ROLE_COLORS[role as keyof typeof ROLE_COLORS]} rounded-lg`}>
-                  <Shield className="w-5 h-5" />
+          {/* Estadísticas por rol */}
+          {ROLES.map((role, index) => {
+            const roleCount = users.filter(user => user.role === role).length;
+            return (
+              <motion.div
+                key={role}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * index }}
+                className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className={`p-2 ${ROLE_COLORS[role as keyof typeof ROLE_COLORS]} rounded-lg`}>
+                    <Shield className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">{ROLE_LABELS[role as keyof typeof ROLE_LABELS]}</p>
+                    <p className="text-2xl font-bold text-gray-900">{roleCount}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">{ROLE_LABELS[role as keyof typeof ROLE_LABELS]}</p>
-                  <p className="text-2xl font-bold text-gray-900">{count}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Filters and Search */}
@@ -310,8 +314,8 @@ export default function UserManagement() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${ROLE_COLORS[user.role]}`}>
-                        {ROLE_LABELS[user.role]}
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${ROLE_COLORS[user.role as keyof typeof ROLE_COLORS]}`}>
+                        {ROLE_LABELS[user.role as keyof typeof ROLE_LABELS]}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

@@ -21,6 +21,7 @@ const ROLES = [
 
 export default function UserModal({ isOpen, onClose, user, onUserSaved }: UserModalProps) {
   const [formData, setFormData] = useState<CreateUserData>({
+    firebase_uid: '', // Campo requerido
     email: '',
     full_name: '',
     role: 'guest',
@@ -37,6 +38,7 @@ export default function UserModal({ isOpen, onClose, user, onUserSaved }: UserMo
       loadAgencies();
       if (user) {
         setFormData({
+          firebase_uid: user.firebase_uid,
           email: user.email,
           full_name: user.full_name || '',
           role: user.role,
@@ -44,6 +46,7 @@ export default function UserModal({ isOpen, onClose, user, onUserSaved }: UserMo
         });
       } else {
         setFormData({
+          firebase_uid: '',
           email: '',
           full_name: '',
           role: 'guest',
@@ -72,7 +75,7 @@ export default function UserModal({ isOpen, onClose, user, onUserSaved }: UserMo
       newErrors.email = 'El email no es válido';
     }
 
-    if (!formData.full_name.trim()) {
+    if (!formData.full_name?.trim()) {
       newErrors.full_name = 'El nombre completo es requerido';
     }
 
@@ -101,7 +104,7 @@ export default function UserModal({ isOpen, onClose, user, onUserSaved }: UserMo
           agency_id: formData.agency_id
         };
         
-        await UserService.updateUser(user.id, updateData);
+        await UserService.updateUserById(user.id, updateData);
         toast.success('Usuario actualizado correctamente');
       } else {
         await UserService.createUser(formData);

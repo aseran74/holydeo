@@ -33,7 +33,7 @@ export const useUserSync = () => {
           firebase_uid: currentUser.uid,
           email: currentUser.email || '',
           display_name: currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario',
-          photo_url: currentUser.photoURL,
+          photo_url: currentUser.photoURL || undefined,
           provider: currentUser.providerData[0]?.providerId || 'email',
           role: 'guest' // Rol por defecto
         });
@@ -41,7 +41,7 @@ export const useUserSync = () => {
         // Usuario existente - actualizar información
         user = await UserService.updateUser(currentUser.email || '', {
           display_name: currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario',
-          photo_url: currentUser.photoURL
+          photo_url: currentUser.photoURL || undefined
         });
 
         // Actualizar último inicio de sesión
