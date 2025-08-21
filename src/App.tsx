@@ -20,6 +20,8 @@ import UserManagement from './pages/Admin/UserManagement';
 import SocialPage from './pages/Social/SocialPage';
 import SocialManagement from './pages/Admin/SocialManagement';
 import LoginForm from './components/auth/LoginForm';
+import RegisterPage from './pages/Auth/RegisterPage';
+import ForgotPasswordPage from './pages/Auth/ForgotPasswordPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LandingPage from './pages/Landing/LandingPage';
 import SearchPage from './pages/Search/SearchPage';
@@ -40,8 +42,10 @@ function App() {
           {/* Search Page */}
           <Route path="/search" element={<SearchPage />} />
           
-          {/* Login */}
+          {/* Auth Routes */}
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           
           {/* Toast Demo */}
           <Route path="/toast-demo" element={<ToastDemo />} />

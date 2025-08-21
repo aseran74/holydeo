@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const LoginForm = () => {
@@ -101,7 +101,7 @@ const LoginForm = () => {
           }}
         >
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Bienvenido a CHISREACT
+           
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Inicia sesión para continuar
@@ -204,6 +204,38 @@ const LoginForm = () => {
           </motion.div>
         </motion.form>
 
+        {/* Enlaces adicionales */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ 
+            duration: 0.6, 
+            delay: 0.7,
+            ease: "easeOut"
+          }}
+          className="text-center space-y-2"
+        >
+          <p className="text-sm text-gray-600">
+            ¿No tienes una cuenta?{' '}
+            <Link
+              to="/register"
+              className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
+            >
+              Regístrate aquí
+            </Link>
+          </p>
+          
+          <p className="text-sm text-gray-600">
+            ¿Olvidaste tu contraseña?{' '}
+            <Link
+              to="/forgot-password"
+              className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
+            >
+              Recupérala aquí 
+            </Link>
+          </p>
+        </motion.div>
+
         {/* Footer animado */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -216,7 +248,7 @@ const LoginForm = () => {
           className="text-center"
         >
           <p className="text-xs text-gray-500">
-            © 2025 CHISREACT. Todos los derechos reservados.
+            © 2025 Holydeo. Todos los derechos reservados.
           </p>
         </motion.div>
       </div>

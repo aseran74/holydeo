@@ -274,18 +274,32 @@ const LandingNavbar = () => {
                   )}
                 </div>
               ) : (
-                <Link
-                  to="/login"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                    isScrolled
-                      ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                      : isLandingPage
-                        ? 'text-white hover:text-blue-200'
-                        : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                  }`}
-                >
-                  Iniciar Sesión
-                </Link>
+                <div className="flex items-center space-x-3">
+                  <Link
+                    to="/register"
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+                      isScrolled
+                        ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                        : isLandingPage
+                          ? 'text-white hover:text-blue-200'
+                          : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                    }`}
+                  >
+                    Registrarse
+                  </Link>
+                  <Link
+                    to="/login"
+                    className={`px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300 ${
+                      isScrolled
+                        ? 'hover:bg-blue-700'
+                        : isLandingPage
+                          ? 'hover:bg-blue-700'
+                          : 'hover:bg-blue-700'
+                    }`}
+                  >
+                    Iniciar Sesión
+                  </Link>
+                </div>
               )}
             </div>
 
@@ -428,16 +442,28 @@ const LandingNavbar = () => {
                     </button>
                   </div>
                 ) : (
-                  <Link
-                    to="/login"
-                    className={`px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ${
-                      isScrolled
-                        ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                        : 'text-white hover:text-blue-200'
-                    }`}
-                  >
-                    Iniciar Sesión
-                  </Link>
+                  <div className="flex flex-col space-y-2">
+                    <Link
+                      to="/register"
+                      className={`px-3 py-2 rounded-md text-base font-medium text-center transition-all duration-300 ${
+                        isScrolled
+                          ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                          : 'text-white hover:text-blue-200'
+                      }`}
+                    >
+                      Registrarse
+                    </Link>
+                    <Link
+                      to="/login"
+                      className={`px-3 py-2 rounded-md text-base font-medium bg-blue-600 text-white hover:bg-blue-700 text-center transition-all duration-300 ${
+                        isScrolled
+                          ? 'hover:bg-blue-700'
+                          : 'hover:bg-blue-700'
+                      }`}
+                    >
+                      Iniciar Sesión
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>

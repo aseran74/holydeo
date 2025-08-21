@@ -1,288 +1,215 @@
 import { supabase } from '../supabaseClient';
 
-export interface User {
+export interface SupabaseUser {
   id: string;
+  firebase_uid: string;
   email: string;
-  full_name: string | null;
-  role: 'admin' | 'agency' | 'agent' | 'owner' | 'guest';
-  agency_id: string | null;
+  display_name: string | null;
+  photo_url: string | null;
+  provider: string;
+  role: 'guest' | 'agent' | 'owner' | 'admin';
+  is_active: boolean;
+  last_sign_in: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export interface CreateUserData {
+  firebase_uid: string;
   email: string;
-  full_name: string;
-  role: 'admin' | 'agency' | 'agent' | 'owner' | 'guest';
-  agency_id?: string;
+  display_name?: string;
+  photo_url?: string;
+  provider?: string;
+  role?: 'guest' | 'agent' | 'owner' | 'admin';
 }
 
 export interface UpdateUserData {
-  full_name?: string;
-  role?: 'admin' | 'agency' | 'agent' | 'owner' | 'guest';
-  agency_id?: string;
+  display_name?: string;
+  photo_url?: string;
+  role?: 'guest' | 'agent' | 'owner' | 'admin';
+  is_active?: boolean;
 }
 
 export class UserService {
-  // Obtener todos los usuarios
-  static async getAllUsers(): Promise<User[]> {
+  // Obtener usuario por email
+  static async getUserByEmail(email: string): Promise<SupabaseUser | null> {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select(`
-          id,
-          email,
-          full_name,
-          role,
-          agency_id,
-          created_at
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error obteniendo usuarios:', error);
-        throw error;
-      }
-
-      return data || [];
-    } catch (error) {
-      console.error('Error en getAllUsers:', error);
-      throw error;
-    }
-  }
-
-  // Obtener usuario por ID
-  static async getUserById(id: string): Promise<User | null> {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select(`
-          id,
-          email,
-          full_name,
-          role,
-          agency_id,
-          created_at
-        `)
-        .eq('id', id)
+        .select('*')
+        .eq('email', email)
         .single();
 
       if (error) {
-        console.error('Error obteniendo usuario:', error);
+        if (error.code === 'PGRST116') {
+          return null; // Usuario no encontrado
+        }
         throw error;
       }
 
       return data;
     } catch (error) {
-      console.error('Error en getUserById:', error);
-      throw error;
+      console.error('Error obteniendo usuario por email:', error);
+      return null;
+    }
+  }
+
+  // Obtener usuario por Firebase UID
+  static async getUserByFirebaseUid(firebaseUid: string): Promise<SupabaseUser | null> {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('firebase_uid', firebaseUid)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return null; // Usuario no encontrado
+        }
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error obteniendo usuario por Firebase UID:', error);
+      return null;
     }
   }
 
   // Crear nuevo usuario
-  static async createUser(userData: CreateUserData): Promise<User> {
+  static async createUser(userData: CreateUserData): Promise<SupabaseUser | null> {
     try {
       const { data, error } = await supabase
         .from('users')
-        .insert([userData])
+        .insert([{
+          ...userData,
+          role: userData.role || 'guest',
+          is_active: true,
+          last_sign_in: new Date().toISOString()
+        }])
         .select()
         .single();
 
       if (error) {
         console.error('Error creando usuario:', error);
-        throw error;
+        return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Error en createUser:', error);
-      throw error;
+      console.error('Error creando usuario:', error);
+      return null;
     }
   }
 
-  // Actualizar usuario
-  static async updateUser(id: string, updateData: UpdateUserData): Promise<User> {
+  // Actualizar usuario existente
+  static async updateUser(email: string, updateData: UpdateUserData): Promise<SupabaseUser | null> {
     try {
       const { data, error } = await supabase
         .from('users')
-        .update(updateData)
-        .eq('id', id)
+        .update({
+          ...updateData,
+          updated_at: new Date().toISOString()
+        })
+        .eq('email', email)
         .select()
         .single();
 
       if (error) {
         console.error('Error actualizando usuario:', error);
-        throw error;
+        return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Error en updateUser:', error);
-      throw error;
+      console.error('Error actualizando usuario:', error);
+      return null;
     }
   }
 
-  // Eliminar usuario
-  static async deleteUser(id: string): Promise<boolean> {
+  // Actualizar último inicio de sesión
+  static async updateLastSignIn(email: string): Promise<void> {
     try {
       const { error } = await supabase
         .from('users')
-        .delete()
-        .eq('id', id);
+        .update({
+          last_sign_in: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('email', email);
 
       if (error) {
-        console.error('Error eliminando usuario:', error);
-        throw error;
+        console.error('Error actualizando último inicio de sesión:', error);
+      }
+    } catch (error) {
+      console.error('Error actualizando último inicio de sesión:', error);
+    }
+  }
+
+  // Obtener todos los usuarios (solo para admins)
+  static async getAllUsers(): Promise<SupabaseUser[]> {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error obteniendo usuarios:', error);
+        return [];
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error('Error obteniendo usuarios:', error);
+      return [];
+    }
+  }
+
+  // Cambiar rol de usuario (solo para admins)
+  static async changeUserRole(email: string, newRole: 'guest' | 'agent' | 'owner' | 'admin'): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({
+          role: newRole,
+          updated_at: new Date().toISOString()
+        })
+        .eq('email', email);
+
+      if (error) {
+        console.error('Error cambiando rol de usuario:', error);
+        return false;
       }
 
       return true;
     } catch (error) {
-      console.error('Error en deleteUser:', error);
-      throw error;
+      console.error('Error cambiando rol de usuario:', error);
+      return false;
     }
   }
 
-  // Cambiar rol de usuario
-  static async changeUserRole(id: string, newRole: 'admin' | 'agency' | 'agent' | 'owner' | 'guest'): Promise<User> {
+  // Desactivar/activar usuario (solo para admins)
+  static async toggleUserStatus(email: string, isActive: boolean): Promise<boolean> {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('users')
-        .update({ role: newRole })
-        .eq('id', id)
-        .select()
-        .single();
+        .update({
+          is_active: isActive,
+          updated_at: new Date().toISOString()
+        })
+        .eq('email', email);
 
       if (error) {
-        console.error('Error cambiando rol:', error);
-        throw error;
+        console.error('Error cambiando estado de usuario:', error);
+        return false;
       }
 
-      return data;
+      return true;
     } catch (error) {
-      console.error('Error en changeUserRole:', error);
-      throw error;
-    }
-  }
-
-  // Obtener usuarios por rol
-  static async getUsersByRole(role: string): Promise<User[]> {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select(`
-          id,
-          email,
-          full_name,
-          role,
-          agency_id,
-          created_at
-        `)
-        .eq('role', role)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error obteniendo usuarios por rol:', error);
-        throw error;
-      }
-
-      return data || [];
-    } catch (error) {
-      console.error('Error en getUsersByRole:', error);
-      throw error;
-    }
-  }
-
-  // Buscar usuarios por email o nombre
-  static async searchUsers(searchTerm: string): Promise<User[]> {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select(`
-          id,
-          email,
-          full_name,
-          role,
-          agency_id,
-          created_at
-        `)
-        .or(`email.ilike.%${searchTerm}%,full_name.ilike.%${searchTerm}%`)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error buscando usuarios:', error);
-        throw error;
-      }
-
-      return data || [];
-    } catch (error) {
-      console.error('Error en searchUsers:', error);
-      throw error;
-    }
-  }
-
-  // Obtener estadísticas de usuarios
-  static async getUserStats(): Promise<{ total: number; byRole: Record<string, number> }> {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('role');
-
-      if (error) {
-        console.error('Error obteniendo estadísticas:', error);
-        throw error;
-      }
-
-      const total = data?.length || 0;
-      const byRole: Record<string, number> = {};
-
-      data?.forEach(user => {
-        byRole[user.role] = (byRole[user.role] || 0) + 1;
-      });
-
-      return { total, byRole };
-    } catch (error) {
-      console.error('Error en getUserStats:', error);
-      throw error;
-    }
-  }
-
-  // Verificar si un email ya existe
-  static async checkEmailExists(email: string): Promise<boolean> {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('id')
-        .eq('email', email)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error verificando email:', error);
-        throw error;
-      }
-
-      return !!data;
-    } catch (error) {
-      console.error('Error en checkEmailExists:', error);
-      throw error;
-    }
-  }
-
-  // Obtener agencias disponibles (para asignar a usuarios)
-  static async getAgencies(): Promise<{ id: string; name: string }[]> {
-    try {
-      const { data, error } = await supabase
-        .from('agencies')
-        .select('id, name')
-        .order('name');
-
-      if (error) {
-        console.error('Error obteniendo agencias:', error);
-        throw error;
-      }
-
-      return data || [];
-    } catch (error) {
-      console.error('Error en getAgencies:', error);
-      throw error;
+      console.error('Error cambiando estado de usuario:', error);
+      return false;
     }
   }
 }
