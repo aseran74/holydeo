@@ -181,7 +181,7 @@ const OwnerDashboard: React.FC = () => {
   return (
     <>
       <PageMeta 
-        title="Dashboard de Propietario - Holydeo" 
+        title="Dashboard de Propietario - CHISREACT" 
         description="Panel de control para propietarios de propiedades" 
       />
       

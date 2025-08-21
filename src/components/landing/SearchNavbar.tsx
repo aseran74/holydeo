@@ -44,11 +44,11 @@ const SearchNavbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center transition-transform duration-200 hover:scale-105">
               <img
                 src="/logotrans-white.svg"
-                alt="Logo"
-                className="h-8 w-auto"
+                alt="CHISREACT Logo"
+                className="h-10 w-auto max-w-[160px] object-contain"
               />
             </Link>
           </div>

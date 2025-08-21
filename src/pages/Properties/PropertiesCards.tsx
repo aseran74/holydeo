@@ -19,7 +19,7 @@ const PropertiesCards: React.FC<PropertiesCardsProps> = ({ properties, onEdit, o
 
   return (
     <div className="p-6 pb-12">
-      <h1 className="text-2xl font-bold mb-4">Propiedades (Vista tarjetas)</h1>
+      <h1 className="text-2xl font-bold mb-4">Propiedades</h1>
       <div className="mb-6">
         <input
           type="text"

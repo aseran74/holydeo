@@ -114,13 +114,14 @@ const LandingNavbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center">
-              <div className={`flex items-center space-x-2 transition-all duration-200 ease-in-out ${
-                isLandingPage && !isScrolled ? 'text-white' : 'text-blue-600 dark:text-blue-400'
-              }`}>
-                <Home className="h-8 w-8" />
-                <span className="text-xl font-bold tracking-tight">Holydeo</span>
-              </div>
+            <Link to="/" className="flex items-center transition-transform duration-200 hover:scale-105">
+              <img
+                className={`h-10 w-auto max-w-[160px] object-contain transition-all duration-200 ${
+                  isLandingPage && !isScrolled ? 'filter brightness-0 invert' : ''
+                }`}
+                src="/logotrans.svg"
+                alt="CHISREACT Logo"
+              />
             </Link>
           </div>
 

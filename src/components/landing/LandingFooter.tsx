@@ -47,9 +47,9 @@ const LandingFooter = () => {
           <div className="lg:col-span-2">
             <div className="mb-6">
               <img 
-                src="/images/logo/logo.svg" 
-                alt="Holydeo" 
-                className="h-8 w-auto filter brightness-0 invert"
+                src="/logotrans-white.svg" 
+                alt="CHISREACT Logo" 
+                className="h-10 w-auto max-w-[160px] object-contain"
               />
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
@@ -64,7 +64,7 @@ const LandingFooter = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-blue-400" />
-                <span className="text-gray-300">info@holydeo.com</span>
+                <span className="text-gray-300">info@chisreact.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-blue-400" />
@@ -146,7 +146,7 @@ const LandingFooter = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             {/* Copyright */}
             <div className="text-gray-400 text-sm">
-              © {currentYear} Holydeo. Todos los derechos reservados.
+              © {currentYear} CHISREACT. Todos los derechos reservados.
             </div>
 
             {/* Redes sociales */}

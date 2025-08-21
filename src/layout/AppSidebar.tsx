@@ -59,14 +59,14 @@ const AppSidebar: React.FC = () => {
       <div className="p-6">
         <div className="flex items-center space-x-3 mb-8">
           <img
-            src="/images/logo/logo.svg"
-            alt="Holydeo"
-            className="h-8 w-auto dark:hidden"
+            src="/logotrans.svg"
+            alt="CHISREACT Logo"
+            className="h-8 w-auto max-w-[120px] object-contain dark:hidden"
           />
           <img
-            src="/images/logo/logo-dark.svg"
-            alt="Holydeo"
-            className="h-8 w-auto hidden dark:block"
+            src="/logotrans-white.svg"
+            alt="CHISREACT Logo"
+            className="h-8 w-auto max-w-[120px] object-contain hidden dark:block"
           />
         </div>
         

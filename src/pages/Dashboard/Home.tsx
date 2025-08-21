@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <PageMeta
-        title="Dashboard | HolyDeo - Sistema de Gestión de Alojamientos"
+        title="Dashboard | CHISREACT - Sistema de Gestión de Alojamientos"
         description="Dashboard principal del sistema de gestión de alojamientos y experiencias"
       />
       <div className="grid grid-cols-12 gap-4 md:gap-6">

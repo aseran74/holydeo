@@ -83,9 +83,9 @@ const LoginForm = () => {
             />
             
             <img
-              className="h-24 w-auto mx-auto"
-              src="/images/logo/logo2.svg"
-              alt="Logo Holydeo"
+              className="h-24 w-auto mx-auto max-w-[200px] object-contain"
+              src="/logotrans.svg"
+              alt="CHISREACT Logo"
             />
           </motion.div>
         </motion.div>
@@ -101,7 +101,7 @@ const LoginForm = () => {
           }}
         >
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Bienvenido a Holydeo
+            Bienvenido a CHISREACT
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Inicia sesión para continuar
@@ -216,7 +216,7 @@ const LoginForm = () => {
           className="text-center"
         >
           <p className="text-xs text-gray-500">
-            © 2025 Holydeo. Todos los derechos reservados.
+            © 2025 CHISREACT. Todos los derechos reservados.
           </p>
         </motion.div>
       </div>
