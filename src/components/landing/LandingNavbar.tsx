@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star } from "lucide-react";
 
@@ -9,6 +9,7 @@ const LandingNavbar = () => {
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
   const { currentUser, logout, userRole } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   
   // Detectar si estamos en la landing page
   const isLandingPage = location.pathname === '/';
@@ -51,18 +52,25 @@ const LandingNavbar = () => {
   }
 
   const menuItems = [
-    { name: "Buscar", href: "/properties" },
+    { name: "Buscar", href: "/search" },
     { name: "Como funciona", href: "#how-it-works" },
     { name: "FAQ", href: "#faq" },
     { name: "Contacto", href: "#contact" },
   ];
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+  const scrollToSection = (href: string) => {
+    if (href.startsWith('#')) {
+      // Es un enlace interno (sección de la página)
+      const sectionId = href.replace("#", "");
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+      setIsMenuOpen(false);
+    } else {
+      // Es un enlace externo (nueva página)
+      navigate(href);
     }
-    setIsMenuOpen(false);
   };
 
   // Función para obtener la ruta del dashboard según el rol del usuario
@@ -131,7 +139,7 @@ const LandingNavbar = () => {
               {menuItems.map((item) => (
                 <button
                   key={item.name}
-                  onClick={() => scrollToSection(item.href.replace("#", ""))}
+                  onClick={() => scrollToSection(item.href)}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                     isScrolled
                       ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
@@ -333,7 +341,7 @@ const LandingNavbar = () => {
             {menuItems.map((item) => (
                               <button
                   key={item.name}
-                  onClick={() => scrollToSection(item.href.replace("#", ""))}
+                  onClick={() => scrollToSection(item.href)}
                   className={`hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 w-full text-left ${
                     isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
                   }`}

@@ -12,13 +12,15 @@ import {
   Globe,
   Group,
   Trash2,
-  Star
+  Star,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 const AppSidebar: React.FC = () => {
   const location = useLocation();
   const { currentUser, userRole, isAdmin } = useAuth();
-  const { isMobileOpen } = useSidebar();
+  const { isMobileOpen, isExpanded, toggleSidebar } = useSidebar();
 
   // Logs para depuración
   console.log('[AppSidebar] Usuario actual:', currentUser?.email);
@@ -53,13 +55,40 @@ const AppSidebar: React.FC = () => {
   ];
 
   return (
-    <div className={`fixed lg:relative inset-y-0 left-0 z-50 bg-white dark:bg-gray-800 w-64 min-h-screen shadow-lg transform transition-transform duration-300 ease-in-out ${
+    <div className={`fixed lg:relative inset-y-0 left-0 z-50 bg-white dark:bg-gray-800 min-h-screen shadow-lg transform transition-all duration-300 ease-in-out ${
       isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+    } ${
+      isExpanded ? 'w-64' : 'w-16'
     }`}>
-      <div className="p-6">
+      <div className={`${isExpanded ? 'p-6' : 'p-3'} transition-all duration-300`}>
+        {/* Botón de colapsar/expandir */}
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={toggleSidebar}
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            title={isExpanded ? 'Contraer sidebar' : 'Expandir sidebar'}
+          >
+            {isExpanded ? (
+              <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            ) : (
+              <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            )}
+          </button>
+        </div>
+
+        {/* Logo */}
+        {isExpanded && (
+          <Link to="/dashboard" className="flex items-center mb-6">
+            <img
+              className="h-8 w-auto object-contain"
+              src="/logotrans.svg"
+              alt="CHISREACT Logo"
+            />
+          </Link>
+        )}
         
         {/* Indicador del rol del usuario */}
-        {userRole && (
+        {userRole && isExpanded && (
           <div className="mb-6 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
             <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1">
               Rol del Usuario
@@ -87,19 +116,42 @@ const AppSidebar: React.FC = () => {
           </div>
         )}
 
+        {/* Indicador colapsado del rol */}
+        {userRole && !isExpanded && (
+          <div className="mb-6 flex justify-center">
+            <div 
+              className={`w-3 h-3 rounded-full ${
+                userRole === 'admin' ? 'bg-red-500' :
+                userRole === 'owner' ? 'bg-purple-500' :
+                userRole === 'agent' ? 'bg-blue-500' :
+                userRole === 'guest' ? 'bg-green-500' :
+                'bg-gray-500'
+              }`}
+              title={
+                userRole === 'admin' ? 'Administrador' :
+                userRole === 'owner' ? 'Propietario' :
+                userRole === 'agent' ? 'Agente' :
+                userRole === 'guest' ? 'Huésped' :
+                userRole
+              }
+            />
+          </div>
+        )}
+
         <nav className="space-y-2">
           {navigationItems.map((item) => (
               <Link
               key={item.name}
               to={item.href}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+              className={`flex items-center ${isExpanded ? 'space-x-3 px-4' : 'justify-center px-3'} py-3 rounded-lg transition-colors ${
                 isActive(item.href)
                   ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
+              title={!isExpanded ? item.name : undefined}
             >
-              <item.icon className="w-5 h-5" />
-              <span>{item.name}</span>
+              <item.icon className="w-5 h-5 flex-shrink-0" />
+              {isExpanded && <span>{item.name}</span>}
             </Link>
           ))}
 
@@ -107,24 +159,27 @@ const AppSidebar: React.FC = () => {
           {isAdmin && (
             <>
               <div className="border-t border-gray-200 dark:border-gray-700 my-4"></div>
-              <div className="px-4 py-2">
-                <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Administración
-                </span>
-              </div>
+              {isExpanded && (
+                <div className="px-4 py-2">
+                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    Administración
+                  </span>
+                </div>
+              )}
               
               {adminItems.map((item) => (
                     <Link
                   key={item.name}
                   to={item.href}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                  className={`flex items-center ${isExpanded ? 'space-x-3 px-4' : 'justify-center px-3'} py-3 rounded-lg transition-colors ${
                     isActive(item.href)
                       ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
+                  title={!isExpanded ? item.name : undefined}
                 >
-                  <item.icon className="w-5 h-5" />
-                  <span>{item.name}</span>
+                  <item.icon className="w-5 h-5 flex-shrink-0" />
+                  {isExpanded && <span>{item.name}</span>}
                     </Link>
               ))}
             </>

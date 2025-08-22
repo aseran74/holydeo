@@ -138,6 +138,8 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('🔍 Iniciando búsqueda...', searchData);
+    
     const params = new URLSearchParams({
       query: searchData.location,
       location: searchData.location,
@@ -148,7 +150,16 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
       pricePerDay: searchData.pricePerDay.toString(),
       pricePerMonth: searchData.pricePerMonth.toString()
     });
-    navigate(`/search?${params.toString()}`);
+    
+    const searchUrl = `/search?${params.toString()}`;
+    console.log('🚀 Navegando a:', searchUrl);
+    
+    try {
+      navigate(searchUrl);
+      console.log('✅ Navegación exitosa');
+    } catch (error) {
+      console.error('❌ Error en la navegación:', error);
+    }
   };
 
   const handleLocationChange = (location: string) => {

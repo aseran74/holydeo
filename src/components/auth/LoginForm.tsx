@@ -204,13 +204,43 @@ const LoginForm = () => {
           </motion.div>
         </motion.form>
 
-        {/* Enlaces adicionales */}
+        {/* Usuarios de prueba */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ 
             duration: 0.6, 
             delay: 0.7,
+            ease: "easeOut"
+          }}
+          className="bg-blue-50 border border-blue-200 rounded-lg p-4"
+        >
+          <h3 className="text-sm font-medium text-blue-800 mb-3 text-center">
+            🔑 Usuarios de Prueba
+          </h3>
+          <div className="space-y-2 text-xs text-blue-700">
+            <div className="flex justify-between items-center">
+              <span className="font-medium">Admin:</span>
+              <span className="font-mono bg-blue-100 px-2 py-1 rounded">admin@test.com</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-medium">Guest:</span>
+              <span className="font-mono bg-blue-100 px-2 py-1 rounded">guest@example.com</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-medium">Contraseña:</span>
+              <span className="font-mono bg-blue-100 px-2 py-1 rounded">123456</span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Enlaces adicionales */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ 
+            duration: 0.6, 
+            delay: 0.8,
             ease: "easeOut"
           }}
           className="text-center space-y-2"
@@ -242,13 +272,14 @@ const LoginForm = () => {
           animate={{ opacity: 1 }}
           transition={{ 
             duration: 0.6, 
-            delay: 0.8,
+            delay: 0.9,
             ease: "easeOut"
           }}
           className="text-center"
         >
           <p className="text-xs text-gray-500">
             © 2025 Holydeo. Todos los derechos reservados.
+            
           </p>
         </motion.div>
       </div>

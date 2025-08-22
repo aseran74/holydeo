@@ -76,19 +76,21 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
       if (blockedError) {
         console.error('Error fetching blocked dates:', blockedError);
       } else if (blocked) {
+        console.log('Fechas bloqueadas cargadas para propiedad', propertyId, ':', blocked);
         setBlockedDates(blocked);
       }
 
-      // Obtener reservas existentes
+      // Obtener reservas existentes (confirmadas y pendientes)
       const { data: bookings, error: bookingsError } = await supabase
         .from('bookings')
         .select('id, check_in, check_out, guest_name, status')
         .eq('property_id', propertyId)
-        .eq('status', 'confirmed');
+        .in('status', ['confirmed', 'pending']);
 
       if (bookingsError) {
         console.error('Error fetching bookings:', bookingsError);
       } else if (bookings) {
+        console.log('Reservas cargadas para propiedad', propertyId, ':', bookings);
         setExistingBookings(bookings);
       }
     } catch (error) {
@@ -358,6 +360,28 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
               <span>Pasado</span>
+            </div>
+          </div>
+
+          {/* Leyenda de colores */}
+          <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div className="flex flex-wrap gap-3 text-xs">
+              <div className="flex items-center gap-1">
+                <div className="w-4 h-4 bg-green-500 rounded"></div>
+                <span>Disponible</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-4 h-4 bg-red-500 rounded"></div>
+                <span>Reservado</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-4 h-4 bg-gray-500 rounded"></div>
+                <span>Bloqueado</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-4 h-4 bg-yellow-500 rounded"></div>
+                <span>iCal</span>
+              </div>
             </div>
           </div>
 
