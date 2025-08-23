@@ -90,6 +90,25 @@ const LandingPage = () => {
         navigate(`/experiences/${experienceId}`);
     };
 
+    const getExperienceImageUrl = (photos: string[] | undefined) => {
+        if (!photos || photos.length === 0) {
+            return '/images/cards/card-01.jpg';
+        }
+        
+        const firstPhoto = photos[0];
+        
+        // Check if it's an external URL (starts with http/https)
+        if (firstPhoto.startsWith('http://') || firstPhoto.startsWith('https://')) {
+            return firstPhoto;
+        } else {
+            // It's a Supabase storage path, get the public URL
+            const { data } = supabase.storage
+                .from('experience')
+                .getPublicUrl(firstPhoto);
+            return data.publicUrl || '/images/cards/card-01.jpg';
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <LandingNavbar />
@@ -133,7 +152,7 @@ const LandingPage = () => {
                                 <div key={experience.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                                     <div className="relative h-48">
                                         <img 
-                                            src={experience.photos && experience.photos.length > 0 ? experience.photos[0] : '/images/cards/card-01.jpg'} 
+                                            src={getExperienceImageUrl(experience.photos)} 
                                             alt={experience.name}
                                             className="w-full h-full object-cover"
                                         />
