@@ -31,7 +31,7 @@ const Experiences = () => {
   }, []);
 
   const handleEdit = (experience: Experience) => {
-    navigate(`/experiences/edit/${experience.id}`);
+    navigate(`/experiences/${experience.id}/edit`);
   };
 
   const handleDelete = async (experienceId: string) => {

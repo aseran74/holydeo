@@ -115,7 +115,7 @@ const ExperienceModal = ({ experience, onClose, onSuccess }: ExperienceModalProp
             <div>
               <Label>
                 Precio (€)
-                {formData.category === 'Green fees' || formData.category === 'Experiencias de larga duración' ? '' : ' / día'}
+                {formData.category === 'greenfees' || formData.category === 'Experiencias de larga duración' ? '' : ' / día'}
               </Label>
               <Input name="price" type="number" value={formData.price} onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))} />
             </div>

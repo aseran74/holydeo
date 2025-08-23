@@ -52,6 +52,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
             price={experience.price} 
             size="sm" 
             className="absolute top-3 right-3"
+            showPerDay={experience.category !== 'greenfees'}
           />
         )}
         

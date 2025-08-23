@@ -762,7 +762,7 @@ const SearchPage = () => {
                               {formatPrice(experience.price || 0)}
                             </span>
                             <span className="text-gray-500 text-sm">
-                              {/* Duración eliminada */}
+                              {experience.category === 'greenfees' ? 'Cuota mensual/anual' : 'por día'}
                             </span>
                           </div>
                         </div>

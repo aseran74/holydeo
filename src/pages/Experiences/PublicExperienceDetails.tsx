@@ -10,6 +10,9 @@ import { Map, MapPin } from 'lucide-react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import ExperienceCard from '../../components/experiences/ExperienceCard';
 import PublicPropertyCard from '../../components/common/PublicPropertyCard';
+import ExperienceBookingForm from '../../components/experiences/ExperienceBookingForm';
+import FavoriteButton from '../../components/experiences/FavoriteButton';
+import ShareButton from '../../components/experiences/ShareButton';
 
 interface Property {
   id: string;
@@ -210,14 +213,17 @@ const PublicExperienceDetails = () => {
                 </Link>
               )}
               
-              <button className="btn btn-outline btn-sm">
-                <StarIcon className="w-4 h-4 mr-2" />
-                Favorito
-              </button>
-              <button className="btn btn-outline btn-sm">
-                <PaperPlaneIcon className="w-4 h-4 mr-2" />
-                Compartir
-              </button>
+              <FavoriteButton
+                experienceId={experience.id}
+                experienceName={experience.name}
+                size="sm"
+              />
+              <ShareButton
+                experienceId={experience.id}
+                experienceName={experience.name}
+                experienceDescription={experience.description || ''}
+                size="sm"
+              />
             </div>
           </div>
 
@@ -293,9 +299,14 @@ const PublicExperienceDetails = () => {
                   </div>
 
                   <div className="space-y-4">
-                    <Button className="w-full">
-                      Reservar Experiencia
-                    </Button>
+                    <ExperienceBookingForm
+                      experienceId={experience.id}
+                      experienceName={experience.name}
+                      experiencePrice={experience.price}
+                      onSuccess={(bookingData) => {
+                        console.log('Reserva de experiencia completada:', bookingData);
+                      }}
+                    />
                     {experience.external_url && (
                       <a
                         href={experience.external_url}

@@ -11,6 +11,7 @@ interface Experience {
   location: string;
   photos: string[];
   featured: boolean;
+  category?: string;
 }
 
 const ExperiencesSection = () => {
@@ -142,6 +143,7 @@ const ExperiencesSection = () => {
                   <PriceTag 
                     price={experience.price || 0} 
                     size="lg" 
+                    showPerDay={experience.category !== 'greenfees'}
                   />
                 </div>
               </div>

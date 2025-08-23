@@ -210,7 +210,7 @@ const ExperienceForm = () => {
               <div>
                 <Label htmlFor="price">
                   Precio (€) *
-                  {formData.category === 'Green fees' || formData.category === 'Experiencias de larga duración' ? '' : ' / día'}
+                  {formData.category === 'greenfees' || formData.category === 'Experiencias de larga duración' ? '' : ' / día'}
                 </Label>
                 <Input
                   id="price"

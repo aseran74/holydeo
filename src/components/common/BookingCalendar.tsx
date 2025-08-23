@@ -209,7 +209,12 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
     e.preventDefault();
     
     if (!selectedStartDate || !selectedEndDate) {
-      alert('Por favor, seleccione un rango de fechas.');
+      toast.error('Error', 'Por favor, seleccione un rango de fechas.');
+      return;
+    }
+
+    if (!bookingForm.guestName || !bookingForm.guestEmail || !bookingForm.guestPhone) {
+      toast.error('Error', 'Por favor completa todos los campos obligatorios.');
       return;
     }
 
@@ -565,12 +570,13 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Teléfono
+                      Teléfono *
                     </label>
                     <input
                       type="tel"
                       value={bookingForm.guestPhone}
                       onChange={(e) => setBookingForm(prev => ({ ...prev, guestPhone: e.target.value }))}
+                      required
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                         currentUser ? 'border-blue-300 bg-blue-50 dark:bg-blue-900/10' : 'border-gray-300'
                       }`}

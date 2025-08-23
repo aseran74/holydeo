@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Calendar } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, User } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import useToast from '../../hooks/useToast';
 
 interface SeasonRentalFormProps {
   propertyId: string;
@@ -20,6 +22,8 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
   onSuccess,
   className = ''
 }) => {
+  const { currentUser } = useAuth();
+  const toast = useToast();
   const [showForm, setShowForm] = useState(false);
   const [selectedSeason, setSelectedSeason] = useState<string>('');
   const [rentalType, setRentalType] = useState<'season' | 'custom'>('season');
@@ -32,6 +36,18 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
     message: '',
     guests: 1
   });
+
+  // Auto-completar datos del usuario cuando se abra el formulario
+  useEffect(() => {
+    if (showForm && currentUser) {
+      setFormData(prev => ({
+        ...prev,
+        guestName: currentUser.displayName || currentUser.email?.split('@')[0] || '',
+        guestEmail: currentUser.email || '',
+        guestPhone: currentUser.phoneNumber || ''
+      }));
+    }
+  }, [showForm, currentUser]);
 
   // Calcular días entre fechas
   const calculateDays = (start: string, end: string) => {
@@ -136,7 +152,7 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
     
     // Validar que se haya seleccionado una temporada si es tipo 'season'
     if (rentalType === 'season' && !selectedSeason) {
-      alert('Por favor selecciona una temporada');
+      toast.error('Error', 'Por favor selecciona una temporada');
       return;
     }
     
@@ -150,6 +166,9 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
       isLongTerm,
       ...formData
     };
+    
+    // Mostrar toast de confirmación
+    toast.success('¡Solicitud de reserva efectuada!', 'Tu solicitud de alquiler de temporada ha sido enviada correctamente. Te contactaremos pronto.');
     
     onSuccess(rentalData);
     setShowForm(false);
@@ -328,6 +347,21 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
             </div>
           )}
 
+          {/* Indicador de usuario logueado */}
+          {currentUser && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
+              <div className="flex items-center space-x-2">
+                <User className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                  Datos auto-completados de tu perfil
+                </span>
+              </div>
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                Puedes modificar estos datos si lo deseas
+              </p>
+            </div>
+          )}
+
           {/* Información del cliente */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -368,16 +402,17 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Teléfono</label>
-            <input
-              type="tel"
-              name="guestPhone"
-              value={formData.guestPhone}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+                     <div>
+             <label className="block text-sm font-medium mb-1">Teléfono *</label>
+             <input
+               type="tel"
+               name="guestPhone"
+               value={formData.guestPhone}
+               onChange={handleInputChange}
+               required
+               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+             />
+           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1">Mensaje (opcional)</label>

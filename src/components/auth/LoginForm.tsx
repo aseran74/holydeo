@@ -225,7 +225,7 @@ const LoginForm = () => {
             </div>
             <div className="flex justify-between items-center">
               <span className="font-medium">Guest:</span>
-              <span className="font-mono bg-blue-100 px-2 py-1 rounded">guest@example.com</span>
+              <span className="font-mono bg-blue-100 px-2 py-1 rounded">test@example.com</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="font-medium">Contraseña:</span>

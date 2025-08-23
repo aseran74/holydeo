@@ -26,6 +26,7 @@ import { MapPinIcon, CalendarIcon, ExternalLinkIcon, ChevronLeftIcon, StarIcon, 
 import GoogleMap from '../../components/common/GoogleMap';
 import ExperienceCard from '../../components/experiences/ExperienceCard';
 import PublicPropertyCard from '../../components/common/PublicPropertyCard';
+import ExperienceBookingForm from '../../components/experiences/ExperienceBookingForm';
 
 const ExperienceDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -337,9 +338,14 @@ const ExperienceDetails = () => {
                     </div>
 
                     <div className="space-y-4">
-                      <Button className="w-full">
-                        Reservar Experiencia
-                      </Button>
+                      <ExperienceBookingForm
+                        experienceId={experience.id}
+                        experienceName={experience.name}
+                        experiencePrice={experience.price}
+                        onSuccess={(bookingData) => {
+                          console.log('Reserva de experiencia completada:', bookingData);
+                        }}
+                      />
                       {experience.external_url && (
                         <a
                           href={experience.external_url}
@@ -524,9 +530,15 @@ const ExperienceDetails = () => {
                 <Button variant="outline">
                   Compartir
                 </Button>
-                <Button>
-                  Reservar Ahora
-                </Button>
+                <ExperienceBookingForm
+                  experienceId={experience.id}
+                  experienceName={experience.name}
+                  experiencePrice={experience.price}
+                  onSuccess={(bookingData) => {
+                    console.log('Reserva de experiencia completada:', bookingData);
+                  }}
+                  className="w-auto"
+                />
               </div>
           </div>
         </div>

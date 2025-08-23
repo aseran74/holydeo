@@ -2,7 +2,7 @@ export const EXPERIENCE_CATEGORIES = [
   { value: 'Actividad Turística', label: 'Actividad Turística' },
   { value: 'Gastronómica', label: 'Gastronómica' },
   { value: 'Deportiva', label: 'Deportiva' },
-  { value: 'Green fees', label: 'Green fees' },
+  { value: 'greenfees', label: 'Green fees' },
   { value: 'Experiencias de larga duración', label: 'Experiencias de larga duración' },
 ];
 

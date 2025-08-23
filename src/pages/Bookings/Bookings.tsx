@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { 
   CheckCircle, 
   XCircle, 
@@ -13,7 +14,8 @@ import {
   Filter,
   Search,
   Plus,
-  X
+  X,
+  User
 } from 'lucide-react';
 import { BookingManagementService, Booking } from '../../services/bookingManagementService';
 import useToast from '../../hooks/useToast';
@@ -29,6 +31,7 @@ interface BookingWithProperty extends Booking {
 }
 
 const Bookings = () => {
+  const { currentUser } = useAuth();
   const [bookings, setBookings] = useState<BookingWithProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>(null);
@@ -71,6 +74,18 @@ const Bookings = () => {
     loadProperties();
     loadExistingGuests();
   }, []);
+
+  // Auto-completar datos del usuario cuando se abra el modal de creación
+  useEffect(() => {
+    if (showCreateModal && currentUser && !useExistingGuest) {
+      setCreateFormData(prev => ({
+        ...prev,
+        guest_name: currentUser.displayName || currentUser.email?.split('@')[0] || '',
+        guest_email: currentUser.email || '',
+        guest_phone: currentUser.phoneNumber || ''
+      }));
+    }
+  }, [showCreateModal, currentUser, useExistingGuest]);
 
   const loadBookings = async () => {
     setLoading(true);
@@ -1136,6 +1151,21 @@ const Bookings = () => {
                   </select>
                 </div>
 
+                {/* Indicador de usuario logueado */}
+                {currentUser && !useExistingGuest && (
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
+                    <div className="flex items-center space-x-2">
+                      <User className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                        Datos auto-completados de tu perfil
+                      </span>
+                    </div>
+                    <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                      Puedes modificar estos datos si lo deseas
+                    </p>
+                  </div>
+                )}
+
                 {/* Selección de Huésped */}
                 <div>
                   <div className="flex items-center gap-4 mb-2">
@@ -1214,6 +1244,26 @@ const Bookings = () => {
                     />
                   </div>
                 </div>
+
+                {/* Botón para restaurar datos del usuario */}
+                {currentUser && !useExistingGuest && (
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCreateFormData(prev => ({
+                          ...prev,
+                          guest_name: currentUser.displayName || currentUser.email?.split('@')[0] || '',
+                          guest_email: currentUser.email || '',
+                          guest_phone: currentUser.phoneNumber || ''
+                        }));
+                      }}
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+                    >
+                      Restaurar datos del perfil
+                    </button>
+                  </div>
+                )}
 
                 {/* Fechas y Detalles */}
                 <div className="space-y-4">
