@@ -150,40 +150,30 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
         
                  {/* Características principales */}
          <div className="grid grid-cols-3 gap-4 mb-4">
-           <div className="text-center p-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-             <div className="w-8 h-8 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center mx-auto mb-1">
+           <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+             <div className="w-8 h-8 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center mx-auto mb-2">
                <BedDouble size={18} className="text-blue-600" />
              </div>
              <p className="text-lg font-bold text-gray-900 dark:text-white">{property.bedrooms || 0}</p>
+             <p className="text-xs text-gray-600 dark:text-gray-400">Habitaciones</p>
            </div>
            
-           <div className="text-center p-2 bg-green-50 dark:bg-green-900/20 rounded-xl">
-             <div className="w-8 h-8 bg-green-100 dark:bg-blue-800 rounded-lg flex items-center justify-center mx-auto mb-1">
+           <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
+             <div className="w-8 h-8 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center mx-auto mb-2">
                <Bath size={18} className="text-green-600" />
              </div>
              <p className="text-lg font-bold text-gray-900 dark:text-white">{property.bathrooms || 0}</p>
+             <p className="text-xs text-gray-600 dark:text-gray-400">Baños</p>
            </div>
            
-           <div className="text-center p-2 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
-             <div className="w-8 h-8 bg-purple-100 dark:bg-purple-800 rounded-lg flex items-center justify-center mx-auto mb-1">
+           <div className="text-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+             <div className="w-8 h-8 bg-purple-100 dark:bg-purple-800 rounded-lg flex items-center justify-center mx-auto mb-2">
                <Users size={18} className="text-purple-600" />
              </div>
              <p className="text-lg font-bold text-gray-900 dark:text-white">{property.toilets || 0}</p>
+             <p className="text-xs text-gray-600 dark:text-gray-400">Plazas</p>
            </div>
          </div>
-         
-         {/* Comodidades */}
-         {property.amenities && property.amenities.length > 0 && (
-           <div className="mb-4">
-             <div className="flex flex-wrap gap-2">
-               {property.amenities.slice(0, 6).map((amenity, index) => (
-                 <div key={index} className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                   <Star size={16} className="text-amber-500" />
-                 </div>
-               ))}
-             </div>
-           </div>
-         )}
         
                  {/* Precio mensual destacado */}
          <div className="bg-gradient-to-r from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 border border-green-200 dark:border-green-700 mb-4">

@@ -42,6 +42,7 @@ import PageMeta from '../../components/common/PageMeta';
 import BookingCalendar from '../../components/common/BookingCalendar';
 import SeasonRentalForm from '../../components/common/SeasonRentalForm';
 import LandingNavbar from '../../components/landing/LandingNavbar';
+import useToast from '../../hooks/useToast';
 
 // Mapeo de amenities a iconos
 const amenityIcons: { [key: string]: React.ReactElement } = {
@@ -169,6 +170,7 @@ const PropertyDetails = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAllImages, setShowAllImages] = useState(false);
   const [nearbyServices, setNearbyServices] = useState<NearbyService[]>([]);
+  const toast = useToast();
 
 
 
@@ -798,6 +800,22 @@ const PropertyDetails = () => {
                     // Aquí puedes manejar la reserva completada
                   }}
                 />
+              </div>
+              
+              {/* Botón de reserva estancia corta */}
+              <div className="mb-6">
+                <button 
+                  onClick={() => {
+                    // Mostrar toast informativo usando el hook personalizado
+                    toast.info(
+                      'Reserva Estancia Corta',
+                      'Pulsa tus días en el calendario de arriba. Recuerda: 15 días mínimo, 90 días máximo.'
+                    );
+                  }}
+                  className="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                  Solicitar Reserva Estancia Corta
+                </button>
               </div>
 
               {/* Formulario de alquiler de temporada completa (si está disponible) */}

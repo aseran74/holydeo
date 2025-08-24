@@ -196,18 +196,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onDelete 
            </div>
          </div>
          
-         {/* Comodidades */}
-         {property.amenities && property.amenities.length > 0 && (
-           <div className="mb-4">
-             <div className="flex flex-wrap gap-2">
-               {property.amenities.slice(0, 6).map((amenity, index) => (
-                 <div key={index} className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                   <Star size={16} className="text-amber-500" />
-                 </div>
-               ))}
-             </div>
-           </div>
-         )}
+
         
                  {/* Precio mensual destacado */}
          <div className="bg-gradient-to-r from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 border border-green-200 dark:border-green-700 mb-4">
