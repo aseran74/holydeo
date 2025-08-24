@@ -24,6 +24,18 @@ import {
   Mountain,
   Coffee,
   Dumbbell,
+  ShoppingBag,
+  Landmark,
+  Users,
+  Shield,
+  Lock,
+  Flame,
+  Flag,
+  Plane,
+  Sparkles,
+  CircleDot,
+  Target,
+  Accessibility,
 } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import PageMeta from '../../components/common/PageMeta';
@@ -40,14 +52,58 @@ const amenityIcons: { [key: string]: React.ReactElement } = {
   "Garaje": <ParkingSquare size={20} className="text-gray-600" />,
   "Vistas al mar": <Waves size={20} className="text-blue-600" />,
   "TV": <Tv size={20} className="text-purple-500" />,
-  "Cafetera": <Coffee size={20} className="text-brown-500" />,
+  "Cafetera": <Coffee size={20} className="text-amber-600" />,
   "Gimnasio": <Dumbbell size={20} className="text-red-500" />,
   "Jardín": <TreePine size={20} className="text-green-600" />,
   "Terraza": <Sun size={20} className="text-yellow-500" />,
   "Balcón": <Moon size={20} className="text-indigo-500" />,
   "Estacionamiento": <Car size={20} className="text-gray-700" />,
   "Vistas a la montaña": <Mountain size={20} className="text-green-700" />,
+  "Calefacción": <Sun size={20} className="text-orange-400" />,
+  "Lavadora": <Waves size={20} className="text-blue-400" />,
+  "Secadora": <Waves size={20} className="text-blue-300" />,
+  "Microondas": <UtensilsCrossed size={20} className="text-red-400" />,
+  "Horno": <UtensilsCrossed size={20} className="text-red-500" />,
+  "Nevera": <Snowflake size={20} className="text-cyan-500" />,
+  "Lavavajillas": <Waves size={20} className="text-cyan-400" />,
+  "Plancha": <UtensilsCrossed size={20} className="text-gray-500" />,
+  "Secador de pelo": <Waves size={20} className="text-pink-400" />,
+  "Toallas": <UtensilsCrossed size={20} className="text-blue-300" />,
+  "Sábanas": <UtensilsCrossed size={20} className="text-blue-200" />,
+  "Ascensor": <ArrowLeft size={20} className="text-gray-600 rotate-90" />,
+  "Portero": <Users size={20} className="text-blue-600" />,
+  "Seguridad 24h": <Shield size={20} className="text-green-500" />,
+  "Caja fuerte": <Lock size={20} className="text-yellow-600" />,
+  "Chimenea": <Flame size={20} className="text-orange-500" />,
+  "Barbacoa": <Flame size={20} className="text-red-400" />,
+  "Spa": <Waves size={20} className="text-purple-400" />,
+  "Sauna": <Snowflake size={20} className="text-red-300" />,
+  "Pista de tenis": <Target size={20} className="text-green-400" />,
+  "Pista de pádel": <CircleDot size={20} className="text-blue-500" />,
+  "Campo de golf": <Flag size={20} className="text-green-500" />,
+  "Piscina infantil": <Waves size={20} className="text-cyan-400" />,
+  "Parque infantil": <TreePine size={20} className="text-green-400" />,
+  "Mascotas permitidas": <Heart size={20} className="text-pink-500" />,
+  "Acceso para discapacitados": <Accessibility size={20} className="text-blue-600" />,
+  "Parking gratuito": <ParkingSquare size={20} className="text-green-500" />,
+  "Parking de pago": <ParkingSquare size={20} className="text-orange-500" />,
+  "Traslado al aeropuerto": <Plane size={20} className="text-blue-500" />,
+  "Servicio de limpieza": <Sparkles size={20} className="text-purple-500" />,
+  "Desayuno incluido": <UtensilsCrossed size={20} className="text-yellow-500" />,
+  "Media pensión": <UtensilsCrossed size={20} className="text-orange-500" />,
+  "Pensión completa": <UtensilsCrossed size={20} className="text-red-500" />,
 };
+
+interface NearbyService {
+  id: string;
+  service_type: string;
+  name: string;
+  distance_minutes: number;
+  description: string;
+  icon_name: string;
+  color: string;
+  external_url?: string;
+}
 
 interface Property {
   id: string;
@@ -98,6 +154,8 @@ interface Property {
     email: string;
     phone?: string;
   };
+  // Servicios cercanos
+  nearby_services?: NearbyService[];
 }
 
 
@@ -110,6 +168,7 @@ const PropertyDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAllImages, setShowAllImages] = useState(false);
+  const [nearbyServices, setNearbyServices] = useState<NearbyService[]>([]);
 
 
 
@@ -123,10 +182,33 @@ const PropertyDetails = () => {
   useEffect(() => {
     if (id) {
       fetchPropertyDetails();
+      fetchNearbyServices();
     }
   }, [id]);
 
 
+
+  const fetchNearbyServices = async () => {
+    try {
+      if (!id) return;
+      
+      const { data: servicesData, error: servicesError } = await supabase
+        .from("nearby_services")
+        .select("*")
+        .eq("property_id", id)
+        .eq("is_active", true)
+        .order("distance_minutes", { ascending: true });
+
+      if (servicesError) {
+        console.error('Error fetching nearby services:', servicesError);
+        return;
+      }
+
+      setNearbyServices(servicesData || []);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   const fetchPropertyDetails = async () => {
     try {
@@ -288,7 +370,33 @@ const PropertyDetails = () => {
   };
 
   const getAmenityIcon = (amenity: string) => {
-    return amenityIcons[amenity] || <Star size={20} className="text-gray-500" />;
+    return amenityIcons[amenity] || <Star size={20} className="text-emerald-500" />;
+  };
+
+  const getServiceIcon = (iconName: string) => {
+    const iconMap: { [key: string]: React.ReactElement } = {
+      'Waves': <Waves size={20} />,
+      'UtensilsCrossed': <UtensilsCrossed size={20} />,
+      'ShoppingBag': <ShoppingBag size={20} />,
+      'Car': <Car size={20} />,
+      'Landmark': <Landmark size={20} />,
+      'TreePine': <TreePine size={20} />,
+      'Wifi': <Wifi size={20} />,
+      'ParkingSquare': <ParkingSquare size={20} />,
+      'Tv': <Tv size={20} />,
+      'Coffee': <Coffee size={20} />,
+      'Dumbbell': <Dumbbell size={20} />,
+      'Sun': <Sun size={20} />,
+      'Moon': <Moon size={20} />,
+      'Mountain': <Mountain size={20} />,
+      'Target': <Target size={20} />,
+      'CircleDot': <CircleDot size={20} />,
+      'Accessibility': <Accessibility size={20} />,
+      'Plane': <Plane size={20} />,
+      'Sparkles': <Sparkles size={20} />,
+    };
+    
+    return iconMap[iconName] || <Star size={20} />;
   };
 
   const nextImage = () => {
@@ -555,28 +663,120 @@ const PropertyDetails = () => {
 
             <hr className="my-8 dark:border-gray-700" />
             
-            {/* Mapa */}
-            <div id="location-map">
-              <h3 className="text-xl font-semibold mb-4">Ubicación</h3>
-              <div className="h-96 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
-                {!isLoaded ? (
-                  <div className="flex items-center justify-center h-full">Cargando mapa...</div>
-                ) : loadError ? (
-                  <div className="flex items-center justify-center h-full text-red-500">Error al cargar el mapa.</div>
-                ) : property.lat && property.lng ? (
-                  <GoogleMap
-                    mapContainerClassName="w-full h-full"
-                    center={{ lat: property.lat, lng: property.lng }}
-                    zoom={15}
-                    options={{ gestureHandling: 'cooperative' }}
-                  >
-                    <Marker position={{ lat: property.lat, lng: property.lng }} />
-                  </GoogleMap>
-                ) : (
-                  <div className="flex items-center justify-center h-full">Ubicación no disponible.</div>
-                )}
-              </div>
-            </div>
+                         {/* Mapa */}
+             <div id="location-map">
+               <h3 className="text-xl font-semibold mb-4">Ubicación</h3>
+               <div className="h-96 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+                 {!isLoaded ? (
+                   <div className="flex items-center justify-center h-full">Cargando mapa...</div>
+                 ) : loadError ? (
+                   <div className="flex items-center justify-center h-full text-red-500">Error al cargar el mapa.</div>
+                 ) : property.lat && property.lng ? (
+                   <GoogleMap
+                     mapContainerClassName="w-full h-full"
+                     center={{ lat: property.lat, lng: property.lng }}
+                     zoom={15}
+                     options={{ gestureHandling: 'cooperative' }}
+                   >
+                     <Marker position={{ lat: property.lat, lng: property.lng }} />
+                   </GoogleMap>
+                 ) : (
+                   <div className="flex items-center justify-center h-full">Ubicación no disponible.</div>
+                 )}
+               </div>
+             </div>
+
+             <hr className="my-8 dark:border-gray-700" />
+             
+             {/* Actividades Cercanas */}
+             <div>
+               <h3 className="text-xl font-semibold mb-4">Actividades Cercanas</h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                 {/* Playa */}
+                 <div className="bg-gradient-to-br from-blue-50 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
+                   <div className="flex items-center gap-3 mb-2">
+                     <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                       <Waves size={20} className="text-white" />
+                     </div>
+                     <div>
+                       <h4 className="font-semibold text-gray-900 dark:text-white">Playa</h4>
+                       <p className="text-sm text-blue-600 dark:text-blue-400">A 5 min caminando</p>
+                     </div>
+                   </div>
+                   <p className="text-sm text-gray-600 dark:text-gray-400">Playa de arena blanca con aguas cristalinas</p>
+                 </div>
+
+                 {/* Restaurantes */}
+                 <div className="bg-gradient-to-br from-orange-50 to-red-100 dark:from-orange-900/20 dark:to-red-900/20 p-4 rounded-xl border border-orange-200 dark:border-orange-800">
+                   <div className="flex items-center gap-3 mb-2">
+                     <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                       <UtensilsCrossed size={20} className="text-white" />
+                     </div>
+                     <div>
+                       <h4 className="font-semibold text-gray-900 dark:text-white">Restaurantes</h4>
+                       <p className="text-sm text-orange-600 dark:text-orange-400">A 3 min caminando</p>
+                     </div>
+                   </div>
+                   <p className="text-sm text-gray-600 dark:text-gray-400">Variedad de restaurantes locales y internacionales</p>
+                 </div>
+
+                 {/* Supermercado */}
+                 <div className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 p-4 rounded-xl border border-green-200 dark:border-green-800">
+                   <div className="flex items-center gap-3 mb-2">
+                     <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                       <ShoppingBag size={20} className="text-white" />
+                     </div>
+                     <div>
+                       <h4 className="font-semibold text-gray-900 dark:text-white">Supermercado</h4>
+                       <p className="text-sm text-green-600 dark:text-green-400">A 2 min caminando</p>
+                     </div>
+                   </div>
+                   <p className="text-sm text-gray-600 dark:text-gray-400">Todo lo necesario para tu estancia</p>
+                 </div>
+
+                 {/* Transporte */}
+                 <div className="bg-gradient-to-br from-purple-50 to-violet-100 dark:from-purple-900/20 dark:to-violet-900/20 p-4 rounded-xl border border-purple-200 dark:border-purple-800">
+                   <div className="flex items-center gap-3 mb-2">
+                     <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                       <Car size={20} className="text-white" />
+                     </div>
+                     <div>
+                       <h4 className="font-semibold text-gray-900 dark:text-white">Transporte</h4>
+                       <p className="text-sm text-purple-600 dark:text-purple-400">A 1 min caminando</p>
+                     </div>
+                   </div>
+                   <p className="text-sm text-gray-600 dark:text-gray-400">Parada de autobús y taxi cercana</p>
+                 </div>
+
+                 {/* Centro histórico */}
+                 <div className="bg-gradient-to-br from-amber-50 to-yellow-100 dark:from-amber-900/20 dark:to-yellow-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800">
+                   <div className="flex items-center gap-3 mb-2">
+                     <div className="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center">
+                       <Landmark size={20} className="text-white" />
+                     </div>
+                     <div>
+                       <h4 className="font-semibold text-gray-900 dark:text-white">Centro Histórico</h4>
+                       <p className="text-sm text-amber-600 dark:text-amber-400">A 10 min caminando</p>
+                     </div>
+                   </div>
+                   <p className="text-sm text-gray-600 dark:text-gray-400">Monumentos y arquitectura histórica</p>
+                 </div>
+
+                 {/* Parque */}
+                 <div className="bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                   <div className="flex items-center gap-3 mb-2">
+                     <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center">
+                       <TreePine size={20} className="text-white" />
+                     </div>
+                     <div>
+                       <h4 className="font-semibold text-gray-900 dark:text-white">Parque Natural</h4>
+                       <p className="text-sm text-emerald-600 dark:text-emerald-400">A 15 min caminando</p>
+                     </div>
+                   </div>
+                   <p className="text-sm text-gray-600 dark:text-gray-400">Senderos y vistas panorámicas</p>
+                 </div>
+               </div>
+             </div>
           </div>
           
           {/* Columna Derecha: Formulario de Reserva (Sticky) */}
@@ -625,8 +825,8 @@ const PropertyDetails = () => {
                   <p className="text-sm text-gray-500">
                       ¿Tienes dudas? Contacta directamente con el anunciante.
                   </p>
-                  <button className="btn btn-outline w-full mt-3">
-                      <Phone size={16} /> Mostrar teléfono
+                  <button className="w-full mt-3 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 hover:from-violet-600 hover:via-purple-600 hover:to-fuchsia-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                      <Phone size={16} className="inline mr-2" /> Mostrar teléfono
                   </button>
               </div>
             </div>
