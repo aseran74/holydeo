@@ -64,8 +64,6 @@ const BookingDateRangePicker: React.FC<BookingDateRangePickerProps> = ({
   };
 
   const handleDateClick = (date: Date) => {
-    const dateString = date.toISOString().split('T')[0];
-    
     // No permitir seleccionar fechas bloqueadas
     if (isDateBlocked(date)) return;
     

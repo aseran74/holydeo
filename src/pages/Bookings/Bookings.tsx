@@ -291,7 +291,7 @@ const Bookings = () => {
         created_at: new Date().toISOString()
       };
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('bookings')
         .insert([bookingData])
         .select();
@@ -350,15 +350,7 @@ const Bookings = () => {
     return 0;
   };
 
-  const calculateTotalPrice = () => {
-    const nights = calculateNights();
-    const property = properties.find(p => p.id === createFormData.property_id);
-    if (property && nights > 0) {
-      const pricePerNight = property.precio_dia || 0;
-      return pricePerNight * nights;
-    }
-    return 0;
-  };
+
 
   const getStatusIcon = (status: string) => {
     switch (status) {

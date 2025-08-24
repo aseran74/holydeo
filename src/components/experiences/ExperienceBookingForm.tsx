@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, User, Phone, Mail, MessageSquare } from 'lucide-react';
+import { Calendar, User, MessageSquare } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import useToast from '../../hooks/useToast';
 import { supabase } from '../../supabaseClient';
@@ -20,7 +20,6 @@ const ExperienceBookingForm: React.FC<ExperienceBookingFormProps> = ({
   experienceName,
   experiencePrice,
   onSuccess,
-  onClose,
   className = ''
 }) => {
   const { currentUser } = useAuth();

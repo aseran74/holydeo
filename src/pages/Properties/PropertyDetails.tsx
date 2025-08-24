@@ -169,7 +169,7 @@ const PropertyDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAllImages, setShowAllImages] = useState(false);
-  const [nearbyServices, setNearbyServices] = useState<NearbyService[]>([]);
+
   const toast = useToast();
 
 
@@ -184,33 +184,12 @@ const PropertyDetails = () => {
   useEffect(() => {
     if (id) {
       fetchPropertyDetails();
-      fetchNearbyServices();
     }
   }, [id]);
 
 
 
-  const fetchNearbyServices = async () => {
-    try {
-      if (!id) return;
-      
-      const { data: servicesData, error: servicesError } = await supabase
-        .from("nearby_services")
-        .select("*")
-        .eq("property_id", id)
-        .eq("is_active", true)
-        .order("distance_minutes", { ascending: true });
 
-      if (servicesError) {
-        console.error('Error fetching nearby services:', servicesError);
-        return;
-      }
-
-      setNearbyServices(servicesData || []);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
 
   const fetchPropertyDetails = async () => {
     try {
@@ -375,31 +354,7 @@ const PropertyDetails = () => {
     return amenityIcons[amenity] || <Star size={20} className="text-emerald-500" />;
   };
 
-  const getServiceIcon = (iconName: string) => {
-    const iconMap: { [key: string]: React.ReactElement } = {
-      'Waves': <Waves size={20} />,
-      'UtensilsCrossed': <UtensilsCrossed size={20} />,
-      'ShoppingBag': <ShoppingBag size={20} />,
-      'Car': <Car size={20} />,
-      'Landmark': <Landmark size={20} />,
-      'TreePine': <TreePine size={20} />,
-      'Wifi': <Wifi size={20} />,
-      'ParkingSquare': <ParkingSquare size={20} />,
-      'Tv': <Tv size={20} />,
-      'Coffee': <Coffee size={20} />,
-      'Dumbbell': <Dumbbell size={20} />,
-      'Sun': <Sun size={20} />,
-      'Moon': <Moon size={20} />,
-      'Mountain': <Mountain size={20} />,
-      'Target': <Target size={20} />,
-      'CircleDot': <CircleDot size={20} />,
-      'Accessibility': <Accessibility size={20} />,
-      'Plane': <Plane size={20} />,
-      'Sparkles': <Sparkles size={20} />,
-    };
-    
-    return iconMap[iconName] || <Star size={20} />;
-  };
+
 
   const nextImage = () => {
     if (property?.image_paths && property.image_paths.length > 0) {

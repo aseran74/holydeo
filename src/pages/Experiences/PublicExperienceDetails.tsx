@@ -5,7 +5,7 @@ import Button from '../../components/ui/button/Button';
 import { Experience } from '../../types';
 import LandingNavbar from '../../components/landing/LandingNavbar';
 import { useAuth } from '../../context/AuthContext';
-import { MapPinIcon, ExternalLinkIcon, ChevronLeftIcon, StarIcon, PaperPlaneIcon, PencilIcon } from '../../icons';
+import { MapPinIcon, ExternalLinkIcon, ChevronLeftIcon, PencilIcon } from '../../icons';
 import { Map, MapPin } from 'lucide-react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import ExperienceCard from '../../components/experiences/ExperienceCard';

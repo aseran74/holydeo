@@ -30,7 +30,7 @@ export const useShareExperience = () => {
     }
 
     window.open(shareUrl, '_blank', 'width=600,height=400');
-  });
+  }, []);
 
   // Función para copiar enlace al portapapeles
   const copyToClipboard = useCallback(async (url: string) => {
