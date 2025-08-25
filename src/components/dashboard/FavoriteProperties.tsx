@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, MapPin, Euro, BedDouble, Bath, Users, Star } from 'lucide-react';
+import { Heart, MapPin, Euro, BedDouble, Bath, Users, Star, Filter, SortAsc, SortDesc } from 'lucide-react';
 import { supabase } from '../../supabaseClient';
 import { usePropertyFavorites } from '../../hooks/usePropertyFavorites';
 import { Property } from '../../types';
@@ -9,9 +9,16 @@ interface FavoriteProperty extends Property {
   favorite_id: string;
 }
 
+type SortOption = 'date' | 'price' | 'name';
+type SortOrder = 'asc' | 'desc';
+
 const FavoriteProperties: React.FC = () => {
   const [favoriteProperties, setFavoriteProperties] = useState<FavoriteProperty[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState<SortOption>('date');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const [showFilters, setShowFilters] = useState(false);
+  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 10000 });
   const { favorites, removeFromFavorites } = usePropertyFavorites();
 
   useEffect(() => {
@@ -104,6 +111,45 @@ const FavoriteProperties: React.FC = () => {
     return new Intl.NumberFormat('es-ES').format(price);
   };
 
+  const sortProperties = (properties: FavoriteProperty[]) => {
+    return [...properties].sort((a, b) => {
+      let aValue: any, bValue: any;
+
+      switch (sortBy) {
+        case 'price':
+          aValue = a.precio_mes || 0;
+          bValue = b.precio_mes || 0;
+          break;
+        case 'name':
+          aValue = a.title.toLowerCase();
+          bValue = b.title.toLowerCase();
+          break;
+        case 'date':
+        default:
+          aValue = new Date(a.created_at || '');
+          bValue = new Date(b.created_at || '');
+          break;
+      }
+
+      if (sortOrder === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+  };
+
+  const filteredAndSortedProperties = sortProperties(
+    favoriteProperties.filter(property => {
+      const price = property.precio_mes || 0;
+      return price >= priceRange.min && price <= priceRange.max;
+    })
+  );
+
+  const toggleSortOrder = () => {
+    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+  };
+
   if (loading) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
@@ -125,12 +171,79 @@ const FavoriteProperties: React.FC = () => {
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
           Mis Propiedades Favoritas
         </h2>
-        <span className="text-sm text-gray-500">
-          {favoriteProperties.length} favorita{favoriteProperties.length !== 1 ? 's' : ''}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-500">
+            {filteredAndSortedProperties.length} favorita{filteredAndSortedProperties.length !== 1 ? 's' : ''}
+          </span>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+            title="Filtros"
+          >
+            <Filter className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      {favoriteProperties.length === 0 ? (
+      {/* Filtros y Ordenamiento */}
+      <div className={`mb-6 transition-all duration-300 ${showFilters ? 'block' : 'hidden'}`}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          {/* Ordenamiento */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Ordenar por
+            </label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            >
+              <option value="date">Fecha</option>
+              <option value="price">Precio</option>
+              <option value="name">Nombre</option>
+            </select>
+          </div>
+
+          {/* Dirección del ordenamiento */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Orden
+            </label>
+            <button
+              onClick={toggleSortOrder}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white flex items-center justify-center gap-2"
+            >
+              {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+              {sortOrder === 'asc' ? 'Ascendente' : 'Descendente'}
+            </button>
+          </div>
+
+          {/* Rango de precios */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Rango de precio mensual
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                placeholder="Min"
+                value={priceRange.min}
+                onChange={(e) => setPriceRange(prev => ({ ...prev, min: Number(e.target.value) }))}
+                className="w-1/2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              />
+              <input
+                type="number"
+                placeholder="Max"
+                value={priceRange.max}
+                onChange={(e) => setPriceRange(prev => ({ ...prev, max: Number(e.target.value) }))}
+                className="w-1/2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {filteredAndSortedProperties.length === 0 ? (
         <div className="text-center py-8">
           <div className="text-gray-400 mb-2">
             <Heart className="w-12 h-12 mx-auto" />
@@ -146,8 +259,8 @@ const FavoriteProperties: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          {favoriteProperties.map((property) => (
-            <div key={property.id} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+          {filteredAndSortedProperties.map((property) => (
+            <div key={property.id} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-200">
               <div className="flex">
                 {/* Imagen */}
                 <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0">

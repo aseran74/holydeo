@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { BedDouble, Bath, Users, MapPin, Euro, Calendar, Heart, Star, Eye, Clock } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import { Property } from '../../types';
-import { usePropertyFavorites } from '../../hooks/usePropertyFavorites';
 
 interface PublicPropertyCardProps {
   property: Property;
@@ -12,7 +11,7 @@ interface PublicPropertyCardProps {
 const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => {
   const [imageUrl, setImageUrl] = useState<string>('/images/cards/card-01.jpg');
   const [isLoading, setIsLoading] = useState(true);
-  const { isFavorite, toggleFavorite } = usePropertyFavorites();
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     const fetchImageUrl = async () => {
@@ -120,7 +119,7 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
         <button
           onClick={(e) => {
             e.preventDefault();
-            toggleFavorite(property.id);
+            setIsFavorite(!isFavorite);
           }}
           className={`absolute bottom-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 ${
             isFavorite 

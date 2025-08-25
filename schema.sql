@@ -122,6 +122,15 @@ CREATE TABLE IF NOT EXISTS nearby_services (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Tabla de favoritos de propiedades
+CREATE TABLE IF NOT EXISTS property_favorites (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id TEXT NOT NULL,
+  property_id UUID REFERENCES properties(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_id, property_id)
+);
+
 -- Tabla de fechas bloqueadas
 CREATE TABLE IF NOT EXISTS blocked_dates (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -246,15 +255,6 @@ CREATE TABLE IF NOT EXISTS experience_favorites (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   user_id TEXT NOT NULL,
   experience_id UUID REFERENCES experiences(id)
-);
-
--- Tabla de favoritos de propiedades
-CREATE TABLE IF NOT EXISTS property_favorites (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  user_id TEXT NOT NULL,
-  property_id UUID REFERENCES properties(id),
-  UNIQUE(user_id, property_id)
 );
 
 -- Tabla de disponibilidad de experiencias
@@ -420,6 +420,10 @@ CREATE INDEX IF NOT EXISTS idx_experiences_featured ON experiences(featured);
 CREATE INDEX IF NOT EXISTS idx_nearby_services_property_id ON nearby_services(property_id);
 CREATE INDEX IF NOT EXISTS idx_nearby_services_type ON nearby_services(service_type);
 
+-- Índices para favoritos de propiedades
+CREATE INDEX IF NOT EXISTS idx_property_favorites_user_id ON property_favorites(user_id);
+CREATE INDEX IF NOT EXISTS idx_property_favorites_property_id ON property_favorites(property_id);
+
 -- Índices para testimonios
 CREATE INDEX IF NOT EXISTS idx_testimonials_created_at ON testimonials(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_testimonials_rating ON testimonials(rating DESC);
@@ -437,9 +441,9 @@ ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE season_rentals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE experience_bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE experience_favorites ENABLE ROW LEVEL SECURITY;
-ALTER TABLE property_favorites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE experience_availability ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+ALTER TABLE property_favorites ENABLE ROW LEVEL SECURITY;
 
 -- =====================================================
 -- FUNCIONES Y TRIGGERS
