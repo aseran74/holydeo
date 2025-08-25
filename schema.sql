@@ -248,6 +248,15 @@ CREATE TABLE IF NOT EXISTS experience_favorites (
   experience_id UUID REFERENCES experiences(id)
 );
 
+-- Tabla de favoritos de propiedades
+CREATE TABLE IF NOT EXISTS property_favorites (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  user_id TEXT NOT NULL,
+  property_id UUID REFERENCES properties(id),
+  UNIQUE(user_id, property_id)
+);
+
 -- Tabla de disponibilidad de experiencias
 CREATE TABLE IF NOT EXISTS experience_availability (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -428,6 +437,7 @@ ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE season_rentals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE experience_bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE experience_favorites ENABLE ROW LEVEL SECURITY;
+ALTER TABLE property_favorites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE experience_availability ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../supabaseClient';
 import GuestNotificationDropdown from '../../components/notifications/GuestNotificationDropdown';
+import FavoriteProperties from '../../components/dashboard/FavoriteProperties';
 
 interface Booking {
   id: string;
@@ -204,6 +205,11 @@ const GuestDashboard: React.FC = () => {
                         </button>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Sección de Propiedades Favoritas */}
+                  <div className="mb-8">
+                    <FavoriteProperties />
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
