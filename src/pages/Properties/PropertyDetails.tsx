@@ -24,8 +24,7 @@ import {
   Mountain,
   Coffee,
   Dumbbell,
-  ShoppingBag,
-  Landmark,
+
   Users,
   Shield,
   Lock,
@@ -43,6 +42,8 @@ import BookingCalendar from '../../components/common/BookingCalendar';
 import SeasonRentalForm from '../../components/common/SeasonRentalForm';
 import LandingNavbar from '../../components/landing/LandingNavbar';
 import useToast from '../../hooks/useToast';
+import NearbyServicesDisplay from '../../components/common/NearbyServicesDisplay';
+import { useNearbyServices } from '../../hooks/useNearbyServices';
 
 // Mapeo de amenities a iconos
 const amenityIcons: { [key: string]: React.ReactElement } = {
@@ -171,6 +172,7 @@ const PropertyDetails = () => {
   const [showAllImages, setShowAllImages] = useState(false);
 
   const toast = useToast();
+  const { nearbyServices } = useNearbyServices(id);
 
 
 
@@ -645,95 +647,11 @@ const PropertyDetails = () => {
 
              <hr className="my-8 dark:border-gray-700" />
              
-             {/* Actividades Cercanas */}
-             <div>
-               <h3 className="text-xl font-semibold mb-4">Actividades Cercanas</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                 {/* Playa */}
-                 <div className="bg-gradient-to-br from-blue-50 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
-                   <div className="flex items-center gap-3 mb-2">
-                     <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                       <Waves size={20} className="text-white" />
-                     </div>
-                     <div>
-                       <h4 className="font-semibold text-gray-900 dark:text-white">Playa</h4>
-                       <p className="text-sm text-blue-600 dark:text-blue-400">A 5 min caminando</p>
-                     </div>
-                   </div>
-                   <p className="text-sm text-gray-600 dark:text-gray-400">Playa de arena blanca con aguas cristalinas</p>
-                 </div>
-
-                 {/* Restaurantes */}
-                 <div className="bg-gradient-to-br from-orange-50 to-red-100 dark:from-orange-900/20 dark:to-red-900/20 p-4 rounded-xl border border-orange-200 dark:border-orange-800">
-                   <div className="flex items-center gap-3 mb-2">
-                     <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
-                       <UtensilsCrossed size={20} className="text-white" />
-                     </div>
-                     <div>
-                       <h4 className="font-semibold text-gray-900 dark:text-white">Restaurantes</h4>
-                       <p className="text-sm text-orange-600 dark:text-orange-400">A 3 min caminando</p>
-                     </div>
-                   </div>
-                   <p className="text-sm text-gray-600 dark:text-gray-400">Variedad de restaurantes locales y internacionales</p>
-                 </div>
-
-                 {/* Supermercado */}
-                 <div className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 p-4 rounded-xl border border-green-200 dark:border-green-800">
-                   <div className="flex items-center gap-3 mb-2">
-                     <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                       <ShoppingBag size={20} className="text-white" />
-                     </div>
-                     <div>
-                       <h4 className="font-semibold text-gray-900 dark:text-white">Supermercado</h4>
-                       <p className="text-sm text-green-600 dark:text-green-400">A 2 min caminando</p>
-                     </div>
-                   </div>
-                   <p className="text-sm text-gray-600 dark:text-gray-400">Todo lo necesario para tu estancia</p>
-                 </div>
-
-                 {/* Transporte */}
-                 <div className="bg-gradient-to-br from-purple-50 to-violet-100 dark:from-purple-900/20 dark:to-violet-900/20 p-4 rounded-xl border border-purple-200 dark:border-purple-800">
-                   <div className="flex items-center gap-3 mb-2">
-                     <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
-                       <Car size={20} className="text-white" />
-                     </div>
-                     <div>
-                       <h4 className="font-semibold text-gray-900 dark:text-white">Transporte</h4>
-                       <p className="text-sm text-purple-600 dark:text-purple-400">A 1 min caminando</p>
-                     </div>
-                   </div>
-                   <p className="text-sm text-gray-600 dark:text-gray-400">Parada de autobús y taxi cercana</p>
-                 </div>
-
-                 {/* Centro histórico */}
-                 <div className="bg-gradient-to-br from-amber-50 to-yellow-100 dark:from-amber-900/20 dark:to-yellow-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800">
-                   <div className="flex items-center gap-3 mb-2">
-                     <div className="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center">
-                       <Landmark size={20} className="text-white" />
-                     </div>
-                     <div>
-                       <h4 className="font-semibold text-gray-900 dark:text-white">Centro Histórico</h4>
-                       <p className="text-sm text-amber-600 dark:text-amber-400">A 10 min caminando</p>
-                     </div>
-                   </div>
-                   <p className="text-sm text-gray-600 dark:text-gray-400">Monumentos y arquitectura histórica</p>
-                 </div>
-
-                 {/* Parque */}
-                 <div className="bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800">
-                   <div className="flex items-center gap-3 mb-2">
-                     <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center">
-                       <TreePine size={20} className="text-white" />
-                     </div>
-                     <div>
-                       <h4 className="font-semibold text-gray-900 dark:text-white">Parque Natural</h4>
-                       <p className="text-sm text-emerald-600 dark:text-emerald-400">A 15 min caminando</p>
-                     </div>
-                   </div>
-                   <p className="text-sm text-gray-600 dark:text-gray-400">Senderos y vistas panorámicas</p>
-                 </div>
-               </div>
-             </div>
+             {/* Servicios Cercanos */}
+             <NearbyServicesDisplay 
+               services={nearbyServices} 
+               title="Servicios Cercanos"
+             />
           </div>
           
           {/* Columna Derecha: Formulario de Reserva (Sticky) */}

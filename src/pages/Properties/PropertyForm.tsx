@@ -6,6 +6,7 @@ import { Waves, TreePine, Car, Sun, Snowflake, Building2, Building, Star } from 
 import GooglePlacesAutocomplete from '../../components/common/GooglePlacesAutocomplete';
 import PropertyCalendarManager from './PropertyCalendarManager';
 import { getLatLngFromAddress } from '../../lib/geocode';
+import NearbyServicesManager from '../../components/common/NearbyServicesManager';
 
 interface PropertyFormProps {
   property?: Property | null;
@@ -686,6 +687,14 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
           </button>
         </div>
       </form>
+      
+      {/* Gestión de Servicios Cercanos */}
+      {property?.id && (
+        <div className="mt-8">
+          <NearbyServicesManager propertyId={property.id} />
+        </div>
+      )}
+      
       {/* Integración del gestor de calendario */}
       <PropertyCalendarManager propertyId={property?.id || ""} />
     </div>
