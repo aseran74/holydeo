@@ -977,23 +977,27 @@ html, body {
   
   /* Badges modernos */
   .badge-modern {
-    @apply px-3 py-1 rounded-full text-xs font-bold shadow-lg;
+    padding: 0.75rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
   
   .badge-primary {
-    @apply badge-modern bg-gradient-to-r from-blue-500 to-indigo-600 text-white;
+    @apply bg-gradient-to-r from-blue-500 to-indigo-600 text-white;
   }
   
   .badge-success {
-    @apply badge-modern bg-gradient-to-r from-green-500 to-emerald-600 text-white;
+    @apply bg-gradient-to-r from-green-500 to-emerald-600 text-white;
   }
   
   .badge-warning {
-    @apply badge-modern bg-gradient-to-r from-yellow-400 to-orange-500 text-white;
+    @apply bg-gradient-to-r from-yellow-400 to-orange-500 text-white;
   }
   
   .badge-info {
-    @apply badge-modern bg-gradient-to-r from-purple-500 to-pink-600 text-white;
+    @apply bg-gradient-to-r from-purple-500 to-pink-600 text-white;
   }
   
   /* Cards con bordes redondeados modernos */
@@ -1016,11 +1020,11 @@ html, body {
   }
   
   .status-active {
-    @apply status-indicator bg-white scale-125;
+    @apply bg-white scale-125;
   }
   
   .status-inactive {
-    @apply status-indicator bg-white/50 hover:bg-white/75;
+    @apply bg-white/50 hover:bg-white/75;
   }
   
   /* Contenedores de características */
@@ -1029,15 +1033,15 @@ html, body {
   }
   
   .feature-container-blue {
-    @apply feature-container bg-blue-50 dark:bg-blue-900/20;
+    @apply bg-blue-50 dark:bg-blue-900/20;
   }
   
   .feature-container-green {
-    @apply feature-container bg-green-50 dark:bg-green-900/20;
+    @apply bg-green-50 dark:bg-green-900/20;
   }
   
   .feature-container-purple {
-    @apply feature-container bg-purple-50 dark:bg-purple-900/20;
+    @apply bg-purple-50 dark:bg-purple-900/20;
   }
   
   /* Iconos de características */
@@ -1046,15 +1050,15 @@ html, body {
   }
   
   .feature-icon-blue {
-    @apply feature-icon bg-blue-100 dark:bg-blue-800;
+    @apply bg-blue-100 dark:bg-blue-800;
   }
   
   .feature-icon-green {
-    @apply feature-icon bg-green-100 dark:bg-green-800;
+    @apply bg-green-100 dark:bg-green-800;
   }
   
   .feature-icon-purple {
-    @apply feature-icon bg-purple-100 dark:bg-purple-800;
+    @apply bg-purple-100 dark:bg-purple-800;
   }
   
   /* Textos de características */
@@ -1099,11 +1103,11 @@ html, body {
   }
   
   .modal-thumbnail-active {
-    @apply modal-thumbnail border-white scale-110;
+    @apply border-white scale-110;
   }
   
   .modal-thumbnail-inactive {
-    @apply modal-thumbnail border-transparent hover:border-white/50;
+    @apply border-transparent hover:border-white/50;
   }
   
   /* Efectos de carga */
@@ -1122,11 +1126,11 @@ html, body {
   }
   
   .action-button-edit {
-    @apply action-button text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20;
+    @apply text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20;
   }
   
   .action-button-delete {
-    @apply action-button text-red-600 hover:text-red-800 hover:bg-red-50 dark:hover:bg-red-900/20;
+    @apply text-red-600 hover:text-red-800 hover:bg-red-50 dark:hover:bg-red-900/20;
   }
   
   /* Efectos de hover para enlaces */
@@ -1144,11 +1148,11 @@ html, body {
   }
   
   .favorite-button-active {
-    @apply favorite-button bg-red-500 text-white shadow-lg;
+    @apply bg-red-500 text-white shadow-lg;
   }
   
   .favorite-button-inactive {
-    @apply favorite-button bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20;
+    @apply bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20;
   }
 }
 
