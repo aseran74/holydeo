@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, MapPin, Euro, BedDouble, Bath, Users, Star, Filter, SortAsc, SortDesc } from 'lucide-react';
+import { Heart, MapPin, BedDouble, Bath, Users, Star, Filter, SortAsc, SortDesc } from 'lucide-react';
 import { supabase } from '../../supabaseClient';
 import { usePropertyFavorites } from '../../hooks/usePropertyFavorites';
 import { Property } from '../../types';
@@ -81,7 +81,7 @@ const FavoriteProperties: React.FC = () => {
     }
   };
 
-  const getImageUrl = (mainImagePath: string | null, imagePaths: string[] | null) => {
+  const getImageUrl = (mainImagePath: string | null | undefined, imagePaths: string[] | null | undefined) => {
     if (mainImagePath) {
       if (mainImagePath.startsWith('http://') || mainImagePath.startsWith('https://')) {
         return mainImagePath;
