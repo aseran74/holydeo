@@ -115,13 +115,13 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
           </div>
         </div>
 
-        {/* Botón de favorito */}
+        {/* Botón de favorito - Movido a la esquina inferior derecha */}
         <button
           onClick={(e) => {
             e.preventDefault();
             setIsFavorite(!isFavorite);
           }}
-          className={`absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 ${
+          className={`absolute bottom-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 ${
             isFavorite 
               ? 'bg-red-500 text-white shadow-lg' 
               : 'bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20'
