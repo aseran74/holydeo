@@ -34,7 +34,6 @@ const ExperienceDatePicker: React.FC<ExperienceDatePickerProps> = ({
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([]);
   const [availabilityInfo, setAvailabilityInfo] = useState<AvailabilityInfo[]>([]);
-  const [loading, setLoading] = useState(false);
 
   const toast = useToast();
 
@@ -46,7 +45,6 @@ const ExperienceDatePicker: React.FC<ExperienceDatePickerProps> = ({
   }, [isOpen, experienceId]);
 
   const loadBlockedDates = async () => {
-    setLoading(true);
     try {
       // Obtener reservas existentes para esta experiencia
       const { data: bookings, error: bookingsError } = await supabase
@@ -125,8 +123,6 @@ const ExperienceDatePicker: React.FC<ExperienceDatePickerProps> = ({
     } catch (error) {
       console.error('Error loading blocked dates:', error);
       toast.error('Error', 'No se pudieron cargar las fechas disponibles');
-    } finally {
-      setLoading(false);
     }
   };
 
