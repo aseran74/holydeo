@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../supabaseClient';
 
 export interface Testimonial {
   id: number;
@@ -126,7 +126,7 @@ export const useTestimonials = () => {
     try {
       const finalFileName = fileName || `testimonials/${Date.now()}_${file.name}`;
       
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from('avatars')
         .upload(finalFileName, file);
 

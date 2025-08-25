@@ -52,6 +52,7 @@ const AppSidebar: React.FC = () => {
     { name: 'Admin Dashboard', href: '/admin', icon: BarChart3 },
     { name: 'Gestión Usuarios', href: '/admin/users', icon: Users },
     { name: 'Gestión Social', href: '/admin/social', icon: Trash2 },
+    { name: 'Testimonios', href: '/admin/testimonials', icon: Star },
   ];
 
   return (

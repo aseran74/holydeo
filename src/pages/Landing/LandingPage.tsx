@@ -14,6 +14,7 @@ import LandingFooter from "../../components/landing/LandingFooter";
 import FeaturedSection from "../../components/shared/FeaturedSection";
 import PublicPropertyCard from "../../components/common/PublicPropertyCard";
 import ExperienceCard from "../../components/experiences/ExperienceCard";
+import TestimonialsSection from "../../components/landing/TestimonialsSection";
 
 
 const LandingPage = () => {
@@ -222,6 +223,9 @@ const LandingPage = () => {
                     <ExperienceCard key={experience.id} experience={experience} />
                 )}
             />
+            
+            {/* Sección de Testimonios */}
+            <TestimonialsSection />
             
             <div id="faq" className="bg-gray-50 dark:bg-gray-900">
                 <FAQ />

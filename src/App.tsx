@@ -19,6 +19,7 @@ import DebugBookingsStructure from './components/DebugBookingsStructure';
 import UserManagement from './pages/Admin/UserManagement';
 import SocialPage from './pages/Social/SocialPage';
 import SocialManagement from './pages/Admin/SocialManagement';
+import Testimonials from './pages/Admin/Testimonials';
 import LoginForm from './components/auth/LoginForm';
 import RegisterPage from './pages/Auth/RegisterPage';
 import ForgotPasswordPage from './pages/Auth/ForgotPasswordPage';
@@ -91,6 +92,7 @@ function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="users" element={<UserManagement />} />
               <Route path="social" element={<SocialManagement />} />
+              <Route path="testimonials" element={<Testimonials />} />
             </Route>
           </Route>
           
