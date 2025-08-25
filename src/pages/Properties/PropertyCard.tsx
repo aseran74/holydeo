@@ -172,27 +172,27 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onDelete 
           <span className="text-sm font-medium truncate">{property.location}</span>
         </div>
         
-                 {/* Características principales */}
-         <div className="grid grid-cols-3 gap-4 mb-4">
+         {/* Características principales - Solo iconos y números */}
+         <div className="grid grid-cols-3 gap-3 mb-4">
            <div className="text-center p-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-             <div className="w-8 h-8 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center mx-auto mb-1">
-               <BedDouble size={18} className="text-blue-600" />
+             <div className="w-6 h-6 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center mx-auto mb-1">
+               <BedDouble size={16} className="text-blue-600" />
              </div>
-             <p className="text-lg font-bold text-gray-900 dark:text-white">{property.bedrooms || 0}</p>
+             <p className="text-sm font-bold text-gray-900 dark:text-white">{property.bedrooms || 0}</p>
            </div>
            
            <div className="text-center p-2 bg-green-50 dark:bg-green-900/20 rounded-xl">
-             <div className="w-8 h-8 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center mx-auto mb-1">
-               <Bath size={18} className="text-green-600" />
+             <div className="w-6 h-6 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center mx-auto mb-1">
+               <Bath size={16} className="text-green-600" />
              </div>
-             <p className="text-lg font-bold text-gray-900 dark:text-white">{property.bathrooms || 0}</p>
+             <p className="text-sm font-bold text-gray-900 dark:text-white">{property.bathrooms || 0}</p>
            </div>
            
-           <div className="text-center p-2 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
-             <div className="w-8 h-8 bg-purple-100 dark:bg-purple-800 rounded-lg flex items-center justify-center mx-auto mb-1">
-               <Users size={18} className="text-purple-600" />
+           <div className="text-center p-2 bg-purple-50 dark:bg-purple-800 rounded-xl">
+             <div className="w-6 h-6 bg-purple-100 dark:bg-purple-800 rounded-lg flex items-center justify-center mx-auto mb-1">
+               <Users size={16} className="text-purple-600" />
              </div>
-             <p className="text-lg font-bold text-gray-900 dark:text-white">{property.toilets || 0}</p>
+             <p className="text-sm font-bold text-gray-900 dark:text-white">{property.toilets || 0}</p>
            </div>
          </div>
          
