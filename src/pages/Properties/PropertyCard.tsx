@@ -46,19 +46,19 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onDelete 
 
   const getSeasonLabel = (seasonKey: string) => {
     const seasonLabels: { [key: string]: string } = {
-      'sep_may': 'Sep-May',
-      'sep_jun': 'Sep-Jun',
-      'oct_jul': 'Oct-Jul',
-      'nov_aug': 'Nov-Ago',
-      'dec_sep': 'Dic-Sep',
-      'jan_oct': 'Ene-Oct',
-      'feb_nov': 'Feb-Nov',
-      'mar_dec': 'Mar-Dic',
-      'apr_jan': 'Abr-Ene',
-      'may_feb': 'May-Feb',
-      'jun_mar': 'Jun-Mar',
-      'jul_apr': 'Jul-Abr',
-      'aug_may': 'Ago-May'
+      'sep_may': 'Septiembre a Mayo',
+      'sep_jun': 'Septiembre a Junio',
+      'oct_jul': 'Octubre a Julio',
+      'nov_aug': 'Noviembre a Agosto',
+      'dec_sep': 'Diciembre a Septiembre',
+      'jan_oct': 'Enero a Octubre',
+      'feb_nov': 'Febrero a Noviembre',
+      'mar_dec': 'Marzo a Diciembre',
+      'apr_jan': 'Abril a Enero',
+      'may_feb': 'Mayo a Febrero',
+      'jun_mar': 'Junio a Marzo',
+      'jul_apr': 'Julio a Abril',
+      'aug_may': 'Agosto a Mayo'
     };
     return seasonLabels[seasonKey] || seasonKey;
   };
