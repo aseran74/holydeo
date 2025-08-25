@@ -43,7 +43,6 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
   };
 
   const getSeasonLabel = (seasonKey: string) => {
-    console.log('getSeasonLabel called with:', seasonKey); // Debug log
     const seasonLabels: { [key: string]: string } = {
       'sep_may': 'Septiembre a Mayo',
       'sep_jun': 'Septiembre a Junio',
@@ -62,9 +61,7 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
       'jul_apr': 'Julio a Abril',
       'aug_may': 'Agosto a Mayo'
     };
-    const result = seasonLabels[seasonKey] || seasonKey;
-    console.log('getSeasonLabel result:', result); // Debug log
-    return result;
+    return seasonLabels[seasonKey] || seasonKey;
   };
 
   return (
@@ -228,7 +225,6 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
               <Clock size={14} className="text-blue-600 md:w-4 md:h-4" />
               <span className="text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Temporadas disponibles:</span>
             </div>
-            {console.log('meses_temporada:', property.meses_temporada, 'type:', typeof property.meses_temporada, 'isArray:', Array.isArray(property.meses_temporada))} {/* Debug log */}
             <div className="flex flex-wrap gap-1 md:gap-2">
               {property.meses_temporada.slice(0, 4).map((season, index) => (
                 <span
