@@ -158,6 +158,7 @@ interface Property {
   };
   // Servicios cercanos
   nearby_services?: NearbyService[];
+  characteristics?: string; // Nuevo campo para características
 }
 
 
@@ -602,6 +603,16 @@ const PropertyDetails = () => {
                 {property.description || 'Sin descripción disponible.'}
               </p>
             </div>
+
+            {/* Características */}
+            {property.characteristics && (
+              <div className="mt-6">
+                <h3 className="text-xl font-semibold mb-3">Características</h3>
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed max-w-prose">
+                  {property.characteristics}
+                </p>
+              </div>
+            )}
 
             <hr className="my-8 dark:border-gray-700" />
             

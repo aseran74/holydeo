@@ -63,6 +63,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
   const [imagePaths, setImagePaths] = useState<string[]>(property?.image_paths || []);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [description, setDescription] = useState(property?.description || "");
+  const [characteristics, setCharacteristics] = useState(property?.characteristics || "");
   const [urlIdealista, setUrlIdealista] = useState(property?.url_idealista || "");
   const [urlBooking, setUrlBooking] = useState(property?.url_booking || "");
   const [urlAirbnb, setUrlAirbnb] = useState(property?.url_airbnb || "");
@@ -117,6 +118,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
       setAlquilaTemporadaCompleta(property.alquila_temporada_completa || false);
       setImagePaths(property.image_paths || []);
       setDescription(property.description || "");
+      setCharacteristics(property.characteristics || "");
       setUrlIdealista(property.url_idealista || "");
       setUrlBooking(property.url_booking || "");
       setUrlAirbnb(property.url_airbnb || "");
@@ -240,6 +242,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
       alquila_temporada_completa: alquilaTemporadaCompleta,
       image_paths: imagePaths,
       description,
+      characteristics,
       url_idealista: urlIdealista,
       url_booking: urlBooking,
       url_airbnb: urlAirbnb,
@@ -279,13 +282,23 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
           />
         </div>
         <div className="mb-4">
+          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Características</label>
+          <textarea
+            value={characteristics}
+            onChange={(e) => setCharacteristics(e.target.value)}
+            className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+            rows={3}
+            placeholder="Describe las características de la propiedad..."
+          />
+        </div>
+        <div className="mb-4">
           <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Descripción</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-            rows={3}
-            placeholder="Describe la propiedad..."
+            rows={4}
+            placeholder="Describe la propiedad, puntos fuertes, entorno, etc."
           />
         </div>
         <div className="flex items-center mb-4">
@@ -299,17 +312,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
           <label htmlFor="featured" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
             Propiedad Destacada
           </label>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Descripción</label>
-          <textarea
-            className="w-full border rounded px-3 py-2"
-            rows={4}
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            placeholder="Describe la propiedad, puntos fuertes, entorno, etc."
-            required
-          />
         </div>
         <div className="mb-6">
           <label className="block text-sm font-medium mb-1">Dirección</label>
