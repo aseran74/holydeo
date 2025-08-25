@@ -34,6 +34,7 @@ const ExperienceDatePicker: React.FC<ExperienceDatePickerProps> = ({
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([]);
   const [availabilityInfo, setAvailabilityInfo] = useState<AvailabilityInfo[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const toast = useToast();
 

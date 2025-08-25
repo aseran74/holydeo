@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, User, MessageSquare } from 'lucide-react';
+import { Calendar, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import useToast from '../../hooks/useToast';
 import { supabase } from '../../supabaseClient';
