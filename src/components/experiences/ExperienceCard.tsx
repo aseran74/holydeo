@@ -45,30 +45,30 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
 
   return (
     <div className="block rounded-lg shadow-lg overflow-hidden bg-white dark:bg-gray-800 transform hover:-translate-y-1 transition-transform duration-300">
-      <div className="relative h-56">
+      <div className="relative h-40 md:h-56">
         <img className="w-full h-full object-cover" src={imageUrl} alt={experience.name} />
         {experience.price && (
           <PriceTag 
             price={experience.price} 
             size="sm" 
-            className="absolute top-3 right-3"
+            className="absolute top-2 md:top-3 right-2 md:right-3"
             showPerDay={experience.category !== 'greenfees'}
           />
         )}
         
         {/* Botones de acción para administradores */}
         {isAdmin && onEdit && onDelete && (
-          <div className="absolute top-3 left-3 flex gap-2">
+          <div className="absolute top-2 md:top-3 left-2 md:left-3 flex gap-1 md:gap-2">
             <button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 onEdit(experience);
               }}
-              className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+              className="p-1.5 md:p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
               title="Editar experiencia"
             >
-              <PencilIcon className="w-4 h-4" />
+              <PencilIcon className="w-3 h-3 md:w-4 md:h-4" />
             </button>
             <button
               onClick={(e) => {
@@ -76,27 +76,27 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience, onEdit, onD
                 e.stopPropagation();
                 onDelete(experience.id);
               }}
-              className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+              className="p-1.5 md:p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
               title="Eliminar experiencia"
             >
-              <TrashBinIcon className="w-4 h-4" />
+              <TrashBinIcon className="w-3 h-3 md:w-4 md:h-4" />
             </button>
           </div>
         )}
       </div>
       
-      <Link to={`/experiences/${experience.id}`} className="block p-4">
+      <Link to={`/experiences/${experience.id}`} className="block p-3 md:p-4">
         {experience.category && (
-          <p className="text-sm text-primary font-semibold mb-1 flex items-center">
-              <Tag className="w-4 h-4 mr-2" />
+          <p className="text-xs md:text-sm text-primary font-semibold mb-1 flex items-center">
+              <Tag className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
               {experience.category}
           </p>
         )}
-        <h3 className="text-xl font-bold mb-2 truncate text-gray-900 dark:text-white">{experience.name}</h3>
+        <h3 className="text-base md:text-xl font-bold mb-1 md:mb-2 truncate text-gray-900 dark:text-white">{experience.name}</h3>
         {/* Ejemplo de cómo mostrar una ubicación si estuviera disponible */}
         {experience.location && (
-          <p className="text-gray-600 dark:text-gray-400 text-sm flex items-center mb-3">
-              <MapPin className="w-4 h-4 mr-2" />
+          <p className="text-gray-600 dark:text-gray-400 text-xs md:text-sm flex items-center mb-2 md:mb-3">
+              <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
               <span className="truncate">{experience.location}</span>
           </p>
         )}

@@ -29,10 +29,18 @@ const FeaturedSection = <T extends { id: string | number }>({
                         {description}
                     </p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
                     {loading 
-                        ? Array.from({ length: loadingSkeletons }).map((_, i) => <SkeletonCard key={i} />)
-                        : items.map(renderItem)
+                        ? Array.from({ length: loadingSkeletons }).map((_, i) => (
+                            <div key={i} className={`${i >= 2 ? 'hidden lg:block' : ''}`}>
+                                <SkeletonCard />
+                            </div>
+                        ))
+                        : items.map((item, index) => (
+                            <div key={item.id} className={`${index >= 2 ? 'hidden lg:block' : ''}`}>
+                                {renderItem(item)}
+                            </div>
+                        ))
                     }
                 </div>
                 {!loading && items.length === 0 && (

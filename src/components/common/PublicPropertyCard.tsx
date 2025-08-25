@@ -64,7 +64,7 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
   return (
     <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 dark:border-gray-700">
       {/* Imagen principal */}
-      <div className="relative h-64 overflow-hidden">
+      <div className="relative h-48 md:h-64 overflow-hidden">
         <Link to={`/property/${property.id}`} className="block w-full h-full">
           {/* Esqueleto de carga */}
           {isLoading && (
@@ -132,55 +132,55 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
       </div>
 
       {/* Contenido de la card */}
-      <div className="p-5">
+      <div className="p-3 md:p-5">
         {/* Título */}
-        <div className="mb-3">
+        <div className="mb-2 md:mb-3">
           <Link to={`/property/${property.id}`} className="block">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer line-clamp-2 leading-tight">
+            <h3 className="text-base md:text-lg font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer line-clamp-2 leading-tight">
               {property.title}
             </h3>
           </Link>
         </div>
         
         {/* Ubicación */}
-        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-4">
-          <MapPin size={16} className="text-blue-500" />
-          <span className="text-sm font-medium truncate">{property.location}</span>
+        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-3 md:mb-4">
+          <MapPin size={14} className="text-blue-500 md:w-4 md:h-4" />
+          <span className="text-xs md:text-sm font-medium truncate">{property.location}</span>
         </div>
         
          {/* Características principales - Solo iconos y números */}
-         <div className="grid grid-cols-3 gap-3 mb-4">
+         <div className="grid grid-cols-3 gap-2 md:gap-3 mb-3 md:mb-4">
            <div className="text-center p-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-             <div className="w-6 h-6 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center mx-auto mb-1">
-               <BedDouble size={16} className="text-blue-600" />
+             <div className="w-5 h-5 md:w-6 md:h-6 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center mx-auto mb-1">
+               <BedDouble size={14} className="text-blue-600 md:w-4 md:h-4" />
              </div>
-             <p className="text-sm font-bold text-gray-900 dark:text-white">{property.bedrooms || 0}</p>
+             <p className="text-xs md:text-sm font-bold text-gray-900 dark:text-white">{property.bedrooms || 0}</p>
            </div>
            
            <div className="text-center p-2 bg-green-50 dark:bg-green-900/20 rounded-xl">
-             <div className="w-6 h-6 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center mx-auto mb-1">
-               <Bath size={16} className="text-green-600" />
+             <div className="w-5 h-5 md:w-6 md:h-6 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center mx-auto mb-1">
+               <Bath size={14} className="text-green-600 md:w-4 md:h-4" />
              </div>
-             <p className="text-sm font-bold text-gray-900 dark:text-white">{property.bathrooms || 0}</p>
+             <p className="text-xs md:text-sm font-bold text-gray-900 dark:text-white">{property.bathrooms || 0}</p>
            </div>
            
            <div className="text-center p-2 bg-purple-50 dark:bg-purple-800 rounded-xl">
-             <div className="w-6 h-6 bg-purple-100 dark:bg-purple-800 rounded-lg flex items-center justify-center mx-auto mb-1">
-               <Users size={16} className="text-purple-600" />
+             <div className="w-5 h-5 md:w-6 md:h-6 bg-purple-100 dark:bg-purple-800 rounded-lg flex items-center justify-center mx-auto mb-1">
+               <Users size={14} className="text-purple-600 md:w-4 md:h-4" />
              </div>
-             <p className="text-sm font-bold text-gray-900 dark:text-white">{property.toilets || 0}</p>
+             <p className="text-xs md:text-sm font-bold text-gray-900 dark:text-white">{property.toilets || 0}</p>
            </div>
          </div>
         
                  {/* Precio mensual destacado */}
-         <div className="bg-gradient-to-r from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 border border-green-200 dark:border-green-700 mb-4">
+         <div className="bg-gradient-to-r from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-3 md:p-4 border border-green-200 dark:border-green-700 mb-3 md:mb-4">
            <div className="flex items-center justify-between">
              <div className="flex items-center gap-2">
-               <Euro size={18} className="text-green-600" />
-               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Precio mensual:</span>
+               <Euro size={16} className="text-green-600 md:w-5 md:h-5" />
+               <span className="text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Precio mensual:</span>
              </div>
              <div className="text-right">
-               <span className="text-xl font-bold text-green-600">
+               <span className="text-lg md:text-xl font-bold text-green-600">
                  {formatPrice(property.precio_mes)}€
                </span>
                <div className="text-xs text-green-600 opacity-80">(90 días mínimo)</div>
@@ -190,22 +190,22 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
 
         {/* Temporadas disponibles */}
         {property.meses_temporada && property.meses_temporada.length > 0 && (
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700 mb-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Clock size={16} className="text-blue-600" />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Temporadas disponibles:</span>
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-3 md:p-4 border border-blue-200 dark:border-blue-700 mb-3 md:mb-4">
+            <div className="flex items-center gap-2 mb-2 md:mb-3">
+              <Clock size={14} className="text-blue-600 md:w-4 md:h-4" />
+              <span className="text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Temporadas disponibles:</span>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1 md:gap-2">
               {property.meses_temporada.slice(0, 4).map((season, index) => (
                 <span
                   key={index}
-                  className="inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-xs px-3 py-1 rounded-full font-medium"
+                  className="inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-xs px-2 md:px-3 py-1 rounded-full font-medium"
                 >
                   {getSeasonLabel(season)}
                 </span>
                 ))}
               {property.meses_temporada.length > 4 && (
-                <span className="inline-block bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs px-3 py-1 rounded-full font-medium">
+                <span className="inline-block bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs px-2 md:px-3 py-1 rounded-full font-medium">
                   +{property.meses_temporada.length - 4} más
                 </span>
               )}
@@ -214,14 +214,14 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
         )}
         
                  {/* Precio por día */}
-         <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-4 border border-gray-200 dark:border-gray-600">
+         <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-3 md:p-4 border border-gray-200 dark:border-gray-600">
            <div className="flex items-center justify-between">
              <div className="flex items-center gap-2">
-               <Calendar size={16} className="text-blue-600" />
-               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Precio por día:</span>
+               <Calendar size={14} className="text-blue-600 md:w-4 md:h-4" />
+               <span className="text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">Precio por día:</span>
              </div>
              <div className="text-right">
-               <span className="text-lg font-bold text-blue-600">
+               <span className="text-base md:text-lg font-bold text-blue-600">
                  {formatPrice(property.precio_dia || property.precio_entresemana || 0)}€
                </span>
                <div className="text-xs text-blue-600 opacity-80">(15 días mínimo, 90 días máximo)</div>
