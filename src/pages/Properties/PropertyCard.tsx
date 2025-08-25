@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BedDouble, Bath, Users, MapPin, Euro, Eye, Heart, Star, Calendar, Clock } from 'lucide-react';
+import { BedDouble, Bath, Users, MapPin, Euro, Eye, Heart, Star, Calendar, Clock, ExternalLink } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import { Property } from '../../types';
 
@@ -216,7 +216,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onDelete 
 
         {/* Temporadas disponibles */}
         {property.meses_temporada && property.meses_temporada.length > 0 && (
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700 mb-4">
             <div className="flex items-center gap-2 mb-3">
               <Clock size={16} className="text-blue-600" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Temporadas disponibles:</span>
@@ -238,8 +238,23 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onDelete 
             </div>
           </div>
         )}
+
+        {/* URL del anuncio de Idealista */}
+        {property.url_idealista && (
+          <div className="flex justify-center mb-4">
+            <a
+              href={property.url_idealista}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 transform"
+            >
+              <ExternalLink size={18} />
+              <span className="text-base">Ver en Idealista</span>
+            </a>
+          </div>
+        )}
         
-                 {/* Precio por día */}
+        {/* Precio por día */}
          <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-4 border border-gray-200 dark:border-gray-600">
            <div className="flex items-center justify-between">
              <div className="flex items-center gap-2">

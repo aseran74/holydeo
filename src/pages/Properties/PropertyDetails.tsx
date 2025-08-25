@@ -35,6 +35,7 @@ import {
   CircleDot,
   Target,
   Accessibility,
+  ExternalLink,
 } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import PageMeta from '../../components/common/PageMeta';
@@ -672,6 +673,21 @@ const PropertyDetails = () => {
                 <span className="text-2xl font-bold text-primary-600">{formatPrice(property.precio_mes)}</span>
                 <span className="text-gray-600 dark:text-gray-400"> / mes</span>
               </div>
+
+              {/* URL del anuncio de Idealista */}
+              {property.url_idealista && (
+                <div className="mb-6">
+                  <a
+                    href={property.url_idealista}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 transform w-full justify-center"
+                  >
+                    <ExternalLink size={18} />
+                    <span>Ver en Idealista</span>
+                  </a>
+                </div>
+              )}
 
               {/* Formulario de reservas por días sueltos (siempre visible) */}
               <div className="mb-6">

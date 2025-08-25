@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BedDouble, Bath, Users, MapPin, Euro, Calendar, Heart, Star, Eye, Clock } from 'lucide-react';
+import { BedDouble, Bath, Users, MapPin, Euro, Calendar, Heart, Star, Eye, Clock, ExternalLink } from 'lucide-react';
 import { getImageUrlWithFallback, getAllImageUrls } from '../../lib/supabaseStorage';
 import { Property } from '../../types';
 
@@ -212,8 +212,23 @@ const PublicPropertyCard: React.FC<PublicPropertyCardProps> = ({ property }) => 
             </div>
           </div>
         )}
+
+        {/* URL del anuncio de Idealista */}
+        {property.url_idealista && (
+          <div className="flex justify-center mb-3 md:mb-4">
+            <a
+              href={property.url_idealista}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 transform"
+            >
+              <ExternalLink size={16} className="md:w-5 md:h-5" />
+              <span className="text-sm md:text-base">Ver en Idealista</span>
+            </a>
+          </div>
+        )}
         
-                 {/* Precio por día */}
+        {/* Precio por día */}
          <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-3 md:p-4 border border-gray-200 dark:border-gray-600">
            <div className="flex items-center justify-between">
              <div className="flex items-center gap-2">
