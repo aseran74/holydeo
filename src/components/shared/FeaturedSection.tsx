@@ -16,7 +16,7 @@ const FeaturedSection = <T extends { id: string | number }>({
     items,
     loading,
     renderItem,
-    loadingSkeletons = 3
+    loadingSkeletons = 4
 }: FeaturedSectionProps<T>) => {
     return (
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
@@ -32,12 +32,12 @@ const FeaturedSection = <T extends { id: string | number }>({
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
                     {loading 
                         ? Array.from({ length: loadingSkeletons }).map((_, i) => (
-                            <div key={i} className={`${i >= 2 ? 'hidden lg:block' : ''}`}>
+                            <div key={i}>
                                 <SkeletonCard />
                             </div>
                         ))
                         : items.map((item, index) => (
-                            <div key={item.id} className={`${index >= 2 ? 'hidden lg:block' : ''}`}>
+                            <div key={item.id}>
                                 {renderItem(item)}
                             </div>
                         ))

@@ -35,8 +35,8 @@ const LandingPage = () => {
                 console.log("📡 Consultando Supabase...");
                 
                 const [propertiesResponse, experiencesResponse, greenFeesResponse] = await Promise.all([
-                    supabase.from('properties').select('*').eq('destacada', true).limit(6),
-                    supabase.from('experiences').select('*').eq('featured', true).limit(6),
+                    supabase.from('properties').select('*').eq('destacada', true).limit(4),
+                    supabase.from('experiences').select('*').eq('featured', true).limit(4),
                     supabase.from('experiences').select('*').eq('category', 'greenfees').eq('featured', true).limit(4)
                 ]);
 
