@@ -36,7 +36,7 @@ const FeaturedSection = <T extends { id: string | number }>({
                                 <SkeletonCard />
                             </div>
                         ))
-                        : items.map((item, index) => (
+                        : items.map((item) => (
                             <div key={item.id}>
                                 {renderItem(item)}
                             </div>
