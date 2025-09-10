@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Filter } from 'lucide-react';
+import { Filter, Calendar, ChevronDown } from 'lucide-react';
 import NumberStepper from './NumberStepper';
 import PriceFilter from './PriceFilter';
+import SeasonSelectionModal from './SeasonSelectionModal';
 import { supabase } from '../../supabaseClient';
 
 interface EnhancedSearchFiltersProps {
@@ -28,6 +29,8 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
   handleAmenityToggle
 }) => {
   const [dynamicPropertyTypes, setDynamicPropertyTypes] = useState<string[]>([]);
+  const [showSeasonModal, setShowSeasonModal] = useState(false);
+  const [tempSelectedSeasons, setTempSelectedSeasons] = useState<string[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -43,6 +46,43 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
     };
     loadData();
   }, []);
+
+  // Funciones para manejar el modal de temporadas
+  const handleOpenSeasonModal = () => {
+    setTempSelectedSeasons(searchData.seasons || []);
+    setShowSeasonModal(true);
+  };
+
+  const handleSeasonToggle = (season: string) => {
+    setTempSelectedSeasons(prev => 
+      prev.includes(season) 
+        ? prev.filter(s => s !== season)
+        : [...prev, season]
+    );
+  };
+
+  const handleApplySeasons = () => {
+    setSearchData((prev: any) => ({
+      ...prev,
+      seasons: tempSelectedSeasons
+    }));
+    setShowSeasonModal(false);
+  };
+
+  const handleClearSeasons = () => {
+    setTempSelectedSeasons([]);
+  };
+
+  const getSelectedSeasonsText = () => {
+    if (!searchData.seasons || searchData.seasons.length === 0) {
+      return 'Seleccionar temporadas';
+    }
+    if (searchData.seasons.length === 1) {
+      const season = seasons?.find(s => s.value === searchData.seasons[0]);
+      return season?.label || '1 temporada';
+    }
+    return `${searchData.seasons.length} temporadas`;
+  };
   return (
     <div className="w-full lg:w-80 lg:flex-shrink-0">
       <div className="bg-white rounded-xl shadow-sm p-6 sticky top-4">
@@ -98,42 +138,62 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                )}
              </div>
 
-                           {/* Filtro de temporada solo para propiedades */}
+              {/* Filtro de temporada solo para propiedades */}
               {searchType === 'properties' && seasons && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Temporada
                   </label>
-                  <p className="text-xs text-gray-500 mb-2">
-                    Marca las temporadas que te interesan
-                  </p>
-                  <div className="space-y-2 max-h-32 overflow-y-auto">
-                    {seasons.map(season => (
-                      <label key={season.value} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={searchData.seasons && searchData.seasons.includes(season.value)}
-                          onChange={(e) => {
-                            const currentSeasons = searchData.seasons || [];
-                            if (e.target.checked) {
-                              setSearchData((prev: any) => ({
-                                ...prev,
-                                seasons: [...currentSeasons, season.value]
-                              }));
-                            } else {
-                              setSearchData((prev: any) => ({
-                                ...prev,
-                                seasons: currentSeasons.filter((s: string) => s !== season.value)
-                              }));
-                            }
-                          }}
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="text-xs text-gray-700">
-                          {season.label}
+                  
+                  {/* Botón para abrir modal en móvil, checkboxes en desktop */}
+                  <div className="block md:hidden">
+                    <button
+                      onClick={handleOpenSeasonModal}
+                      className="w-full flex items-center justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <Calendar className="w-5 h-5 text-gray-500" />
+                        <span className="text-sm font-medium text-gray-700">
+                          {getSelectedSeasonsText()}
                         </span>
-                      </label>
-                    ))}
+                      </div>
+                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                    </button>
+                  </div>
+
+                  {/* Checkboxes para desktop */}
+                  <div className="hidden md:block">
+                    <p className="text-xs text-gray-500 mb-2">
+                      Marca las temporadas que te interesan
+                    </p>
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      {seasons.map(season => (
+                        <label key={season.value} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={searchData.seasons && searchData.seasons.includes(season.value)}
+                            onChange={(e) => {
+                              const currentSeasons = searchData.seasons || [];
+                              if (e.target.checked) {
+                                setSearchData((prev: any) => ({
+                                  ...prev,
+                                  seasons: [...currentSeasons, season.value]
+                                }));
+                              } else {
+                                setSearchData((prev: any) => ({
+                                  ...prev,
+                                  seasons: currentSeasons.filter((s: string) => s !== season.value)
+                                }));
+                              }
+                            }}
+                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-700">
+                            {season.label}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
@@ -275,6 +335,17 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Modal de selección de temporadas */}
+      <SeasonSelectionModal
+        isOpen={showSeasonModal}
+        onClose={() => setShowSeasonModal(false)}
+        seasons={seasons || []}
+        selectedSeasons={tempSelectedSeasons}
+        onSeasonToggle={handleSeasonToggle}
+        onApply={handleApplySeasons}
+        onClear={handleClearSeasons}
+      />
     </div>
   );
 };
