@@ -7,6 +7,7 @@ const LandingHero = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [mobileVideoPlaying] = useState(false);
   const [mobileVideoRef, setMobileVideoRef] = useState<HTMLVideoElement | null>(null);
+  const [desktopVideoRef, setDesktopVideoRef] = useState<HTMLVideoElement | null>(null);
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -48,13 +49,59 @@ const LandingHero = () => {
     };
   }, []);
 
+  // Efecto para configurar el tiempo de inicio del video
+  useEffect(() => {
+    const setVideoStartTime = (videoElement: HTMLVideoElement) => {
+      if (videoElement) {
+        videoElement.addEventListener('loadedmetadata', () => {
+          videoElement.currentTime = 1; // Empezar en el segundo 1
+        });
+        
+        // También configurar cuando el video esté listo para reproducir
+        videoElement.addEventListener('canplay', () => {
+          if (videoElement.currentTime < 1) {
+            videoElement.currentTime = 1;
+          }
+        });
+      }
+    };
+
+    if (mobileVideoRef) {
+      setVideoStartTime(mobileVideoRef);
+    }
+    
+    if (desktopVideoRef) {
+      setVideoStartTime(desktopVideoRef);
+    }
+  }, [mobileVideoRef, desktopVideoRef]);
+
   return (
-    <section className="relative text-white">
-      <div className="relative w-full min-h-screen h-[120vh]">
+    <section 
+      className="relative text-white overflow-hidden m-0 p-0" 
+      style={{ 
+        margin: 0, 
+        padding: 0,
+        position: 'relative',
+        width: '100vw',
+        left: '50%',
+        right: '50%',
+        marginLeft: '-50vw',
+        marginRight: '-50vw'
+      }}
+    >
+      <div 
+        className="relative w-full min-h-screen h-[120vh] m-0 p-0" 
+        style={{ 
+          margin: 0, 
+          padding: 0,
+          width: '100%',
+          position: 'relative'
+        }}
+      >
         {/* Video para móvil y escritorio con diferentes archivos */}
         {isMobile ? (
           // Video para móvil (< 640px)
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full m-0 p-0" style={{ margin: 0, padding: 0 }}>
             <video 
               ref={setMobileVideoRef}
               autoPlay 
@@ -62,15 +109,26 @@ const LandingHero = () => {
               loop 
               playsInline 
               preload="auto"
-              className="w-full h-full object-cover object-center absolute inset-0"
-              style={{ objectPosition: 'center 30%' }}
+              className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
+              style={{ 
+                objectPosition: 'center 30%', 
+                margin: 0, 
+                padding: 0,
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                width: '100%',
+                height: '100%'
+              }}
             >
-              <source src="/video-movil.mp4" type="video/mp4" />
+              <source src="/video2.mp4.mp4" type="video/mp4" />
               {/* Fallback por si el video no carga */}
               <img 
                 src="/immovil.jpg"
                 alt="Hero móvil fallback"
-                className="w-full h-full object-cover object-center"
+                className="w-full h-full object-cover object-center m-0 p-0"
+                style={{ margin: 0, padding: 0 }}
               />
             </video>
             
@@ -91,14 +149,25 @@ const LandingHero = () => {
         ) : (
           // Video para tablet y escritorio (≥ 640px)
           <video 
+            ref={setDesktopVideoRef}
             autoPlay 
             muted 
             loop 
             playsInline 
-            className="w-full h-full object-cover object-center absolute inset-0" 
-            style={{ objectPosition: 'center 30%' }}
+            className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0" 
+            style={{ 
+              objectPosition: 'center 30%', 
+              margin: 0, 
+              padding: 0,
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              width: '100%',
+              height: '100%'
+            }}
           >
-            <source src="/video-escritorio.mp4" type="video/mp4" />
+            <source src="/video2.mp4.mp4" type="video/mp4" />
           </video>
         )}
         
