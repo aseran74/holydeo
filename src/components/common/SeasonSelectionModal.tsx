@@ -71,7 +71,7 @@ const SeasonSelectionModal: React.FC<SeasonSelectionModalProps> = ({
                     className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
                   />
                   <div className="flex-1">
-                    <span className="text-base font-medium text-gray-900">
+                    <span className="text-lg font-medium text-gray-900">
                       {season.label}
                     </span>
                   </div>

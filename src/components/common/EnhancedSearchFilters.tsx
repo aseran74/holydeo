@@ -153,7 +153,7 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                     >
                       <div className="flex items-center space-x-3">
                         <Calendar className="w-5 h-5 text-gray-500" />
-                        <span className="text-sm font-medium text-gray-700">
+                        <span className="text-base font-medium text-gray-700">
                           {getSelectedSeasonsText()}
                         </span>
                       </div>
@@ -188,7 +188,7 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                             }}
                             className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                           />
-                          <span className="text-xs text-gray-700">
+                          <span className="text-sm text-gray-700">
                             {season.label}
                           </span>
                         </label>
@@ -248,10 +248,10 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
 
                 {/* Amenities */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Comodidades
                   </label>
-                  <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                  <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
                     {amenities.map(amenity => {
                       const IconComponent = amenity.icon;
                       return (
@@ -262,8 +262,8 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                             onChange={() => handleAmenityToggle(amenity.id)}
                             className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                           />
-                          <IconComponent className="w-3 h-3 text-gray-500" />
-                          <span className="text-xs text-gray-700 flex items-center">
+                          <IconComponent className="w-4 h-4 text-gray-500" />
+                          <span className="text-sm text-gray-700 flex items-center">
                             {amenity.name}
                           </span>
                         </label>

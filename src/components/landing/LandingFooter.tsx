@@ -60,15 +60,32 @@ const LandingFooter = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-blue-400" />
-                <span className="text-gray-300">+34 900 123 456</span>
+                <a 
+                  href="tel:+34900123456" 
+                  className="text-gray-300 hover:text-blue-400 transition-colors cursor-pointer"
+                >
+                  +34 900 123 456
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-blue-400" />
-                <span className="text-gray-300">info@chisreact.com</span>
+                <a 
+                  href="mailto:info@chisreact.com" 
+                  className="text-gray-300 hover:text-blue-400 transition-colors cursor-pointer"
+                >
+                  info@chisreact.com
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-blue-400" />
-                <span className="text-gray-300">Madrid, España</span>
+                <a 
+                  href="https://www.google.com/maps/search/Madrid,+España" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-blue-400 transition-colors cursor-pointer"
+                >
+                  Madrid, España
+                </a>
               </div>
             </div>
           </div>

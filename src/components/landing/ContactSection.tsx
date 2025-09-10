@@ -55,7 +55,12 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 dark:text-white">Teléfono</h4>
-                  <p className="text-gray-600 dark:text-gray-300">+34 900 123 456</p>
+                  <a 
+                    href="tel:+34900123456" 
+                    className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors cursor-pointer"
+                  >
+                    +34 900 123 456
+                  </a>
                   <p className="text-sm text-gray-500">Lun-Vie 9:00-18:00</p>
                 </div>
               </div>
@@ -77,10 +82,15 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 dark:text-white">Oficina</h4>
-                  <p className="text-gray-600 dark:text-gray-300">
+                  <a 
+                    href="https://www.google.com/maps/search/Calle+Mayor+123,+28001+Madrid,+España" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors cursor-pointer block"
+                  >
                     Calle Mayor 123<br />
                     28001 Madrid, España
-                  </p>
+                  </a>
                 </div>
               </div>
 
