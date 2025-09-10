@@ -122,7 +122,7 @@ const LandingHero = () => {
                 height: '100%'
               }}
             >
-              <source src="/video2.mp4.mp4" type="video/mp4" />
+              <source src="/video-movil.mp4" type="video/mp4" />
               {/* Fallback por si el video no carga */}
               <img 
                 src="/immovil.jpg"
@@ -167,7 +167,7 @@ const LandingHero = () => {
               height: '100%'
             }}
           >
-            <source src="/video2.mp4.mp4" type="video/mp4" />
+            <source src="/video-escritorio.mp4" type="video/mp4" />
           </video>
         )}
         
