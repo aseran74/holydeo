@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { Image as ImageIcon } from 'lucide-react';
-import GooglePlacesAutocomplete from './common/GooglePlacesAutocomplete';
+import EnhancedGooglePlacesAutocomplete from './common/EnhancedGooglePlacesAutocomplete';
 import AgencySelector from './common/AgencySelector';
 import OwnerSelector from './common/OwnerSelector';
 
@@ -289,10 +289,32 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
 
         <div className="mb-4">
           <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Ubicación</label>
-          <GooglePlacesAutocomplete
+          <EnhancedGooglePlacesAutocomplete
             value={location}
             onChange={setLocation}
-            placeholder="Ubicación de la propiedad"
+            onAddressChange={(components) => {
+              console.log('Componentes recibidos:', components);
+              if (components.streetAddress) {
+                setStreetAddress(components.streetAddress);
+              }
+              if (components.city) {
+                setCity(components.city);
+              }
+              if (components.state) {
+                setState(components.state);
+              }
+              if (components.postalCode) {
+                setPostalCode(components.postalCode);
+              }
+              if (components.country) {
+                setCountry(components.country);
+              }
+              if (components.lat && components.lng) {
+                setLat(components.lat);
+                setLng(components.lng);
+              }
+            }}
+            placeholder="Busca una dirección completa..."
             className="w-full"
           />
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -348,69 +370,62 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
           />
         </div>
 
-        {/* Campos de dirección que se llenan automáticamente */}
-        {(streetAddress || city || state || postalCode) && (
-          <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">
-              📍 Detalles de dirección (se llenan automáticamente)
-            </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {streetAddress && (
-                <div>
-                  <label className="block text-xs font-medium text-blue-700 dark:text-blue-300">Dirección</label>
-                  <input
-                    type="text"
-                    value={streetAddress}
-                    onChange={(e) => setStreetAddress(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-blue-200 dark:border-blue-700 rounded bg-white dark:bg-gray-800"
-                    placeholder="Dirección de la calle"
-                  />
-                </div>
-              )}
-              {city && (
-                <div>
-                  <label className="block text-xs font-medium text-blue-700 dark:text-blue-300">Ciudad</label>
-                  <input
-                    type="text"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-blue-200 dark:border-blue-700 rounded bg-white dark:bg-gray-800"
-                    placeholder="Ciudad"
-                  />
-                </div>
-              )}
-              {state && (
-                <div>
-                  <label className="block text-xs font-medium text-blue-700 dark:text-blue-300">Provincia</label>
-                  <input
-                    type="text"
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-blue-200 dark:border-blue-700 rounded bg-white dark:bg-gray-800"
-                    placeholder="Provincia"
-                  />
-                </div>
-              )}
-              {postalCode && (
-                <div>
-                  <label className="block text-xs font-medium text-blue-700 dark:text-blue-300">Código Postal</label>
-                  <input
-                    type="text"
-                    value={postalCode}
-                    onChange={(e) => setPostalCode(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-blue-200 dark:border-blue-700 rounded bg-white dark:bg-gray-800"
-                    placeholder="Código postal"
-                  />
-                </div>
-              )}
+        {/* Campos de dirección detallada */}
+        <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg">
+          <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">
+            📍 Detalles de dirección
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Dirección</label>
+              <input
+                type="text"
+                value={streetAddress}
+                onChange={(e) => setStreetAddress(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Calle, número, piso..."
+              />
             </div>
-            {(lat && lng) && (
-              <div className="mt-2 text-xs text-blue-600 dark:text-blue-400">
-                📍 Coordenadas: {lat.toFixed(6)}, {lng.toFixed(6)}
-              </div>
-            )}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Ciudad</label>
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Ciudad"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Provincia</label>
+              <input
+                type="text"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Provincia"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Código Postal</label>
+              <input
+                type="text"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Código postal"
+              />
+            </div>
           </div>
-        )}
+          <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            Estos campos se pueden llenar automáticamente al seleccionar una ubicación arriba, o puedes editarlos manualmente.
+          </p>
+          {(lat && lng) && (
+            <div className="mt-2 text-xs text-blue-600 dark:text-blue-400">
+              📍 Coordenadas: {lat.toFixed(6)}, {lng.toFixed(6)}
+            </div>
+          )}
+        </div>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>

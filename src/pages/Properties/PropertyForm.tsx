@@ -3,7 +3,7 @@ import { useJsApiLoader } from '@react-google-maps/api';
 import { supabase } from '../../supabaseClient';
 import { Property } from '../../types';
 import { Waves, TreePine, Car, Sun, Snowflake, Building2, Building, Star } from 'lucide-react';
-import GooglePlacesAutocomplete from '../../components/common/GooglePlacesAutocomplete';
+import EnhancedGooglePlacesAutocomplete from '../../components/common/EnhancedGooglePlacesAutocomplete';
 import PropertyCalendarManager from './PropertyCalendarManager';
 import { getLatLngFromAddress } from '../../lib/geocode';
 import NearbyServicesManager from '../../components/common/NearbyServicesManager';
@@ -314,12 +314,34 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
           </label>
         </div>
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">Dirección</label>
+          <label className="block text-sm font-medium mb-1">Ubicación</label>
           {isLoaded ? (
-            <GooglePlacesAutocomplete
+            <EnhancedGooglePlacesAutocomplete
               value={location}
               onChange={setLocation}
-              placeholder="Busca una dirección..."
+              onAddressChange={(components) => {
+                console.log('Componentes recibidos:', components);
+                if (components.streetAddress) {
+                  setStreetAddress(components.streetAddress);
+                }
+                if (components.city) {
+                  setCity(components.city);
+                }
+                if (components.state) {
+                  setState(components.state);
+                }
+                if (components.postalCode) {
+                  setPostalCode(components.postalCode);
+                }
+                if (components.country) {
+                  setCountry(components.country);
+                }
+                if (components.lat && components.lng) {
+                  setLat(components.lat);
+                  setLng(components.lng);
+                }
+              }}
+              placeholder="Busca una dirección completa..."
               className="input input-bordered w-full"
             />
           ) : (
@@ -413,60 +435,68 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
             </div>
           </div>
         </div>
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Dirección completa</label>
-          <input
-            type="text"
-            value={streetAddress}
-            onChange={e => setStreetAddress(e.target.value)}
-            className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-            placeholder="Calle, número, etc."
-          />
+        {/* Campos de dirección detallada */}
+        <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg">
+          <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">
+            📍 Detalles de dirección
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Dirección</label>
+              <input
+                type="text"
+                value={streetAddress}
+                onChange={(e) => setStreetAddress(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Calle, número, piso..."
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Ciudad</label>
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Ciudad"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Provincia</label>
+              <input
+                type="text"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Provincia"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Código Postal</label>
+              <input
+                type="text"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Código postal"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">País</label>
+              <input
+                type="text"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="España"
+              />
+            </div>
+          </div>
+          <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            Estos campos se pueden llenar automáticamente al seleccionar una ubicación arriba, o puedes editarlos manualmente.
+          </p>
         </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Ciudad</label>
-            <input
-              type="text"
-              value={city}
-              onChange={e => setCity(e.target.value)}
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-              placeholder="Madrid"
-            />
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Provincia</label>
-            <input
-              type="text"
-              value={state}
-              onChange={e => setState(e.target.value)}
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-              placeholder="Madrid"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Código Postal</label>
-            <input
-              type="text"
-              value={postalCode}
-              onChange={e => setPostalCode(e.target.value)}
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-              placeholder="28001"
-            />
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">País</label>
-            <input
-              type="text"
-              value={country}
-              onChange={e => setCountry(e.target.value)}
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-              placeholder="España"
-            />
-          </div>
-        </div>
+        
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Días mínimos</label>
