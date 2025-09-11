@@ -42,8 +42,6 @@ const SEASONS = [
 const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel }) => {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
-  const [precioEntresemana, setPrecioEntresemana] = useState<number | string>("");
-  const [precioFinDeSemana, setPrecioFinDeSemana] = useState<number | string>("");
   const [precioDia, setPrecioDia] = useState<number | string>("");
   const [bathrooms, setBathrooms] = useState<number>(1);
   const [bedrooms, setBedrooms] = useState<number>(1);
@@ -98,8 +96,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
     if (property) {
       setTitle(property.title || "");
       setLocation(property.location || "");
-      setPrecioEntresemana(property.precio_entresemana || "");
-      setPrecioFinDeSemana(property.precio_fin_de_semana || "");
       setPrecioDia(property.precio_dia || "");
       setBathrooms(property.bathrooms || 1);
       setBedrooms(property.bedrooms || 1);
@@ -221,9 +217,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
       ...property,
       title,
       location,
-      price: Number(precioEntresemana) || 0,
-      precio_entresemana: Number(precioEntresemana) || 0,
-      precio_fin_de_semana: Number(precioFinDeSemana) || 0,
+      price: Number(precioDia) || 0,
       precio_dia: Number(precioDia) || 0,
       bathrooms,
       bedrooms,
@@ -369,29 +363,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
             </div>
           )}
         </div>
-        <div className="mb-4 grid grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio entre semana</label>
-            <input
-              type="number"
-              value={precioEntresemana}
-              onChange={(e) => setPrecioEntresemana(e.target.value)}
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-              placeholder="€"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio fin de semana</label>
-            <input
-              type="number"
-              value={precioFinDeSemana}
-              onChange={(e) => setPrecioFinDeSemana(e.target.value)}
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-              placeholder="€"
-              required
-            />
-          </div>
+        <div className="mb-4">
           <div>
             <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio por día</label>
             <input
@@ -400,6 +372,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
               onChange={(e) => setPrecioDia(e.target.value)}
               className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
               placeholder="€"
+              required
             />
           </div>
           <div>

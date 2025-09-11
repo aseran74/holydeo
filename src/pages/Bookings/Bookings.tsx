@@ -125,7 +125,7 @@ const Bookings = () => {
       console.log('Cargando propiedades...');
       const { data, error } = await supabase
         .from('properties')
-        .select('id, title, location, precio_dia, precio_mes')
+        .select('id, title, location, precio_entresemana, precio_fin_de_semana, precio_mes')
         .order('title');
       
       if (error) {
@@ -1121,15 +1121,31 @@ const Bookings = () => {
                         // Si ya hay fechas seleccionadas, recalcular el precio
                         if (createFormData.check_in && createFormData.check_out && propertyId) {
                           const property = properties.find(p => p.id === propertyId);
-                          const pricePerNight = property?.precio_dia || 0;
                           
-                          const checkIn = new Date(createFormData.check_in);
-                          const checkOut = new Date(createFormData.check_out);
-                          const diffTime = Math.abs(checkOut.getTime() - checkIn.getTime());
-                          const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                          
-                          const totalPrice = nights * Number(pricePerNight);
-                          setCreateFormData(prev => ({ ...prev, total_price: totalPrice }));
+                          if (property) {
+                            const checkIn = new Date(createFormData.check_in);
+                            const checkOut = new Date(createFormData.check_out);
+                            const diffTime = Math.abs(checkOut.getTime() - checkIn.getTime());
+                            const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                            
+                            let totalPrice = 0;
+                            // Calcular precio para cada día individual
+                            for (let i = 0; i < nights; i++) {
+                              const currentDate = new Date(checkIn);
+                              currentDate.setDate(currentDate.getDate() + i);
+                              const dayOfWeek = currentDate.getDay();
+                              
+                              if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                                // Entre semana (lunes a viernes)
+                                totalPrice += property.precio_entresemana;
+                              } else {
+                                // Fin de semana (sábado y domingo)
+                                totalPrice += property.precio_fin_de_semana;
+                              }
+                            }
+                            
+                            setCreateFormData(prev => ({ ...prev, total_price: totalPrice }));
+                          }
                         }
                       }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -1276,10 +1292,26 @@ const Bookings = () => {
                           const diffTime = Math.abs(end.getTime() - start.getTime());
                           const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                           
-                          // Obtener el precio por noche de la propiedad seleccionada
+                          // Calcular precio día a día
                           const property = properties.find(p => p.id === createFormData.property_id);
-                          const pricePerNight = property?.precio_dia || 0;
-                          const totalPrice = nights * Number(pricePerNight);
+                          let totalPrice = 0;
+                          
+                          if (property) {
+                            // Calcular precio para cada día individual
+                            for (let i = 0; i < nights; i++) {
+                              const currentDate = new Date(start);
+                              currentDate.setDate(currentDate.getDate() + i);
+                              const dayOfWeek = currentDate.getDay();
+                              
+                              if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                                // Entre semana (lunes a viernes)
+                                totalPrice += property.precio_entresemana;
+                              } else {
+                                // Fin de semana (sábado y domingo)
+                                totalPrice += property.precio_fin_de_semana;
+                              }
+                            }
+                          }
                           
                           setCreateFormData(prev => ({
                             ...prev,
@@ -1326,7 +1358,9 @@ const Bookings = () => {
                     <div>
                       <span className="text-gray-600">Precio por noche:</span>
                       <span className="ml-2 font-medium">
-                        €{Number(properties.find(p => p.id === createFormData.property_id)?.precio_dia || 0).toFixed(2)}
+                        €{Number(properties.find(p => p.id === createFormData.property_id) ? 
+                          ((properties.find(p => p.id === createFormData.property_id)?.precio_entresemana || 0) + 
+                           (properties.find(p => p.id === createFormData.property_id)?.precio_fin_de_semana || 0)) / 2 : 0).toFixed(2)} (promedio)
                       </span>
                     </div>
                     <div>

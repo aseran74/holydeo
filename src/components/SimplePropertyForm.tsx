@@ -10,8 +10,6 @@ interface SimpleProperty {
   title: string;
   description?: string;
   location: string;
-  precio_entresemana?: number;
-  precio_fin_de_semana?: number;
   precio_dia?: number;
   bathrooms?: number;
   bedrooms?: number;
@@ -53,8 +51,6 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
-  const [precioEntresemana, setPrecioEntresemana] = useState<number | string>("");
-  const [precioFinDeSemana, setPrecioFinDeSemana] = useState<number | string>("");
   const [precioDia, setPrecioDia] = useState<number | string>("");
   const [bathrooms, setBathrooms] = useState<number>(1);
   const [bedrooms, setBedrooms] = useState<number>(1);
@@ -93,8 +89,6 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
       setTitle(property.title || "");
       setDescription(property.description || "");
       setLocation(property.location || "");
-      setPrecioEntresemana(property.precio_entresemana || "");
-      setPrecioFinDeSemana(property.precio_fin_de_semana || "");
       setPrecioDia(property.precio_dia || "");
       setBathrooms(property.bathrooms || 1);
       setBedrooms(property.bedrooms || 1);
@@ -189,7 +183,7 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title || !location || !precioEntresemana || !tipo || !region) {
+    if (!title || !location || !precioDia || !tipo || !region) {
       alert('Por favor completa todos los campos obligatorios');
       return;
     }
@@ -199,8 +193,6 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
       title,
       description,
       location,
-      precio_entresemana: Number(precioEntresemana) || 0,
-      precio_fin_de_semana: Number(precioFinDeSemana) || 0,
       precio_dia: Number(precioDia) || 0,
       bathrooms,
       bedrooms,
@@ -427,24 +419,13 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="mb-4">
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio entre semana/día</label>
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio por día</label>
             <input
               type="number"
-              value={precioEntresemana}
-              onChange={(e) => setPrecioEntresemana(e.target.value)}
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-              placeholder="€"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Precio fin de semana</label>
-            <input
-              type="number"
-              value={precioFinDeSemana}
-              onChange={(e) => setPrecioFinDeSemana(e.target.value)}
+              value={precioDia}
+              onChange={(e) => setPrecioDia(e.target.value)}
               className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
               placeholder="€"
               required

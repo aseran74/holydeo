@@ -5,8 +5,6 @@ export interface Property {
   characteristics?: string;
   location: string;
   price?: number | null;
-  precio_entresemana?: number;
-  precio_fin_de_semana?: number;
   precio_dia?: number;
   bathrooms?: number;
   bedrooms?: number;

@@ -694,12 +694,18 @@ const PropertyDetails = () => {
                 <h4 className="font-semibold mb-3">Reservar por días sueltos</h4>
                 <BookingCalendar
                   propertyId={property.id}
-                  precioDia={property.precio_dia || property.precio_entresemana}
+                  precioDia={Number(property.precio_dia)}
                   onBookingComplete={(bookingData) => {
                     console.log('Reserva por días completada:', bookingData);
                     // Aquí puedes manejar la reserva completada
                   }}
                 />
+                {/* Debug info */}
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-xs">
+                  <strong>Debug - Precios de la propiedad:</strong><br/>
+                  Precio por día: €{property.precio_dia} (tipo: {typeof property.precio_dia})<br/>
+                  ID: {property.id}
+                </div>
               </div>
               
               {/* Botón de reserva estancia corta */}

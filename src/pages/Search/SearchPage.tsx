@@ -91,7 +91,7 @@ const SearchPage = () => {
         {property.bathrooms && <span>🚿 {property.bathrooms} baños</span>}
       </div>
       <p className="text-blue-600 font-semibold text-sm mb-2">
-        €{property.precio_dia || property.price || 0}/día
+        €{((property.precio_entresemana || 0) + (property.precio_fin_de_semana || 0)) / 2}/día
       </p>
       <Link
         to={`/property/${property.id}`}
@@ -210,9 +210,10 @@ const SearchPage = () => {
       query = query.lte('price', searchData.priceRange[1]);
     }
     
-    // Filtro por precio por día
+    // Filtro por precio por día (promedio entre semana y fin de semana)
     if (searchData.pricePerDay < 500) {
-      query = query.lte('precio_dia', searchData.pricePerDay);
+      // Filtrar por el promedio de precio_entresemana y precio_fin_de_semana
+      query = query.or(`and(precio_entresemana.lte.${searchData.pricePerDay * 2},precio_fin_de_semana.lte.${searchData.pricePerDay * 2})`);
     }
     
     // Filtro por precio por mes

@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 
 interface BookingCalendarProps {
   propertyId: string;
-  precioDia?: number;
+  precioDia: number;
   onBookingComplete?: (bookingData: any) => void;
 }
 
@@ -27,6 +27,8 @@ interface Booking {
 const BookingCalendar: React.FC<BookingCalendarProps> = ({
   propertyId,
   precioDia = 100,
+  precioEntresemana,
+  precioFinDeSemana,
   onBookingComplete
 }) => {
   const toast = useToast();
@@ -198,11 +200,28 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
 
   const calculateTotalPrice = () => {
     if (!selectedStartDate || !selectedEndDate) return 0;
+    
+    console.log('=== CALCULANDO PRECIO TOTAL ===');
+    console.log('Fecha inicio:', selectedStartDate.toLocaleDateString('es-ES'));
+    console.log('Fecha fin:', selectedEndDate.toLocaleDateString('es-ES'));
+    console.log('Precio por noche:', precioDia, typeof precioDia);
+    
     const start = new Date(selectedStartDate);
     const end = new Date(selectedEndDate);
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include both start and end day
-    return diffDays * precioDia;
+    
+    // Calcular noches (día de salida - día de entrada)
+    const diffTime = end.getTime() - start.getTime();
+    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Sin +1, es por noches
+    
+    console.log('Noches calculadas:', nights);
+    console.log('Fecha inicio:', start.toLocaleDateString('es-ES'));
+    console.log('Fecha fin:', end.toLocaleDateString('es-ES'));
+    
+    const totalPrice = nights * precioDia;
+    
+    console.log('Total calculado:', totalPrice, `(${nights} noches × €${precioDia})`);
+    console.log('===============================');
+    return totalPrice;
   };
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
@@ -470,7 +489,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
               <div className="flex items-center justify-between mb-3">
                 <h5 className="font-medium text-blue-900 dark:text-blue-100 flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
-                  Fechas seleccionadas ({Math.ceil((selectedEndDate.getTime() - selectedStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1} días)
+                  Fechas seleccionadas ({Math.ceil((selectedEndDate.getTime() - selectedStartDate.getTime()) / (1000 * 60 * 60 * 24))} noches)
                 </h5>
                 <button
                   onClick={resetSelection}
@@ -620,8 +639,8 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       <span>Noches:</span>
                       <span className="font-medium">
                         {selectedStartDate && selectedEndDate ? 
-                          Math.ceil((selectedEndDate.getTime() - selectedStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 
-                          : 0}
+                          Math.ceil((selectedEndDate.getTime() - selectedStartDate.getTime()) / (1000 * 60 * 60 * 24))
+                          : 0} noches
                       </span>
                     </div>
                     <div className="flex justify-between text-sm mb-2">

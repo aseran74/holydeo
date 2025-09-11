@@ -44,7 +44,6 @@ const FavoriteProperties: React.FC = () => {
           main_image_path,
           image_paths,
           precio_mes,
-          precio_dia,
           precio_entresemana,
           bedrooms,
           bathrooms,
@@ -325,14 +324,12 @@ const FavoriteProperties: React.FC = () => {
                           </span>
                         </div>
                       )}
-                      {property.precio_dia && (
-                        <div className="text-sm">
-                          <span className="text-gray-500 dark:text-gray-400">Diario:</span>
-                          <span className="ml-1 font-semibold text-blue-600">
-                            €{formatPrice(property.precio_dia)}
-                          </span>
-                        </div>
-                      )}
+                      <div className="text-sm">
+                        <span className="text-gray-500 dark:text-gray-400">Diario:</span>
+                        <span className="ml-1 font-semibold text-blue-600">
+                          €{formatPrice((property.precio_entresemana + property.precio_fin_de_semana) / 2)}
+                        </span>
+                      </div>
                     </div>
                     
                     {/* Badge destacada */}
