@@ -243,34 +243,6 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
     return selectedEndDate && date.toDateString() === selectedEndDate.toDateString();
   };
 
-  const validateMinimumDays = (startDate: Date, endDate: Date): boolean => {
-    console.log('=== VALIDANDO DÍAS MÍNIMOS ===');
-    console.log('minDays recibido:', minDays, typeof minDays);
-    console.log('Fecha inicio:', startDate.toLocaleDateString('es-ES'));
-    console.log('Fecha fin:', endDate.toLocaleDateString('es-ES'));
-    
-    if (!minDays || minDays <= 0) {
-      console.log('No hay mínimo establecido, validación pasada');
-      return true; // Si no hay mínimo, no validar
-    }
-    
-    const diffTime = endDate.getTime() - startDate.getTime();
-    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    console.log('Noches calculadas:', nights);
-    console.log('Mínimo requerido:', minDays);
-    
-    if (nights < minDays) {
-      const errorMsg = `⚠️ El propietario solo permite reservas de mínimo ${minDays} días. Has seleccionado ${nights} días.`;
-      console.log('VALIDACIÓN FALLIDA:', errorMsg);
-      setMinDaysError(errorMsg);
-      return false;
-    } else {
-      console.log('VALIDACIÓN EXITOSA');
-      setMinDaysError(null);
-      return true;
-    }
-  };
 
   const calculateTotalPrice = () => {
     if (!selectedStartDate || !selectedEndDate) return 0;

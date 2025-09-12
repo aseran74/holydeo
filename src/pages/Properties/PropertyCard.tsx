@@ -236,7 +236,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onDelete 
                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Por día:</span>
                </div>
                <div className="text-xl font-bold text-blue-600">
-                 {formatPrice((property.precio_entresemana + property.precio_fin_de_semana) / 2)}€
+                 {formatPrice(property.precio_dia)}€
                </div>
                <div className="text-xs text-blue-600 opacity-80">(15-90 días)</div>
              </div>

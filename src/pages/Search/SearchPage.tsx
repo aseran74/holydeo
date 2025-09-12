@@ -91,7 +91,7 @@ const SearchPage = () => {
         {property.bathrooms && <span>🚿 {property.bathrooms} baños</span>}
       </div>
       <p className="text-blue-600 font-semibold text-sm mb-2">
-        €{((property.precio_entresemana || 0) + (property.precio_fin_de_semana || 0)) / 2}/día
+        €{property.precio_dia || 0}/día
       </p>
       <Link
         to={`/property/${property.id}`}

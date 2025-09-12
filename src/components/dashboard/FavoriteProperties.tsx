@@ -327,7 +327,7 @@ const FavoriteProperties: React.FC = () => {
                       <div className="text-sm">
                         <span className="text-gray-500 dark:text-gray-400">Diario:</span>
                         <span className="ml-1 font-semibold text-blue-600">
-                          €{formatPrice((property.precio_entresemana + property.precio_fin_de_semana) / 2)}
+                          €{formatPrice(property.precio_dia)}
                         </span>
                       </div>
                     </div>
