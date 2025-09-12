@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import useToast from '../../hooks/useToast';
+import { BookingService } from '../../services/bookingService';
 
 interface SeasonRentalFormProps {
   propertyId: string;
@@ -147,7 +148,7 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validar que se haya seleccionado una temporada si es tipo 'season'
@@ -156,33 +157,61 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
       return;
     }
     
-    const rentalData = {
-      propertyId,
-      propertyName,
-      precioMes,
-      rentalType,
-      selectedSeason: rentalType === 'season' ? selectedSeason : null,
-      daysDifference,
-      isLongTerm,
-      ...formData
-    };
+    // Validar campos obligatorios
+    if (!formData.startDate || !formData.endDate || !formData.guestName || !formData.guestEmail) {
+      toast.error('Error', 'Por favor completa todos los campos obligatorios');
+      return;
+    }
     
-    // Mostrar toast de confirmación
-    toast.success('¡Solicitud de reserva efectuada!', 'Tu solicitud de alquiler de temporada ha sido enviada correctamente. Te contactaremos pronto.');
-    
-    onSuccess(rentalData);
-    setShowForm(false);
-    setFormData({
-      startDate: '',
-      endDate: '',
-      guestName: '',
-      guestEmail: '',
-      guestPhone: '',
-      message: '',
-      guests: 1
-    });
-    setSelectedSeason('');
-    setRentalType('season');
+    try {
+      // Calcular meses totales
+      const startDate = new Date(formData.startDate);
+      const endDate = new Date(formData.endDate);
+      const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const totalMonths = Math.ceil(diffDays / 30); // Aproximación de meses
+      const totalPrice = totalMonths * precioMes;
+      
+      const rentalData = {
+        property_id: propertyId,
+        guest_name: formData.guestName,
+        guest_email: formData.guestEmail,
+        guest_phone: formData.guestPhone,
+        start_date: formData.startDate,
+        end_date: formData.endDate,
+        guests_count: formData.guests,
+        monthly_price: precioMes,
+        total_months: totalMonths,
+        total_price: totalPrice,
+        message: formData.message,
+        source: 'landing_page' as const,
+        user_id: currentUser?.uid || undefined,
+        status: 'pending' as const
+      };
+      
+      // Guardar en la base de datos
+      await BookingService.createSeasonRentalFromLanding(rentalData);
+      
+      // Mostrar toast de confirmación
+      toast.success('¡Solicitud de reserva efectuada!', 'Tu solicitud de alquiler de temporada ha sido enviada correctamente. Te contactaremos pronto.');
+      
+      onSuccess(rentalData);
+      setShowForm(false);
+      setFormData({
+        startDate: '',
+        endDate: '',
+        guestName: '',
+        guestEmail: '',
+        guestPhone: '',
+        message: '',
+        guests: 1
+      });
+      setSelectedSeason('');
+      setRentalType('season');
+    } catch (error) {
+      console.error('Error creating season rental:', error);
+      toast.error('Error', 'No se pudo enviar la solicitud. Por favor, inténtalo de nuevo.');
+    }
   };
 
   if (!alquilaTemporadaCompleta) {
