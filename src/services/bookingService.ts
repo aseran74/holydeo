@@ -90,7 +90,7 @@ export class BookingService {
       })
       .select(`
         *,
-        property:properties(name, location, images)
+        property:properties(title, location, main_image_path)
       `)
       .single();
 

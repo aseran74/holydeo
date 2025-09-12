@@ -402,47 +402,21 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
           <div className="flex flex-wrap gap-4 mb-4 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span>Disponible</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <span>Reservado</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <span>Bloqueado (iCal)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
-              <span>Bloqueado (Manual)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-              <span>Pasado</span>
             </div>
           </div>
 
-          {/* Leyenda de colores */}
-          <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <div className="flex flex-wrap gap-3 text-xs">
-              <div className="flex items-center gap-1">
-                <div className="w-4 h-4 bg-green-500 rounded"></div>
-                <span>Disponible</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-4 h-4 bg-red-500 rounded"></div>
-                <span>Reservado</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-4 h-4 bg-gray-500 rounded"></div>
-                <span>Bloqueado</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-                <span>iCal</span>
-              </div>
-            </div>
-          </div>
 
           {/* Días de la semana */}
           <div className="grid grid-cols-7 gap-1 mb-3">
