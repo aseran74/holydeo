@@ -444,7 +444,9 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
           />
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        {/* Grid 2x2 para campos numéricos */}
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          {/* Fila 1 */}
           <div>
             <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Baños</label>
             <input
@@ -457,6 +459,19 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
             />
           </div>
           <div>
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Aseos</label>
+            <input
+              type="number"
+              min={1}
+              value={toilets}
+              onChange={(e) => setToilets(Math.max(1, Number(e.target.value)))}
+              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          
+          {/* Fila 2 */}
+          <div>
             <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Habitaciones</label>
             <input
               type="number"
@@ -468,12 +483,12 @@ const SimplePropertyForm: React.FC<SimplePropertyFormProps> = ({ property, onSav
             />
           </div>
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Aseos</label>
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Metros cuadrados</label>
             <input
               type="number"
-              min={1}
-              value={toilets}
-              onChange={(e) => setToilets(Math.max(1, Number(e.target.value)))}
+              min={10}
+              value={squareMeters}
+              onChange={(e) => setSquareMeters(Math.max(10, Number(e.target.value)))}
               className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
               required
             />

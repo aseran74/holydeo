@@ -695,16 +695,17 @@ const PropertyDetails = () => {
                 <BookingCalendar
                   propertyId={property.id}
                   precioDia={Number(property.precio_dia)}
+                  minDays={Number(property.min_days) || undefined}
                   onBookingComplete={(bookingData) => {
                     console.log('Reserva por días completada:', bookingData);
                     // Aquí puedes manejar la reserva completada
                   }}
                 />
-                {/* Debug info */}
-                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-xs">
-                  <strong>Debug - Precios de la propiedad:</strong><br/>
-                  Precio por día: €{property.precio_dia} (tipo: {typeof property.precio_dia})<br/>
-                  ID: {property.id}
+                {/* Info de la propiedad */}
+                <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg text-xs">
+                  <strong>ℹ️ Información de la propiedad:</strong><br/>
+                  Precio por noche: €{property.precio_dia}<br/>
+                  Días mínimos: {property.min_days || 'Sin mínimo'}
                 </div>
               </div>
               

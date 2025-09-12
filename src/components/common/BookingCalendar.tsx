@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 interface BookingCalendarProps {
   propertyId: string;
   precioDia: number;
+  minDays?: number;
   onBookingComplete?: (bookingData: any) => void;
 }
 
@@ -27,15 +28,31 @@ interface Booking {
 const BookingCalendar: React.FC<BookingCalendarProps> = ({
   propertyId,
   precioDia = 100,
-  precioEntresemana,
-  precioFinDeSemana,
+  minDays,
   onBookingComplete
 }) => {
   const toast = useToast();
   const { currentUser } = useAuth();
+  
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+  const [minDaysError, setMinDaysError] = useState<string | null>(null);
+  
+  // Validar días mínimos cada vez que cambien las fechas
+  useEffect(() => {
+    if (selectedStartDate && selectedEndDate && minDays) {
+      const diffTime = selectedEndDate.getTime() - selectedStartDate.getTime();
+      const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (nights < minDays) {
+        const errorMsg = `No se puede reservar debido a las restricciones del propietario. Se requieren mínimo ${minDays} días, has seleccionado ${nights} días.`;
+        setMinDaysError(errorMsg);
+      } else {
+        setMinDaysError(null);
+      }
+    }
+  }, [selectedStartDate, selectedEndDate, minDays]);
   const [selectionMode, setSelectionMode] = useState<'start' | 'end'>('start');
   const [loading, setLoading] = useState(false);
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([]);
@@ -107,6 +124,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
     const month = date.getMonth();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
+    const nextMonthLastDay = new Date(year, month + 2, 0);
     const days: (Date | null)[] = [];
 
     // Añadir días del mes anterior para completar la primera semana
@@ -114,12 +132,38 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
       days.push(null);
     }
 
-    // Añadir todos los días del mes
+    // Añadir todos los días del mes actual
     for (let i = 1; i <= lastDay.getDate(); i++) {
       days.push(new Date(year, month, i));
     }
 
+    // Añadir todos los días del mes siguiente
+    for (let i = 1; i <= nextMonthLastDay.getDate(); i++) {
+      days.push(new Date(year, month + 1, i));
+    }
+
+    // Completar hasta 12 semanas (84 días) para mantener la cuadrícula uniforme
+    const remainingDays = 84 - days.length;
+    for (let i = 1; i <= remainingDays; i++) {
+      days.push(new Date(year, month + 2, i));
+    }
+
     return days;
+  };
+
+  // Función para determinar si un día pertenece al primer o segundo mes
+  const getDayMonth = (day: Date) => {
+    const year = day.getFullYear();
+    const month = day.getMonth();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    
+    if (month === currentMonth && year === currentYear) {
+      return 'first';
+    } else if (month === currentMonth + 1 && year === currentYear) {
+      return 'second';
+    }
+    return 'other';
   };
 
   const isDateInPast = (date: Date) => {
@@ -170,6 +214,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
     setSelectedStartDate(null);
     setSelectedEndDate(null);
     setSelectionMode('start');
+    setMinDaysError(null); // Limpiar error al resetear
   };
 
   const getDateStatus = (date: Date) => {
@@ -198,29 +243,47 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
     return selectedEndDate && date.toDateString() === selectedEndDate.toDateString();
   };
 
+  const validateMinimumDays = (startDate: Date, endDate: Date): boolean => {
+    console.log('=== VALIDANDO DÍAS MÍNIMOS ===');
+    console.log('minDays recibido:', minDays, typeof minDays);
+    console.log('Fecha inicio:', startDate.toLocaleDateString('es-ES'));
+    console.log('Fecha fin:', endDate.toLocaleDateString('es-ES'));
+    
+    if (!minDays || minDays <= 0) {
+      console.log('No hay mínimo establecido, validación pasada');
+      return true; // Si no hay mínimo, no validar
+    }
+    
+    const diffTime = endDate.getTime() - startDate.getTime();
+    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    console.log('Noches calculadas:', nights);
+    console.log('Mínimo requerido:', minDays);
+    
+    if (nights < minDays) {
+      const errorMsg = `⚠️ El propietario solo permite reservas de mínimo ${minDays} días. Has seleccionado ${nights} días.`;
+      console.log('VALIDACIÓN FALLIDA:', errorMsg);
+      setMinDaysError(errorMsg);
+      return false;
+    } else {
+      console.log('VALIDACIÓN EXITOSA');
+      setMinDaysError(null);
+      return true;
+    }
+  };
+
   const calculateTotalPrice = () => {
     if (!selectedStartDate || !selectedEndDate) return 0;
-    
-    console.log('=== CALCULANDO PRECIO TOTAL ===');
-    console.log('Fecha inicio:', selectedStartDate.toLocaleDateString('es-ES'));
-    console.log('Fecha fin:', selectedEndDate.toLocaleDateString('es-ES'));
-    console.log('Precio por noche:', precioDia, typeof precioDia);
     
     const start = new Date(selectedStartDate);
     const end = new Date(selectedEndDate);
     
     // Calcular noches (día de salida - día de entrada)
     const diffTime = end.getTime() - start.getTime();
-    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Sin +1, es por noches
-    
-    console.log('Noches calculadas:', nights);
-    console.log('Fecha inicio:', start.toLocaleDateString('es-ES'));
-    console.log('Fecha fin:', end.toLocaleDateString('es-ES'));
+    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
     const totalPrice = nights * precioDia;
     
-    console.log('Total calculado:', totalPrice, `(${nights} noches × €${precioDia})`);
-    console.log('===============================');
     return totalPrice;
   };
 
@@ -315,18 +378,18 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
           {/* Navegación del calendario */}
           <div className="flex items-center justify-between mb-6">
             <button
-              onClick={() => setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1))}
+              onClick={() => setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 2))}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               <ChevronLeft size={20} />
             </button>
             
             <h4 className="text-lg font-medium">
-              {currentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+              {currentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })} - {new Date(currentDate.getFullYear(), currentDate.getMonth() + 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
             </h4>
             
             <button
-              onClick={() => setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1))}
+              onClick={() => setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 2))}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               <ChevronRight size={20} />
@@ -423,16 +486,28 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
             {days.map((day, index) => {
               if (!day) return <div key={index} className="min-h-[50px]"></div>;
               
+              // Agregar línea separadora después del primer mes
+              const shouldAddSeparator = index > 0 && getDayMonth(day) === 'second' && getDayMonth(days[index - 1] as Date) === 'first';
+              
               const status = getDateStatus(day);
               const source = getDateSource(day);
               const isSelected = isDateInRange(day);
               const isStart = isDateStart(day);
               const isEnd = isDateEnd(day);
+              const dayMonth = getDayMonth(day);
               
               let bgColor = 'bg-white hover:bg-gray-50';
               let textColor = 'text-gray-900';
               let cursor = 'cursor-pointer';
               let borderStyle = 'border-transparent';
+              let opacity = 'opacity-100';
+              
+              // Aplicar opacidad diferente según el mes
+              if (dayMonth === 'second') {
+                opacity = 'opacity-90';
+              } else if (dayMonth === 'other') {
+                opacity = 'opacity-60';
+              }
               
               if (isStart) {
                 bgColor = 'bg-blue-600';
@@ -461,24 +536,29 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
               }
 
               return (
-                <div key={index} className="min-h-[50px] flex items-center justify-center">
-                  <button
-                  onClick={() => handleDateClick(day)}
-                    disabled={status !== 'available'}
-                    className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 ${bgColor} ${textColor} ${cursor} ${borderStyle}`}
-                    title={
-                      isStart ? 'Día de llegada' :
-                      isEnd ? 'Día de salida' :
-                      isSelected ? 'Día incluido en la reserva' :
-                      status === 'booked' ? 'Día reservado' :
-                      status === 'blocked' ? `Día bloqueado (${source === 'ical' ? 'iCal' : 'Manual'})` :
-                      status === 'past' ? 'Fecha pasada' :
-                      'Disponible para reservar'
-                    }
-                >
-                  {day.getDate()}
-                  </button>
-                </div>
+                <React.Fragment key={index}>
+                  {shouldAddSeparator && (
+                    <div className="col-span-7 h-px bg-gray-300 dark:bg-gray-600 my-2"></div>
+                  )}
+                  <div className="min-h-[50px] flex items-center justify-center">
+                    <button
+                    onClick={() => handleDateClick(day)}
+                      disabled={status !== 'available'}
+                      className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 ${bgColor} ${textColor} ${cursor} ${borderStyle} ${opacity}`}
+                      title={
+                        isStart ? 'Día de llegada' :
+                        isEnd ? 'Día de salida' :
+                        isSelected ? 'Día incluido en la reserva' :
+                        status === 'booked' ? 'Día reservado' :
+                        status === 'blocked' ? `Día bloqueado (${source === 'ical' ? 'iCal' : 'Manual'})` :
+                        status === 'past' ? 'Fecha pasada' :
+                        'Disponible para reservar'
+                      }
+                  >
+                    {day.getDate()}
+                    </button>
+                  </div>
+                </React.Fragment>
               );
             })}
           </div>
@@ -513,17 +593,65 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
             </div>
           </div>
 
+              {/* Información de restricciones del propietario */}
+              {minDays && minDays > 0 && (
+                <div className="mt-2 mb-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-white text-xs font-bold">ℹ</span>
+                    </div>
+                    <div>
+                      <p className="text-blue-800 dark:text-blue-200 text-sm font-medium">
+                        Restricciones del propietario
+                      </p>
+                      <p className="text-blue-700 dark:text-blue-300 text-xs">
+                        Esta propiedad requiere un mínimo de <strong>{minDays} días</strong> de reserva.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+
+              {/* Mensaje de error de días mínimos */}
+              {minDaysError && (
+                <div className="mt-3 p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-300 dark:border-red-700 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-white text-sm font-bold">⚠</span>
+                    </div>
+                    <div>
+                      <p className="text-red-800 dark:text-red-200 text-sm font-semibold mb-1">
+                        Reserva no disponible
+                      </p>
+                      <p className="text-red-700 dark:text-red-300 text-sm leading-relaxed">
+                        {minDaysError}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center justify-between">
                 <div className="text-lg font-semibold text-blue-900 dark:text-blue-100">
                   Precio total: €{totalPrice}
               </div>
-              <button
-                onClick={() => setShowBookingForm(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-              >
-                  Reservar Ahora
-              </button>
-              </div>
+                  <button
+                    onClick={() => {
+                      if (!minDaysError) {
+                        setShowBookingForm(true);
+                      }
+                    }}
+                    disabled={!!minDaysError}
+                    className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                      minDaysError 
+                        ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60' 
+                        : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg'
+                    }`}
+                  >
+                    {minDaysError ? 'Reserva no disponible' : 'Reservar Ahora'}
+                  </button>
+            </div>
             </div>
           )}
 

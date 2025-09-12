@@ -375,36 +375,42 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ property, onSave, onCancel 
               required
             />
           </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Baños</label>
-            <div className="flex items-center gap-2">
-              <button type="button" onClick={() => setBathrooms(Math.max(1, bathrooms - 1))} className="px-2 py-1 bg-gray-200 rounded">-</button>
-              <input type="number" min={1} value={bathrooms} onChange={(e) => setBathrooms(Math.max(1, Number(e.target.value)))} className="w-16 text-center px-2 py-1 border rounded" required />
-              <button type="button" onClick={() => setBathrooms(bathrooms + 1)} className="px-2 py-1 bg-gray-200 rounded">+</button>
+          {/* Grid 2x2 para campos numéricos */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Fila 1 */}
+            <div>
+              <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Baños</label>
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setBathrooms(Math.max(1, bathrooms - 1))} className="px-2 py-1 bg-gray-200 rounded">-</button>
+                <input type="number" min={1} value={bathrooms} onChange={(e) => setBathrooms(Math.max(1, Number(e.target.value)))} className="w-16 text-center px-2 py-1 border rounded" required />
+                <button type="button" onClick={() => setBathrooms(bathrooms + 1)} className="px-2 py-1 bg-gray-200 rounded">+</button>
+              </div>
             </div>
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Aseos</label>
-            <div className="flex items-center gap-2">
-              <button type="button" onClick={() => setToilets(Math.max(1, toilets - 1))} className="px-2 py-1 bg-gray-200 rounded">-</button>
-              <input type="number" min={1} value={toilets} onChange={(e) => setToilets(Math.max(1, Number(e.target.value)))} className="w-16 text-center px-2 py-1 border rounded" required />
-              <button type="button" onClick={() => setToilets(toilets + 1)} className="px-2 py-1 bg-gray-200 rounded">+</button>
+            <div>
+              <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Aseos</label>
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setToilets(Math.max(1, toilets - 1))} className="px-2 py-1 bg-gray-200 rounded">-</button>
+                <input type="number" min={1} value={toilets} onChange={(e) => setToilets(Math.max(1, Number(e.target.value)))} className="w-16 text-center px-2 py-1 border rounded" required />
+                <button type="button" onClick={() => setToilets(toilets + 1)} className="px-2 py-1 bg-gray-200 rounded">+</button>
+              </div>
             </div>
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Metros cuadrados</label>
-            <div className="flex items-center gap-2">
-              <button type="button" onClick={() => setSquareMeters(Math.max(10, squareMeters - 10))} className="px-2 py-1 bg-gray-200 rounded">-</button>
-              <input type="number" min={10} value={squareMeters} onChange={(e) => setSquareMeters(Math.max(10, Number(e.target.value)))} className="w-20 text-center px-2 py-1 border rounded" required />
-              <button type="button" onClick={() => setSquareMeters(squareMeters + 10)} className="px-2 py-1 bg-gray-200 rounded">+</button>
+            
+            {/* Fila 2 */}
+            <div>
+              <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Metros cuadrados</label>
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setSquareMeters(Math.max(10, squareMeters - 10))} className="px-2 py-1 bg-gray-200 rounded">-</button>
+                <input type="number" min={10} value={squareMeters} onChange={(e) => setSquareMeters(Math.max(10, Number(e.target.value)))} className="w-20 text-center px-2 py-1 border rounded" required />
+                <button type="button" onClick={() => setSquareMeters(squareMeters + 10)} className="px-2 py-1 bg-gray-200 rounded">+</button>
+              </div>
             </div>
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Dormitorios</label>
-            <div className="flex items-center gap-2">
-              <button type="button" onClick={() => setBedrooms(Math.max(1, bedrooms - 1))} className="px-2 py-1 bg-gray-200 rounded">-</button>
-              <input type="number" min={1} value={bedrooms} onChange={(e) => setBedrooms(Math.max(1, Number(e.target.value)))} className="w-16 text-center px-2 py-1 border rounded" required />
-              <button type="button" onClick={() => setBedrooms(bedrooms + 1)} className="px-2 py-1 bg-gray-200 rounded">+</button>
+            <div>
+              <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">Dormitorios</label>
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setBedrooms(Math.max(1, bedrooms - 1))} className="px-2 py-1 bg-gray-200 rounded">-</button>
+                <input type="number" min={1} value={bedrooms} onChange={(e) => setBedrooms(Math.max(1, Number(e.target.value)))} className="w-16 text-center px-2 py-1 border rounded" required />
+                <button type="button" onClick={() => setBedrooms(bedrooms + 1)} className="px-2 py-1 bg-gray-200 rounded">+</button>
+              </div>
             </div>
           </div>
         </div>
