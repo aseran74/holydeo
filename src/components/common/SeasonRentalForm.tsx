@@ -6,6 +6,7 @@ import { BookingService } from '../../services/bookingService';
 
 interface SeasonRentalFormProps {
   propertyId: string;
+  propertyName: string;
   precioMes: number;
   alquilaTemporadaCompleta?: boolean;
   mesesTemporada?: string[];
@@ -15,6 +16,7 @@ interface SeasonRentalFormProps {
 
 const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
   propertyId,
+  propertyName,
   precioMes,
   alquilaTemporadaCompleta = false,
   mesesTemporada = [],
@@ -191,7 +193,7 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
       await BookingService.createSeasonRentalFromLanding(rentalData);
       
       // Mostrar toast de confirmación
-      toast.success('¡Solicitud de reserva efectuada!', 'Tu solicitud de alquiler de temporada ha sido enviada correctamente. Te contactaremos pronto.');
+      toast.success('¡Solicitud de reserva efectuada!', `Tu solicitud de alquiler de temporada para "${propertyName}" ha sido enviada correctamente. Te contactaremos pronto.`);
       
       onSuccess(rentalData);
       setShowForm(false);
