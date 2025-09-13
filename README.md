@@ -9,8 +9,62 @@
 [![Firebase](https://img.shields.io/badge/Firebase-Auth-orange.svg)](https://firebase.google.com/)
 
 ## 🚀 Descripción del Proyecto
+HOLYDEO
+🏠 Plataforma de Alquileres Turísticos de Media Estancia
+HOLYDEO es la primera plataforma web moderna especializada en alquileres turísticos de media estancia, enfocada en resolver la problemática de la estacionalidad en el turismo vacacional.
+🎯 Problema que Resolvemos
+Muchas viviendas vacacionales se alquilan únicamente de junio a septiembre a través de las grandes plataformas OTAs (Airbnb, Booking, Vrbo), quedando vacías durante el resto del año. HOLYDEO se centra en maximizar la rentabilidad de estas propiedades durante la temporada baja (septiembre a junio).
+✨ Características Principales
 
-**HOLYDEO** es una plataforma web moderna y completa para la gestión inmobiliaria que combina la potencia de React con la escalabilidad de Supabase. Diseñada para propietarios, agencias inmobiliarias y huéspedes, ofrece una experiencia de usuario excepcional con funcionalidades avanzadas de reservas, gestión de propiedades y experiencias turísticas.
+Especialización en Temporada Baja: Enfoque en alquileres de septiembre a junio
+Media Estancia: Formato optimizado para estancias de duración intermedia
+Gestión Inmobiliaria Completa: Herramientas avanzadas para propietarios y agencias
+Experiencia de Usuario Moderna: Interfaz intuitiva y responsive
+Sistema de Reservas Avanzado: Gestión automatizada de disponibilidad y precios
+
+🚀 Tecnologías
+
+Frontend: React - Interfaz moderna y responsive
+Backend: Supabase - Escalabilidad y rendimiento garantizados
+Base de Datos: PostgreSQL (Supabase)
+Autenticación: Supabase Auth
+Almacenamiento: Supabase Storage
+
+👥 Dirigido a
+
+Propietarios de viviendas vacacionales
+Agencias inmobiliarias especializadas en turismo
+Huéspedes que buscan alojamientos de media estancia
+Gestores turísticos que ofertan experiencias
+
+🎪 Funcionalidades
+Para Propietarios
+
+Gestión de propiedades
+Calendario de disponibilidad
+Configuración de precios dinámicos
+Análisis de rentabilidad
+
+Para Huéspedes
+
+Búsqueda avanzada de propiedades
+Sistema de reservas simplificado
+Gestión de experiencias turísticas
+Valoraciones y reseñas
+
+Para Agencias
+
+Panel de gestión múltiples propiedades
+Reportes y estadísticas
+Integración con sistemas externos
+Gestión de comisiones
+
+🌟 Ventaja Competitiva
+HOLYDEO llena el vacío del mercado de alquileres turísticos durante la temporada baja, ofreciendo una solución especializada que maximiza la ocupación y rentabilidad de las propiedades vacacionales durante todo el año.
+📞 Contacto
+Para más información sobre HOLYDEO y cómo puede ayudarte a rentabilizar tu propiedad durante todo el año, contáctanos.
+
+Transformando la estacionalidad turística en oportunidades de negocio todo el año.
 
 ## ✨ Características Principales
 
