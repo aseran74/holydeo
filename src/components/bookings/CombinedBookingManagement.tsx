@@ -4,14 +4,12 @@ import {
   XCircle, 
   Clock, 
   AlertTriangle, 
-  Eye,
   Calendar,
   Users,
   Euro,
   MapPin,
   Building,
-  Home,
-  CalendarDays
+  Home
 } from 'lucide-react';
 import { BookingManagementService, Booking } from '../../services/bookingManagementService';
 import { SeasonRentalManagementService, SeasonRentalWithProperty } from '../../services/seasonRentalManagementService';

@@ -6,7 +6,6 @@ import { BookingService } from '../../services/bookingService';
 
 interface SeasonRentalFormProps {
   propertyId: string;
-  propertyName: string;
   precioMes: number;
   alquilaTemporadaCompleta?: boolean;
   mesesTemporada?: string[];
@@ -16,7 +15,6 @@ interface SeasonRentalFormProps {
 
 const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
   propertyId,
-  propertyName,
   precioMes,
   alquilaTemporadaCompleta = false,
   mesesTemporada = [],
