@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { Home } from 'lucide-react';
 import LandingSearchForm from '../common/LandingSearchForm';
 
 const LandingHero = () => {
@@ -9,6 +12,39 @@ const LandingHero = () => {
   const [mobileVideoRef, setMobileVideoRef] = useState<HTMLVideoElement | null>(null);
   const [desktopVideoRef, setDesktopVideoRef] = useState<HTMLVideoElement | null>(null);
   const [scrollY, setScrollY] = useState(0);
+  const { currentUser, userRole } = useAuth();
+
+  // Función para obtener la ruta del dashboard según el rol del usuario
+  const getDashboardRoute = () => {
+    switch (userRole) {
+      case 'guest':
+        return '/guest-dashboard';
+      case 'admin':
+        return '/admin';
+      case 'owner':
+        return '/owner-dashboard';
+      case 'agent':
+        return '/dashboard';
+      default:
+        return '/dashboard';
+    }
+  };
+
+  // Función para obtener el nombre del dashboard según el rol
+  const getDashboardName = () => {
+    switch (userRole) {
+      case 'guest':
+        return 'Mi Dashboard';
+      case 'admin':
+        return 'Panel de Admin';
+      case 'owner':
+        return 'Mi Dashboard';
+      case 'agent':
+        return 'Mi Dashboard';
+      default:
+        return 'Mi Dashboard';
+    }
+  };
 
   useEffect(() => {
     const checkMobile = () => {
@@ -218,6 +254,19 @@ const LandingHero = () => {
             <div className="w-full max-w-4xl mx-auto relative z-50">
               <LandingSearchForm />
             </div>
+
+            {/* Botón del Dashboard para usuarios logueados */}
+            {currentUser && (
+              <div className="mt-6 flex justify-center">
+                <Link
+                  to={getDashboardRoute()}
+                  className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-full border border-white/30 hover:bg-white/30 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                  <Home className="w-5 h-5 mr-2" />
+                  {getDashboardName()}
+                </Link>
+              </div>
+            )}
 
             {/* Estadísticas con efecto de scroll */}
             <div className={`mt-8 sm:mt-12 flex flex-row md:grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full px-6 sm:px-4 transition-all duration-1000 ease-out transform z-[-10] ${
