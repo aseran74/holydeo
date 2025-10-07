@@ -154,25 +154,6 @@ const LandingNavbar = () => {
 
           {/* User Button and Mobile Menu Button */}
           <div className="flex items-center space-x-4">
-            {/* Dashboard Button for logged in users */}
-            {currentUser && (
-              <div className="hidden md:block">
-                <Link
-                  to={getDashboardRoute()}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center space-x-2 ${
-                    isScrolled
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : isLandingPage
-                        ? 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }`}
-                >
-                  <Home className="w-4 h-4" />
-                  <span>{getDashboardName()}</span>
-                </Link>
-              </div>
-            )}
-
             {/* Firebase User Button */}
             <div className="hidden md:block">
               {currentUser ? (
