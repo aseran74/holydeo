@@ -23,4 +23,16 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
-.env*.local
+
+# Environment variables
+# Ocultar archivos de producción y locales
+.env.production
+.env.production.local
+.env.local
+.env.development.local
+.env.test.local
+
+# Permitir archivos .env base (serán visibles públicamente)
+# .env
+# .env.development
+# .env.example
