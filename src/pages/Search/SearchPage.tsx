@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { Property, Experience } from '../../types';
@@ -58,14 +58,16 @@ const SearchPage = () => {
   const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
 
-  // Hook para cargar Google Maps API
+  // Hook para cargar Google Maps API con configuración optimizada
+  const libraries = useMemo(() => ['places'], []);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
-    libraries: ['places'],
+    libraries: libraries as any,
+    preventGoogleFontsLoading: true, // Evita cargar fuentes de Google innecesarias
   });
 
-  // Función para cargar el mapa y ajustar límites
-  const onLoadMap = (map: google.maps.Map) => {
+  // Función para cargar el mapa y ajustar límites (optimizada con useCallback)
+  const onLoadMap = useCallback((map: google.maps.Map) => {
     mapRef.current = map;
 
     const bounds = new window.google.maps.LatLngBounds();
@@ -91,7 +93,42 @@ const SearchPage = () => {
     if (hasMarkers) {
       map.fitBounds(bounds);
     }
-  };
+  }, [searchType, results.properties, results.experiences]);
+
+  // Estilo del contenedor del mapa optimizado con useMemo
+  const mapContainerStyle = useMemo(() => ({
+    width: "100%",
+    height: "100vh",
+    minHeight: "100vh"
+  }), []);
+
+  // Centro del mapa por defecto
+  const defaultCenter = useMemo(() => ({ 
+    lat: 40.4168, 
+    lng: -3.7038 
+  }), []);
+
+  // Iconos de marcadores optimizados con useMemo
+  const propertyMarkerIcon = useMemo(() => ({
+    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" fill="#3B82F6" stroke="#1E40AF" stroke-width="2"/>
+        <path d="M9 22V12H15V22" fill="white"/>
+      </svg>
+    `)}`,
+    scaledSize: new window.google.maps.Size(32, 32),
+    anchor: new window.google.maps.Point(16, 32)
+  }), []);
+
+  const experienceMarkerIcon = useMemo(() => ({
+    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#F59E0B" stroke="#D97706" stroke-width="2"/>
+      </svg>
+    `)}`,
+    scaledSize: new window.google.maps.Size(32, 32),
+    anchor: new window.google.maps.Point(16, 32)
+  }), []);
 
   // Helper function to get proper image URL for experiences
   const getExperienceImageUrl = (photos: string[] | undefined) => {
@@ -732,15 +769,17 @@ const SearchPage = () => {
                  ) : (
                    <>
                      <GoogleMap
-                       mapContainerStyle={{ 
-                         width: "100%", 
-                         height: "100vh",
-                         minHeight: "100vh"
-                       }}
+                       mapContainerStyle={mapContainerStyle}
                        mapContainerClassName="md:!h-[700px] md:!min-h-0"
                        onLoad={onLoadMap}
-                       center={{ lat: 40.4168, lng: -3.7038 }} // Centro de España
+                       center={defaultCenter}
                        zoom={6}
+                       options={{
+                         zoomControl: true,
+                         streetViewControl: false,
+                         mapTypeControl: false,
+                         fullscreenControl: false,
+                       }}
                      >
                        {searchType === 'properties' ? (
                          results.properties.map((property) =>
@@ -749,16 +788,7 @@ const SearchPage = () => {
                                key={property.id}
                                position={{ lat: property.lat, lng: property.lng }}
                                onClick={() => setSelectedProperty(property)}
-                               icon={{
-                                 url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-                                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                     <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" fill="#3B82F6" stroke="#1E40AF" stroke-width="2"/>
-                                     <path d="M9 22V12H15V22" fill="white"/>
-                                   </svg>
-                                 `)}`,
-                                 scaledSize: new window.google.maps.Size(32, 32),
-                                 anchor: new window.google.maps.Point(16, 32)
-                               }}
+                               icon={propertyMarkerIcon}
                              />
                            ) : null
                          )
@@ -769,15 +799,7 @@ const SearchPage = () => {
                                key={experience.id}
                                position={{ lat: experience.lat, lng: experience.lng }}
                                onClick={() => setSelectedExperience(experience)}
-                               icon={{
-                                 url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-                                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#F59E0B" stroke="#D97706" stroke-width="2"/>
-                                   </svg>
-                                 `)}`,
-                                 scaledSize: new window.google.maps.Size(32, 32),
-                                 anchor: new window.google.maps.Point(16, 32)
-                               }}
+                               icon={experienceMarkerIcon}
                              />
                            ) : null
                          )
