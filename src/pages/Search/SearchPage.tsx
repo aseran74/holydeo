@@ -6,8 +6,9 @@ import SearchNavbar from '../../components/landing/SearchNavbar';
 import RedirectNotification from '../../components/common/RedirectNotification';
 import DateSearchForm from '../../components/common/DateSearchForm';
 import EnhancedSearchFilters from '../../components/common/EnhancedSearchFilters';
+import FiltersModal from '../../components/common/FiltersModal';
 import PublicPropertyCard from '../../components/common/PublicPropertyCard';
-import { Search, Grid, List, Map, Home, Star, Car, Waves, TreePine, Sun, Snowflake, Building2, Building } from 'lucide-react';
+import { Search, Grid, List, Map, Home, Star, Car, Waves, TreePine, Sun, Snowflake, Building2, Building, Filter, LayoutGrid, LayoutList } from 'lucide-react';
 import { GoogleMap, useLoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 
 const SearchPage = () => {
@@ -51,6 +52,7 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
   const [showFilters, setShowFilters] = useState(false);
+  const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [availabilityFilterApplied, setAvailabilityFilterApplied] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
@@ -669,57 +671,121 @@ const SearchPage = () => {
               </div>
                          ) : viewMode === 'map' ? (
                // Vista del mapa
-               <div className="mb-8 rounded-lg overflow-hidden shadow">
+               <div className="mb-8 rounded-lg overflow-hidden shadow md:relative">
                  {!isLoaded ? (
-                   <div className="flex items-center justify-center h-96 bg-gray-100">
+                   <div className="flex items-center justify-center h-96 md:h-96 min-h-screen md:min-h-0 bg-gray-100">
                      <div className="text-center">
                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                        <p className="text-gray-600">Cargando mapa...</p>
                      </div>
                    </div>
                  ) : loadError ? (
-                   <div className="flex items-center justify-center h-96 bg-gray-100">
+                   <div className="flex items-center justify-center h-96 md:h-96 min-h-screen md:min-h-0 bg-gray-100">
                      <div className="text-center text-red-600">
                        <p>Error al cargar el mapa</p>
                        <p className="text-sm">{loadError.message}</p>
                      </div>
                    </div>
                  ) : (
-                   <GoogleMap
-                     mapContainerStyle={{ width: "100%", height: "500px" }}
-                     onLoad={onLoadMap}
-                     center={{ lat: 40.4168, lng: -3.7038 }} // Centro de España
-                     zoom={6}
-                   >
-                     {results.properties.map((property) =>
-                       property.lat && property.lng ? (
-                         <Marker
-                           key={property.id}
-                           position={{ lat: property.lat, lng: property.lng }}
-                           onClick={() => setSelectedProperty(property)}
-                           icon={{
-                             url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-                               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                 <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" fill="#3B82F6" stroke="#1E40AF" stroke-width="2"/>
-                                 <path d="M9 22V12H15V22" fill="white"/>
-                               </svg>
-                             `)}`,
-                             scaledSize: new window.google.maps.Size(32, 32),
-                             anchor: new window.google.maps.Point(16, 32)
-                           }}
-                         />
-                       ) : null
-                     )}
+                   <>
+                     <GoogleMap
+                       mapContainerStyle={{ 
+                         width: "100%", 
+                         height: "100vh",
+                         minHeight: "100vh"
+                       }}
+                       mapContainerClassName="md:!h-[500px] md:!min-h-0"
+                       onLoad={onLoadMap}
+                       center={{ lat: 40.4168, lng: -3.7038 }} // Centro de España
+                       zoom={6}
+                     >
+                       {searchType === 'properties' ? (
+                         results.properties.map((property) =>
+                           property.lat && property.lng ? (
+                             <Marker
+                               key={property.id}
+                               position={{ lat: property.lat, lng: property.lng }}
+                               onClick={() => setSelectedProperty(property)}
+                               icon={{
+                                 url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+                                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                     <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" fill="#3B82F6" stroke="#1E40AF" stroke-width="2"/>
+                                     <path d="M9 22V12H15V22" fill="white"/>
+                                   </svg>
+                                 `)}`,
+                                 scaledSize: new window.google.maps.Size(32, 32),
+                                 anchor: new window.google.maps.Point(16, 32)
+                               }}
+                             />
+                           ) : null
+                         )
+                       ) : (
+                         results.experiences.map((experience) =>
+                           experience.lat && experience.lng ? (
+                             <Marker
+                               key={experience.id}
+                               position={{ lat: experience.lat, lng: experience.lng }}
+                               onClick={() => {
+                                 // Para experiencias, podrías crear un componente similar a MiniPropertyCard
+                                 console.log('Experience clicked:', experience.name);
+                               }}
+                               icon={{
+                                 url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+                                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#F59E0B" stroke="#D97706" stroke-width="2"/>
+                                   </svg>
+                                 `)}`,
+                                 scaledSize: new window.google.maps.Size(32, 32),
+                                 anchor: new window.google.maps.Point(16, 32)
+                               }}
+                             />
+                           ) : null
+                         )
+                       )}
 
-                     {selectedProperty && selectedProperty.lat && selectedProperty.lng && (
-                       <InfoWindow
-                         position={{ lat: selectedProperty.lat, lng: selectedProperty.lng }}
-                         onCloseClick={() => setSelectedProperty(null)}
+                       {selectedProperty && selectedProperty.lat && selectedProperty.lng && (
+                         <InfoWindow
+                           position={{ lat: selectedProperty.lat, lng: selectedProperty.lng }}
+                           onCloseClick={() => setSelectedProperty(null)}
+                         >
+                           <MiniPropertyCard property={selectedProperty} />
+                         </InfoWindow>
+                       )}
+                     </GoogleMap>
+
+                     {/* Botones flotantes para móvil */}
+                     <div className="md:hidden fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+                       {/* Botón de Filtros */}
+                       <button
+                         onClick={() => setShowFiltersModal(true)}
+                         className="bg-white text-gray-700 p-4 rounded-full shadow-lg hover:bg-gray-50 transition-all duration-300 border border-gray-200"
+                         aria-label="Filtros"
+                         title="Filtros"
                        >
-                         <MiniPropertyCard property={selectedProperty} />
-                       </InfoWindow>
-                     )}
-                   </GoogleMap>
+                         <Filter className="w-6 h-6" />
+                       </button>
+
+                       {/* Botón de Vista Grid/Card */}
+                       <button
+                         onClick={() => setViewMode('grid')}
+                         className="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300"
+                         aria-label="Vista de tarjetas"
+                         title="Vista de tarjetas"
+                       >
+                         <LayoutGrid className="w-6 h-6" />
+                       </button>
+
+                       {/* Botón de Vista Lista */}
+                       <button
+                         onClick={() => setViewMode('list')}
+                         className="bg-gray-600 text-white p-4 rounded-full shadow-lg hover:bg-gray-700 transition-all duration-300"
+                         aria-label="Vista de lista"
+                         title="Vista de lista"
+                       >
+                         <LayoutList className="w-6 h-6" />
+                       </button>
+                     </div>
+                   </>
                  )}
                </div>
             ) : (
@@ -798,6 +864,19 @@ const SearchPage = () => {
           <Grid className="w-6 h-6" />
         </button>
       )}
+
+      {/* Modal de Filtros para móvil */}
+      <FiltersModal
+        isOpen={showFiltersModal}
+        onClose={() => setShowFiltersModal(false)}
+        searchData={searchData}
+        setSearchData={setSearchData}
+        searchType={searchType}
+        experienceTypes={experienceTypes.map(e => e.value)}
+        seasons={seasons}
+        amenities={amenities}
+        handleAmenityToggle={handleAmenityToggle}
+      />
     </div>
   );
 };

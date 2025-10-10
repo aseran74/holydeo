@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Filter, Calendar, ChevronDown } from 'lucide-react';
+import { Filter, Calendar, ChevronDown, X } from 'lucide-react';
 import NumberStepper from './NumberStepper';
 import PriceFilter from './PriceFilter';
 import SeasonSelectionModal from './SeasonSelectionModal';
@@ -15,6 +15,7 @@ interface EnhancedSearchFiltersProps {
   seasons?: Array<{ value: string; label: string }>;
   amenities: Array<{ id: string; name: string; icon: any }>;
   handleAmenityToggle: (amenity: string) => void;
+  isModal?: boolean;
 }
 
 const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
@@ -26,7 +27,8 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
   experienceTypes,
   seasons,
   amenities,
-  handleAmenityToggle
+  handleAmenityToggle,
+  isModal = false
 }) => {
   const [dynamicPropertyTypes, setDynamicPropertyTypes] = useState<string[]>([]);
   const [showSeasonModal, setShowSeasonModal] = useState(false);
@@ -83,30 +85,19 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
     }
     return `${searchData.seasons.length} temporadas`;
   };
-  return (
-    <div className="w-full lg:w-80 lg:flex-shrink-0">
-      <div className="bg-white rounded-xl shadow-sm p-6 sticky top-4">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Filtros</h3>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="text-gray-500 hover:text-gray-700 lg:hidden"
-          >
-            <Filter className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
-          <div className="space-y-6">
-                         {/* Filtros de Precio */}
-             <div className="space-y-4">
-               <div>
-                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                   Precio máximo por día
-                 </label>
-                 <p className="text-xs text-gray-500 mb-2">
-                   Elige el precio día que pagarías por medias estancias (15 días mínimo, 60 días máximo)
-                 </p>
+  
+  // Contenido de los filtros
+  const filtersContent = (
+    <div className="space-y-6">
+      {/* Filtros de Precio */}
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Precio máximo por día
+          </label>
+          <p className="text-xs text-gray-500 mb-2">
+            Elige el precio día que pagarías por medias estancias (15 días mínimo, 60 días máximo)
+          </p>
                  <PriceFilter
                    label=""
                    value={searchData.pricePerDay}
