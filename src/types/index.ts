@@ -55,6 +55,8 @@ export interface Experience {
         days: string[];
     };
     region?: string;
+    lat?: number;
+    lng?: number;
     created_at?: string;
     updated_at?: string;
 } 
