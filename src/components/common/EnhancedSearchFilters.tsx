@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Filter, Calendar, ChevronDown, X } from 'lucide-react';
+import { Filter, Calendar, ChevronDown } from 'lucide-react';
 import NumberStepper from './NumberStepper';
 import PriceFilter from './PriceFilter';
 import SeasonSelectionModal from './SeasonSelectionModal';
@@ -85,156 +85,168 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
     }
     return `${searchData.seasons.length} temporadas`;
   };
-  
-  // Contenido de los filtros
-  const filtersContent = (
-    <div className="space-y-6">
-      {/* Filtros de Precio */}
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Precio máximo por día
-          </label>
-          <p className="text-xs text-gray-500 mb-2">
-            Elige el precio día que pagarías por medias estancias (15 días mínimo, 60 días máximo)
-          </p>
-                 <PriceFilter
-                   label=""
-                   value={searchData.pricePerDay}
-                   onChange={(value) => setSearchData((prev: any) => ({ ...prev, pricePerDay: value }))}
-                   min={0}
-                   max={500}
-                   step={25}
-                 />
-               </div>
-               
-               {/* Filtro de precio por mes solo para propiedades */}
-               {searchType === 'properties' && (
-                 <div>
-                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                     Precio máximo por mes
-                   </label>
-                   <p className="text-xs text-gray-500 mb-2">
-                     Elige el precio máximo por mes para estancias largas (60 días mínimo, 9 meses máximo)
-                   </p>
-                   <PriceFilter
-                     label=""
-                     value={searchData.pricePerMonth}
-                     onChange={(value) => setSearchData((prev: any) => ({ ...prev, pricePerMonth: value }))}
-                     min={0}
-                     max={5000}
-                     step={100}
-                   />
-                 </div>
-               )}
-             </div>
 
-              {/* Filtro de temporada solo para propiedades */}
-              {searchType === 'properties' && seasons && (
+  return (
+    <div className="w-full lg:w-80 lg:flex-shrink-0">
+      <div className="bg-white rounded-xl shadow-sm p-6 sticky top-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Filtros</h3>
+          {!isModal && (
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="text-gray-500 hover:text-gray-700 lg:hidden"
+            >
+              <Filter className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+
+        <div className={`${showFilters || isModal ? 'block' : 'hidden'} lg:block`}>
+          <div className="space-y-6">
+            {/* Filtros de Precio */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Precio máximo por día
+                </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  Elige el precio día que pagarías por medias estancias (15 días mínimo, 60 días máximo)
+                </p>
+                <PriceFilter
+                  label=""
+                  value={searchData.pricePerDay}
+                  onChange={(value) => setSearchData((prev: any) => ({ ...prev, pricePerDay: value }))}
+                  min={0}
+                  max={500}
+                  step={25}
+                />
+              </div>
+              
+              {/* Filtro de precio por mes solo para propiedades */}
+              {searchType === 'properties' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Temporada
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Precio máximo por mes
                   </label>
-                  
-                  {/* Botón para abrir modal en móvil, checkboxes en desktop */}
-                  <div className="block md:hidden">
-                    <button
-                      onClick={handleOpenSeasonModal}
-                      className="w-full flex items-center justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <Calendar className="w-5 h-5 text-gray-500" />
-                        <span className="text-base font-medium text-gray-700">
-                          {getSelectedSeasonsText()}
-                        </span>
-                      </div>
-                      <ChevronDown className="w-5 h-5 text-gray-400" />
-                    </button>
-                  </div>
-
-                  {/* Checkboxes para desktop */}
-                  <div className="hidden md:block">
-                    <p className="text-xs text-gray-500 mb-2">
-                      Marca las temporadas que te interesan
-                    </p>
-                    <div className="space-y-2 max-h-32 overflow-y-auto">
-                      {seasons.map(season => (
-                        <label key={season.value} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                          <input
-                            type="checkbox"
-                            checked={searchData.seasons && searchData.seasons.includes(season.value)}
-                            onChange={(e) => {
-                              const currentSeasons = searchData.seasons || [];
-                              if (e.target.checked) {
-                                setSearchData((prev: any) => ({
-                                  ...prev,
-                                  seasons: [...currentSeasons, season.value]
-                                }));
-                              } else {
-                                setSearchData((prev: any) => ({
-                                  ...prev,
-                                  seasons: currentSeasons.filter((s: string) => s !== season.value)
-                                }));
-                              }
-                            }}
-                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                          />
-                          <span className="text-sm text-gray-700">
-                            {season.label}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Elige el precio máximo por mes para estancias largas (60 días mínimo, 9 meses máximo)
+                  </p>
+                  <PriceFilter
+                    label=""
+                    value={searchData.pricePerMonth}
+                    onChange={(value) => setSearchData((prev: any) => ({ ...prev, pricePerMonth: value }))}
+                    min={0}
+                    max={5000}
+                    step={100}
+                  />
                 </div>
               )}
+            </div>
 
+            {/* Filtro de temporada solo para propiedades */}
+            {searchType === 'properties' && seasons && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Temporada
+                </label>
+                
+                {/* Botón para abrir modal en móvil, checkboxes en desktop */}
+                <div className="block md:hidden">
+                  <button
+                    onClick={handleOpenSeasonModal}
+                    className="w-full flex items-center justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Calendar className="w-5 h-5 text-gray-500" />
+                      <span className="text-base font-medium text-gray-700">
+                        {getSelectedSeasonsText()}
+                      </span>
+                    </div>
+                    <ChevronDown className="w-5 h-5 text-gray-400" />
+                  </button>
+                </div>
 
+                {/* Checkboxes para desktop */}
+                <div className="hidden md:block">
+                  <p className="text-xs text-gray-500 mb-2">
+                    Marca las temporadas que te interesan
+                  </p>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {seasons.map(season => (
+                      <label key={season.value} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={searchData.seasons && searchData.seasons.includes(season.value)}
+                          onChange={(e) => {
+                            const currentSeasons = searchData.seasons || [];
+                            if (e.target.checked) {
+                              setSearchData((prev: any) => ({
+                                ...prev,
+                                seasons: [...currentSeasons, season.value]
+                              }));
+                            } else {
+                              setSearchData((prev: any) => ({
+                                ...prev,
+                                seasons: currentSeasons.filter((s: string) => s !== season.value)
+                              }));
+                            }
+                          }}
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-700">
+                          {season.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Filtros específicos según el tipo */}
             {searchType === 'properties' ? (
               <>
-                                 {/* Tipo de propiedad */}
-                 <div>
-                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                     Tipo de vivienda
-                   </label>
-                   <p className="text-xs text-gray-500 mb-2">
-                     Marca para elegir el tipo de vivienda
-                   </p>
-                   <select
-                     value={searchData.propertyType}
-                     onChange={(e) => setSearchData((prev: any) => ({ ...prev, propertyType: e.target.value }))}
-                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                   >
-                     <option value="">Todos los tipos</option>
-                     {dynamicPropertyTypes.map(type => (
-                       <option key={type} value={type}>
-                         {type}
-                       </option>
-                     ))}
-                   </select>
-                 </div>
+                {/* Tipo de propiedad */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tipo de vivienda
+                  </label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Marca para elegir el tipo de vivienda
+                  </p>
+                  <select
+                    value={searchData.propertyType}
+                    onChange={(e) => setSearchData((prev: any) => ({ ...prev, propertyType: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  >
+                    <option value="">Todos los tipos</option>
+                    {dynamicPropertyTypes.map(type => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 {/* Habitaciones y Baños lado a lado */}
                 <div className="grid grid-cols-2 gap-4">
-                                     <NumberStepper
-                     value={searchData.bedrooms}
-                     onChange={(value) => setSearchData((prev: any) => ({ ...prev, bedrooms: value }))}
-                     min={0}
-                     max={6}
-                     label="Nº Dormitorios mínimo"
-                     className="w-full"
-                   />
+                  <NumberStepper
+                    value={searchData.bedrooms}
+                    onChange={(value) => setSearchData((prev: any) => ({ ...prev, bedrooms: value }))}
+                    min={0}
+                    max={6}
+                    label="Nº Dormitorios mínimo"
+                    className="w-full"
+                  />
 
-                   <NumberStepper
-                     value={searchData.bathrooms}
-                     onChange={(value) => setSearchData((prev: any) => ({ ...prev, bathrooms: value }))}
-                     min={0}
-                     max={5}
-                     label="Nº Baños mínimo"
-                     className="w-full"
-                   />
+                  <NumberStepper
+                    value={searchData.bathrooms}
+                    onChange={(value) => setSearchData((prev: any) => ({ ...prev, bathrooms: value }))}
+                    min={0}
+                    max={5}
+                    label="Nº Baños mínimo"
+                    className="w-full"
+                  />
                 </div>
 
                 {/* Amenities */}
@@ -341,4 +353,4 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
   );
 };
 
-export default EnhancedSearchFilters; 
+export default EnhancedSearchFilters;
