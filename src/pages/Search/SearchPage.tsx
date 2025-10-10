@@ -716,14 +716,14 @@ const SearchPage = () => {
                // Vista del mapa
                <div className="mb-8 rounded-lg overflow-hidden shadow md:relative">
                  {!isLoaded ? (
-                   <div className="flex items-center justify-center h-96 md:h-96 min-h-screen md:min-h-0 bg-gray-100">
+                   <div className="flex items-center justify-center h-96 md:h-[700px] min-h-screen md:min-h-0 bg-gray-100">
                      <div className="text-center">
                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                        <p className="text-gray-600">Cargando mapa...</p>
                      </div>
                    </div>
                  ) : loadError ? (
-                   <div className="flex items-center justify-center h-96 md:h-96 min-h-screen md:min-h-0 bg-gray-100">
+                   <div className="flex items-center justify-center h-96 md:h-[700px] min-h-screen md:min-h-0 bg-gray-100">
                      <div className="text-center text-red-600">
                        <p>Error al cargar el mapa</p>
                        <p className="text-sm">{loadError.message}</p>
@@ -737,7 +737,7 @@ const SearchPage = () => {
                          height: "100vh",
                          minHeight: "100vh"
                        }}
-                       mapContainerClassName="md:!h-[500px] md:!min-h-0"
+                       mapContainerClassName="md:!h-[700px] md:!min-h-0"
                        onLoad={onLoadMap}
                        center={{ lat: 40.4168, lng: -3.7038 }} // Centro de España
                        zoom={6}
