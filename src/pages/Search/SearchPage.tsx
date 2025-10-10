@@ -55,6 +55,7 @@ const SearchPage = () => {
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [availabilityFilterApplied, setAvailabilityFilterApplied] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
 
   // Hook para cargar Google Maps API
@@ -67,18 +68,52 @@ const SearchPage = () => {
   const onLoadMap = (map: google.maps.Map) => {
     mapRef.current = map;
 
-    if (results.properties.length > 0) {
-      const bounds = new window.google.maps.LatLngBounds();
+    const bounds = new window.google.maps.LatLngBounds();
+    let hasMarkers = false;
+
+    // Agregar propiedades o experiencias según el tipo de búsqueda
+    if (searchType === 'properties' && results.properties.length > 0) {
       results.properties.forEach((property) => {
         if (property.lat && property.lng) {
           bounds.extend({ lat: property.lat, lng: property.lng });
+          hasMarkers = true;
         }
       });
+    } else if (searchType === 'experiences' && results.experiences.length > 0) {
+      results.experiences.forEach((experience) => {
+        if (experience.lat && experience.lng) {
+          bounds.extend({ lat: experience.lat, lng: experience.lng });
+          hasMarkers = true;
+        }
+      });
+    }
+
+    if (hasMarkers) {
       map.fitBounds(bounds);
     }
   };
 
-  // Componente de minitarjeta para el mapa
+  // Helper function to get proper image URL for experiences
+  const getExperienceImageUrl = (photos: string[] | undefined) => {
+    if (!photos || photos.length === 0) {
+      return '/images/cards/card-01.jpg';
+    }
+    
+    const firstPhoto = photos[0];
+    
+    // Check if it's an external URL (starts with http/https)
+    if (firstPhoto.startsWith('http://') || firstPhoto.startsWith('https://')) {
+      return firstPhoto;
+    } else {
+      // It's a Supabase storage path, get the public URL
+      const { data } = supabase.storage
+        .from('experience')
+        .getPublicUrl(firstPhoto);
+      return data.publicUrl || '/images/cards/card-01.jpg';
+    }
+  };
+
+  // Componente de minitarjeta para el mapa (Propiedades)
   const MiniPropertyCard = ({ property }: { property: Property }) => (
     <div className="p-3 w-56 bg-white rounded-lg shadow-lg">
       <img
@@ -104,25 +139,33 @@ const SearchPage = () => {
     </div>
   );
 
-  // Helper function to get proper image URL for experiences
-  const getExperienceImageUrl = (photos: string[] | undefined) => {
-    if (!photos || photos.length === 0) {
-      return '/images/cards/card-01.jpg';
-    }
-    
-    const firstPhoto = photos[0];
-    
-    // Check if it's an external URL (starts with http/https)
-    if (firstPhoto.startsWith('http://') || firstPhoto.startsWith('https://')) {
-      return firstPhoto;
-    } else {
-      // It's a Supabase storage path, get the public URL
-      const { data } = supabase.storage
-        .from('experience')
-        .getPublicUrl(firstPhoto);
-      return data.publicUrl || '/images/cards/card-01.jpg';
-    }
-  };
+  // Componente de minitarjeta para el mapa (Experiencias)
+  const MiniExperienceCard = ({ experience }: { experience: Experience }) => (
+    <div className="p-3 w-56 bg-white rounded-lg shadow-lg">
+      <img
+        src={getExperienceImageUrl(experience.photos)}
+        alt={experience.name || 'Experiencia'}
+        className="w-full h-24 object-cover rounded-md mb-2"
+      />
+      <h3 className="text-sm font-semibold truncate mb-1">{experience.name || 'Experiencia'}</h3>
+      <p className="text-gray-600 text-xs mb-2">{experience.location}</p>
+      <div className="flex items-center gap-2 mb-2 text-xs text-gray-500">
+        {experience.category && <span>⭐ {experience.category}</span>}
+      </div>
+      <p className="text-amber-600 font-semibold text-sm mb-2">
+        €{experience.price || 0}
+        <span className="text-xs text-gray-500 ml-1">
+          {experience.category === 'greenfees' ? '/cuota' : '/día'}
+        </span>
+      </p>
+      <Link
+        to={`/experiences/${experience.id}`}
+        className="text-amber-600 underline text-xs hover:text-amber-800"
+      >
+        Ver detalles
+      </Link>
+    </div>
+  );
 
   // Detectar el tipo de búsqueda desde la URL
   useEffect(() => {
@@ -725,10 +768,7 @@ const SearchPage = () => {
                              <Marker
                                key={experience.id}
                                position={{ lat: experience.lat, lng: experience.lng }}
-                               onClick={() => {
-                                 // Para experiencias, podrías crear un componente similar a MiniPropertyCard
-                                 console.log('Experience clicked:', experience.name);
-                               }}
+                               onClick={() => setSelectedExperience(experience)}
                                icon={{
                                  url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -743,12 +783,23 @@ const SearchPage = () => {
                          )
                        )}
 
+                       {/* InfoWindow para propiedades */}
                        {selectedProperty && selectedProperty.lat && selectedProperty.lng && (
                          <InfoWindow
                            position={{ lat: selectedProperty.lat, lng: selectedProperty.lng }}
                            onCloseClick={() => setSelectedProperty(null)}
                          >
                            <MiniPropertyCard property={selectedProperty} />
+                         </InfoWindow>
+                       )}
+
+                       {/* InfoWindow para experiencias */}
+                       {selectedExperience && selectedExperience.lat && selectedExperience.lng && (
+                         <InfoWindow
+                           position={{ lat: selectedExperience.lat, lng: selectedExperience.lng }}
+                           onCloseClick={() => setSelectedExperience(null)}
+                         >
+                           <MiniExperienceCard experience={selectedExperience} />
                          </InfoWindow>
                        )}
                      </GoogleMap>
