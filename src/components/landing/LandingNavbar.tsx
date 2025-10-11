@@ -331,18 +331,10 @@ const LandingNavbar = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden">
-          {/* Overlay de fondo */}
-          <div 
-            className="fixed inset-0 bg-black/50 z-40"
-            onClick={() => setIsMenuOpen(false)}
-          />
-          {/* Menú deslizable */}
-          <div className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] px-4 pt-16 pb-6 shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
-            isMenuOpen ? 'translate-x-0' : 'translate-x-full'
-          } ${
+          <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 backdrop-blur-md shadow-lg transition-all duration-300 ${
             isScrolled 
-              ? 'bg-white dark:bg-gray-900' 
-              : 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm'
+              ? 'bg-white/95 dark:bg-gray-900/95' 
+              : 'bg-white/20 dark:bg-gray-900/20'
           }`}>
             {menuItems.map((item) => (
                               <button
