@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">HolyDeo</string>
+    <string name="title_activity_main">HolyDeo</string>
+    <string name="package_name">com.holydeo.app</string>
+    <string name="custom_url_scheme">com.holydeo.app</string>
+</resources>
