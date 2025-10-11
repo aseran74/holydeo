@@ -130,7 +130,15 @@ const SearchNavbar = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-blue-700/95 backdrop-blur-md shadow-lg">
+          {/* Overlay de fondo */}
+          <div 
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setIsMenuOpen(false)}
+          />
+          {/* Menú deslizable */}
+          <div className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] px-4 pt-16 pb-6 shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+            isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          } bg-blue-700/95 backdrop-blur-sm`}>
             {menuItems.map((item) => (
               <button
                 key={item.name}
