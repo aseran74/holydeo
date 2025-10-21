@@ -648,9 +648,9 @@ const SearchPage = () => {
           </div>
         </div>
 
-        <div className="flex w-full">
+        <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar de filtros */}
-          <aside className="w-72 flex-shrink-0">
+          <div className="lg:w-72 lg:flex-shrink-0">
             <EnhancedSearchFilters
               searchData={searchData}
               setSearchData={setSearchData}
@@ -662,10 +662,10 @@ const SearchPage = () => {
               amenities={amenities}
               handleAmenityToggle={handleAmenityToggle}
             />
-          </aside>
+          </div>
 
           {/* Contenido principal */}
-          <main className="flex-grow overflow-x-hidden">
+          <div className="flex-1 w-full overflow-x-hidden">
             {/* Controles de vista */}
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -958,7 +958,7 @@ const SearchPage = () => {
                 )}
               </div>
             )}
-          </main>
+          </div>
         </div>
       </div>
 
