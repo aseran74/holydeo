@@ -157,7 +157,7 @@ const SearchPage = () => {
     return (
       // 1. Interacción: La tarjeta entera es un link
       <Link to={`/property/${property.id}`} className="block">
-        <div className="w-56 bg-white rounded-xl shadow-xl transition-transform hover:shadow-2xl hover:scale-[1.02] duration-300 overflow-hidden border border-gray-100">
+        <div className="w-56 max-w-[280px] bg-white rounded-xl shadow-xl transition-transform hover:shadow-2xl hover:scale-[1.02] duration-300 overflow-hidden border border-gray-100" style={{ maxWidth: '280px', position: 'relative' }}>
           
           {/* IMAGEN Y PRECIO FLOTANTE */}
           <div className="relative">
@@ -648,22 +648,24 @@ const SearchPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex w-full">
           {/* Sidebar de filtros */}
-                     <EnhancedSearchFilters
-             searchData={searchData}
-             setSearchData={setSearchData}
-             searchType={searchType}
-             showFilters={showFilters}
-             setShowFilters={setShowFilters}
-             experienceTypes={experienceTypes.map(e => e.value)}
-             seasons={seasons}
-             amenities={amenities}
-             handleAmenityToggle={handleAmenityToggle}
-           />
+          <aside className="w-72 flex-shrink-0">
+            <EnhancedSearchFilters
+              searchData={searchData}
+              setSearchData={setSearchData}
+              searchType={searchType}
+              showFilters={showFilters}
+              setShowFilters={setShowFilters}
+              experienceTypes={experienceTypes.map(e => e.value)}
+              seasons={seasons}
+              amenities={amenities}
+              handleAmenityToggle={handleAmenityToggle}
+            />
+          </aside>
 
           {/* Contenido principal */}
-          <div className="flex-1 w-full">
+          <main className="flex-grow overflow-x-hidden">
             {/* Controles de vista */}
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -795,7 +797,7 @@ const SearchPage = () => {
               </div>
                          ) : viewMode === 'map' ? (
                // Vista del mapa
-               <div className="mb-8 rounded-lg overflow-hidden shadow md:relative">
+               <div className="mb-8 rounded-lg overflow-hidden shadow md:relative" style={{ maxWidth: '100%', overflow: 'hidden' }}>
                  {!isLoaded ? (
                    <div className="flex items-center justify-center h-96 md:h-[700px] min-h-screen md:min-h-0 bg-gray-100">
                      <div className="text-center">
@@ -956,7 +958,7 @@ const SearchPage = () => {
                 )}
               </div>
             )}
-          </div>
+          </main>
         </div>
       </div>
 
