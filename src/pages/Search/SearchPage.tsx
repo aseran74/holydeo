@@ -157,15 +157,15 @@ const SearchPage = () => {
     return (
       // 1. Interacción: La tarjeta entera es un link
       <Link to={`/property/${property.id}`} className="block">
-        <div className="w-64 bg-white rounded-xl shadow-xl transition-transform hover:shadow-2xl hover:scale-[1.03] duration-300 overflow-hidden border border-gray-100">
+        <div className="w-56 bg-white rounded-xl shadow-xl transition-transform hover:shadow-2xl hover:scale-[1.02] duration-300 overflow-hidden border border-gray-100">
           
           {/* IMAGEN Y PRECIO FLOTANTE */}
           <div className="relative">
             <img
               src={imageUrl}
               alt={property.title}
-              // 4. Mejoras en la Imagen: Mayor altura y esquinas redondeadas
-              className="w-full h-32 object-cover" 
+              // 4. Mejoras en la Imagen: Altura ajustada para mejor proporción
+              className="w-full h-28 object-cover" 
             />
             {/* 2. Precio Clave: Etiqueta flotante */}
             <div className="absolute top-2 right-2 bg-blue-600 text-white text-sm font-bold py-1 px-3 rounded-full shadow-lg">
