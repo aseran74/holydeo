@@ -77,13 +77,16 @@ const LandingHero = () => {
 
   return (
     <section 
-      className="relative text-white overflow-hidden m-0 p-0 w-full" 
+      className="relative text-white overflow-hidden m-0 p-0" 
       style={{ 
         margin: 0, 
         padding: 0,
         position: 'relative',
-        width: '100%',
-        maxWidth: '100vw'
+        width: '100vw',
+        left: '50%',
+        right: '50%',
+        marginLeft: '-50vw',
+        marginRight: '-50vw'
       }}
     >
       <div 
