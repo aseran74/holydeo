@@ -75,8 +75,8 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
   }, [addToast]);
 
   return (
-    <div className={`fixed z-[9999] ${getPositionClasses()}`}>
-      <div className={`flex ${getStackDirection()} gap-3`}>
+    <div className={`fixed z-[9999] ${getPositionClasses()}`} style={{ maxWidth: 'calc(100vw - 2rem)' }}>
+      <div className={`flex ${getStackDirection()} gap-3`} style={{ maxWidth: '100%' }}>
         {toasts.map((toast) => (
           <Toast
             key={toast.id}
