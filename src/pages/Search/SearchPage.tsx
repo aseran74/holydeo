@@ -99,9 +99,7 @@ const SearchPage = () => {
   const mapContainerStyle = useMemo(() => ({
     width: "100%",
     height: "100vh",
-    minHeight: "100vh",
-    maxWidth: "100%",
-    overflow: "hidden"
+    minHeight: "100vh"
   }), []);
 
   // Centro del mapa por defecto
@@ -159,7 +157,7 @@ const SearchPage = () => {
     return (
       // 1. Interacción: La tarjeta entera es un link
       <Link to={`/property/${property.id}`} className="block">
-        <div className="w-56 max-w-[calc(100vw-2rem)] bg-white rounded-xl shadow-xl transition-transform hover:shadow-2xl hover:scale-[1.02] duration-300 overflow-hidden border border-gray-100">
+        <div className="w-56 bg-white rounded-xl shadow-xl transition-transform hover:shadow-2xl hover:scale-[1.02] duration-300 overflow-hidden border border-gray-100">
           
           {/* IMAGEN Y PRECIO FLOTANTE */}
           <div className="relative">
@@ -797,7 +795,7 @@ const SearchPage = () => {
               </div>
                          ) : viewMode === 'map' ? (
                // Vista del mapa
-               <div className="mb-8 rounded-lg overflow-hidden shadow md:relative max-w-full">
+               <div className="mb-8 rounded-lg overflow-hidden shadow md:relative">
                  {!isLoaded ? (
                    <div className="flex items-center justify-center h-96 md:h-[700px] min-h-screen md:min-h-0 bg-gray-100">
                      <div className="text-center">
