@@ -98,8 +98,8 @@ const SearchPage = () => {
   // Estilo del contenedor del mapa optimizado con useMemo
   const mapContainerStyle = useMemo(() => ({
     width: "100%",
-    height: "100vh",
-    minHeight: "100vh"
+    height: "70vh",
+    minHeight: "500px"
   }), []);
 
   // Centro del mapa por defecto
@@ -648,7 +648,7 @@ const SearchPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar de filtros */}
           <div className="lg:w-72 lg:flex-shrink-0">
             <EnhancedSearchFilters
@@ -665,7 +665,7 @@ const SearchPage = () => {
           </div>
 
           {/* Contenido principal */}
-          <div className="flex-1 w-full overflow-x-hidden">
+          <div className="flex-1 w-full overflow-x-hidden mb-6">
             {/* Controles de vista */}
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -816,7 +816,7 @@ const SearchPage = () => {
                    <>
                      <GoogleMap
                        mapContainerStyle={mapContainerStyle}
-                       mapContainerClassName="md:!h-[700px] md:!min-h-0"
+                       mapContainerClassName="md:!h-[500px] md:!min-h-0"
                        onLoad={onLoadMap}
                        center={defaultCenter}
                        zoom={6}
