@@ -61,7 +61,7 @@ const AppSidebar: React.FC = () => {
     } ${
       isExpanded ? 'w-64' : 'w-16'
     }`}>
-      <div className={`${isExpanded ? 'p-6' : 'p-3'} transition-all duration-300`}>
+      <div className={`${isExpanded ? 'p-6 pt-20 lg:pt-6' : 'p-3 pt-20 lg:pt-3'} transition-all duration-300`}>
         {/* Botón de colapsar/expandir */}
         <div className="flex justify-end mb-4">
           <button
