@@ -8,7 +8,7 @@ import DateSearchForm from '../../components/common/DateSearchForm';
 import EnhancedSearchFilters from '../../components/common/EnhancedSearchFilters';
 import FiltersModal from '../../components/common/FiltersModal';
 import PublicPropertyCard from '../../components/common/PublicPropertyCard';
-import { Search, Grid, List, Map, Home, Star, Car, Waves, TreePine, Sun, Snowflake, Building2, Building, Filter, LayoutGrid, LayoutList } from 'lucide-react';
+import { Search, Grid, List, Map, Home, Star, Car, Waves, TreePine, Sun, Snowflake, Building2, Building, Filter, LayoutGrid, LayoutList, MapPin, Bed, Bath, Users } from 'lucide-react';
 import { GoogleMap, useLoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 
 const SearchPage = () => {
@@ -151,30 +151,74 @@ const SearchPage = () => {
   };
 
   // Componente de minitarjeta para el mapa (Propiedades)
-  const MiniPropertyCard = ({ property }: { property: Property }) => (
-    <div className="p-3 w-56 bg-white rounded-lg shadow-lg">
-      <img
-        src={property.main_image_path || property.image_paths?.[0] || "/images/cards/card-01.jpg"}
-        alt={property.title}
-        className="w-full h-24 object-cover rounded-md mb-2"
-      />
-      <h3 className="text-sm font-semibold truncate mb-1">{property.title}</h3>
-      <p className="text-gray-600 text-xs mb-2">{property.location}</p>
-      <div className="flex items-center gap-2 mb-2 text-xs text-gray-500">
-        {property.bedrooms && <span>🛏️ {property.bedrooms} habs.</span>}
-        {property.bathrooms && <span>🚿 {property.bathrooms} baños</span>}
-      </div>
-      <p className="text-blue-600 font-semibold text-sm mb-2">
-        €{property.precio_dia || 0}/día
-      </p>
-      <Link
-        to={`/property/${property.id}`}
-        className="text-blue-600 underline text-xs hover:text-blue-800"
-      >
-        Ver detalles
+  const MiniPropertyCard = ({ property }: { property: Property }) => {
+    const imageUrl = property.main_image_path || property.image_paths?.[0] || "/images/cards/card-placeholder.svg";
+
+    return (
+      // 1. Interacción: La tarjeta entera es un link
+      <Link to={`/property/${property.id}`} className="block">
+        <div className="w-64 bg-white rounded-xl shadow-xl transition-transform hover:shadow-2xl hover:scale-[1.03] duration-300 overflow-hidden border border-gray-100">
+          
+          {/* IMAGEN Y PRECIO FLOTANTE */}
+          <div className="relative">
+            <img
+              src={imageUrl}
+              alt={property.title}
+              // 4. Mejoras en la Imagen: Mayor altura y esquinas redondeadas
+              className="w-full h-32 object-cover" 
+            />
+            {/* 2. Precio Clave: Etiqueta flotante */}
+            <div className="absolute top-2 right-2 bg-blue-600 text-white text-sm font-bold py-1 px-3 rounded-full shadow-lg">
+              {property.precio_dia ? `€${property.precio_dia}/día` : 'N/D'}
+            </div>
+          </div>
+
+          {/* CONTENIDO */}
+          <div className="p-3">
+            {/* Título y Ubicación */}
+            <h3 className="text-base font-bold text-gray-900 truncate mb-1">
+              {property.title}
+            </h3>
+            {/* 5. Ubicación: Con icono para mejor claridad */}
+            <p className="flex items-center text-gray-500 text-xs mb-2">
+              <MapPin className="w-3 h-3 mr-1" />
+              {property.location}
+            </p>
+
+            {/* Iconografía de Características */}
+            <div className="flex items-center gap-4 mb-2 text-sm text-gray-700">
+              {/* 6. Iconografía: Usando iconos SVG (ej. Lucide/Heroicons) */}
+              {property.bedrooms && (
+                <span className="flex items-center gap-1">
+                  <Bed className="w-4 h-4 text-gray-400" />
+                  {property.bedrooms}
+                </span>
+              )}
+              {property.bathrooms && (
+                <span className="flex items-center gap-1">
+                  <Bath className="w-4 h-4 text-gray-400" />
+                  {property.bathrooms}
+                </span>
+              )}
+              {property.square_meters && (
+                <span className="flex items-center gap-1">
+                  <Users className="w-4 h-4 text-gray-400" />
+                  {property.square_meters}m²
+                </span>
+              )}
+            </div>
+            
+            {/* CTA Opcional (Si la tarjeta entera es un link, este es redundante pero puede servir como foco) */}
+            <div className="flex justify-end pt-1">
+              <span className="text-blue-600 text-xs font-semibold">
+                Ver detalles
+              </span>
+            </div>
+          </div>
+        </div>
       </Link>
-    </div>
-  );
+    );
+  };
 
   // Componente de minitarjeta para el mapa (Experiencias)
   const MiniExperienceCard = ({ experience }: { experience: Experience }) => (
