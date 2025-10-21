@@ -318,7 +318,7 @@ const MessagesPage: React.FC = () => {
   );
 
   return (
-    <div className="p-6 md:p-10">
+    <div className="p-6 md:p-10 pt-20 lg:pt-6">
       {/* Debug component - temporal */}
       <DebugMessages />
       

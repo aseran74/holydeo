@@ -142,7 +142,7 @@ const GuestDashboard: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 pt-20 lg:pt-6">
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>

@@ -113,7 +113,7 @@ const ClientDashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
+    <div className="max-w-3xl mx-auto py-8 px-4 pt-20 lg:pt-8">
       <h1 className="text-2xl font-bold mb-6">Mi Panel de Huésped</h1>
       {/* Sección de Mensajes */}
       <section className="mb-10">
