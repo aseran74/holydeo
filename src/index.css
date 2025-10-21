@@ -911,7 +911,11 @@ html, body {
   width: 100% !important;
 }
 
-.search-page * {
+/* Solo aplicar a contenedores principales, no a elementos específicos del mapa */
+.search-page .max-w-7xl,
+.search-page .flex,
+.search-page .flex-col,
+.search-page .lg\\:flex-row {
   max-width: 100% !important;
   box-sizing: border-box !important;
 }
