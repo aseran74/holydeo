@@ -1,0 +1,132 @@
+{
+  "navbar": {
+    "search": "Buscar",
+    "howItWorks": "Cómo funciona",
+    "faq": "FAQ",
+    "contact": "Contacto",
+    "register": "Registrarse",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "dashboard": "Dashboard",
+    "guestDashboard": "Dashboard de Huésped",
+    "adminDashboard": "Panel de Admin",
+    "ownerDashboard": "Dashboard de Propietario",
+    "agentDashboard": "Dashboard de Agente",
+    "myBookings": "Mis Reservas",
+    "social": "Red Social",
+    "searchProperties": "Buscar Propiedades",
+    "searchExperiences": "Buscar Experiencias",
+    "user": "Usuario",
+    "administrator": "Administrador",
+    "owner": "Propietario",
+    "agent": "Agente",
+    "guest": "Huésped"
+  },
+  "common": {
+    "properties": "Propiedades",
+    "experiences": "Experiencias",
+    "bookings": "Reservas",
+    "agencies": "Agencias",
+    "agents": "Agentes",
+    "owners": "Propietarios",
+    "guestBookings": "Mis Reservas",
+    "social": "Red Social",
+    "searchProperties": "Buscar Propiedades",
+    "searchExperiences": "Buscar Experiencias",
+    "admin": "Admin",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "logoutTitle": "Cerrar Sesión",
+    "logoutMessage": "¿Estás seguro de que deseas cerrar sesión?",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "close": "Cerrar",
+    "viewDetails": "Ver Detalles",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "search": "Buscar",
+    "searchPlaceholder": "Buscar o escribir comando...",
+    "language": "Idioma"
+  },
+  "landing": {
+    "title": "Descubre Experiencias Únicas",
+    "subtitle": "Tu plataforma para reservar propiedades y experiencias exclusivas",
+    "featuredProperties": "Propiedades Destacadas",
+    "featuredPropertiesDesc": "Descubre nuestras mejores propiedades seleccionadas para ti.",
+    "featuredExperiences": "Experiencias Únicas",
+    "featuredExperiencesDesc": "Vive momentos inolvidables con nuestras experiencias seleccionadas.",
+    "featuredGreenFees": "Green Fees Destacados",
+    "featuredGreenFeesDesc": "Acceso exclusivo a los mejores campos de golf de la región con tarifas especiales y condiciones únicas",
+    "greenFee": "Green Fee",
+    "month": "/mes"
+  },
+  "hero": {
+    "title": "Vive fuera de temporada",
+    "subtitle": "Encuentra alojamientos y planes fuera de temporada a precios imbatibles.",
+    "search": {
+      "whereToGo": "¿Dónde quieres ir?",
+      "selectDates": "Seleccionar fechas",
+      "propertyType": "Tipo de Vivienda",
+      "anyType": "Cualquier tipo",
+      "priceRange": "Rango €",
+      "searchAll": "Buscar Todo",
+      "search": "Buscar",
+      "zone": "Zona",
+      "anyZone": "Cualquier zona",
+      "loading": "Cargando...",
+      "activePriceFilters": "Filtros de precio activos:",
+      "dayPrice": "Día: €{price}",
+      "monthPrice": "Mes: €{price}",
+      "maxPricePerDay": "Precio máximo por día",
+      "maxPricePerMonth": "Precio máximo por mes",
+      "selectedPropertyType": "Tipo de vivienda seleccionado:",
+      "selectedZone": "Zona seleccionada:",
+      "playVideo": "Reproducir Video"
+    },
+    "stats": {
+      "properties": "Propiedades",
+      "experiences": "Experiencias",
+      "satisfiedClients": "Clientes Satisfechos"
+    }
+  },
+  "howItWorks": {
+    "subtitle": "Estancias Largas con Experiencias Únicas",
+    "description": "De 15 días a 9 meses en destinos vacacionales fuera de temporada",
+    "whatWeDo": "Lo que hacemos",
+    "howItWorks": "Cómo funciona",
+    "cta": "Empieza a vivir tu próxima experiencia",
+    "steps": {
+      "accommodations": {
+        "title": "Alojamientos en lugares idílicos fuera de temporada",
+        "description": "Buscamos casas, apartamentos y villas seleccionadas en destinos únicos vacacionales, disponibles de septiembre a julio, a precios imbatibles"
+      },
+      "experiences": {
+        "title": "Experiencias inmersivas",
+        "description": "Tenemos experiencias de larga estancia como clases de golf, o de Kitesurf o Green fees con cuotas mensuales de fuera de temporada a precios imbatibles, o las de corta estancia como ver los grandes monumentos como la Alhambra, la Mezquita de Córdoba, o conocer los Pueblos Blancos, o ir de pinchos por Donosti o recorrer en Globo Toledo, o ir a bodegas espectaculares."
+      },
+      "flexibility": {
+        "title": "Flexibilidad y comunidad",
+        "description": "Combina destinos, conoce a otros viajeros en nuestra red social con intereses afines y participa en actividades locales exclusivas."
+      },
+      "explore": {
+        "title": "Explora y elige tu destino",
+        "description": "Filtra por ubicación, duración y tipo de experiencia o alojamiento en nuestra web o app."
+      },
+      "reserve": {
+        "title": "Reserva fácil y segura",
+        "description": "Selecciona fechas, alojamiento y experiencias. Contrato digital y pago inicial seguro."
+      },
+      "enjoy": {
+        "title": "Disfruta tu estancia y actividades",
+        "description": "Cuando llegues estará tu alojamiento preparado, un calendario de experiencias y soporte durante toda tu estancia, para que no te preocupes por nada."
+      }
+    }
+  },
+  "sidebar": {
+    "adminDashboard": "Admin Dashboard"
+  }
+}

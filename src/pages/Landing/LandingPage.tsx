@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { Property, Experience } from "../../types";
 import { featuredPropertiesExample } from "../../data/mockData";
+import { useLanguage } from "../../context/LanguageContext";
 
 // Importa tus componentes
 import LandingNavbar from "../../components/landing/LandingNavbar";
@@ -19,6 +20,7 @@ import TestimonialsSection from "../../components/landing/TestimonialsSection";
 
 const LandingPage = () => {
     const navigate = useNavigate();
+    const { t } = useLanguage();
     const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
     const [featuredExperiences, setFeaturedExperiences] = useState<Experience[]>([]);
     const [featuredGreenFees, setFeaturedGreenFees] = useState<Experience[]>([]);
@@ -126,8 +128,8 @@ const LandingPage = () => {
             )}
 
             <FeaturedSection
-                title="Propiedades Destacadas"
-                description="Descubre nuestras mejores propiedades seleccionadas para ti."
+                title={t('landing.featuredProperties')}
+                description={t('landing.featuredPropertiesDesc')}
                 items={featuredProperties}
                 loading={loading}
                 renderItem={(property) => (
@@ -141,10 +143,10 @@ const LandingPage = () => {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-12">
                             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                                Green Fees Destacados
+                                {t('landing.featuredGreenFees')}
                             </h2>
                             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                                Acceso exclusivo a los mejores campos de golf de la región con tarifas especiales y condiciones únicas
+                                {t('landing.featuredGreenFeesDesc')}
                             </p>
                         </div>
                         
@@ -159,7 +161,7 @@ const LandingPage = () => {
                                         />
                                         <div className="absolute top-3 right-3">
                                             <span className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-medium">
-                                                Green Fee
+                                                {t('landing.greenFee')}
                                             </span>
                                         </div>
                                     </div>
@@ -186,7 +188,7 @@ const LandingPage = () => {
                                                     {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(experience.price)}
                                                 </span>
                                                 <span className="text-xs md:text-sm text-gray-500 dark:text-gray-400 ml-1">
-                                                    /mes
+                                                    {t('landing.month')}
                                                 </span>
                                             </div>
                                         )}
@@ -201,7 +203,7 @@ const LandingPage = () => {
                                             onClick={() => handleViewExperienceDetails(experience.id)}
                                             className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-3 md:px-4 rounded-lg transition-colors duration-200 text-sm md:text-base"
                                         >
-                                            Ver Detalles
+                                            {t('common.viewDetails')}
                                         </button>
                                     </div>
                                 </div>
@@ -216,8 +218,8 @@ const LandingPage = () => {
             </div>
 
             <FeaturedSection
-                title="Experiencias Únicas"
-                description="Vive momentos inolvidables con nuestras experiencias seleccionadas."
+                title={t('landing.featuredExperiences')}
+                description={t('landing.featuredExperiencesDesc')}
                 items={featuredExperiences}
                 loading={loading}
                 renderItem={(experience) => (

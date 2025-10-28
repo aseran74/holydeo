@@ -1,0 +1,132 @@
+{
+  "navbar": {
+    "search": "Search",
+    "howItWorks": "How it works",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "register": "Register",
+    "login": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "guestDashboard": "Guest Dashboard",
+    "adminDashboard": "Admin Panel",
+    "ownerDashboard": "Owner Dashboard",
+    "agentDashboard": "Agent Dashboard",
+    "myBookings": "My Bookings",
+    "social": "Social Network",
+    "searchProperties": "Search Properties",
+    "searchExperiences": "Search Experiences",
+    "user": "User",
+    "administrator": "Administrator",
+    "owner": "Owner",
+    "agent": "Agent",
+    "guest": "Guest"
+  },
+  "common": {
+    "properties": "Properties",
+    "experiences": "Experiences",
+    "bookings": "Bookings",
+    "agencies": "Agencies",
+    "agents": "Agents",
+    "owners": "Owners",
+    "guestBookings": "My Bookings",
+    "social": "Social Network",
+    "searchProperties": "Search Properties",
+    "searchExperiences": "Search Experiences",
+    "admin": "Admin",
+    "login": "Log In",
+    "logout": "Log Out",
+    "logoutTitle": "Log Out",
+    "logoutMessage": "Are you sure you want to log out?",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "viewDetails": "View Details",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "search": "Search",
+    "searchPlaceholder": "Search or type command...",
+    "language": "Language"
+  },
+  "landing": {
+    "title": "Discover Unique Experiences",
+    "subtitle": "Your platform for booking exclusive properties and experiences",
+    "featuredProperties": "Featured Properties",
+    "featuredPropertiesDesc": "Discover our best properties selected for you.",
+    "featuredExperiences": "Unique Experiences",
+    "featuredExperiencesDesc": "Live unforgettable moments with our selected experiences.",
+    "featuredGreenFees": "Featured Green Fees",
+    "featuredGreenFeesDesc": "Exclusive access to the best golf courses in the region with special rates and unique conditions",
+    "greenFee": "Green Fee",
+    "month": "/month"
+  },
+  "hero": {
+    "title": "Live off-season",
+    "subtitle": "Find off-season accommodations and plans at unbeatable prices.",
+    "search": {
+      "whereToGo": "Where do you want to go?",
+      "selectDates": "Select dates",
+      "propertyType": "Property Type",
+      "anyType": "Any type",
+      "priceRange": "Price Range €",
+      "searchAll": "Search All",
+      "search": "Search",
+      "zone": "Zone",
+      "anyZone": "Any zone",
+      "loading": "Loading...",
+      "activePriceFilters": "Active price filters:",
+      "dayPrice": "Day: €{price}",
+      "monthPrice": "Month: €{price}",
+      "maxPricePerDay": "Maximum price per day",
+      "maxPricePerMonth": "Maximum price per month",
+      "selectedPropertyType": "Selected property type:",
+      "selectedZone": "Selected zone:",
+      "playVideo": "Play Video"
+    },
+    "stats": {
+      "properties": "Properties",
+      "experiences": "Experiences",
+      "satisfiedClients": "Satisfied Clients"
+    }
+  },
+  "howItWorks": {
+    "subtitle": "Long Stays with Unique Experiences",
+    "description": "From 15 days to 9 months in off-season vacation destinations",
+    "whatWeDo": "What we do",
+    "howItWorks": "How it works",
+    "cta": "Start living your next experience",
+    "steps": {
+      "accommodations": {
+        "title": "Accommodations in idyllic off-season locations",
+        "description": "We find selected houses, apartments and villas in unique vacation destinations, available from September to July, at unbeatable prices"
+      },
+      "experiences": {
+        "title": "Immersive experiences",
+        "description": "We have long-stay experiences like golf lessons, or Kitesurf or Green fees with monthly off-season rates at unbeatable prices, or short-stay ones like seeing great monuments like the Alhambra, the Mosque of Córdoba, or discovering the White Villages, or going for pintxos in Donosti or touring Toledo by Balloon, or visiting spectacular wineries."
+      },
+      "flexibility": {
+        "title": "Flexibility and community",
+        "description": "Combine destinations, meet other travelers in our social network with similar interests and participate in exclusive local activities."
+      },
+      "explore": {
+        "title": "Explore and choose your destination",
+        "description": "Filter by location, duration and type of experience or accommodation on our website or app."
+      },
+      "reserve": {
+        "title": "Easy and secure booking",
+        "description": "Select dates, accommodation and experiences. Digital contract and secure initial payment."
+      },
+      "enjoy": {
+        "title": "Enjoy your stay and activities",
+        "description": "When you arrive, your accommodation will be ready, a calendar of experiences and support throughout your stay, so you don't have to worry about anything."
+      }
+    }
+  },
+  "sidebar": {
+    "adminDashboard": "Admin Dashboard"
+  }
+}

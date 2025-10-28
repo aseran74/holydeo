@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
+import { useLanguage } from '../context/LanguageContext';
 import {
   Home, 
   Building2, 
@@ -21,6 +22,7 @@ const AppSidebar: React.FC = () => {
   const location = useLocation();
   const { currentUser, userRole, isAdmin } = useAuth();
   const { isMobileOpen, isExpanded, toggleSidebar } = useSidebar();
+  const { t } = useLanguage();
 
   // Logs para depuración
   console.log('[AppSidebar] Usuario actual:', currentUser?.email);
@@ -33,23 +35,23 @@ const AppSidebar: React.FC = () => {
   };
 
   const navigationItems = userRole === 'guest' ? [
-    { name: 'Mis Reservas', href: '/guest-bookings', icon: Calendar },
-    { name: 'Red Social', href: '/social', icon: Group },
-    { name: 'Buscar Propiedades', href: '/search?type=properties', icon: Building2 },
-    { name: 'Buscar Experiencias', href: '/search?type=experiences', icon: Star },
+    { name: t('common.guestBookings'), href: '/guest-bookings', icon: Calendar },
+    { name: t('common.social'), href: '/social', icon: Group },
+    { name: t('common.searchProperties'), href: '/search?type=properties', icon: Building2 },
+    { name: t('common.searchExperiences'), href: '/search?type=experiences', icon: Star },
   ] : [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
-    { name: 'Propiedades', href: '/properties', icon: Building2 },
-    { name: 'Experiencias', href: '/experiences', icon: Globe },
-    { name: 'Reservas', href: '/bookings', icon: Calendar },
-    { name: 'Agencias', href: '/agencies', icon: Users },
-    { name: 'Agentes', href: '/agents', icon: Users },
-    { name: 'Propietarios', href: '/owners', icon: User },
-    { name: 'Red Social', href: '/social', icon: Group },
+    { name: t('common.dashboard'), href: '/dashboard', icon: Home },
+    { name: t('common.properties'), href: '/properties', icon: Building2 },
+    { name: t('common.experiences'), href: '/experiences', icon: Globe },
+    { name: t('common.bookings'), href: '/bookings', icon: Calendar },
+    { name: t('common.agencies'), href: '/agencies', icon: Users },
+    { name: t('common.agents'), href: '/agents', icon: Users },
+    { name: t('common.owners'), href: '/owners', icon: User },
+    { name: t('common.social'), href: '/social', icon: Group },
   ];
 
   const adminItems = [
-    { name: 'Admin Dashboard', href: '/admin', icon: BarChart3 },
+    { name: t('sidebar.adminDashboard'), href: '/admin', icon: BarChart3 },
     { name: 'Gestión Usuarios', href: '/admin/users', icon: Users },
     { name: 'Gestión Social', href: '/admin/social', icon: Trash2 },
     { name: 'Testimonios', href: '/admin/testimonials', icon: Star },

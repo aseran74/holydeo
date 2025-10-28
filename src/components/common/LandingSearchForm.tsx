@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, ChevronDown, ChevronUp, Home, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 import TailGridsDateRangePicker from './TailGridsDateRangePicker';
 import PriceFilter from './PriceFilter';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete';
@@ -23,6 +24,7 @@ interface Region {
 const LandingSearchForm: React.FC<LandingSearchFormProps> = ({ 
   className = ''
 }) => {
+  const { t } = useLanguage();
   const [showPriceFilters, setShowPriceFilters] = useState(false);
   const [showPropertyType, setShowPropertyType] = useState(false);
   const [showZoneSearch, setShowZoneSearch] = useState(false);
@@ -49,10 +51,10 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
 
   const [isLoading, setIsLoading] = useState(true);
   const [propertyTypes, setPropertyTypes] = useState<PropertyType[]>([
-    { value: '', label: 'Cualquier tipo' }
+    { value: '', label: t('hero.search.anyType') }
   ]);
   const [regions, setRegions] = useState<Region[]>([
-    { value: '', label: 'Cualquier zona' }
+    { value: '', label: t('hero.search.anyZone') }
   ]);
   
   const [searchData, setSearchData] = useState({
@@ -67,12 +69,12 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
 
   // Usar datos dinámicos si están disponibles, sino usar estáticos
   const availablePropertyTypes = propertyTypes.length > 1 ? propertyTypes : [
-    { value: '', label: 'Cualquier tipo' },
+    { value: '', label: t('hero.search.anyType') },
     ...staticPropertyTypes.map(type => ({ value: type, label: type }))
   ];
 
   const availableRegions = regions.length > 1 ? regions : [
-    { value: '', label: 'Cualquier zona' },
+    { value: '', label: t('hero.search.anyZone') },
     ...staticRegions.map(region => ({ value: region, label: region }))
   ];
   
@@ -100,7 +102,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
             label: tipo
           }));
           setPropertyTypes([
-            { value: '', label: 'Cualquier tipo' },
+            { value: '', label: t('hero.search.anyType') },
             ...tiposFormateados
           ]);
         }
@@ -121,7 +123,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
             label: region
           }));
           setRegions([
-            { value: '', label: 'Cualquier zona' },
+            { value: '', label: t('hero.search.anyZone') },
             ...regionesFormateadas
           ]);
         }
@@ -167,7 +169,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
   };
 
   const handleZoneChange = (zone: string) => {
-    const newZone = zone === "Cualquier zona" ? "" : zone;
+    const newZone = zone === t('hero.search.anyZone') ? "" : zone;
     setSearchData(prev => ({
       ...prev,
       zone: newZone
@@ -183,7 +185,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
   };
 
   const handlePropertyTypeChange = (type: string) => {
-    const newPropertyType = type === "Cualquier tipo" ? "" : type;
+    const newPropertyType = type === t('hero.search.anyType') ? "" : type;
     setSearchData(prev => ({
       ...prev,
       propertyType: newPropertyType
@@ -199,12 +201,12 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
   };
 
   const getPropertyTypeLabel = () => {
-    if (!searchData.propertyType) return "Tipo de Vivienda";
+    if (!searchData.propertyType) return t('hero.search.propertyType');
     return searchData.propertyType;
   };
 
   const getZoneLabel = () => {
-    if (!searchData.zone) return "Zona";
+    if (!searchData.zone) return t('hero.search.zone');
     return searchData.zone;
   };
 
@@ -220,7 +222,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
             <GooglePlacesAutocomplete
               value={searchData.location}
               onChange={handleLocationChange}
-              placeholder="¿Dónde quieres ir?"
+              placeholder={t('hero.search.whereToGo')}
               className="w-full"
             />
             
@@ -267,7 +269,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
               checkOut={searchData.checkOut}
               onCheckInChange={handleCheckInChange}
               onCheckOutChange={handleCheckOutChange}
-              placeholder="Seleccionar fechas"
+              placeholder={t('hero.search.selectDates')}
             />
           </div>
         </div>
@@ -290,7 +292,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
               <span className="flex items-center gap-2">
                 <Home className="w-4 h-4" />
                 <span className="hidden sm:inline">
-                  {isLoading ? 'Cargando...' : getPropertyTypeLabel()}
+                  {isLoading ? t('hero.search.loading') : getPropertyTypeLabel()}
                 </span>
                 <span className="sm:hidden">
                   {isLoading ? '...' : 'Tipo'}
@@ -340,7 +342,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
               }`}
             >
               <span className="flex items-center gap-2">
-                <span className="hidden sm:inline">Rango €</span>
+                <span className="hidden sm:inline">{t('hero.search.priceRange')}</span>
                 <span className="sm:hidden flex items-center gap-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
@@ -366,8 +368,8 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2"
             >
               <Search className="w-5 h-5" />
-              <span className="hidden sm:inline">Buscar Todo</span>
-              <span className="sm:hidden">Buscar</span>
+              <span className="hidden sm:inline">{t('hero.search.searchAll')}</span>
+              <span className="sm:hidden">{t('hero.search.search')}</span>
             </button>
           </div>
         </div>
@@ -379,14 +381,14 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
           {showPriceFilters && (
             <div className="mb-4">
               <div className="mb-3 text-sm text-gray-600">
-                <span className="font-medium">Filtros de precio activos:</span>
+                <span className="font-medium">{t('hero.search.activePriceFilters')}</span>
                 <span className="ml-2">
-                  Día: €{searchData.pricePerDay} | Mes: €{searchData.pricePerMonth}
+                  {t('hero.search.dayPrice').replace('{price}', searchData.pricePerDay.toString())} | {t('hero.search.monthPrice').replace('{price}', searchData.pricePerMonth.toString())}
                 </span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <PriceFilter
-                  label="Precio máximo por día"
+                  label={t('hero.search.maxPricePerDay')}
                   value={searchData.pricePerDay}
                   onChange={handlePricePerDayChange}
                   min={0}
@@ -396,7 +398,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
                 />
                 
                 <PriceFilter
-                  label="Precio máximo por mes"
+                  label={t('hero.search.maxPricePerMonth')}
                   value={searchData.pricePerMonth}
                   onChange={handlePricePerMonthChange}
                   min={0}
@@ -411,7 +413,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
           {showPropertyType && !isLoading && (
             <div className="mb-4">
               <div className="mb-3 text-sm text-gray-600">
-                <span className="font-medium">Tipo de vivienda seleccionado:</span>
+                <span className="font-medium">{t('hero.search.selectedPropertyType')}</span>
                 <span className="ml-2">{getPropertyTypeLabel()}</span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -436,7 +438,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
           {showZoneSearch && !isLoading && (
             <div>
               <div className="mb-3 text-sm text-gray-600">
-                <span className="font-medium">Zona seleccionada:</span>
+                <span className="font-medium">{t('hero.search.selectedZone')}</span>
                 <span className="ml-2">{getZoneLabel()}</span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">

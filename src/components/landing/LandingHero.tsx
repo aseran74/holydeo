@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import LandingSearchForm from '../common/LandingSearchForm';
+import { useLanguage } from '../../context/LanguageContext';
 
 const LandingHero = () => {
+  const { t } = useLanguage();
   const [showUnderline, setShowUnderline] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -142,7 +144,7 @@ const LandingHero = () => {
                 }}
                 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full border border-white/30 hover:bg-white/30 transition-all duration-300 z-10"
               >
-                ▶️ Reproducir Video
+                ▶️ {t('hero.search.playVideo')}
               </button>
             )}
           </div>
@@ -178,7 +180,7 @@ const LandingHero = () => {
           <div className="text-center w-full max-w-4xl mx-auto">
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 leading-tight text-white px-6 sm:px-4">
-              Vive fuera de{' '}
+              {t('hero.title')}{' '}
               <span className="relative inline-block">
                 temporada
                 {/* ✨ SVG para el subrayado curvo ✨ */}
@@ -211,7 +213,7 @@ const LandingHero = () => {
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
-              Encuentra alojamientos y planes fuera de temporada a precios imbatibles.
+              {t('hero.subtitle')}
             </p>
 
             {/* Buscador */}
@@ -230,7 +232,7 @@ const LandingHero = () => {
                   500+
                 </div>
                 <div className="text-xs sm:text-sm md:text-base text-blue-100 transition-all duration-700 delay-300">
-                  Propiedades
+                  {t('hero.stats.properties')}
                 </div>
               </div>
               <div className="text-center flex-1">
@@ -238,7 +240,7 @@ const LandingHero = () => {
                   200+
                 </div>
                 <div className="text-xs sm:text-sm md:text-base text-blue-100 transition-all duration-700 delay-500">
-                  Experiencias
+                  {t('hero.stats.experiences')}
                 </div>
               </div>
               <div className="text-center flex-1">
@@ -246,7 +248,7 @@ const LandingHero = () => {
                   600+
                 </div>
                 <div className="text-xs sm:text-sm md:text-base text-blue-100 transition-all duration-700 delay-700">
-                  Clientes Satisfechos
+                  {t('hero.stats.satisfiedClients')}
                 </div>
               </div>
             </div>

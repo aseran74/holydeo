@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useLanguage } from "../../context/LanguageContext";
+import { LanguageToggleButton } from "../common/LanguageToggleButton";
+import { ThemeToggleButton } from "../common/ThemeToggleButton";
 import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star } from "lucide-react";
 
 const LandingNavbar = () => {
@@ -8,6 +11,7 @@ const LandingNavbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
   const { currentUser, logout, userRole } = useAuth();
+  const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
   
@@ -52,10 +56,10 @@ const LandingNavbar = () => {
   }
 
   const menuItems = [
-    { name: "Buscar", href: "/search" },
-    { name: "Como funciona", href: "#how-it-works" },
-    { name: "FAQ", href: "#faq" },
-    { name: "Contacto", href: "#contact" },
+    { name: t('navbar.search'), href: "/search" },
+    { name: t('navbar.howItWorks'), href: "#how-it-works" },
+    { name: t('navbar.faq'), href: "#faq" },
+    { name: t('navbar.contact'), href: "#contact" },
   ];
 
   const scrollToSection = (href: string) => {
@@ -93,15 +97,15 @@ const LandingNavbar = () => {
   const getDashboardName = () => {
     switch (userRole) {
       case 'guest':
-        return 'Dashboard de Huésped';
+        return t('navbar.guestDashboard');
       case 'admin':
-        return 'Panel de Admin';
+        return t('navbar.adminDashboard');
       case 'owner':
-        return 'Dashboard de Propietario';
+        return t('navbar.ownerDashboard');
       case 'agent':
-        return 'Dashboard de Agente';
+        return t('navbar.agentDashboard');
       default:
-        return 'Dashboard';
+        return t('navbar.dashboard');
     }
   };
 
@@ -154,6 +158,11 @@ const LandingNavbar = () => {
 
           {/* User Button and Mobile Menu Button */}
           <div className="flex items-center space-x-4">
+            {/* Language and Theme Toggle Buttons */}
+            <div className="hidden md:flex items-center space-x-2">
+              <LanguageToggleButton />
+              <ThemeToggleButton />
+            </div>
             {/* Firebase User Button */}
             <div className="hidden md:block">
               {currentUser ? (
@@ -188,7 +197,7 @@ const LandingNavbar = () => {
                       {/* Información del usuario */}
                       <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                         <p className="text-sm font-medium text-gray-900 dark:text-white">
-                          {currentUser.displayName || 'Usuario'}
+                          {currentUser.displayName || t('navbar.user')}
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                           {currentUser.email}
@@ -201,10 +210,10 @@ const LandingNavbar = () => {
                             userRole === 'guest' ? 'bg-green-100 text-green-800' :
                             'bg-gray-100 text-gray-800'
                           }`}>
-                            {userRole === 'admin' ? 'Administrador' :
-                             userRole === 'owner' ? 'Propietario' :
-                             userRole === 'agent' ? 'Agente' :
-                             userRole === 'guest' ? 'Huésped' :
+                            {userRole === 'admin' ? t('navbar.administrator') :
+                             userRole === 'owner' ? t('navbar.owner') :
+                             userRole === 'agent' ? t('navbar.agent') :
+                             userRole === 'guest' ? t('navbar.guest') :
                              userRole}
                           </span>
                         )}
@@ -229,7 +238,7 @@ const LandingNavbar = () => {
                     className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                   >
                     <Calendar className="w-4 h-4 mr-3" />
-                    Mis Reservas
+                    {t('navbar.myBookings')}
                   </Link>
                   <Link
                     to="/social"
@@ -237,7 +246,7 @@ const LandingNavbar = () => {
                     className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                   >
                     <Users className="w-4 h-4 mr-3" />
-                    Red Social
+                    {t('navbar.social')}
                   </Link>
                   
                   {/* Separador */}
@@ -249,7 +258,7 @@ const LandingNavbar = () => {
                     className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                   >
                     <Building2 className="w-4 h-4 mr-3" />
-                    Buscar Propiedades
+                    {t('navbar.searchProperties')}
                   </Link>
                   <Link
                     to="/search?type=experiences"
@@ -257,7 +266,7 @@ const LandingNavbar = () => {
                     className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                   >
                     <Star className="w-4 h-4 mr-3" />
-                    Buscar Experiencias
+                    {t('navbar.searchExperiences')}
                   </Link>
                 </>
               )}
@@ -274,7 +283,7 @@ const LandingNavbar = () => {
                         className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
                       >
                         <LogOut className="w-4 h-4 mr-3" />
-                        Cerrar Sesión
+                        {t('navbar.logout')}
                       </button>
                     </div>
                   )}
@@ -291,7 +300,7 @@ const LandingNavbar = () => {
                           : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                     }`}
                   >
-                    Registrarse
+                    {t('navbar.register')}
                   </Link>
                   <Link
                     to="/login"
@@ -303,7 +312,7 @@ const LandingNavbar = () => {
                           : 'hover:bg-blue-700'
                     }`}
                   >
-                    Iniciar Sesión
+                    {t('navbar.login')}
                   </Link>
                 </div>
               )}
@@ -349,6 +358,11 @@ const LandingNavbar = () => {
             ))}
             {/* Mobile User Button */}
             <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
+              {/* Language and Theme Toggle Buttons for Mobile */}
+              <div className="flex justify-center items-center space-x-2 mb-4">
+                <LanguageToggleButton />
+                <ThemeToggleButton />
+              </div>
               <div className="flex justify-center">
                 {currentUser ? (
                   <div className="flex flex-col items-center space-y-3 w-full">
@@ -367,7 +381,7 @@ const LandingNavbar = () => {
                         <span className={`text-sm font-medium transition-all duration-300 ${
                           isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
                         }`}>
-                          {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
+                          {currentUser.displayName || currentUser.email?.split('@')[0] || t('navbar.user')}
                         </span>
                         {userRole && (
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-1 ${
@@ -377,10 +391,10 @@ const LandingNavbar = () => {
                             userRole === 'guest' ? 'bg-green-100 text-green-800' :
                             'bg-gray-100 text-gray-800'
                           }`}>
-                            {userRole === 'admin' ? 'Administrador' :
-                             userRole === 'owner' ? 'Propietario' :
-                             userRole === 'agent' ? 'Agente' :
-                             userRole === 'guest' ? 'Huésped' :
+                            {userRole === 'admin' ? t('navbar.administrator') :
+                             userRole === 'owner' ? t('navbar.owner') :
+                             userRole === 'agent' ? t('navbar.agent') :
+                             userRole === 'guest' ? t('navbar.guest') :
                              userRole}
                           </span>
                         )}
@@ -414,7 +428,7 @@ const LandingNavbar = () => {
                           }`}
                         >
                           <Calendar className="w-4 h-4 mr-2" />
-                          Mis Reservas
+                          {t('navbar.myBookings')}
                         </Link>
                         <Link
                           to="/social"
@@ -426,7 +440,7 @@ const LandingNavbar = () => {
                           }`}
                         >
                           <Users className="w-4 h-4 mr-2" />
-                          Red Social
+                          {t('navbar.social')}
                         </Link>
                       </>
                     )}
@@ -444,7 +458,7 @@ const LandingNavbar = () => {
                       }`}
                     >
                       <LogOut className="w-4 h-4 mr-2" />
-                      Cerrar Sesión
+                      {t('navbar.logout')}
                     </button>
                   </div>
                 ) : (
@@ -457,7 +471,7 @@ const LandingNavbar = () => {
                           : 'text-white hover:text-blue-200'
                       }`}
                     >
-                      Registrarse
+                      {t('navbar.register')}
                     </Link>
                     <Link
                       to="/login"
@@ -467,7 +481,7 @@ const LandingNavbar = () => {
                           : 'hover:bg-blue-700'
                       }`}
                     >
-                      Iniciar Sesión
+                      {t('navbar.login')}
                     </Link>
                   </div>
                 )}

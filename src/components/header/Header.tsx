@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
+import { LanguageToggleButton } from "../common/LanguageToggleButton";
 import GuestNotificationDropdown from "../notifications/GuestNotificationDropdown";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useLanguage } from "../../context/LanguageContext";
 
 // Define the interface for the props
 interface HeaderProps {
@@ -12,6 +14,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
   const { currentUser } = useAuth();
+  const { t } = useLanguage();
 
   const toggleApplicationMenu = () => {
     setApplicationMenuOpen(!isApplicationMenuOpen);
@@ -136,7 +139,7 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
                 </button>
                 <input
                   type="text"
-                  placeholder="Search or type command..."
+                  placeholder={t('common.searchPlaceholder')}
                   className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
                 />
 
@@ -156,6 +159,8 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
           <div className="flex items-center gap-2 2xsm:gap-3">
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
+            {/* <!-- Language Toggler --> */}
+            <LanguageToggleButton />
             {/* <!-- Notification Menu Area --> */}
             {currentUser ? (
               <GuestNotificationDropdown />
@@ -179,7 +184,7 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
                 to="/logout" 
                 className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
               >
-                Cerrar Sesión
+                {t('common.logout')}
               </Link>
             </div>
           ) : (
@@ -187,7 +192,7 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
               to="/login" 
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
             >
-              Iniciar Sesión
+              {t('common.login')}
             </Link>
           )}
         </div>
