@@ -906,18 +906,8 @@ html, body {
 
 /* Solución específica para la página de búsqueda */
 .search-page {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
-}
-
-/* Solo aplicar a contenedores principales, no a elementos específicos del mapa */
-.search-page .max-w-7xl,
-.search-page .flex,
-.search-page .flex-col,
-.search-page .lg\\:flex-row {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* Estilos personalizados para las cards de propiedades */
