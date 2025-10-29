@@ -1,41 +1,43 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const FAQ = () => {
+  const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const faqs = [
     {
-      question: "¿Cómo puedo reservar una propiedad?",
-      answer: "Es muy fácil. Simplemente busca tu destino, selecciona las fechas de entrada y salida, elige el número de huéspedes y completa el proceso de reserva con tus datos de pago."
+      question: t('faq.questions.howToBook.question'),
+      answer: t('faq.questions.howToBook.answer')
     },
     {
-      question: "¿Qué métodos de pago aceptan?",
-      answer: "Aceptamos todas las tarjetas de crédito y débito principales (Visa, MasterCard, American Express), PayPal y transferencias bancarias. Todos los pagos son procesados de forma segura."
+      question: t('faq.questions.paymentMethods.question'),
+      answer: t('faq.questions.paymentMethods.answer')
     },
     {
-      question: "¿Puedo cancelar mi reserva?",
-      answer: "Sí, puedes cancelar tu reserva hasta 24 horas antes de la fecha de llegada. Las políticas de cancelación específicas varían según la propiedad. Consulta los términos de cada alojamiento."
+      question: t('faq.questions.cancelBooking.question'),
+      answer: t('faq.questions.cancelBooking.answer')
     },
     {
-      question: "¿Las propiedades están verificadas?",
-      answer: "Todas nuestras propiedades pasan por un proceso de verificación riguroso. Incluye inspección de calidad, verificación de fotos y validación de comodidades para garantizar tu satisfacción."
+      question: t('faq.questions.verifiedProperties.question'),
+      answer: t('faq.questions.verifiedProperties.answer')
     },
     {
-      question: "¿Qué incluye el precio de la reserva?",
-      answer: "El precio incluye el alojamiento completo, limpieza, toallas y sábanas. Algunas propiedades pueden incluir servicios adicionales como WiFi, parking o acceso a piscina. Consulta los detalles específicos de cada propiedad."
+      question: t('faq.questions.priceIncludes.question'),
+      answer: t('faq.questions.priceIncludes.answer')
     },
     {
-      question: "¿Puedo contactar al anfitrión?",
-      answer: "Sí, puedes comunicarte directamente con el anfitrión a través de nuestro sistema de mensajería integrado. Los anfitriones suelen responder en menos de 24 horas."
+      question: t('faq.questions.contactHost.question'),
+      answer: t('faq.questions.contactHost.answer')
     },
     {
-      question: "¿Qué pasa si tengo un problema durante mi estancia?",
-      answer: "Nuestro equipo de soporte está disponible 24/7 para ayudarte con cualquier problema. Puedes contactarnos por teléfono, email o chat en vivo desde la aplicación."
+      question: t('faq.questions.problemDuringStay.question'),
+      answer: t('faq.questions.problemDuringStay.answer')
     },
     {
-      question: "¿Ofrecen seguro de viaje?",
-      answer: "Sí, ofrecemos opciones de seguro de viaje que cubren cancelaciones, problemas médicos y daños a la propiedad. Puedes añadirlo durante el proceso de reserva."
+      question: t('faq.questions.travelInsurance.question'),
+      answer: t('faq.questions.travelInsurance.answer')
     }
   ];
 
@@ -48,10 +50,10 @@ const FAQ = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Preguntas Frecuentes
+            {t('faq.title')}
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Resolvemos todas tus dudas sobre reservas y alojamientos
+            {t('faq.subtitle')}
           </p>
         </div>
 
@@ -86,10 +88,10 @@ const FAQ = () => {
         {/* CTA */}
         <div className="text-center mt-12">
           <p className="text-gray-600 dark:text-gray-300 mb-4">
-            ¿No encuentras la respuesta que buscas?
+            {t('faq.notFound')}
           </p>
           <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
-            Contactar Soporte
+            {t('faq.contactSupport')}
           </button>
         </div>
       </div>

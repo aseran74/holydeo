@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../supabaseClient';
 import GuestNotificationDropdown from '../../components/notifications/GuestNotificationDropdown';
@@ -23,6 +24,7 @@ interface GuestBooking {
 
 const GuestBookings: React.FC = () => {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState<GuestBooking[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -228,7 +230,7 @@ const GuestBookings: React.FC = () => {
           {/* Enlaces de búsqueda rápida */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
             <button
-              onClick={() => window.location.href = '/search?type=properties'}
+              onClick={() => navigate('/search?type=properties')}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,7 +239,7 @@ const GuestBookings: React.FC = () => {
               Buscar Propiedades
             </button>
             <button
-              onClick={() => window.location.href = '/search?type=experiences'}
+              onClick={() => navigate('/search?type=experiences')}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,7 +250,7 @@ const GuestBookings: React.FC = () => {
           </div>
           
           <button
-            onClick={() => window.location.href = '/properties'}
+            onClick={() => navigate('/properties')}
             className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Ver Todas las Propiedades

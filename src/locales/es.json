@@ -22,8 +22,9 @@
     "agent": "Agente",
     "guest": "Huésped"
   },
+  "dashboard": "Dashboard",
+  "properties": "Propiedades",
   "common": {
-    "properties": "Propiedades",
     "experiences": "Experiencias",
     "bookings": "Reservas",
     "agencies": "Agencias",
@@ -64,8 +65,83 @@
     "greenFee": "Green Fee",
     "month": "/mes"
   },
+  "filters": {
+    "title": "Filtros",
+    "pricePerDay": "Precio máximo por día",
+    "pricePerDayDescription": "Elige el precio día que pagarías por medias estancias (15 días mínimo, 60 días máximo)",
+    "pricePerMonth": "Precio máximo por mes",
+    "pricePerMonthDescription": "Elige el precio máximo por mes para estancias largas (60 días mínimo, 9 meses máximo)",
+    "season": "Temporada",
+    "seasonDescription": "Marca las temporadas que te interesan",
+    "propertyType": "Tipo de vivienda",
+    "propertyTypeDescription": "Marca para elegir el tipo de vivienda",
+    "allTypes": "Todos los tipos",
+    "minBedrooms": "Nº Dormitorios mínimo",
+    "minBathrooms": "Nº Baños mínimo",
+    "amenities": "Comodidades",
+    "seasons": {
+      "septemberMay": "Septiembre a Mayo",
+      "septemberJune": "Septiembre a Junio",
+      "septemberJuly": "Septiembre a Julio",
+      "octoberMay": "Octubre a Mayo",
+      "octoberJune": "Octubre a Junio",
+      "octoberJuly": "Octubre a Julio"
+    },
+    "amenitiesList": {
+      "pool": "Piscina",
+      "garden": "Jardín",
+      "garage": "Garaje",
+      "terrace": "Terraza",
+      "airConditioning": "Aire Acondicionado",
+      "elevator": "Ascensor",
+      "storage": "Trastero",
+      "seaView": "Vistas al mar",
+      "accessible": "Accesible",
+      "luxury": "Lujo"
+    }
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "subtitle": "Resolvemos todas tus dudas sobre reservas y alojamientos",
+    "questions": {
+      "howToBook": {
+        "question": "¿Cómo puedo reservar una propiedad?",
+        "answer": "Es muy fácil. Simplemente busca tu destino, selecciona las fechas de entrada y salida, elige el número de huéspedes y completa el proceso de reserva con tus datos de pago."
+      },
+      "paymentMethods": {
+        "question": "¿Qué métodos de pago aceptan?",
+        "answer": "Aceptamos todas las tarjetas de crédito y débito principales (Visa, MasterCard, American Express), PayPal y transferencias bancarias. Todos los pagos son procesados de forma segura."
+      },
+      "cancelBooking": {
+        "question": "¿Puedo cancelar mi reserva?",
+        "answer": "Sí, puedes cancelar tu reserva hasta 24 horas antes de la fecha de llegada. Las políticas de cancelación específicas varían según la propiedad. Consulta los términos de cada alojamiento."
+      },
+      "verifiedProperties": {
+        "question": "¿Las propiedades están verificadas?",
+        "answer": "Todas nuestras propiedades pasan por un proceso de verificación riguroso. Incluye inspección de calidad, verificación de fotos y validación de comodidades para garantizar tu satisfacción."
+      },
+      "priceIncludes": {
+        "question": "¿Qué incluye el precio de la reserva?",
+        "answer": "El precio incluye el alojamiento completo, limpieza, toallas y sábanas. Algunas propiedades pueden incluir servicios adicionales como WiFi, parking o acceso a piscina. Consulta los detalles específicos de cada propiedad."
+      },
+      "contactHost": {
+        "question": "¿Puedo contactar al anfitrión?",
+        "answer": "Sí, puedes comunicarte directamente con el anfitrión a través de nuestro sistema de mensajería integrado. Los anfitriones suelen responder en menos de 24 horas."
+      },
+      "problemDuringStay": {
+        "question": "¿Qué pasa si tengo un problema durante mi estancia?",
+        "answer": "Nuestro equipo de soporte está disponible 24/7 para ayudarte con cualquier problema. Puedes contactarnos por teléfono, email o chat en vivo desde la aplicación."
+      },
+      "travelInsurance": {
+        "question": "¿Ofrecen seguro de viaje?",
+        "answer": "Sí, ofrecemos opciones de seguro de viaje que cubren cancelaciones, problemas médicos y daños a la propiedad. Puedes añadirlo durante el proceso de reserva."
+      }
+    },
+    "notFound": "¿No encuentras la respuesta que buscas?",
+    "contactSupport": "Contactar Soporte"
+  },
   "hero": {
-    "title": "Vive fuera de temporada",
+    "title": "Vive fuera de",
     "subtitle": "Encuentra alojamientos y planes fuera de temporada a precios imbatibles.",
     "search": {
       "whereToGo": "¿Dónde quieres ir?",

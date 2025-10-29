@@ -22,8 +22,9 @@
     "agent": "Agent",
     "guest": "Guest"
   },
+  "dashboard": "Dashboard",
+  "properties": "Properties",
   "common": {
-    "properties": "Properties",
     "experiences": "Experiences",
     "bookings": "Bookings",
     "agencies": "Agencies",
@@ -64,8 +65,83 @@
     "greenFee": "Green Fee",
     "month": "/month"
   },
+  "filters": {
+    "title": "Filters",
+    "pricePerDay": "Maximum price per day",
+    "pricePerDayDescription": "Choose the daily price you would pay for medium stays (15 days minimum, 60 days maximum)",
+    "pricePerMonth": "Maximum price per month",
+    "pricePerMonthDescription": "Choose the maximum monthly price for long stays (60 days minimum, 9 months maximum)",
+    "season": "Season",
+    "seasonDescription": "Mark the seasons that interest you",
+    "propertyType": "Property type",
+    "propertyTypeDescription": "Mark to choose the property type",
+    "allTypes": "All types",
+    "minBedrooms": "Min. Bedrooms",
+    "minBathrooms": "Min. Bathrooms",
+    "amenities": "Amenities",
+    "seasons": {
+      "septemberMay": "September to May",
+      "septemberJune": "September to June",
+      "septemberJuly": "September to July",
+      "octoberMay": "October to May",
+      "octoberJune": "October to June",
+      "octoberJuly": "October to July"
+    },
+    "amenitiesList": {
+      "pool": "Pool",
+      "garden": "Garden",
+      "garage": "Garage",
+      "terrace": "Terrace",
+      "airConditioning": "Air Conditioning",
+      "elevator": "Elevator",
+      "storage": "Storage",
+      "seaView": "Sea View",
+      "accessible": "Accessible",
+      "luxury": "Luxury"
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "We answer all your questions about bookings and accommodations",
+    "questions": {
+      "howToBook": {
+        "question": "How can I book a property?",
+        "answer": "It's very easy. Simply search for your destination, select your check-in and check-out dates, choose the number of guests and complete the booking process with your payment details."
+      },
+      "paymentMethods": {
+        "question": "What payment methods do you accept?",
+        "answer": "We accept all major credit and debit cards (Visa, MasterCard, American Express), PayPal and bank transfers. All payments are processed securely."
+      },
+      "cancelBooking": {
+        "question": "Can I cancel my booking?",
+        "answer": "Yes, you can cancel your booking up to 24 hours before the arrival date. Specific cancellation policies vary by property. Check the terms of each accommodation."
+      },
+      "verifiedProperties": {
+        "question": "Are the properties verified?",
+        "answer": "All our properties go through a rigorous verification process. This includes quality inspection, photo verification and amenities validation to ensure your satisfaction."
+      },
+      "priceIncludes": {
+        "question": "What does the booking price include?",
+        "answer": "The price includes complete accommodation, cleaning, towels and sheets. Some properties may include additional services such as WiFi, parking or pool access. Check the specific details of each property."
+      },
+      "contactHost": {
+        "question": "Can I contact the host?",
+        "answer": "Yes, you can communicate directly with the host through our integrated messaging system. Hosts usually respond within 24 hours."
+      },
+      "problemDuringStay": {
+        "question": "What happens if I have a problem during my stay?",
+        "answer": "Our support team is available 24/7 to help you with any problem. You can contact us by phone, email or live chat from the application."
+      },
+      "travelInsurance": {
+        "question": "Do you offer travel insurance?",
+        "answer": "Yes, we offer travel insurance options that cover cancellations, medical problems and property damage. You can add it during the booking process."
+      }
+    },
+    "notFound": "Can't find the answer you're looking for?",
+    "contactSupport": "Contact Support"
+  },
   "hero": {
-    "title": "Live off-season",
+    "title": "Live off season",
     "subtitle": "Find off-season accommodations and plans at unbeatable prices.",
     "search": {
       "whereToGo": "Where do you want to go?",

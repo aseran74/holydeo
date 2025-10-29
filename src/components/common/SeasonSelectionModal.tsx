@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Calendar } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface SeasonSelectionModalProps {
   isOpen: boolean;
@@ -20,6 +21,8 @@ const SeasonSelectionModal: React.FC<SeasonSelectionModalProps> = ({
   onApply,
   onClear
 }) => {
+  const { t } = useLanguage();
+  
   if (!isOpen) return null;
 
   return (
@@ -41,10 +44,10 @@ const SeasonSelectionModal: React.FC<SeasonSelectionModalProps> = ({
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Seleccionar Temporadas
+                  {t('filters.season')}
                 </h3>
                 <p className="text-sm text-gray-500">
-                  Elige las temporadas que te interesan
+                  {t('filters.seasonDescription')}
                 </p>
               </div>
             </div>
@@ -90,7 +93,7 @@ const SeasonSelectionModal: React.FC<SeasonSelectionModalProps> = ({
             {selectedSeasons.length > 0 && (
               <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                 <p className="text-sm text-blue-700">
-                  {selectedSeasons.length} temporada{selectedSeasons.length !== 1 ? 's' : ''} seleccionada{selectedSeasons.length !== 1 ? 's' : ''}
+                  {selectedSeasons.length} {selectedSeasons.length === 1 ? t('filters.season') : t('filters.season')} {t('common.selected')}
                 </p>
               </div>
             )}
@@ -102,20 +105,20 @@ const SeasonSelectionModal: React.FC<SeasonSelectionModalProps> = ({
               onClick={onClear}
               className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
             >
-              Limpiar
+              {t('common.clear')}
             </button>
             <div className="flex space-x-3">
               <button
                 onClick={onClose}
                 className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                Cancelar
+                {t('common.cancel')}
               </button>
               <button
                 onClick={onApply}
                 className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Aplicar
+                {t('common.apply')}
               </button>
             </div>
           </div>

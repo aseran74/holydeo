@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../supabaseClient';
 import GuestNotificationDropdown from '../../components/notifications/GuestNotificationDropdown';
@@ -25,6 +26,7 @@ interface SocialPost {
 
 const GuestDashboard: React.FC = () => {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [socialPosts, setSocialPosts] = useState<SocialPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -177,7 +179,7 @@ const GuestDashboard: React.FC = () => {
                           Encuentra tu próxima estancia perfecta
                         </p>
                         <button
-                          onClick={() => window.location.href = '/search?type=properties'}
+                          onClick={() => navigate('/search?type=properties')}
                           className="w-full bg-white text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition-colors duration-200"
                         >
                           Buscar Propiedades
@@ -198,7 +200,7 @@ const GuestDashboard: React.FC = () => {
                           Descubre actividades únicas y emocionantes
                         </p>
                         <button
-                          onClick={() => window.location.href = '/search?type=experiences'}
+                          onClick={() => navigate('/search?type=experiences')}
                           className="w-full bg-white text-purple-600 px-4 py-2 rounded-lg font-medium hover:bg-purple-50 transition-colors duration-200"
                         >
                           Buscar Experiencias

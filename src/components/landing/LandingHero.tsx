@@ -3,7 +3,7 @@ import LandingSearchForm from '../common/LandingSearchForm';
 import { useLanguage } from '../../context/LanguageContext';
 
 const LandingHero = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [showUnderline, setShowUnderline] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -181,33 +181,35 @@ const LandingHero = () => {
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 leading-tight text-white px-6 sm:px-4">
               {t('hero.title')}{' '}
-              <span className="relative inline-block">
-                temporada
-                {/* ✨ SVG para el subrayado curvo ✨ */}
-                <svg 
-                  className={`absolute left-0 w-full bottom-[-10px] sm:bottom-[-14px] transition-all duration-1500 ease-in-out ${
-                    showUnderline ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                  }`}
-                  viewBox="0 0 230 18" 
-                  fill="none" 
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path 
-                    d="M2 11.1455C41.2483 3.32203 162.656 -5.3339 228 15.493" 
-                    stroke="#60A5FA" // Este es el color 'blue-400' de Tailwind
-                    strokeWidth="4" 
-                    strokeLinecap="round"
-                    className={`transition-all duration-1500 ease-in-out ${
-                      showUnderline ? 'stroke-dasharray-300 stroke-dashoffset-0' : 'stroke-dasharray-300 stroke-dashoffset-300'
+              {language === 'es' && (
+                <span className="relative inline-block">
+                  temporada
+                  {/* ✨ SVG para el subrayado curvo ✨ */}
+                  <svg 
+                    className={`absolute left-0 w-full bottom-[-10px] sm:bottom-[-14px] transition-all duration-1500 ease-in-out ${
+                      showUnderline ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                     }`}
-                    style={{
-                      strokeDasharray: 300,
-                      strokeDashoffset: showUnderline ? 0 : 300,
-                      transform: `translateX(${scrollY * 0.1}px)`
-                    }}
-                  />
-                </svg>
-              </span>
+                    viewBox="0 0 230 18" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path 
+                      d="M2 11.1455C41.2483 3.32203 162.656 -5.3339 228 15.493" 
+                      stroke="#60A5FA" // Este es el color 'blue-400' de Tailwind
+                      strokeWidth="4" 
+                      strokeLinecap="round"
+                      className={`transition-all duration-1500 ease-in-out ${
+                        showUnderline ? 'stroke-dasharray-300 stroke-dashoffset-0' : 'stroke-dasharray-300 stroke-dashoffset-300'
+                      }`}
+                      style={{
+                        strokeDasharray: 300,
+                        strokeDashoffset: showUnderline ? 0 : 300,
+                        transform: `translateX(${scrollY * 0.1}px)`
+                      }}
+                    />
+                  </svg>
+                </span>
+              )}
               {/* Punto azul solo en tablet y escritorio */}
               <span className="hidden sm:inline text-blue-400">.</span>
             </h1>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, Calendar, ChevronDown } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 import NumberStepper from './NumberStepper';
 import PriceFilter from './PriceFilter';
 import SeasonSelectionModal from './SeasonSelectionModal';
@@ -30,6 +31,7 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
   handleAmenityToggle,
   isModal = false
 }) => {
+  const { t } = useLanguage();
   const [dynamicPropertyTypes, setDynamicPropertyTypes] = useState<string[]>([]);
   const [showSeasonModal, setShowSeasonModal] = useState(false);
   const [tempSelectedSeasons, setTempSelectedSeasons] = useState<string[]>([]);
@@ -105,13 +107,13 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
           <div className="space-y-6">
             {/* Filtros de Precio */}
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Precio máximo por día
-                </label>
-                <p className="text-xs text-gray-500 mb-2">
-                  Elige el precio día que pagarías por medias estancias (15 días mínimo, 60 días máximo)
-                </p>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('filters.pricePerDay')}
+                  </label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    {t('filters.pricePerDayDescription')}
+                  </p>
                 <PriceFilter
                   label=""
                   value={searchData.pricePerDay}
@@ -126,10 +128,10 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
               {searchType === 'properties' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Precio máximo por mes
+                    {t('filters.pricePerMonth')}
                   </label>
                   <p className="text-xs text-gray-500 mb-2">
-                    Elige el precio máximo por mes para estancias largas (60 días mínimo, 9 meses máximo)
+                    {t('filters.pricePerMonthDescription')}
                   </p>
                   <PriceFilter
                     label=""
@@ -147,7 +149,7 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
             {searchType === 'properties' && seasons && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Temporada
+                  {t('filters.season')}
                 </label>
                 
                 {/* Botón para abrir modal en móvil, checkboxes en desktop */}
@@ -169,7 +171,7 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                 {/* Checkboxes para desktop */}
                 <div className="hidden md:block">
                   <p className="text-xs text-gray-500 mb-2">
-                    Marca las temporadas que te interesan
+                    {t('filters.seasonDescription')}
                   </p>
                   <div className="space-y-2 max-h-32 overflow-y-auto">
                     {seasons.map(season => (
@@ -209,10 +211,10 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                 {/* Tipo de propiedad */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Tipo de vivienda
+                    {t('filters.propertyType')}
                   </label>
                   <p className="text-xs text-gray-500 mb-2">
-                    Marca para elegir el tipo de vivienda
+                    {t('filters.propertyTypeDescription')}
                   </p>
                   <select
                     value={searchData.propertyType}
@@ -235,7 +237,7 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                     onChange={(value) => setSearchData((prev: any) => ({ ...prev, bedrooms: value }))}
                     min={0}
                     max={6}
-                    label="Nº Dormitorios mínimo"
+                    label={t('filters.minBedrooms')}
                     className="w-full"
                   />
 
@@ -244,7 +246,7 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                     onChange={(value) => setSearchData((prev: any) => ({ ...prev, bathrooms: value }))}
                     min={0}
                     max={5}
-                    label="Nº Baños mínimo"
+                    label={t('filters.minBathrooms')}
                     className="w-full"
                   />
                 </div>
@@ -252,7 +254,7 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                 {/* Amenities */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Comodidades
+                    {t('filters.amenities')}
                   </label>
                   <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
                     {amenities.map(amenity => {

@@ -40,8 +40,8 @@ const AppSidebar: React.FC = () => {
     { name: t('common.searchProperties'), href: '/search?type=properties', icon: Building2 },
     { name: t('common.searchExperiences'), href: '/search?type=experiences', icon: Star },
   ] : [
-    { name: t('common.dashboard'), href: '/dashboard', icon: Home },
-    { name: t('common.properties'), href: '/properties', icon: Building2 },
+        { name: t('dashboard'), href: '/dashboard', icon: Home },
+    { name: t('properties'), href: '/properties', icon: Building2 },
     { name: t('common.experiences'), href: '/experiences', icon: Globe },
     { name: t('common.bookings'), href: '/bookings', icon: Calendar },
     { name: t('common.agencies'), href: '/agencies', icon: Users },
