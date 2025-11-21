@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 type SidebarContextType = {
   isExpanded: boolean;
   isMobileOpen: boolean;
+  isMobile: boolean;
   isHovered: boolean;
   activeItem: string | null;
   openSubmenu: string | null;
@@ -65,7 +66,8 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <SidebarContext.Provider
       value={{
-        isExpanded: isMobile ? false : isExpanded,
+        isExpanded,
+        isMobile,
         isMobileOpen,
         isHovered,
         activeItem,
