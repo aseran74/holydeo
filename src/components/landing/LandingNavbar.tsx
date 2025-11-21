@@ -12,11 +12,12 @@ const LandingNavbar = () => {
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
   const { currentUser, logout, userRole } = useAuth();
   const { t } = useLanguage();
-  const location = useLocation();
-  const navigate = useNavigate();
-  
-  // Detectar si estamos en la landing page
-  const isLandingPage = location.pathname === '/';
+    const location = useLocation();
+    const navigate = useNavigate();
+    
+    // Detectar si estamos en la landing page
+    const isLandingPage = location.pathname === '/';
+    const isTransparentLandingNav = isLandingPage && !isScrolled;
 
   // Efecto para detectar scroll y cambiar el estilo de la navbar
   useEffect(() => {
@@ -93,21 +94,56 @@ const LandingNavbar = () => {
     }
   };
 
-  // Función para obtener el nombre del dashboard según el rol
-  const getDashboardName = () => {
-    switch (userRole) {
-      case 'guest':
-        return t('navbar.guestDashboard');
-      case 'admin':
-        return t('navbar.adminDashboard');
-      case 'owner':
-        return t('navbar.ownerDashboard');
-      case 'agent':
-        return t('navbar.agentDashboard');
-      default:
-        return t('navbar.dashboard');
-    }
-  };
+    // Función para obtener el nombre del dashboard según el rol
+    const getDashboardName = () => {
+      switch (userRole) {
+        case 'guest':
+          return t('navbar.guestDashboard');
+        case 'admin':
+          return t('navbar.adminDashboard');
+        case 'owner':
+          return t('navbar.ownerDashboard');
+        case 'agent':
+          return t('navbar.agentDashboard');
+        default:
+          return t('navbar.dashboard');
+      }
+    };
+
+    type MobileActionVariant = 'dashboard' | 'bookings' | 'social' | 'logout';
+
+    const getMobileActionClasses = (variant: MobileActionVariant) => {
+      const base = "flex items-center justify-center w-full px-3 py-2 rounded-md text-sm font-medium transition-all duration-300";
+      
+      if (isTransparentLandingNav) {
+        const variantPalette: Record<MobileActionVariant, string> = {
+          dashboard: "bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-900/30",
+          bookings: "bg-green-600 text-white hover:bg-green-500 shadow-lg shadow-green-900/30",
+          social: "bg-purple-600 text-white hover:bg-purple-500 shadow-lg shadow-purple-900/30",
+          logout: "bg-red-600 text-white hover:bg-red-500 shadow-lg shadow-red-900/30"
+        };
+        return `${base} ${variantPalette[variant]}`;
+      }
+
+      if (isScrolled || !isLandingPage) {
+        const variantPalette: Record<MobileActionVariant, string> = {
+          dashboard: "text-gray-700 dark:text-gray-200 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30",
+          bookings: "text-gray-700 dark:text-gray-200 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30",
+          social: "text-gray-700 dark:text-gray-200 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30",
+          logout: "text-gray-700 dark:text-gray-200 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30"
+        };
+        return `${base} ${variantPalette[variant]}`;
+      }
+
+      const variantPalette: Record<MobileActionVariant, string> = {
+        dashboard: "text-white bg-white/20 hover:bg-white/30",
+        bookings: "text-white bg-white/20 hover:bg-white/30",
+        social: "text-white bg-white/20 hover:bg-white/30",
+        logout: "text-white bg-red-500/20 hover:bg-red-500/30"
+      };
+
+      return `${base} ${variantPalette[variant]}`;
+    };
 
   // Pequeña función de ayuda para mantener el JSX limpio
   // const isGoogleProvider = currentUser?.providerData?.some(
@@ -338,24 +374,28 @@ const LandingNavbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden">
-          <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 backdrop-blur-md shadow-lg transition-all duration-300 ${
-            isScrolled 
-              ? 'bg-white/95 dark:bg-gray-900/95' 
-              : 'bg-white/20 dark:bg-gray-900/20'
-          }`}>
-            {menuItems.map((item) => (
-                              <button
+        {isMenuOpen && (
+          <div className="md:hidden">
+            <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 backdrop-blur-md shadow-lg transition-all duration-300 ${
+              isScrolled 
+                ? 'bg-white/95 dark:bg-gray-900/95' 
+                : isLandingPage
+                  ? 'bg-gray-900/85 border-t border-white/10'
+                  : 'bg-white/90 dark:bg-gray-900/90'
+            }`}>
+              {menuItems.map((item) => (
+                <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className={`hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 w-full text-left ${
-                    isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
+                  className={`block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 w-full text-left ${
+                    isScrolled || !isLandingPage
+                      ? 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400'
+                      : 'text-white hover:text-blue-200/90 hover:bg-white/10 drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)]'
                   }`}
                 >
                   {item.name}
                 </button>
-            ))}
+              ))}
             {/* Mobile User Button */}
             <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
               {/* Language and Theme Toggle Buttons for Mobile */}
@@ -402,15 +442,11 @@ const LandingNavbar = () => {
                     </div>
 
                     {/* Enlace al dashboard */}
-                    <Link
-                      to={getDashboardRoute()}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`flex items-center justify-center w-full px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                        isScrolled 
-                          ? 'text-gray-700 dark:text-gray-200 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30' 
-                          : 'text-white bg-white/20 hover:bg-white/30'
-                      }`}
-                    >
+                      <Link
+                        to={getDashboardRoute()}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={getMobileActionClasses('dashboard')}
+                      >
                       <Home className="w-4 h-4 mr-2" />
                       {getDashboardName()}
                     </Link>
@@ -418,27 +454,19 @@ const LandingNavbar = () => {
                     {/* Enlaces adicionales para guest en móvil */}
                     {userRole === 'guest' && (
                       <>
-                        <Link
-                          to="/guest-bookings"
-                          onClick={() => setIsMenuOpen(false)}
-                          className={`flex items-center justify-center w-full px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                            isScrolled 
-                              ? 'text-gray-700 dark:text-gray-200 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30' 
-                              : 'text-white bg-white/20 hover:bg-white/30'
-                          }`}
-                        >
+                          <Link
+                            to="/guest-bookings"
+                            onClick={() => setIsMenuOpen(false)}
+                            className={getMobileActionClasses('bookings')}
+                          >
                           <Calendar className="w-4 h-4 mr-2" />
                           {t('navbar.myBookings')}
                         </Link>
-                        <Link
-                          to="/social"
-                          onClick={() => setIsMenuOpen(false)}
-                          className={`flex items-center justify-center w-full px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                            isScrolled 
-                              ? 'text-gray-700 dark:text-gray-200 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30' 
-                              : 'text-white bg-white/20 hover:bg-white/30'
-                          }`}
-                        >
+                          <Link
+                            to="/social"
+                            onClick={() => setIsMenuOpen(false)}
+                            className={getMobileActionClasses('social')}
+                          >
                           <Users className="w-4 h-4 mr-2" />
                           {t('navbar.social')}
                         </Link>
@@ -446,17 +474,13 @@ const LandingNavbar = () => {
                     )}
 
                     {/* Botón de cerrar sesión */}
-                    <button
-                      onClick={() => {
-                        logout();
-                        setIsMenuOpen(false);
-                      }}
-                      className={`flex items-center justify-center w-full px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                        isScrolled 
-                          ? 'text-gray-700 dark:text-gray-200 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30' 
-                          : 'text-white bg-red-500/20 hover:bg-red-500/30'
-                      }`}
-                    >
+                      <button
+                        onClick={() => {
+                          logout();
+                          setIsMenuOpen(false);
+                        }}
+                        className={getMobileActionClasses('logout')}
+                      >
                       <LogOut className="w-4 h-4 mr-2" />
                       {t('navbar.logout')}
                     </button>
