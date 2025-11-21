@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { LanguageToggleButton } from "../common/LanguageToggleButton";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
-import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star } from "lucide-react";
+import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star, Search, Map, HelpCircle, MessageSquare } from "lucide-react";
 
 const LandingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,12 +55,12 @@ const LandingNavbar = () => {
     });
   }
 
-  const menuItems = [
-    { name: t('navbar.search'), href: "/search" },
-    { name: t('navbar.howItWorks'), href: "#how-it-works" },
-    { name: t('navbar.faq'), href: "#faq" },
-    { name: t('navbar.contact'), href: "#contact" },
-  ];
+    const menuItems = [
+      { name: t('navbar.search'), href: "/search", icon: Search },
+      { name: t('navbar.howItWorks'), href: "#how-it-works", icon: Map },
+      { name: t('navbar.faq'), href: "#faq", icon: HelpCircle },
+      { name: t('navbar.contact'), href: "#contact", icon: MessageSquare },
+    ];
 
   const scrollToSection = (href: string) => {
     if (href.startsWith('#')) {
@@ -114,14 +114,14 @@ const LandingNavbar = () => {
   //   (p) => p.providerId === "google.com"
   // );
 
-  return (
-    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-md' 
-        : isLandingPage 
-          ? 'bg-transparent backdrop-blur-sm'
-          : 'bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-sm'
-    }`}>
+    return (
+      <nav className={`fixed w-full top-0 z-[120] transition-all duration-300 ${
+        isScrolled
+          ? 'bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-md'
+          : isLandingPage
+            ? 'bg-transparent backdrop-blur-sm'
+            : 'bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-sm'
+      }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -136,25 +136,26 @@ const LandingNavbar = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {menuItems.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                    isScrolled
-                      ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                      : isLandingPage
-                        ? 'text-white hover:text-blue-200'
-                        : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                  }`}
-                >
-                  {item.name}
-                </button>
-              ))}
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-4">
+                {menuItems.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => scrollToSection(item.href)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+                      isScrolled
+                        ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                        : isLandingPage
+                          ? 'text-white hover:text-blue-200'
+                          : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                    }`}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    {item.name}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
           {/* User Button and Mobile Menu Button */}
           <div className="flex items-center space-x-4">
@@ -319,7 +320,7 @@ const LandingNavbar = () => {
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden">
+              <div className="md:hidden relative z-[125]">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className={`hover:text-blue-200 focus:outline-none focus:text-blue-200 transition-all duration-300 ${
@@ -337,25 +338,20 @@ const LandingNavbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden">
-          <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 backdrop-blur-md shadow-lg transition-all duration-300 ${
-            isScrolled 
-              ? 'bg-white/95 dark:bg-gray-900/95' 
-              : 'bg-white/20 dark:bg-gray-900/20'
-          }`}>
-            {menuItems.map((item) => (
-                              <button
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden relative z-[125]">
+            <div className="mx-2 mt-2 px-3 pt-3 pb-4 space-y-1 sm:px-4 bg-[#F9FAFB] rounded-2xl shadow-xl border border-gray-100">
+              {menuItems.map((item) => (
+                <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className={`hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 w-full text-left ${
-                    isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
-                  }`}
+                  className="flex items-center gap-3 px-4 py-3 rounded-full text-base font-medium text-gray-800 transition-all duration-300 w-full text-left hover:bg-gray-100"
                 >
+                  <item.icon className="w-5 h-5 text-gray-500" />
                   {item.name}
                 </button>
-            ))}
+              ))}
             {/* Mobile User Button */}
             <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
               {/* Language and Theme Toggle Buttons for Mobile */}
