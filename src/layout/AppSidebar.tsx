@@ -60,7 +60,7 @@ const AppSidebar: React.FC = () => {
   const isSidebarExpanded = isExpanded || isMobile;
 
   return (
-    <div className={`fixed lg:relative inset-y-0 left-0 z-50 bg-white dark:bg-gray-800 min-h-screen shadow-lg transform transition-all duration-300 ease-in-out ${
+    <div className={`fixed lg:relative inset-y-0 left-0 z-50 bg-white dark:bg-gray-800 h-screen lg:min-h-screen overflow-y-auto lg:overflow-y-visible shadow-lg transform transition-all duration-300 ease-in-out ${
       isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     } ${
       isMobile || isExpanded ? 'w-64' : 'w-16'
