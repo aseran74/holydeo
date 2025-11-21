@@ -96,13 +96,6 @@ const AppSidebar: React.FC = () => {
             </div>
           )}
 
-          {/* Logo */}
-          {isSidebarExpanded && (
-            <Link to="/dashboard" className="flex items-center mb-4">
-              <img className="h-8 w-auto object-contain" src="/logotrans.svg" alt="CHISREACT Logo" />
-            </Link>
-          )}
-
           {/* Indicador del rol del usuario */}
           {userRole && isSidebarExpanded && !isMobile && (
             <div className="mb-6 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
