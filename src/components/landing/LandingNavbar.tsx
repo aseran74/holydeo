@@ -115,7 +115,7 @@ const LandingNavbar = () => {
   // );
 
   return (
-    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+    <nav className={`fixed w-full top-0 z-[120] transition-all duration-300 ${
       isScrolled 
         ? 'bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-md' 
         : isLandingPage 
@@ -319,7 +319,7 @@ const LandingNavbar = () => {
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden">
+              <div className="md:hidden relative z-[125]">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className={`hover:text-blue-200 focus:outline-none focus:text-blue-200 transition-all duration-300 ${
@@ -339,7 +339,7 @@ const LandingNavbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden">
+        <div className="md:hidden relative z-[125]">
           <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 backdrop-blur-md shadow-lg transition-all duration-300 ${
             isScrolled 
               ? 'bg-white/95 dark:bg-gray-900/95' 
