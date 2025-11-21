@@ -341,16 +341,14 @@ const LandingNavbar = () => {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden relative z-[125]">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 backdrop-blur-md shadow-lg transition-all duration-300 bg-[#AAC2FD] dark:bg-[#9AB4FB]">
+            <div className="mx-2 mt-2 px-3 pt-3 pb-4 space-y-1 sm:px-4 bg-[#F9FAFB] rounded-2xl shadow-xl border border-gray-100">
               {menuItems.map((item) => (
                 <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium transition-all duration-300 w-full text-left ${
-                    isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
-                  }`}
+                  className="flex items-center gap-3 px-4 py-3 rounded-full text-base font-medium text-gray-800 transition-all duration-300 w-full text-left hover:bg-gray-100"
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className="w-5 h-5 text-gray-500" />
                   {item.name}
                 </button>
               ))}
