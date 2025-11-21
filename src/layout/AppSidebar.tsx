@@ -57,7 +57,14 @@ const AppSidebar: React.FC = () => {
     { name: 'Testimonios', href: '/admin/testimonials', icon: Star },
   ];
 
-    const isSidebarExpanded = isExpanded || isMobile;
+  const isSidebarExpanded = isExpanded || isMobile;
+  const containerPadding = isSidebarExpanded
+    ? isMobile
+      ? 'p-4 pt-12'
+      : 'p-6 pt-20 lg:pt-6'
+    : isMobile
+    ? 'p-2 pt-10'
+    : 'p-3 pt-20 lg:pt-3';
 
   return (
     <div
@@ -69,10 +76,8 @@ const AppSidebar: React.FC = () => {
         height: isMobile ? '100dvh' : undefined,
       }}
     >
-      <div
-        className={`${
-          isSidebarExpanded ? 'p-6 pt-20 lg:pt-6' : 'p-3 pt-20 lg:pt-3'
-        } transition-all duration-300 h-full flex flex-col min-h-0`}
+        <div
+          className={`${containerPadding} transition-all duration-300 h-full flex flex-col min-h-0`}
       >
           {/* Botón de colapsar/expandir */}
           {!isMobile && (
@@ -93,13 +98,13 @@ const AppSidebar: React.FC = () => {
 
           {/* Logo */}
           {isSidebarExpanded && (
-            <Link to="/dashboard" className="flex items-center mb-6">
+            <Link to="/dashboard" className="flex items-center mb-4">
               <img className="h-8 w-auto object-contain" src="/logotrans.svg" alt="CHISREACT Logo" />
             </Link>
           )}
 
           {/* Indicador del rol del usuario */}
-          {userRole && isSidebarExpanded && (
+          {userRole && isSidebarExpanded && !isMobile && (
             <div className="mb-6 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
               <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1">
                 Rol del Usuario
@@ -134,7 +139,7 @@ const AppSidebar: React.FC = () => {
           )}
 
           {/* Indicador colapsado del rol */}
-          {userRole && !isSidebarExpanded && (
+          {userRole && !isSidebarExpanded && !isMobile && (
             <div className="mb-6 flex justify-center">
               <div
                 className={`w-3 h-3 rounded-full ${
@@ -164,10 +169,10 @@ const AppSidebar: React.FC = () => {
           )}
 
         <div
-          className="mt-4 flex-1 overflow-y-auto min-h-0 touch-pan-y overscroll-contain"
+          className="mt-2 flex-1 overflow-y-auto min-h-0 touch-pan-y overscroll-contain"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
-            <nav className="space-y-2 pb-10">
+          <nav className="space-y-2 pb-24">
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
