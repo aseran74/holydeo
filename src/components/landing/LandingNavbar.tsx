@@ -114,14 +114,16 @@ const LandingNavbar = () => {
   //   (p) => p.providerId === "google.com"
   // );
 
-  return (
-    <nav className={`fixed w-full top-0 z-[120] transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-md' 
-        : isLandingPage 
-          ? 'bg-transparent backdrop-blur-sm'
-          : 'bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-sm'
-    }`}>
+    return (
+      <nav className={`fixed w-full top-0 z-[120] transition-all duration-300 ${
+        isLandingPage
+          ? (isScrolled
+              ? 'bg-[#AAC2FD]/95 shadow-lg backdrop-blur-md border-b border-white/30'
+              : 'bg-[#AAC2FD]/85 shadow-lg backdrop-blur-md border-b border-white/20')
+          : isScrolled
+            ? 'bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-md'
+            : 'bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-sm'
+      }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -143,10 +145,10 @@ const LandingNavbar = () => {
                     key={item.name}
                     onClick={() => scrollToSection(item.href)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 shadow-sm ${
-                      isScrolled
-                        ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800/60'
-                        : isLandingPage
-                          ? 'text-white hover:text-blue-200 hover:bg-white/10'
+                      isLandingPage
+                        ? 'bg-white/50 text-gray-900 hover:bg-white/70 dark:text-gray-900'
+                        : isScrolled
+                          ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800/60'
                           : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800/60'
                     }`}
                   >
@@ -342,26 +344,18 @@ const LandingNavbar = () => {
         {isMenuOpen && (
           <div className="md:hidden relative z-[125]">
             <div
-              className={`mx-2 mt-2 px-3 pt-3 pb-4 space-y-1 sm:px-4 backdrop-blur-md shadow-2xl border transition-all duration-300 rounded-2xl ${
-                isScrolled
-                  ? 'bg-white/95 dark:bg-gray-900/95 border-gray-200 dark:border-gray-700/60'
-                  : 'bg-white/15 dark:bg-gray-900/30 border-white/30 dark:border-gray-700/60'
-              }`}
+              className="mx-2 mt-2 px-3 pt-3 pb-4 space-y-1 sm:px-4 backdrop-blur-md shadow-2xl border transition-all duration-300 rounded-2xl bg-[#AAC2FD] dark:bg-[#9AB4FB] border-[#91ACFA]"
             >
-              {menuItems.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-full text-base font-medium transition-all duration-300 w-full text-left ${
-                    isScrolled
-                      ? 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60'
-                      : 'text-white hover:bg-white/20'
-                  }`}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.name}
-                </button>
-              ))}
+                {menuItems.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => scrollToSection(item.href)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-full text-base font-medium transition-all duration-300 w-full text-left text-gray-900 dark:text-gray-900 hover:bg-white/50 dark:hover:bg-white/40"
+                  >
+                    <item.icon className="w-5 h-5" />
+                    {item.name}
+                  </button>
+                ))}
             {/* Mobile User Button */}
             <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
               {/* Language and Theme Toggle Buttons for Mobile */}
