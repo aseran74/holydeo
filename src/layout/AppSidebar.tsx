@@ -59,17 +59,17 @@ const AppSidebar: React.FC = () => {
 
     const isSidebarExpanded = isExpanded || isMobile;
 
-    return (
+  return (
+    <div
+      className={`fixed lg:relative inset-y-0 left-0 z-50 bg-white dark:bg-gray-800 h-screen lg:min-h-screen overflow-y-auto lg:overflow-visible shadow-lg transform transition-all duration-300 ease-in-out ${
+        isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      } ${isMobile || isExpanded ? 'w-64' : 'w-16'}`}
+    >
       <div
-        className={`fixed lg:relative inset-y-0 left-0 z-50 bg-white dark:bg-gray-800 h-screen lg:min-h-screen overflow-hidden lg:overflow-visible shadow-lg transform transition-all duration-300 ease-in-out ${
-          isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        } ${isMobile || isExpanded ? 'w-64' : 'w-16'}`}
+        className={`${
+          isSidebarExpanded ? 'p-6 pt-20 lg:pt-6' : 'p-3 pt-20 lg:pt-3'
+        } transition-all duration-300 h-full flex flex-col min-h-0`}
       >
-        <div
-          className={`${
-            isSidebarExpanded ? 'p-6 pt-20 lg:pt-6' : 'p-3 pt-20 lg:pt-3'
-          } transition-all duration-300 h-full flex flex-col`}
-        >
           {/* Botón de colapsar/expandir */}
           {!isMobile && (
             <div className="flex justify-end mb-4">
@@ -159,7 +159,7 @@ const AppSidebar: React.FC = () => {
             </div>
           )}
 
-          <div className="mt-4 flex-1 overflow-y-auto">
+        <div className="mt-4 flex-1 overflow-y-auto min-h-0">
             <nav className="space-y-2 pb-10">
               {navigationItems.map((item) => (
                 <Link
