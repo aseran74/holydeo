@@ -4,12 +4,13 @@ import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { LanguageToggleButton } from "../common/LanguageToggleButton";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
-import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star } from "lucide-react";
+import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star, Search, HelpCircle, Phone, MapPin, CreditCard, CheckCircle, Info, MessageCircle, Mail, Globe, FileText, Briefcase, TrendingUp, Shield } from "lucide-react";
 
 const LandingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const { currentUser, logout, userRole } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
@@ -29,20 +30,21 @@ const LandingNavbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Efecto para cerrar el dropdown del avatar cuando se haga clic fuera
+  // Efecto para cerrar los dropdowns cuando se haga clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isAvatarDropdownOpen) {
-        const target = event.target as Element;
-        if (!target.closest('.avatar-dropdown')) {
-          setIsAvatarDropdownOpen(false);
-        }
+      const target = event.target as Element;
+      if (isAvatarDropdownOpen && !target.closest('.avatar-dropdown')) {
+        setIsAvatarDropdownOpen(false);
+      }
+      if (openDropdown && !target.closest('.menu-dropdown')) {
+        setOpenDropdown(null);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isAvatarDropdownOpen]);
+  }, [isAvatarDropdownOpen, openDropdown]);
 
   // Debug temporal para ver los datos del usuario
   if (currentUser) {
@@ -55,11 +57,124 @@ const LandingNavbar = () => {
     });
   }
 
+  // Submenús con iconos y descripciones
   const menuItems = [
-    { name: t('navbar.search'), href: "/search" },
-    { name: t('navbar.howItWorks'), href: "#how-it-works" },
-    { name: t('navbar.faq'), href: "#faq" },
-    { name: t('navbar.contact'), href: "#contact" },
+    { 
+      name: t('navbar.search'), 
+      href: "/search",
+      icon: Search,
+      description: "Busca propiedades y experiencias"
+    },
+    { 
+      name: t('navbar.howItWorks'), 
+      href: "#how-it-works",
+      icon: Info,
+      description: "Conoce cómo funciona",
+      submenu: [
+        { 
+          name: "Explora y elige", 
+          href: "#how-it-works",
+          icon: MapPin,
+          description: "Filtra por ubicación, duración y tipo"
+        },
+        { 
+          name: "Reserva fácil", 
+          href: "#how-it-works",
+          icon: CreditCard,
+          description: "Selecciona fechas y completa el pago"
+        },
+        { 
+          name: "Disfruta tu estancia", 
+          href: "#how-it-works",
+          icon: CheckCircle,
+          description: "Todo listo para tu llegada"
+        }
+      ]
+    },
+    { 
+      name: t('navbar.agencies'), 
+      href: "/agencias-colaboradoras",
+      icon: Briefcase,
+      description: "Agencias colaboradoras",
+      submenu: [
+        { 
+          name: "Ver agencias", 
+          href: "/agencias-colaboradoras",
+          icon: Building2,
+          description: "Lista de agencias colaboradoras"
+        },
+        { 
+          name: "Ser agente", 
+          href: "#contact",
+          icon: TrendingUp,
+          description: "Únete como agente inmobiliario"
+        },
+        { 
+          name: "Ventajas", 
+          href: "/agencias-colaboradoras",
+          icon: Shield,
+          description: "Beneficios para agencias"
+        }
+      ]
+    },
+    { 
+      name: t('navbar.faq'), 
+      href: "#faq",
+      icon: HelpCircle,
+      description: "Preguntas frecuentes",
+      submenu: [
+        { 
+          name: "Reservas", 
+          href: "#faq",
+          icon: Calendar,
+          description: "Cómo reservar y cancelar"
+        },
+        { 
+          name: "Pagos", 
+          href: "#faq",
+          icon: CreditCard,
+          description: "Métodos de pago aceptados"
+        },
+        { 
+          name: "Propiedades", 
+          href: "#faq",
+          icon: Home,
+          description: "Información sobre propiedades"
+        },
+        { 
+          name: "Soporte", 
+          href: "#faq",
+          icon: MessageCircle,
+          description: "Ayuda y soporte técnico"
+        }
+      ]
+    },
+    { 
+      name: t('navbar.contact'), 
+      href: "#contact",
+      icon: Phone,
+      description: "Contáctanos",
+      submenu: [
+        { 
+          name: "Email", 
+          href: "#contact",
+          icon: Mail,
+          description: "contacto@holydeo.com"
+        },
+        { 
+          name: "Teléfono", 
+          href: "#contact",
+          icon: Phone,
+          description: "+34 XXX XXX XXX"
+        },
+        { 
+          name: "Formulario", 
+          href: "#contact",
+          icon: FileText,
+          description: "Envíanos un mensaje"
+        }
+      ]
+    },
   ];
 
   const scrollToSection = (href: string) => {
@@ -137,22 +252,84 @@ const LandingNavbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {menuItems.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                    isScrolled
-                      ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                      : isLandingPage
-                        ? 'text-white hover:text-blue-200'
-                        : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                  }`}
-                >
-                  {item.name}
-                </button>
-              ))}
+            <div className="ml-10 flex items-center space-x-1">
+              {menuItems.map((item) => {
+                const IconComponent = item.icon;
+                const hasSubmenu = item.submenu && item.submenu.length > 0;
+                
+                return (
+                  <div key={item.name} className="relative menu-dropdown">
+                    <button
+                      onClick={() => {
+                        if (hasSubmenu) {
+                          setOpenDropdown(openDropdown === item.name ? null : item.name);
+                        } else {
+                          scrollToSection(item.href);
+                        }
+                      }}
+                      className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center gap-1.5 ${
+                        isScrolled
+                          ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                          : isLandingPage
+                            ? 'text-white hover:text-blue-200'
+                            : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                      }`}
+                    >
+                      <IconComponent className="w-4 h-4" />
+                      <span>{item.name}</span>
+                      {hasSubmenu && (
+                        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${
+                          openDropdown === item.name ? 'rotate-180' : ''
+                        }`} />
+                      )}
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {hasSubmenu && openDropdown === item.name && (
+                      <div className="absolute top-full left-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
+                        <div className="p-4">
+                          <div className="mb-3">
+                            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
+                              {item.name}
+                            </h3>
+                          </div>
+                          <div className="space-y-1">
+                            {item.submenu?.map((subItem, index) => {
+                              const SubIconComponent = subItem.icon;
+                              return (
+                                <button
+                                  key={index}
+                                  onClick={() => {
+                                    scrollToSection(subItem.href);
+                                    setOpenDropdown(null);
+                                  }}
+                                  className="w-full text-left p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 group"
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <div className="flex-shrink-0 mt-0.5">
+                                      <SubIconComponent className="w-5 h-5 text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                                          {subItem.name}
+                                        </span>
+                                      </div>
+                                      <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                                        {subItem.description}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -345,17 +522,71 @@ const LandingNavbar = () => {
               ? 'bg-white/95 dark:bg-gray-900/95' 
               : 'bg-white/20 dark:bg-gray-900/20'
           }`}>
-            {menuItems.map((item) => (
-                              <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 w-full text-left ${
-                    isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
-                  }`}
-                >
-                  {item.name}
-                </button>
-            ))}
+            {menuItems.map((item) => {
+              const IconComponent = item.icon;
+              const hasSubmenu = item.submenu && item.submenu.length > 0;
+              const isSubmenuOpen = openDropdown === item.name;
+              
+              return (
+                <div key={item.name}>
+                  <button
+                    onClick={() => {
+                      if (hasSubmenu) {
+                        setOpenDropdown(isSubmenuOpen ? null : item.name);
+                      } else {
+                        scrollToSection(item.href);
+                        setIsMenuOpen(false);
+                      }
+                    }}
+                    className={`hover:text-blue-200 flex items-center justify-between w-full px-3 py-2 rounded-md text-base font-medium transition-all duration-300 text-left ${
+                      isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <IconComponent className="w-5 h-5" />
+                      <span>{item.name}</span>
+                    </div>
+                    {hasSubmenu && (
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                        isSubmenuOpen ? 'rotate-180' : ''
+                      }`} />
+                    )}
+                  </button>
+                  
+                  {/* Mobile Submenu */}
+                  {hasSubmenu && isSubmenuOpen && (
+                    <div className="ml-4 mt-1 space-y-1 border-l-2 border-blue-200 dark:border-blue-800 pl-4">
+                      {item.submenu?.map((subItem, index) => {
+                        const SubIconComponent = subItem.icon;
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              scrollToSection(subItem.href);
+                              setIsMenuOpen(false);
+                              setOpenDropdown(null);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-md transition-all duration-300 ${
+                              isScrolled 
+                                ? 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800' 
+                                : 'text-white/90 hover:bg-white/10'
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <SubIconComponent className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <div className="text-sm font-medium mb-0.5">{subItem.name}</div>
+                                <div className="text-xs opacity-80">{subItem.description}</div>
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
             {/* Mobile User Button */}
             <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
               {/* Language and Theme Toggle Buttons for Mobile */}

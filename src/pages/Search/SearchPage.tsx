@@ -96,10 +96,10 @@ const SearchPage = () => {
   }, [searchType, results.properties, results.experiences]);
 
   // Estilo del contenedor del mapa optimizado con useMemo
+  // La altura se controla principalmente con clases de Tailwind para mejor responsividad
   const mapContainerStyle = useMemo(() => ({
     width: "100%",
-    height: "70vh",
-    minHeight: "500px"
+    height: "100%"
   }), []);
 
   // Centro del mapa por defecto
@@ -582,7 +582,7 @@ const SearchPage = () => {
       <SearchNavbar />
 
       {/* Contenido principal */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-8 pt-24">
+      <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-16 py-8 pt-24">
         {/* Mensaje de redirección */}
         {showRedirectMessage && (
           <RedirectNotification
@@ -648,7 +648,7 @@ const SearchPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
           {/* Sidebar de filtros */}
           <div className="w-full lg:w-72 lg:flex-shrink-0">
             <EnhancedSearchFilters
@@ -799,14 +799,14 @@ const SearchPage = () => {
                // Vista del mapa
                <div className="mb-8 rounded-lg overflow-hidden shadow md:relative" style={{ maxWidth: '100%', overflow: 'hidden' }}>
                  {!isLoaded ? (
-                   <div className="flex items-center justify-center h-96 md:h-[700px] min-h-screen md:min-h-0 bg-gray-100">
+                   <div className="flex items-center justify-center h-[90vh] md:h-[700px] min-h-[90vh] md:min-h-0 bg-gray-100">
                      <div className="text-center">
                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                        <p className="text-gray-600">Cargando mapa...</p>
                      </div>
                    </div>
                  ) : loadError ? (
-                   <div className="flex items-center justify-center h-96 md:h-[700px] min-h-screen md:min-h-0 bg-gray-100">
+                   <div className="flex items-center justify-center h-[90vh] md:h-[700px] min-h-[90vh] md:min-h-0 bg-gray-100">
                      <div className="text-center text-red-600">
                        <p>Error al cargar el mapa</p>
                        <p className="text-sm">{loadError.message}</p>
@@ -816,7 +816,7 @@ const SearchPage = () => {
                    <>
                      <GoogleMap
                        mapContainerStyle={mapContainerStyle}
-                       mapContainerClassName="md:!h-[500px] md:!min-h-0"
+                       mapContainerClassName="!h-[90vh] !min-h-[90vh] md:!h-[500px] md:!min-h-[500px]"
                        onLoad={onLoadMap}
                        center={defaultCenter}
                        zoom={6}
