@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { LanguageToggleButton } from "../common/LanguageToggleButton";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
-import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star, Search, HelpCircle, Phone, MapPin, CreditCard, CheckCircle, Info, MessageCircle, Mail, Globe, FileText, Briefcase, TrendingUp, Shield } from "lucide-react";
+import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star, Search, HelpCircle, Phone, MapPin, CreditCard, CheckCircle, Info, MessageCircle, Mail, FileText, Briefcase, TrendingUp, Shield } from "lucide-react";
 
 const LandingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
