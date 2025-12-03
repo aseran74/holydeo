@@ -92,7 +92,7 @@ const LandingNavbar = () => {
       ]
     },
     { 
-      name: t('navbar.agencies'), 
+      name: "Agencias", 
       href: "/agencias-colaboradoras",
       icon: Briefcase,
       description: "Agencias colaboradoras",
