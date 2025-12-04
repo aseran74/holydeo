@@ -30,7 +30,7 @@ const ReservationProcessPage = () => {
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-block mb-6 animate-bounce">
               <img
-                src="/logotrans-white.svg"
+                src="/logotrans.svg"
                 alt="Holydeo Logo"
                 className="h-20 w-auto max-w-[200px] object-contain drop-shadow-lg"
               />
