@@ -195,16 +195,18 @@ const LandingHero = () => {
                   >
                     <path 
                       d="M2 11.1455C41.2483 3.32203 162.656 -5.3339 228 15.493" 
-                      stroke="#60A5FA" // Este es el color 'blue-400' de Tailwind
-                      strokeWidth="4" 
+                      stroke="#3B82F6" // Color blue-500 más intenso
+                      strokeWidth="6" 
                       strokeLinecap="round"
+                      strokeLinejoin="round"
                       className={`transition-all duration-1500 ease-in-out ${
                         showUnderline ? 'stroke-dasharray-300 stroke-dashoffset-0' : 'stroke-dasharray-300 stroke-dashoffset-300'
                       }`}
                       style={{
                         strokeDasharray: 300,
                         strokeDashoffset: showUnderline ? 0 : 300,
-                        transform: `translateX(${scrollY * 0.1}px)`
+                        transform: `translateX(${scrollY * 0.1}px)`,
+                        filter: 'drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3))'
                       }}
                     />
                   </svg>
@@ -219,7 +221,7 @@ const LandingHero = () => {
             </p>
 
             {/* Buscador */}
-            <div className="w-full max-w-4xl mx-auto relative z-50">
+            <div className="w-full max-w-4xl mx-auto relative z-10">
               <LandingSearchForm />
             </div>
 

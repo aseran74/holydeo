@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { LanguageToggleButton } from "../common/LanguageToggleButton";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
-import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star, Search, HelpCircle, Phone, MapPin, CreditCard, CheckCircle, Info, MessageCircle, Mail, FileText, Briefcase, TrendingUp, Shield } from "lucide-react";
+import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star, Search, HelpCircle, MapPin, CreditCard, CheckCircle, Info, MessageCircle, Briefcase, TrendingUp, Shield } from "lucide-react";
 
 const LandingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -73,19 +73,19 @@ const LandingNavbar = () => {
       submenu: [
         { 
           name: "Explora y elige", 
-          href: "#how-it-works",
+          href: "/search",
           icon: MapPin,
           description: "Filtra por ubicación, duración y tipo"
         },
         { 
           name: "Reserva fácil", 
-          href: "#how-it-works",
+          href: "/reserva-facil",
           icon: CreditCard,
           description: "Selecciona fechas y completa el pago"
         },
         { 
           name: "Disfruta tu estancia", 
-          href: "#how-it-works",
+          href: "/disfruta-tu-estancia",
           icon: CheckCircle,
           description: "Todo listo para tu llegada"
         }
@@ -105,13 +105,13 @@ const LandingNavbar = () => {
         },
         { 
           name: "Ser agente", 
-          href: "#contact",
+          href: "/ser-agente",
           icon: TrendingUp,
           description: "Únete como agente inmobiliario"
         },
         { 
           name: "Ventajas", 
-          href: "/agencias-colaboradoras",
+          href: "/ventajas-agente",
           icon: Shield,
           description: "Beneficios para agencias"
         }
@@ -146,32 +146,6 @@ const LandingNavbar = () => {
           href: "#faq",
           icon: MessageCircle,
           description: "Ayuda y soporte técnico"
-        }
-      ]
-    },
-    { 
-      name: t('navbar.contact'), 
-      href: "#contact",
-      icon: Phone,
-      description: "Contáctanos",
-      submenu: [
-        { 
-          name: "Email", 
-          href: "#contact",
-          icon: Mail,
-          description: "contacto@holydeo.com"
-        },
-        { 
-          name: "Teléfono", 
-          href: "#contact",
-          icon: Phone,
-          description: "+34 XXX XXX XXX"
-        },
-        { 
-          name: "Formulario", 
-          href: "#contact",
-          icon: FileText,
-          description: "Envíanos un mensaje"
         }
       ]
     },
@@ -516,12 +490,8 @@ const LandingNavbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden">
-          <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 backdrop-blur-md shadow-lg transition-all duration-300 ${
-            isScrolled 
-              ? 'bg-white/95 dark:bg-gray-900/95' 
-              : 'bg-white/20 dark:bg-gray-900/20'
-          }`}>
+        <div className="md:hidden fixed inset-x-0 top-16 z-[100] bg-white dark:bg-gray-900 shadow-xl rounded-b-3xl">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 transition-all duration-300">
             {menuItems.map((item) => {
               const IconComponent = item.icon;
               const hasSubmenu = item.submenu && item.submenu.length > 0;
@@ -538,9 +508,7 @@ const LandingNavbar = () => {
                         setIsMenuOpen(false);
                       }
                     }}
-                    className={`hover:text-blue-200 flex items-center justify-between w-full px-3 py-2 rounded-md text-base font-medium transition-all duration-300 text-left ${
-                      isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
-                    }`}
+                    className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-base font-bold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 text-left border border-gray-200 dark:border-gray-700"
                   >
                     <div className="flex items-center gap-2">
                       <IconComponent className="w-5 h-5" />
@@ -555,7 +523,7 @@ const LandingNavbar = () => {
                   
                   {/* Mobile Submenu */}
                   {hasSubmenu && isSubmenuOpen && (
-                    <div className="ml-4 mt-1 space-y-1 border-l-2 border-blue-200 dark:border-blue-800 pl-4">
+                    <div className="ml-4 mt-2 space-y-2 border-l-2 border-blue-200 dark:border-blue-800 pl-4">
                       {item.submenu?.map((subItem, index) => {
                         const SubIconComponent = subItem.icon;
                         return (
@@ -566,17 +534,13 @@ const LandingNavbar = () => {
                               setIsMenuOpen(false);
                               setOpenDropdown(null);
                             }}
-                            className={`w-full text-left px-3 py-2 rounded-md transition-all duration-300 ${
-                              isScrolled 
-                                ? 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800' 
-                                : 'text-white/90 hover:bg-white/10'
-                            }`}
+                            className="w-full text-left px-4 py-3 rounded-xl transition-all duration-300 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700"
                           >
                             <div className="flex items-start gap-3">
-                              <SubIconComponent className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                              <SubIconComponent className="w-5 h-5 mt-0.5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
                               <div>
-                                <div className="text-sm font-medium mb-0.5">{subItem.name}</div>
-                                <div className="text-xs opacity-80">{subItem.description}</div>
+                                <div className="text-sm font-bold mb-1">{subItem.name}</div>
+                                <div className="text-xs text-gray-600 dark:text-gray-400">{subItem.description}</div>
                               </div>
                             </div>
                           </button>
@@ -606,12 +570,10 @@ const LandingNavbar = () => {
                           className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
                         />
                       ) : (
-                        <User className={`w-5 h-5 ${isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'}`} />
+                        <User className="w-5 h-5 text-gray-700 dark:text-gray-200" />
                       )}
                       <div className="flex flex-col">
-                        <span className={`text-sm font-medium transition-all duration-300 ${
-                          isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
-                        }`}>
+                        <span className="text-sm font-bold text-gray-900 dark:text-white transition-all duration-300">
                           {currentUser.displayName || currentUser.email?.split('@')[0] || t('navbar.user')}
                         </span>
                         {userRole && (
@@ -636,11 +598,7 @@ const LandingNavbar = () => {
                     <Link
                       to={getDashboardRoute()}
                       onClick={() => setIsMenuOpen(false)}
-                      className={`flex items-center justify-center w-full px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                        isScrolled 
-                          ? 'text-gray-700 dark:text-gray-200 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30' 
-                          : 'text-white bg-white/20 hover:bg-white/30'
-                      }`}
+                      className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all duration-300 border border-blue-200 dark:border-blue-800"
                     >
                       <Home className="w-4 h-4 mr-2" />
                       {getDashboardName()}
@@ -652,11 +610,7 @@ const LandingNavbar = () => {
                         <Link
                           to="/guest-bookings"
                           onClick={() => setIsMenuOpen(false)}
-                          className={`flex items-center justify-center w-full px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                            isScrolled 
-                              ? 'text-gray-700 dark:text-gray-200 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30' 
-                              : 'text-white bg-white/20 hover:bg-white/30'
-                          }`}
+                          className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition-all duration-300 border border-green-200 dark:border-green-800"
                         >
                           <Calendar className="w-4 h-4 mr-2" />
                           {t('navbar.myBookings')}
@@ -664,11 +618,7 @@ const LandingNavbar = () => {
                         <Link
                           to="/social"
                           onClick={() => setIsMenuOpen(false)}
-                          className={`flex items-center justify-center w-full px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                            isScrolled 
-                              ? 'text-gray-700 dark:text-gray-200 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30' 
-                              : 'text-white bg-white/20 hover:bg-white/30'
-                          }`}
+                          className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-all duration-300 border border-purple-200 dark:border-purple-800"
                         >
                           <Users className="w-4 h-4 mr-2" />
                           {t('navbar.social')}
@@ -682,11 +632,7 @@ const LandingNavbar = () => {
                         logout();
                         setIsMenuOpen(false);
                       }}
-                      className={`flex items-center justify-center w-full px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                        isScrolled 
-                          ? 'text-gray-700 dark:text-gray-200 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30' 
-                          : 'text-white bg-red-500/20 hover:bg-red-500/30'
-                      }`}
+                      className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 transition-all duration-300 border border-red-200 dark:border-red-800"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
                       {t('navbar.logout')}
@@ -696,21 +642,13 @@ const LandingNavbar = () => {
                   <div className="flex flex-col space-y-2">
                     <Link
                       to="/register"
-                      className={`px-3 py-2 rounded-md text-base font-medium text-center transition-all duration-300 ${
-                        isScrolled
-                          ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                          : 'text-white hover:text-blue-200'
-                      }`}
+                      className="px-4 py-3 rounded-xl text-base font-bold text-center text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 border border-gray-200 dark:border-gray-700"
                     >
                       {t('navbar.register')}
                     </Link>
                     <Link
                       to="/login"
-                      className={`px-3 py-2 rounded-md text-base font-medium bg-blue-600 text-white hover:bg-blue-700 text-center transition-all duration-300 ${
-                        isScrolled
-                          ? 'hover:bg-blue-700'
-                          : 'hover:bg-blue-700'
-                      }`}
+                      className="px-4 py-3 rounded-xl text-base font-bold bg-blue-600 text-white hover:bg-blue-700 text-center transition-all duration-300 border border-blue-700"
                     >
                       {t('navbar.login')}
                     </Link>

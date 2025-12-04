@@ -25,6 +25,7 @@ const LandingFooter = () => {
     ],
     empresa: [
       { name: 'Sobre Nosotros', href: '/about' },
+      { name: 'Agencias Colaboradoras', href: '/agencias-colaboradoras' },
       { name: 'Nuestro Equipo', href: '/team' },
       { name: 'Carreras', href: '/careers' },
       { name: 'Prensa', href: '/press' }

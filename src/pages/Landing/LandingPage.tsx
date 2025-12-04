@@ -10,7 +10,6 @@ import LandingNavbar from "../../components/landing/LandingNavbar";
 import LandingHero from "../../components/landing/LandingHero";
 import HowItWorks from "../../components/landing/HowItWorks";
 import FAQ from "../../components/landing/FAQ";
-import ContactSection from "../../components/landing/ContactSection";
 import LandingFooter from "../../components/landing/LandingFooter";
 import FeaturedSection from "../../components/shared/FeaturedSection";
 import PublicPropertyCard from "../../components/common/PublicPropertyCard";
@@ -232,10 +231,6 @@ const LandingPage = () => {
             
             <div id="faq" className="bg-gray-50 dark:bg-gray-900">
                 <FAQ />
-            </div>
-
-            <div id="contact" className="bg-white dark:bg-gray-800">
-                <ContactSection />
             </div>
 
             <LandingFooter />

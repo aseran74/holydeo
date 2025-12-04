@@ -9,6 +9,11 @@ import PublicExperienceDetails from './pages/Experiences/PublicExperienceDetails
 import ExperienceForm from './pages/Experiences/ExperienceForm';
 import Bookings from './pages/Bookings/Bookings';
 import Agencies from './pages/Agencies/Agencies';
+import PublicAgenciesPage from './pages/Agencies/PublicAgenciesPage';
+import BecomeAgentPage from './pages/Agencies/BecomeAgentPage';
+import AgentAdvantagesPage from './pages/Agencies/AgentAdvantagesPage';
+import ReservationProcessPage from './pages/HowItWorks/ReservationProcessPage';
+import EnjoyStayPage from './pages/HowItWorks/EnjoyStayPage';
 import Agents from './pages/Agents/Agents';
 import Owners from './pages/Owners/Owners';
 import AdminDashboard from './pages/Dashboard/AdminDashboard';
@@ -57,6 +62,21 @@ function App() {
           
           {/* Public Experience Details Routes (accessible from landing page) */}
           <Route path="/experiences/:id" element={<PublicExperienceDetails />} />
+          
+          {/* Public Agencies Page */}
+          <Route path="/agencias-colaboradoras" element={<PublicAgenciesPage />} />
+          
+          {/* Become Agent Page */}
+          <Route path="/ser-agente" element={<BecomeAgentPage />} />
+          
+          {/* Agent Advantages Page */}
+          <Route path="/ventajas-agente" element={<AgentAdvantagesPage />} />
+          
+          {/* Reservation Process Page */}
+          <Route path="/reserva-facil" element={<ReservationProcessPage />} />
+          
+          {/* Enjoy Stay Page */}
+          <Route path="/disfruta-tu-estancia" element={<EnjoyStayPage />} />
           
           {/* Dashboard Routes */}
           <Route path="/dashboard" element={
