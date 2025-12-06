@@ -4,6 +4,7 @@ import { supabase } from "../../supabaseClient";
 import { Property, Experience } from "../../types";
 import { featuredPropertiesExample } from "../../data/mockData";
 import { useLanguage } from "../../context/LanguageContext";
+import { Presentation } from "lucide-react";
 
 // Importa tus componentes
 import LandingNavbar from "../../components/landing/LandingNavbar";
@@ -234,6 +235,20 @@ const LandingPage = () => {
             </div>
 
             <LandingFooter />
+
+            {/* Botón flotante para presentación pre-seed */}
+            <a
+                href="https://holydeo.my.canva.site/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group"
+                aria-label="Ver presentación pre-seed"
+            >
+                <Presentation className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                <span className="hidden sm:inline-block text-sm font-medium pr-2">
+                    Pre-seed
+                </span>
+            </a>
         </div>
     );
 };
