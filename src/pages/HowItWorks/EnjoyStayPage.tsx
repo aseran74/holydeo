@@ -32,13 +32,13 @@ const EnjoyStayPage = () => {
       <LandingNavbar />
       
       {/* Hero Section - Rehecho desde cero */}
-      <section className="relative w-full overflow-hidden bg-gray-900 text-white min-h-[150vh] h-[150vh] md:min-h-[180vh] md:h-[180vh]">
+      <section className="relative w-full overflow-hidden bg-gray-900 text-white min-h-[100vh] h-[100vh] md:min-h-[180vh] md:h-[180vh]">
         {/* Fondo negro base */}
-        <div className="absolute inset-0 bg-black z-0"></div>
+        <div className="absolute inset-0 bg-black z-0 pointer-events-none"></div>
         
         {/* Capa 1 - Fondo de estrellas (estrellas.jpg) - detrás de la casa con efecto parallax */}
         <div 
-          className="absolute inset-0 z-10"
+          className="absolute inset-0 z-10 pointer-events-none"
           style={{
             transform: `translateY(${scrollY * 0.3}px)`,
             transition: 'transform 0.1s ease-out'
@@ -52,7 +52,7 @@ const EnjoyStayPage = () => {
         </div>
         
         {/* Capa 2 - Casa moderna (fondo1) - encima de las estrellas, ocupa toda la página */}
-        <div className="absolute inset-0 z-20">
+        <div className="absolute inset-0 z-20 pointer-events-none">
           {/* Imagen para desktop */}
           <img 
             src="/fondo1.png"
@@ -72,7 +72,7 @@ const EnjoyStayPage = () => {
         
         {/* Capa 3 - Luna (fondo3) - z-index detrás de la casa pero encima de las estrellas con efecto parallax horizontal */}
         <div 
-          className="absolute inset-0 flex items-start justify-center pt-8 md:pt-4" 
+          className="absolute inset-0 flex items-start justify-center pt-8 md:pt-4 pointer-events-none" 
           style={{ 
             zIndex: 15,
             transform: `translateX(${-scrollY * 0.3}px)`,
@@ -92,11 +92,11 @@ const EnjoyStayPage = () => {
         </div>
         
         {/* Overlay oscuro adicional para mayor efecto nocturno */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/50 via-transparent to-black/70"></div>
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/50 via-transparent to-black/70 pointer-events-none"></div>
         
         {/* Contenido del hero */}
-        <div className="relative z-40">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+        <div className="relative z-40 pointer-events-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32">
             <div className="text-center max-w-4xl mx-auto">
               <div className="inline-block bg-white/20 backdrop-blur-sm rounded-full p-3 mb-6">
                 <img 
@@ -105,10 +105,10 @@ const EnjoyStayPage = () => {
                   className="h-12 w-auto object-contain"
                 />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
                 Disfruta tu estancia
               </h1>
-              <p className="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto">
+              <p className="text-base md:text-xl lg:text-2xl text-purple-100 max-w-3xl mx-auto">
                 Te ofrecemos mucho más que un alojamiento: te abrimos la puerta a una experiencia completa.
               </p>
             </div>
