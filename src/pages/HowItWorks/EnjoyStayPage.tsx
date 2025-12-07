@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import LandingNavbar from '../../components/landing/LandingNavbar';
 import LandingFooter from '../../components/landing/LandingFooter';
 import { 
@@ -15,25 +16,95 @@ import {
 } from 'lucide-react';
 
 const EnjoyStayPage = () => {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <LandingNavbar />
       
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white pt-32 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-block bg-white/20 backdrop-blur-sm rounded-full p-3 mb-6">
-              <Heart className="w-12 h-12 text-white" />
+      {/* Hero Section con efectos especiales */}
+      <section className="relative bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white pt-32 pb-16 overflow-hidden min-h-[600px]">
+        {/* Capa de estrellas - movimiento continuo de izquierda a derecha */}
+        <div 
+          className="absolute inset-0 opacity-30 stars-layer"
+          style={{
+            backgroundImage: 'url(/estrellas.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: '0% center',
+            backgroundRepeat: 'repeat-x',
+            zIndex: 1
+          }}
+        />
+        
+        {/* Capa fondo3 - translate de arriba a abajo y un poco a la derecha basado en scroll */}
+        <div 
+          className="absolute inset-0 opacity-40 fondo3-layer"
+          style={{
+            backgroundImage: 'url(/fondo3.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            transform: `translate(${scrollY * 0.15}px, ${scrollY * 0.4}px)`,
+            zIndex: 2
+          }}
+        />
+        
+        {/* Capa fondo1 - z-index superior (estática) */}
+        <div 
+          className="absolute inset-0 opacity-50 fondo1-layer"
+          style={{
+            backgroundImage: 'url(/fondo1.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            zIndex: 3
+          }}
+        />
+        
+        {/* Overlay oscuro para mejorar legibilidad */}
+        <div className="absolute inset-0 bg-black/40" style={{ zIndex: 4 }} />
+        
+        {/* Contenido del hero */}
+        <div className="relative" style={{ zIndex: 10 }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-4xl mx-auto">
+              <div className="inline-block bg-white/20 backdrop-blur-sm rounded-full p-3 mb-6">
+                <Heart className="w-12 h-12 text-white" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                Disfruta tu estancia
+              </h1>
+              <p className="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto">
+                Te ofrecemos mucho más que un alojamiento: te abrimos la puerta a una experiencia completa.
+              </p>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Disfruta tu estancia
-            </h1>
-            <p className="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto">
-              Te ofrecemos mucho más que un alojamiento: te abrimos la puerta a una experiencia completa.
-            </p>
           </div>
         </div>
+        
+        {/* Animaciones CSS */}
+        <style>{`
+          @keyframes moveStars {
+            0% {
+              background-position: 0% center;
+            }
+            100% {
+              background-position: 100% center;
+            }
+          }
+          
+          .stars-layer {
+            animation: moveStars 30s linear infinite;
+          }
+        `}</style>
       </section>
 
       {/* Experiencia Completa */}
