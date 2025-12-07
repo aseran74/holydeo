@@ -4,33 +4,52 @@ import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { LanguageToggleButton } from "../common/LanguageToggleButton";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
-import { Menu, X, User, LogOut, ChevronDown, Home, Calendar, Users, Building2, Star, Search, HelpCircle, MapPin, CreditCard, CheckCircle, Info, MessageCircle, Briefcase, TrendingUp, Shield } from "lucide-react";
+import { 
+  Menu, 
+  X, 
+  User, 
+  LogOut, 
+  ChevronDown, 
+  Home, 
+  Calendar, 
+  Users, 
+  Building2, 
+  Star, 
+  Search, 
+  HelpCircle, 
+  CreditCard, 
+  Info, 
+  MessageCircle, 
+  Briefcase, 
+  TrendingUp, 
+  Shield,
+  MapPin,
+  CheckCircle
+} from "lucide-react";
 
 const LandingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
   const { currentUser, logout, userRole } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Detectar si estamos en la landing page
   const isLandingPage = location.pathname === '/';
 
-  // Efecto para detectar scroll y cambiar el estilo de la navbar
+  // Detectar scroll
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setIsScrolled(scrollTop > 50);
+      setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Efecto para cerrar los dropdowns cuando se haga clic fuera
+  // Cerrar dropdowns al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
@@ -41,23 +60,16 @@ const LandingNavbar = () => {
         setOpenDropdown(null);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isAvatarDropdownOpen, openDropdown]);
 
-  // Debug temporal para ver los datos del usuario
-  if (currentUser) {
-    console.log('Usuario en LandingNavbar:', {
-      email: currentUser.email,
-      displayName: currentUser.displayName,
-      photoURL: currentUser.photoURL,
-      uid: currentUser.uid,
-      providerData: currentUser.providerData
-    });
-  }
+  // Cerrar menú móvil al cambiar de ruta
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
 
-  // Submenús con iconos y descripciones
+  // Items del menú
   const menuItems = [
     { 
       name: t('navbar.search'), 
@@ -153,7 +165,6 @@ const LandingNavbar = () => {
 
   const scrollToSection = (href: string) => {
     if (href.startsWith('#')) {
-      // Es un enlace interno (sección de la página)
       const sectionId = href.replace("#", "");
       const element = document.getElementById(sectionId);
       if (element) {
@@ -161,47 +172,40 @@ const LandingNavbar = () => {
       }
       setIsMenuOpen(false);
     } else {
-      // Es un enlace externo (nueva página)
       navigate(href);
+      setIsMenuOpen(false);
     }
   };
 
-  // Función para obtener la ruta del dashboard según el rol del usuario
   const getDashboardRoute = () => {
     switch (userRole) {
-      case 'guest':
-        return '/guest-dashboard';
-      case 'admin':
-        return '/admin';
-      case 'owner':
-        return '/owner-dashboard';
-      case 'agent':
-        return '/dashboard';
-      default:
-        return '/dashboard';
+      case 'guest': return '/guest-dashboard';
+      case 'admin': return '/admin';
+      case 'owner': return '/owner-dashboard';
+      case 'agent': return '/dashboard';
+      default: return '/dashboard';
     }
   };
 
-  // Función para obtener el nombre del dashboard según el rol
   const getDashboardName = () => {
     switch (userRole) {
-      case 'guest':
-        return t('navbar.guestDashboard');
-      case 'admin':
-        return t('navbar.adminDashboard');
-      case 'owner':
-        return t('navbar.ownerDashboard');
-      case 'agent':
-        return t('navbar.agentDashboard');
-      default:
-        return t('navbar.dashboard');
+      case 'guest': return t('navbar.guestDashboard');
+      case 'admin': return t('navbar.adminDashboard');
+      case 'owner': return t('navbar.ownerDashboard');
+      case 'agent': return t('navbar.agentDashboard');
+      default: return t('navbar.dashboard');
     }
   };
 
-  // Pequeña función de ayuda para mantener el JSX limpio
-  // const isGoogleProvider = currentUser?.providerData?.some(
-  //   (p) => p.providerId === "google.com"
-  // );
+  const handleMobileLinkClick = (href: string) => {
+    if (href.startsWith('#')) {
+      scrollToSection(href);
+    } else {
+      navigate(href);
+    }
+    setIsMenuOpen(false);
+    setOpenDropdown(null);
+  };
 
   return (
     <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${
@@ -209,20 +213,18 @@ const LandingNavbar = () => {
         ? 'bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-md' 
         : isLandingPage 
           ? 'bg-transparent backdrop-blur-sm'
-          : 'bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-sm'
+          : 'bg-white shadow-lg'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center transition-transform duration-200 hover:scale-105">
-              <img
-                className="h-10 w-auto max-w-[160px] object-contain transition-all duration-200"
-                src={isLandingPage && !isScrolled ? "/logotrans-white.svg" : "/logotrans.svg"}
-                alt="CHISREACT Logo"
-              />
-            </Link>
-          </div>
+          <Link to="/" className="flex items-center transition-transform duration-200 hover:scale-105">
+            <img
+              className="h-10 w-auto max-w-[160px] object-contain transition-all duration-200"
+              src={isLandingPage && !isScrolled ? "/logotrans-white.svg" : "/logotrans.svg"}
+              alt="Holydeo Logo"
+            />
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:block">
@@ -233,44 +235,66 @@ const LandingNavbar = () => {
                 
                 return (
                   <div key={item.name} className="relative menu-dropdown">
-                    <button
-                      onClick={() => {
-                        if (hasSubmenu) {
+                    {hasSubmenu ? (
+                      <button
+                        onClick={() => {
                           setOpenDropdown(openDropdown === item.name ? null : item.name);
-                        } else {
-                          scrollToSection(item.href);
-                        }
-                      }}
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center gap-1.5 ${
-                        isScrolled
-                          ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                          : isLandingPage
-                            ? 'text-white hover:text-blue-200'
-                            : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
-                      }`}
-                    >
-                      <IconComponent className="w-4 h-4" />
-                      <span>{item.name}</span>
-                      {hasSubmenu && (
+                        }}
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center gap-1.5 ${
+                          isScrolled
+                            ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                            : isLandingPage
+                              ? 'text-white hover:text-blue-200'
+                              : 'text-gray-900 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                        }`}
+                      >
+                        <IconComponent className="w-4 h-4" />
+                        <span>{item.name}</span>
                         <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${
                           openDropdown === item.name ? 'rotate-180' : ''
                         }`} />
-                      )}
-                    </button>
+                      </button>
+                    ) : item.href.startsWith('#') ? (
+                      <button
+                        onClick={() => scrollToSection(item.href)}
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center gap-1.5 ${
+                          isScrolled
+                            ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                            : isLandingPage
+                              ? 'text-white hover:text-blue-200'
+                              : 'text-gray-900 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                        }`}
+                      >
+                        <IconComponent className="w-4 h-4" />
+                        <span>{item.name}</span>
+                      </button>
+                    ) : (
+                      <Link
+                        to={item.href}
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center gap-1.5 ${
+                          isScrolled
+                            ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                            : isLandingPage
+                              ? 'text-white hover:text-blue-200'
+                              : 'text-gray-900 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                        }`}
+                      >
+                        <IconComponent className="w-4 h-4" />
+                        <span>{item.name}</span>
+                      </Link>
+                    )}
 
-                    {/* Dropdown Menu */}
+                    {/* Desktop Dropdown */}
                     {hasSubmenu && openDropdown === item.name && (
                       <div className="absolute top-full left-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
                         <div className="p-4">
-                          <div className="mb-3">
-                            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
-                              {item.name}
-                            </h3>
-                          </div>
+                          <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
+                            {item.name}
+                          </h3>
                           <div className="space-y-1">
                             {item.submenu?.map((subItem, index) => {
                               const SubIconComponent = subItem.icon;
-                              return (
+                              return subItem.href.startsWith('#') ? (
                                 <button
                                   key={index}
                                   onClick={() => {
@@ -280,14 +304,10 @@ const LandingNavbar = () => {
                                   className="w-full text-left p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 group"
                                 >
                                   <div className="flex items-start gap-3">
-                                    <div className="flex-shrink-0 mt-0.5">
-                                      <SubIconComponent className="w-5 h-5 text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300" />
-                                    </div>
+                                    <SubIconComponent className="w-5 h-5 text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 flex-shrink-0 mt-0.5" />
                                     <div className="flex-1 min-w-0">
-                                      <div className="flex items-center gap-2 mb-1">
-                                        <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                                          {subItem.name}
-                                        </span>
+                                      <div className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
+                                        {subItem.name}
                                       </div>
                                       <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
                                         {subItem.description}
@@ -295,6 +315,25 @@ const LandingNavbar = () => {
                                     </div>
                                   </div>
                                 </button>
+                              ) : (
+                                <Link
+                                  key={index}
+                                  to={subItem.href}
+                                  onClick={() => setOpenDropdown(null)}
+                                  className="w-full text-left p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 group block"
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <SubIconComponent className="w-5 h-5 text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 flex-shrink-0 mt-0.5" />
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
+                                        {subItem.name}
+                                      </div>
+                                      <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                                        {subItem.description}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </Link>
                               );
                             })}
                           </div>
@@ -307,18 +346,18 @@ const LandingNavbar = () => {
             </div>
           </div>
 
-          {/* User Button and Mobile Menu Button */}
+          {/* Right Side - User & Mobile Button */}
           <div className="flex items-center space-x-4">
-            {/* Language and Theme Toggle Buttons */}
+            {/* Language and Theme Toggle - Desktop */}
             <div className="hidden md:flex items-center space-x-2">
               <LanguageToggleButton />
               <ThemeToggleButton />
             </div>
-            {/* Firebase User Button */}
+
+            {/* User Button - Desktop */}
             <div className="hidden md:block">
               {currentUser ? (
                 <div className="relative avatar-dropdown">
-                  {/* Avatar con dropdown */}
                   <button
                     onClick={() => setIsAvatarDropdownOpen(!isAvatarDropdownOpen)}
                     className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200"
@@ -330,22 +369,21 @@ const LandingNavbar = () => {
                         className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
                       />
                     ) : (
-                      <User className={`w-5 h-5 ${isScrolled ? 'text-gray-700 dark:text-gray-200' : isLandingPage ? 'text-white' : 'text-gray-800 dark:text-gray-200'}`} />
+                      <User className={`w-5 h-5 ${isScrolled ? 'text-gray-700 dark:text-gray-200' : isLandingPage ? 'text-white' : 'text-gray-900 dark:text-gray-200'}`} />
                     )}
                     <span className={`text-sm transition-all duration-300 ${
-                      isScrolled ? 'text-gray-700 dark:text-gray-200' : isLandingPage ? 'text-white' : 'text-gray-800 dark:text-gray-200'
+                      isScrolled ? 'text-gray-700 dark:text-gray-200' : isLandingPage ? 'text-white' : 'text-gray-900 dark:text-gray-200'
                     }`}>
                       {currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
                     </span>
                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                       isAvatarDropdownOpen ? 'rotate-180' : ''
-                    } ${isScrolled ? 'text-gray-700 dark:text-gray-200' : isLandingPage ? 'text-white' : 'text-gray-800 dark:text-gray-200'}`} />
+                    } ${isScrolled ? 'text-gray-700 dark:text-gray-200' : isLandingPage ? 'text-white' : 'text-gray-900 dark:text-gray-200'}`} />
                   </button>
 
-                  {/* Dropdown del avatar */}
+                  {/* Avatar Dropdown */}
                   {isAvatarDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
-                      {/* Información del usuario */}
                       <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                         <p className="text-sm font-medium text-gray-900 dark:text-white">
                           {currentUser.displayName || t('navbar.user')}
@@ -370,7 +408,6 @@ const LandingNavbar = () => {
                         )}
                       </div>
 
-                      {/* Enlace al dashboard */}
                       <Link
                         to={getDashboardRoute()}
                         onClick={() => setIsAvatarDropdownOpen(false)}
@@ -380,52 +417,45 @@ const LandingNavbar = () => {
                         {getDashboardName()}
                       </Link>
 
-                                    {/* Enlaces adicionales según el rol */}
-              {userRole === 'guest' && (
-                <>
-                  <Link
-                    to="/guest-bookings"
-                    onClick={() => setIsAvatarDropdownOpen(false)}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-                  >
-                    <Calendar className="w-4 h-4 mr-3" />
-                    {t('navbar.myBookings')}
-                  </Link>
-                  <Link
-                    to="/social"
-                    onClick={() => setIsAvatarDropdownOpen(false)}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-                  >
-                    <Users className="w-4 h-4 mr-3" />
-                    {t('navbar.social')}
-                  </Link>
-                  
-                  {/* Separador */}
-                  <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-                  
-                  <Link
-                    to="/search?type=properties"
-                    onClick={() => setIsAvatarDropdownOpen(false)}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-                  >
-                    <Building2 className="w-4 h-4 mr-3" />
-                    {t('navbar.searchProperties')}
-                  </Link>
-                  <Link
-                    to="/search?type=experiences"
-                    onClick={() => setIsAvatarDropdownOpen(false)}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-                  >
-                    <Star className="w-4 h-4 mr-3" />
-                    {t('navbar.searchExperiences')}
-                  </Link>
-                </>
-              )}
+                      {userRole === 'guest' && (
+                        <>
+                          <Link
+                            to="/guest-bookings"
+                            onClick={() => setIsAvatarDropdownOpen(false)}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                          >
+                            <Calendar className="w-4 h-4 mr-3" />
+                            {t('navbar.myBookings')}
+                          </Link>
+                          <Link
+                            to="/social"
+                            onClick={() => setIsAvatarDropdownOpen(false)}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                          >
+                            <Users className="w-4 h-4 mr-3" />
+                            {t('navbar.social')}
+                          </Link>
+                          <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                          <Link
+                            to="/search?type=properties"
+                            onClick={() => setIsAvatarDropdownOpen(false)}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                          >
+                            <Building2 className="w-4 h-4 mr-3" />
+                            {t('navbar.searchProperties')}
+                          </Link>
+                          <Link
+                            to="/search?type=experiences"
+                            onClick={() => setIsAvatarDropdownOpen(false)}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                          >
+                            <Star className="w-4 h-4 mr-3" />
+                            {t('navbar.searchExperiences')}
+                          </Link>
+                        </>
+                      )}
 
-                      {/* Separador */}
                       <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-
-                      {/* Botón de cerrar sesión */}
                       <button
                         onClick={() => {
                           logout();
@@ -448,19 +478,19 @@ const LandingNavbar = () => {
                         ? 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                         : isLandingPage
                           ? 'text-white hover:text-blue-200'
-                          : 'text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
+                          : 'text-gray-900 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                     }`}
                   >
                     {t('navbar.register')}
                   </Link>
                   <Link
                     to="/login"
-                    className={`px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300 ${
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                       isScrolled
-                        ? 'hover:bg-blue-700'
+                        ? 'bg-blue-600 text-white hover:bg-blue-700'
                         : isLandingPage
-                          ? 'hover:bg-blue-700'
-                          : 'hover:bg-blue-700'
+                          ? 'bg-white text-blue-600 hover:bg-blue-50'
+                          : 'bg-blue-600 text-white hover:bg-blue-700'
                     }`}
                   >
                     {t('navbar.login')}
@@ -469,192 +499,214 @@ const LandingNavbar = () => {
               )}
             </div>
 
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`hover:text-blue-200 focus:outline-none focus:text-blue-200 transition-all duration-300 ${
-                  isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'
-                }`}
-              >
-                {isMenuOpen ? (
-                  <X className="h-6 w-6" />
-                ) : (
-                  <Menu className="h-6 w-6" />
-                )}
-              </button>
-            </div>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className={`md:hidden hover:text-blue-200 focus:outline-none focus:text-blue-200 transition-all duration-300 ${
+                isScrolled 
+                  ? 'text-gray-700 dark:text-gray-200' 
+                  : isLandingPage 
+                    ? 'text-white' 
+                    : 'text-gray-900 dark:text-gray-200'
+              }`}
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
       </div>
 
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/30"
+          style={{ top: '4rem', zIndex: 99998 }}
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
+
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden fixed inset-x-0 top-16 z-[100] bg-white dark:bg-gray-900 shadow-xl rounded-b-3xl">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 transition-all duration-300">
+        <div 
+          className="md:hidden fixed inset-x-0 top-16 bg-white dark:bg-gray-900 shadow-xl rounded-b-3xl max-h-[calc(100vh-4rem)] overflow-y-auto"
+          style={{ 
+            zIndex: 99999,
+            position: 'fixed',
+            pointerEvents: 'auto'
+          }}
+        >
+          <div 
+            className="px-4 py-3 space-y-2"
+            style={{ pointerEvents: 'auto' }}
+          >
             {menuItems.map((item) => {
               const IconComponent = item.icon;
               const hasSubmenu = item.submenu && item.submenu.length > 0;
-              const isSubmenuOpen = openDropdown === item.name;
+              const isMobileDropdownOpen = openMobileDropdown === item.name;
               
               return (
                 <div key={item.name}>
-                  <button
-                    onClick={() => {
-                      if (hasSubmenu) {
-                        setOpenDropdown(isSubmenuOpen ? null : item.name);
-                      } else {
-                        scrollToSection(item.href);
-                        setIsMenuOpen(false);
-                      }
-                    }}
-                    className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-base font-bold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 text-left border border-gray-200 dark:border-gray-700"
-                  >
-                    <div className="flex items-center gap-2">
-                      <IconComponent className="w-5 h-5" />
-                      <span>{item.name}</span>
-                    </div>
-                    {hasSubmenu && (
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                        isSubmenuOpen ? 'rotate-180' : ''
+                  {/* Item principal */}
+                  {hasSubmenu ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenMobileDropdown(isMobileDropdownOpen ? null : item.name);
+                      }}
+                      className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-base font-bold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 text-left border border-gray-200 dark:border-gray-700"
+                      style={{ pointerEvents: 'auto', position: 'relative', zIndex: 100000 }}
+                    >
+                      <div className="flex items-center">
+                        <IconComponent className="w-5 h-5 mr-2" />
+                        <span>{item.name}</span>
+                      </div>
+                      <ChevronDown className={`w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${
+                        isMobileDropdownOpen ? 'rotate-180' : ''
                       }`} />
-                    )}
-                  </button>
-                  
-                  {/* Mobile Submenu */}
-                  {hasSubmenu && isSubmenuOpen && (
-                    <div className="ml-4 mt-2 space-y-2 border-l-2 border-blue-200 dark:border-blue-800 pl-4">
-                      {item.submenu?.map((subItem, index) => {
-                        const SubIconComponent = subItem.icon;
-                        return (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              scrollToSection(subItem.href);
-                              setIsMenuOpen(false);
-                              setOpenDropdown(null);
-                            }}
-                            className="w-full text-left px-4 py-3 rounded-xl transition-all duration-300 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700"
-                          >
-                            <div className="flex items-start gap-3">
-                              <SubIconComponent className="w-5 h-5 mt-0.5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
-                              <div>
-                                <div className="text-sm font-bold mb-1">{subItem.name}</div>
-                                <div className="text-xs text-gray-600 dark:text-gray-400">{subItem.description}</div>
-                              </div>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
+                    </button>
+                  ) : (
+                    <Link
+                      to={item.href}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMobileLinkClick(item.href);
+                      }}
+                      className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-base font-bold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 text-left border border-gray-200 dark:border-gray-700"
+                      style={{ pointerEvents: 'auto', position: 'relative', zIndex: 100000 }}
+                    >
+                      <div className="flex items-center">
+                        <IconComponent className="w-5 h-5 mr-2" />
+                        <span>{item.name}</span>
+                      </div>
+                    </Link>
                   )}
+                  
+                  {/* Subitems como enlaces directos - solo cuando está desplegado */}
+                  {hasSubmenu && isMobileDropdownOpen && item.submenu?.map((subItem, index) => {
+                    const SubIconComponent = subItem.icon;
+                    return (
+                      <Link
+                        key={index}
+                        to={subItem.href}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleMobileLinkClick(subItem.href);
+                        }}
+                        className="flex items-start gap-3 w-full px-4 py-3 ml-4 rounded-xl transition-all duration-300 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700"
+                        style={{ pointerEvents: 'auto', position: 'relative', zIndex: 100000 }}
+                      >
+                        <SubIconComponent className="w-5 h-5 mt-0.5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+                        <div>
+                          <div className="text-sm font-bold mb-1">{subItem.name}</div>
+                          <div className="text-xs text-gray-600 dark:text-gray-400">{subItem.description}</div>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               );
             })}
-            {/* Mobile User Button */}
+
+            {/* Mobile User Section */}
             <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
-              {/* Language and Theme Toggle Buttons for Mobile */}
               <div className="flex justify-center items-center space-x-2 mb-4">
                 <LanguageToggleButton />
                 <ThemeToggleButton />
               </div>
-              <div className="flex justify-center">
-                {currentUser ? (
-                  <div className="flex flex-col items-center space-y-3 w-full">
-                    {/* Información del usuario */}
-                    <div className="flex items-center space-x-2">
-                      {currentUser.photoURL ? (
-                        <img 
-                          src={currentUser.photoURL} 
-                          alt={currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
-                          className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
-                        />
-                      ) : (
-                        <User className="w-5 h-5 text-gray-700 dark:text-gray-200" />
-                      )}
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold text-gray-900 dark:text-white transition-all duration-300">
-                          {currentUser.displayName || currentUser.email?.split('@')[0] || t('navbar.user')}
-                        </span>
-                        {userRole && (
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-1 ${
-                            userRole === 'admin' ? 'bg-red-100 text-red-800' :
-                            userRole === 'owner' ? 'bg-purple-100 text-purple-800' :
-                            userRole === 'agent' ? 'bg-blue-100 text-blue-800' :
-                            userRole === 'guest' ? 'bg-green-100 text-green-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {userRole === 'admin' ? t('navbar.administrator') :
-                             userRole === 'owner' ? t('navbar.owner') :
-                             userRole === 'agent' ? t('navbar.agent') :
-                             userRole === 'guest' ? t('navbar.guest') :
-                             userRole}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Enlace al dashboard */}
-                    <Link
-                      to={getDashboardRoute()}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all duration-300 border border-blue-200 dark:border-blue-800"
-                    >
-                      <Home className="w-4 h-4 mr-2" />
-                      {getDashboardName()}
-                    </Link>
-
-                    {/* Enlaces adicionales para guest en móvil */}
-                    {userRole === 'guest' && (
-                      <>
-                        <Link
-                          to="/guest-bookings"
-                          onClick={() => setIsMenuOpen(false)}
-                          className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition-all duration-300 border border-green-200 dark:border-green-800"
-                        >
-                          <Calendar className="w-4 h-4 mr-2" />
-                          {t('navbar.myBookings')}
-                        </Link>
-                        <Link
-                          to="/social"
-                          onClick={() => setIsMenuOpen(false)}
-                          className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-all duration-300 border border-purple-200 dark:border-purple-800"
-                        >
-                          <Users className="w-4 h-4 mr-2" />
-                          {t('navbar.social')}
-                        </Link>
-                      </>
+              
+              {currentUser ? (
+                <div className="flex flex-col items-center space-y-3 w-full">
+                  <div className="flex items-center space-x-2">
+                    {currentUser.photoURL ? (
+                      <img 
+                        src={currentUser.photoURL} 
+                        alt={currentUser.displayName || currentUser.email?.split('@')[0] || 'Usuario'}
+                        className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
+                      />
+                    ) : (
+                      <User className="w-5 h-5 text-gray-700 dark:text-gray-200" />
                     )}
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-gray-900 dark:text-white">
+                        {currentUser.displayName || currentUser.email?.split('@')[0] || t('navbar.user')}
+                      </span>
+                      {userRole && (
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-1 ${
+                          userRole === 'admin' ? 'bg-red-100 text-red-800' :
+                          userRole === 'owner' ? 'bg-purple-100 text-purple-800' :
+                          userRole === 'agent' ? 'bg-blue-100 text-blue-800' :
+                          userRole === 'guest' ? 'bg-green-100 text-green-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {userRole === 'admin' ? t('navbar.administrator') :
+                           userRole === 'owner' ? t('navbar.owner') :
+                           userRole === 'agent' ? t('navbar.agent') :
+                           userRole === 'guest' ? t('navbar.guest') :
+                           userRole}
+                        </span>
+                      )}
+                    </div>
+                  </div>
 
-                    {/* Botón de cerrar sesión */}
-                    <button
-                      onClick={() => {
-                        logout();
-                        setIsMenuOpen(false);
-                      }}
-                      className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 transition-all duration-300 border border-red-200 dark:border-red-800"
-                    >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      {t('navbar.logout')}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col space-y-2">
-                    <Link
-                      to="/register"
-                      className="px-4 py-3 rounded-xl text-base font-bold text-center text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 border border-gray-200 dark:border-gray-700"
-                    >
-                      {t('navbar.register')}
-                    </Link>
-                    <Link
-                      to="/login"
-                      className="px-4 py-3 rounded-xl text-base font-bold bg-blue-600 text-white hover:bg-blue-700 text-center transition-all duration-300 border border-blue-700"
-                    >
-                      {t('navbar.login')}
-                    </Link>
-                  </div>
-                )}
-              </div>
+                  <Link
+                    to={getDashboardRoute()}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all duration-300 border border-blue-200 dark:border-blue-800"
+                  >
+                    <Home className="w-4 h-4 mr-2" />
+                    {getDashboardName()}
+                  </Link>
+
+                  {userRole === 'guest' && (
+                    <>
+                      <Link
+                        to="/guest-bookings"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition-all duration-300 border border-green-200 dark:border-green-800"
+                      >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        {t('navbar.myBookings')}
+                      </Link>
+                      <Link
+                        to="/social"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-all duration-300 border border-purple-200 dark:border-purple-800"
+                      >
+                        <Users className="w-4 h-4 mr-2" />
+                        {t('navbar.social')}
+                      </Link>
+                    </>
+                  )}
+
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-bold text-gray-900 dark:text-white bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 transition-all duration-300 border border-red-200 dark:border-red-800"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    {t('navbar.logout')}
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-3 w-full">
+                  <Link
+                    to="/register"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="w-full inline-flex justify-center px-4 py-3 rounded-xl text-sm font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all duration-300 border border-blue-200 dark:border-blue-800"
+                  >
+                    {t('navbar.register')}
+                  </Link>
+                  <Link
+                    to="/login"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="w-full inline-flex justify-center px-4 py-3 rounded-xl text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300"
+                  >
+                    {t('navbar.login')}
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>

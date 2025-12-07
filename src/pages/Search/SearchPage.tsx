@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { Property, Experience } from '../../types';
-import SearchNavbar from '../../components/landing/SearchNavbar';
+import LandingNavbar from '../../components/landing/LandingNavbar';
 import RedirectNotification from '../../components/common/RedirectNotification';
 import DateSearchForm from '../../components/common/DateSearchForm';
 import EnhancedSearchFilters from '../../components/common/EnhancedSearchFilters';
@@ -579,7 +579,7 @@ const SearchPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 search-page">
-      <SearchNavbar />
+      <LandingNavbar />
 
       {/* Contenido principal */}
       <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-16 py-8 pt-24">

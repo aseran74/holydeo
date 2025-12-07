@@ -25,6 +25,12 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<any>(null);
+  const onChangeRef = useRef(onChange);
+  
+  // Mantener onChange actualizado sin causar re-renders
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   useEffect(() => {
     // Verificar si ya está cargado
@@ -60,7 +66,6 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
     script.defer = true;
     
     script.addEventListener('load', () => {
-      console.log('Google Places API cargada exitosamente');
       setIsLoaded(true);
       setIsLoading(false);
     });
@@ -78,8 +83,6 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
     if (!isLoaded || !inputRef.current) return;
 
     try {
-      console.log('Inicializando Google Places Autocomplete...');
-      
       // Limpiar autocompletado anterior si existe
       if (autocompleteRef.current) {
         window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
@@ -94,25 +97,16 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
       // Escuchar cambios en la selección
       autocompleteRef.current.addListener('place_changed', () => {
         const place = autocompleteRef.current.getPlace();
-        console.log('Lugar seleccionado:', place);
         
         if (place.formatted_address) {
-          onChange(place.formatted_address);
+          onChangeRef.current(place.formatted_address);
         }
       });
-
-      console.log('Google Places Autocomplete inicializado correctamente');
     } catch (error) {
       console.error('Error inicializando Google Places:', error);
       setError('Error inicializando Google Places');
     }
-  }, [isLoaded, onChange]);
-
-  // Debug: Mostrar estado en consola
-  useEffect(() => {
-    console.log('Estado del componente:', { isLoaded, isLoading, error });
-    console.log('API Key configurada:', !!import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
-  }, [isLoaded, isLoading, error]);
+  }, [isLoaded]); // Removido onChange de las dependencias
 
   return (
     <div className={`relative ${className}`}>

@@ -32,7 +32,7 @@ const EnjoyStayPage = () => {
       <LandingNavbar />
       
       {/* Hero Section - Rehecho desde cero */}
-      <section className="relative w-full overflow-hidden bg-gray-900 text-white min-h-[100vh] h-[100vh] md:min-h-[180vh] md:h-[180vh]">
+      <section className="relative w-full overflow-hidden bg-gray-900 text-white min-h-[120vh] h-[120vh] md:min-h-[200vh] md:h-[200vh]">
         {/* Fondo negro base */}
         <div className="absolute inset-0 bg-black z-0 pointer-events-none"></div>
         
@@ -96,21 +96,29 @@ const EnjoyStayPage = () => {
         
         {/* Contenido del hero */}
         <div className="relative z-40 pointer-events-auto">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-32 pb-16 md:pb-32">
             <div className="text-center max-w-4xl mx-auto">
-              <div className="inline-block bg-white/20 backdrop-blur-sm rounded-full p-3 mb-6">
-                <img 
-                  src="/logotrans-white.svg"
-                  alt="Holydeo Logo"
-                  className="h-12 w-auto object-contain"
-                />
-              </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
                 Disfruta tu estancia
               </h1>
-              <p className="text-base md:text-xl lg:text-2xl text-purple-100 max-w-3xl mx-auto">
+              <p className="text-base md:text-xl lg:text-2xl text-purple-100 max-w-3xl mx-auto mb-8">
                 Te ofrecemos mucho más que un alojamiento: te abrimos la puerta a una experiencia completa.
               </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  to="/search"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-xl font-semibold text-base hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                >
+                  <span>Explorar propiedades</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </Link>
+                <Link
+                  to="/search?type=experiences"
+                  className="inline-flex items-center justify-center gap-2 bg-transparent text-white px-6 py-3 rounded-xl font-semibold text-base hover:bg-white/10 transition-all duration-200 border-2 border-white/30 hover:border-white"
+                >
+                  <span>Ver experiencias</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
