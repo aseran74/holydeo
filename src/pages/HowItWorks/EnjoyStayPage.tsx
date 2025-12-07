@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import LandingNavbar from '../../components/landing/LandingNavbar';
 import LandingFooter from '../../components/landing/LandingFooter';
 import { 
@@ -23,7 +23,7 @@ const EnjoyStayPage = () => {
       setScrollY(window.scrollY);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -31,54 +31,79 @@ const EnjoyStayPage = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <LandingNavbar />
       
-      {/* Hero Section con efectos especiales */}
-      <section className="relative bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white pt-32 pb-16 overflow-hidden min-h-[600px]">
-        {/* Capa de estrellas - movimiento continuo de izquierda a derecha */}
-        <div 
-          className="absolute inset-0 opacity-30 stars-layer"
-          style={{
-            backgroundImage: 'url(/estrellas.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: '0% center',
-            backgroundRepeat: 'repeat-x',
-            zIndex: 1
-          }}
-        />
+      {/* Hero Section - Rehecho desde cero */}
+      <section className="relative w-full overflow-hidden bg-gray-900 text-white min-h-[150vh] h-[150vh] md:min-h-[180vh] md:h-[180vh]">
+        {/* Fondo negro base */}
+        <div className="absolute inset-0 bg-black z-0"></div>
         
-        {/* Capa fondo3 - translate de arriba a abajo y un poco a la derecha basado en scroll */}
+        {/* Capa 1 - Fondo de estrellas (estrellas.jpg) - detrás de la casa con efecto parallax */}
         <div 
-          className="absolute inset-0 opacity-40 fondo3-layer"
+          className="absolute inset-0 z-10"
           style={{
-            backgroundImage: 'url(/fondo3.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            transform: `translate(${scrollY * 0.15}px, ${scrollY * 0.4}px)`,
-            zIndex: 2
+            transform: `translateY(${scrollY * 0.3}px)`,
+            transition: 'transform 0.1s ease-out'
           }}
-        />
+        >
+          <img 
+            src="/estrellas.jpg"
+            alt="Estrellas" 
+            className="w-full h-full object-cover opacity-80"
+          />
+        </div>
         
-        {/* Capa fondo1 - z-index superior (estática) */}
+        {/* Capa 2 - Casa moderna (fondo1) - encima de las estrellas, ocupa toda la página */}
+        <div className="absolute inset-0 z-20">
+          {/* Imagen para desktop */}
+          <img 
+            src="/fondo1.png"
+            alt="Casa moderna" 
+            className="hidden md:block w-full h-full object-cover"
+          />
+          {/* Imagen para móvil - posición baja */}
+          <div className="block md:hidden w-full h-full flex items-end justify-center">
+            <img 
+              src="/Fondo1movil-removebg-preview.png"
+              alt="Casa moderna móvil" 
+              className="w-full h-auto object-contain"
+              style={{ maxHeight: '100%' }}
+            />
+          </div>
+        </div>
+        
+        {/* Capa 3 - Luna (fondo3) - z-index detrás de la casa pero encima de las estrellas con efecto parallax horizontal */}
         <div 
-          className="absolute inset-0 opacity-50 fondo1-layer"
-          style={{
-            backgroundImage: 'url(/fondo1.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            zIndex: 3
+          className="absolute inset-0 flex items-start justify-center pt-8 md:pt-4" 
+          style={{ 
+            zIndex: 15,
+            transform: `translateX(${-scrollY * 0.3}px)`,
+            transition: 'transform 0.1s ease-out'
           }}
-        />
+        >
+          <img 
+            src="/fondo3.png"
+            alt="Luna" 
+            className="object-contain"
+            style={{ 
+              width: '800px', 
+              height: '800px',
+              opacity: 0.9
+            }}
+          />
+        </div>
         
-        {/* Overlay oscuro para mejorar legibilidad */}
-        <div className="absolute inset-0 bg-black/40" style={{ zIndex: 4 }} />
+        {/* Overlay oscuro adicional para mayor efecto nocturno */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/50 via-transparent to-black/70"></div>
         
         {/* Contenido del hero */}
-        <div className="relative" style={{ zIndex: 10 }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-40">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
             <div className="text-center max-w-4xl mx-auto">
               <div className="inline-block bg-white/20 backdrop-blur-sm rounded-full p-3 mb-6">
-                <Heart className="w-12 h-12 text-white" />
+                <img 
+                  src="/logotrans-white.svg"
+                  alt="Holydeo Logo"
+                  className="h-12 w-auto object-contain"
+                />
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 Disfruta tu estancia
@@ -89,22 +114,6 @@ const EnjoyStayPage = () => {
             </div>
           </div>
         </div>
-        
-        {/* Animaciones CSS */}
-        <style>{`
-          @keyframes moveStars {
-            0% {
-              background-position: 0% center;
-            }
-            100% {
-              background-position: 100% center;
-            }
-          }
-          
-          .stars-layer {
-            animation: moveStars 30s linear infinite;
-          }
-        `}</style>
       </section>
 
       {/* Experiencia Completa */}
