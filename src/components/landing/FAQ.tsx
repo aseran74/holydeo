@@ -9,8 +9,25 @@ import {
   Search,
   X
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import ContactSection from './ContactSection';
+
+type CategoryColor = 'blue' | 'green' | 'orange' | 'yellow';
+
+type FaqItem = {
+  id: string;
+  question: string;
+  answer: string;
+};
+
+type FaqCategory = {
+  id: string;
+  title: string;
+  icon: LucideIcon;
+  color: CategoryColor;
+  questions: FaqItem[];
+};
 
 const FAQ = () => {
   const { t } = useLanguage();
@@ -18,7 +35,7 @@ const FAQ = () => {
   const [activeCategoryId, setActiveCategoryId] = useState<string>('reservas');
   const [query, setQuery] = useState('');
 
-  const faqCategories = [
+  const faqCategories: FaqCategory[] = [
     {
       id: 'reservas',
       title: 'Reservas',
@@ -157,7 +174,7 @@ const FAQ = () => {
     setOpenQuestion(openQuestion === questionId ? null : questionId);
   };
 
-  const getCategoryTheme = (color: 'blue' | 'green' | 'orange' | 'yellow') => {
+  const getCategoryTheme = (color: CategoryColor) => {
     const themes = {
       blue: {
         chipActive:
@@ -234,7 +251,7 @@ const FAQ = () => {
             <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
               {faqCategories.map((category) => {
                 const IconComponent = category.icon;
-                const theme = getCategoryTheme(category.color as 'blue' | 'green' | 'orange' | 'yellow');
+                const theme = getCategoryTheme(category.color);
                 const isActive = activeCategoryId === category.id;
                 return (
                   <button
@@ -311,7 +328,7 @@ const FAQ = () => {
               <div className="rounded-2xl border border-gray-200/70 dark:border-gray-700/70 bg-white/70 dark:bg-gray-900/25 backdrop-blur">
                 <div className="p-4 sm:p-6 border-b border-gray-200/60 dark:border-gray-700/60">
                   <div className="flex items-center gap-3">
-                    <span className={['w-2.5 h-2.5 rounded-full', getCategoryTheme(activeCategory.color as any).dot].join(' ')} />
+                    <span className={['w-2.5 h-2.5 rounded-full', getCategoryTheme(activeCategory.color).dot].join(' ')} />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                       {activeCategory.title}
                     </h3>
