@@ -9,7 +9,7 @@ type TranslationObject = typeof esTranslations;
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -44,7 +44,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
     setLanguageState(lang);
   };
 
-  const t = (key: string): string => {
+  const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
     let value: any = translations[language];
     
@@ -56,7 +56,16 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
     
-    return typeof value === 'string' ? value : key;
+    if (typeof value !== 'string') return key;
+    if (!params) return value;
+
+    // Interpolación simple: reemplaza "{var}" por el valor recibido
+    let interpolated = value;
+    for (const [paramKey, paramValue] of Object.entries(params)) {
+      const escaped = paramKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      interpolated = interpolated.replace(new RegExp(`\\{${escaped}\\}`, 'g'), String(paramValue));
+    }
+    return interpolated;
   };
 
   return (
