@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
@@ -21,8 +21,18 @@ import {
 const AppSidebar: React.FC = () => {
   const location = useLocation();
   const { currentUser, userRole, isAdmin } = useAuth();
-  const { isMobileOpen, isExpanded, toggleSidebar } = useSidebar();
+  const { isMobileOpen, isExpanded, toggleSidebar, toggleMobileSidebar } = useSidebar();
   const { t } = useLanguage();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Logs para depuración
   console.log('[AppSidebar] Usuario actual:', currentUser?.email);
@@ -62,16 +72,25 @@ const AppSidebar: React.FC = () => {
       isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     } ${
       isExpanded ? 'w-64' : 'w-16'
-    }`}>
-      <div className={`${isExpanded ? 'p-6 pt-20 lg:pt-6' : 'p-3 pt-20 lg:pt-3'} transition-all duration-300`}>
+    } overflow-hidden`}>
+      <div className={`${isExpanded ? 'p-6 pt-20 lg:pt-6' : 'p-3 pt-20 lg:pt-3'} transition-all duration-300 overflow-y-auto h-full`}>
         {/* Botón de colapsar/expandir */}
         <div className="flex justify-end mb-4">
           <button
-            onClick={toggleSidebar}
+            onClick={() => {
+              // En móvil, cerrar el menú. En desktop, colapsar/expandir
+              if (isMobile) {
+                toggleMobileSidebar(); // Cerrar el menú móvil
+              } else {
+                toggleSidebar();
+              }
+            }}
             className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-            title={isExpanded ? 'Contraer sidebar' : 'Expandir sidebar'}
+            title={isMobile ? 'Cerrar menú' : (isExpanded ? 'Contraer sidebar' : 'Expandir sidebar')}
           >
-            {isExpanded ? (
+            {isMobile ? (
+              <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            ) : isExpanded ? (
               <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
             ) : (
               <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
