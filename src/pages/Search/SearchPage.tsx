@@ -27,7 +27,7 @@ const SearchPage = () => {
     priceRange: [0, 1000],
     category: '',
     // Filtros específicos de propiedades
-    propertyType: '',
+    propertyType: [] as string[],
     bedrooms: 0,
     bathrooms: 0,
     amenities: [] as string[],
@@ -316,9 +316,13 @@ const SearchPage = () => {
       query = query.eq('region', searchData.zone);
     }
     
-    // Filtro por tipo de propiedad
+    // Filtro por tipo de propiedad (soporta array o string para compatibilidad)
     if (searchData.propertyType) {
-      query = query.eq('tipo', searchData.propertyType);
+      if (Array.isArray(searchData.propertyType) && searchData.propertyType.length > 0) {
+        query = query.in('tipo', searchData.propertyType);
+      } else if (typeof searchData.propertyType === 'string' && searchData.propertyType !== '') {
+        query = query.eq('tipo', searchData.propertyType);
+      }
     }
     
     // Filtro por habitaciones
@@ -691,9 +695,19 @@ const SearchPage = () => {
                       </span>
                     )}
                     {searchData.propertyType && searchType === 'properties' && (
-                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
-                        🏠 {searchData.propertyType}
-                      </span>
+                      <>
+                        {Array.isArray(searchData.propertyType) ? (
+                          searchData.propertyType.map((type: string, index: number) => (
+                            <span key={index} className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                              🏠 {type}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                            🏠 {searchData.propertyType}
+                          </span>
+                        )}
+                      </>
                     )}
                     {searchData.category && searchType === 'experiences' && (
                       <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">
@@ -799,14 +813,14 @@ const SearchPage = () => {
                // Vista del mapa
                <div className="mb-8 rounded-lg overflow-hidden shadow md:relative" style={{ maxWidth: '100%', overflow: 'hidden' }}>
                  {!isLoaded ? (
-                   <div className="flex items-center justify-center h-[90vh] md:h-[700px] min-h-[90vh] md:min-h-0 bg-gray-100">
+                   <div className="flex items-center justify-center h-[90vh] md:h-[85vh] min-h-[90vh] md:min-h-[85vh] bg-gray-100">
                      <div className="text-center">
                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                        <p className="text-gray-600">Cargando mapa...</p>
                      </div>
                    </div>
                  ) : loadError ? (
-                   <div className="flex items-center justify-center h-[90vh] md:h-[700px] min-h-[90vh] md:min-h-0 bg-gray-100">
+                   <div className="flex items-center justify-center h-[90vh] md:h-[85vh] min-h-[90vh] md:min-h-[85vh] bg-gray-100">
                      <div className="text-center text-red-600">
                        <p>Error al cargar el mapa</p>
                        <p className="text-sm">{loadError.message}</p>
@@ -816,7 +830,7 @@ const SearchPage = () => {
                    <>
                      <GoogleMap
                        mapContainerStyle={mapContainerStyle}
-                       mapContainerClassName="!h-[90vh] !min-h-[90vh] md:!h-[500px] md:!min-h-[500px]"
+                       mapContainerClassName="!h-[90vh] !min-h-[90vh] md:!h-[85vh] md:!min-h-[85vh]"
                        onLoad={onLoadMap}
                        center={defaultCenter}
                        zoom={6}

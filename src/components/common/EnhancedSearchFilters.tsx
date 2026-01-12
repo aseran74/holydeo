@@ -151,57 +151,28 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t('filters.season')}
                 </label>
+                <p className="text-xs text-gray-500 mb-3">
+                  {t('filters.seasonDescription')}
+                </p>
                 
-                {/* Botón para abrir modal en móvil, checkboxes en desktop */}
-                <div className="block md:hidden">
-                  <button
-                    onClick={handleOpenSeasonModal}
-                    className="w-full flex items-center justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <Calendar className="w-5 h-5 text-gray-500" />
-                      <span className="text-base font-medium text-gray-700">
-                        {getSelectedSeasonsText()}
+                {/* Botón para abrir modal (móvil y desktop) */}
+                <button
+                  onClick={handleOpenSeasonModal}
+                  className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 bg-white"
+                >
+                  <div className="flex items-center space-x-3">
+                    <Calendar className="w-5 h-5 text-blue-600" />
+                    <span className="text-base font-medium text-gray-700">
+                      {getSelectedSeasonsText()}
+                    </span>
+                    {searchData.seasons && searchData.seasons.length > 0 && (
+                      <span className="px-2 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full">
+                        {searchData.seasons.length}
                       </span>
-                    </div>
-                    <ChevronDown className="w-5 h-5 text-gray-400" />
-                  </button>
-                </div>
-
-                {/* Checkboxes para desktop */}
-                <div className="hidden md:block">
-                  <p className="text-xs text-gray-500 mb-2">
-                    {t('filters.seasonDescription')}
-                  </p>
-                  <div className="space-y-2 max-h-32 overflow-y-auto">
-                    {seasons.map(season => (
-                      <label key={season.value} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={searchData.seasons && searchData.seasons.includes(season.value)}
-                          onChange={(e) => {
-                            const currentSeasons = searchData.seasons || [];
-                            if (e.target.checked) {
-                              setSearchData((prev: any) => ({
-                                ...prev,
-                                seasons: [...currentSeasons, season.value]
-                              }));
-                            } else {
-                              setSearchData((prev: any) => ({
-                                ...prev,
-                                seasons: currentSeasons.filter((s: string) => s !== season.value)
-                              }));
-                            }
-                          }}
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="text-sm text-gray-700">
-                          {season.label}
-                        </span>
-                      </label>
-                    ))}
+                    )}
                   </div>
-                </div>
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                </button>
               </div>
             )}
 
@@ -216,18 +187,59 @@ const EnhancedSearchFilters: React.FC<EnhancedSearchFiltersProps> = ({
                   <p className="text-xs text-gray-500 mb-2">
                     {t('filters.propertyTypeDescription')}
                   </p>
-                  <select
-                    value={searchData.propertyType}
-                    onChange={(e) => setSearchData((prev: any) => ({ ...prev, propertyType: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  >
-                    <option value="">Todos los tipos</option>
-                    {dynamicPropertyTypes.map(type => (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="space-y-2 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-3">
+                    {dynamicPropertyTypes.map(type => {
+                      // Convertir propertyType a array si es string (compatibilidad)
+                      const propertyTypes = Array.isArray(searchData.propertyType) 
+                        ? searchData.propertyType 
+                        : searchData.propertyType 
+                          ? [searchData.propertyType] 
+                          : [];
+                      const isChecked = propertyTypes.includes(type);
+                      
+                      return (
+                        <label 
+                          key={type} 
+                          className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={(e) => {
+                              const currentTypes = Array.isArray(searchData.propertyType) 
+                                ? searchData.propertyType 
+                                : searchData.propertyType 
+                                  ? [searchData.propertyType] 
+                                  : [];
+                              
+                              if (e.target.checked) {
+                                setSearchData((prev: any) => ({
+                                  ...prev,
+                                  propertyType: [...currentTypes, type]
+                                }));
+                              } else {
+                                setSearchData((prev: any) => ({
+                                  ...prev,
+                                  propertyType: currentTypes.filter((t: string) => t !== type)
+                                }));
+                              }
+                            }}
+                            className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
+                          />
+                          <span className="text-sm font-medium text-gray-700 flex-1">
+                            {type}
+                          </span>
+                          {isChecked && (
+                            <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                              <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                          )}
+                        </label>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* Habitaciones y Baños lado a lado */}
