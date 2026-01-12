@@ -9,7 +9,7 @@ type TranslationObject = typeof esTranslations;
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -17,6 +17,10 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 const translations: Record<Language, TranslationObject> = {
   es: esTranslations,
   en: enTranslations,
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null;
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -44,19 +48,28 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
     setLanguageState(lang);
   };
 
-  const t = (key: string): string => {
+  const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
-    let value: any = translations[language];
+    let value: unknown = translations[language];
     
     for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
+      if (isRecord(value) && k in value) {
         value = value[k];
       } else {
         return key; // Si no se encuentra la clave, devolverla tal cual
       }
     }
     
-    return typeof value === 'string' ? value : key;
+    if (typeof value !== 'string') return key;
+    if (!params) return value;
+
+    // Interpolación simple: reemplaza "{var}" por el valor recibido
+    let interpolated = value;
+    for (const [paramKey, paramValue] of Object.entries(params)) {
+      const escaped = paramKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      interpolated = interpolated.replace(new RegExp(`\\{${escaped}\\}`, 'g'), String(paramValue));
+    }
+    return interpolated;
   };
 
   return (

@@ -139,7 +139,14 @@
       }
     },
     "notFound": "¿No encuentras la respuesta que buscas?",
-    "contactSupport": "Contactar Soporte"
+    "contactSupport": "Contactar Soporte",
+    "searchPlaceholder": "Buscar en preguntas…",
+    "clearSearch": "Limpiar búsqueda",
+    "results": "{count} resultados",
+    "noResults": "No hemos encontrado resultados para tu búsqueda.",
+    "helpTitle": "¿Necesitas ayuda?",
+    "helpSubtitle": "Si tu duda no está aquí, nuestro equipo responde rápido.",
+    "helpNote": "Respuesta habitual en menos de 24h (soporte 24/7 para urgencias)."
   },
   "hero": {
     "title": "Vive fuera de",
