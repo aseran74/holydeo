@@ -71,7 +71,7 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 dark:text-white">Email</h4>
-                  <p className="text-gray-600 dark:text-gray-300">info@chisreact.com</p>
+                  <p className="text-gray-600 dark:text-gray-300">info@holydeo.com</p>
                   <p className="text-sm text-gray-500">Respuesta en 24h</p>
                 </div>
               </div>
@@ -83,13 +83,12 @@ const ContactSection = () => {
                 <div>
                   <h4 className="font-semibold text-gray-900 dark:text-white">Oficina</h4>
                   <a 
-                    href="https://www.google.com/maps/search/Calle+Mayor+123,+28001+Madrid,+España" 
+                    href="https://www.google.com/maps/search/Avenida+de+Burgos+133" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors cursor-pointer block"
                   >
-                    Calle Mayor 123<br />
-                    28001 Madrid, España
+                    Avenida de Burgos 133
                   </a>
                 </div>
               </div>

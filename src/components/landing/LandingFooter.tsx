@@ -71,21 +71,21 @@ const LandingFooter = () => {
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-blue-400" />
                 <a 
-                  href="mailto:info@chisreact.com" 
+                  href="mailto:info@holydeo.com" 
                   className="text-gray-300 hover:text-blue-400 transition-colors cursor-pointer"
                 >
-                  info@chisreact.com
+                  info@holydeo.com
                 </a>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-blue-400" />
                 <a 
-                  href="https://www.google.com/maps/search/Madrid,+España" 
+                  href="https://www.google.com/maps/search/Avenida+de+Burgos+133" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-gray-300 hover:text-blue-400 transition-colors cursor-pointer"
                 >
-                  Madrid, España
+                  Avenida de Burgos 133
                 </a>
               </div>
             </div>
