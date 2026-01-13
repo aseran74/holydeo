@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Calendar, CreditCard, Home, MessageCircle } from 'lucide-react';
+import {
+  Calendar,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  CreditCard,
+  Home,
+  MessageCircle
+} from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import ContactSection from './ContactSection';
 
@@ -7,6 +16,7 @@ const FAQ = () => {
   const { t } = useLanguage();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const [openQuestion, setOpenQuestion] = useState<string | null>(null);
+  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
 
   const faqCategories = [
     {
@@ -151,6 +161,24 @@ const FAQ = () => {
     setOpenQuestion(openQuestion === questionId ? null : questionId);
   };
 
+  const activeCategory = faqCategories[activeCategoryIndex];
+
+  const goPrevCategory = () => {
+    setActiveCategoryIndex((prev) => {
+      const next = Math.max(0, prev - 1);
+      if (next !== prev) setOpenQuestion(null);
+      return next;
+    });
+  };
+
+  const goNextCategory = () => {
+    setActiveCategoryIndex((prev) => {
+      const next = Math.min(faqCategories.length - 1, prev + 1);
+      if (next !== prev) setOpenQuestion(null);
+      return next;
+    });
+  };
+
   const getColorClasses = (color: string) => {
     const colors = {
       blue: {
@@ -181,6 +209,36 @@ const FAQ = () => {
     return colors[color as keyof typeof colors] || colors.blue;
   };
 
+  const CategoryNav = () => (
+    <div className="flex items-center justify-between gap-3">
+      <button
+        type="button"
+        onClick={goPrevCategory}
+        disabled={activeCategoryIndex === 0}
+        className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm transition-colors duration-200 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800"
+        aria-label={t('faq.prevCategory')}
+      >
+        <ChevronLeft className="h-4 w-4" />
+        <span>{t('faq.prevCategory')}</span>
+      </button>
+
+      <div className="text-sm font-medium text-gray-600 dark:text-gray-300">
+        {activeCategory.title} <span className="text-gray-400">({activeCategoryIndex + 1}/{faqCategories.length})</span>
+      </div>
+
+      <button
+        type="button"
+        onClick={goNextCategory}
+        disabled={activeCategoryIndex === faqCategories.length - 1}
+        className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm transition-colors duration-200 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800"
+        aria-label={t('faq.nextCategory')}
+      >
+        <span>{t('faq.nextCategory')}</span>
+        <ChevronRight className="h-4 w-4" />
+      </button>
+    </div>
+  );
+
   return (
     <section className="py-20 bg-white dark:bg-gray-800">
       <div className="container mx-auto px-4">
@@ -193,41 +251,40 @@ const FAQ = () => {
           </p>
         </div>
 
-        <div className="max-w-5xl mx-auto space-y-4">
-          {faqCategories.map((category) => {
-            const IconComponent = category.icon;
-            const colorClasses = getColorClasses(category.color);
-            const isCategoryOpen = openCategory === category.id;
+        <div className="max-w-5xl mx-auto">
+          {/* Móvil / Tablet: navegación por botones (sin depender del scroll) */}
+          <div className="lg:hidden space-y-4">
+            <CategoryNav />
 
-            return (
-              <div
-                key={category.id}
-                className={`border ${colorClasses.border} rounded-lg overflow-hidden transition-all duration-200`}
-              >
-                {/* Category Header */}
-                <button
-                  onClick={() => toggleCategory(category.id)}
-                  className={`w-full px-6 py-5 text-left flex items-center justify-between ${colorClasses.bg} ${colorClasses.hover} transition-all duration-200 hover:shadow-md`}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`bg-gradient-to-br ${colorClasses.text.includes('blue') ? 'from-blue-500 to-blue-600' : colorClasses.text.includes('green') ? 'from-green-500 to-green-600' : colorClasses.text.includes('orange') ? 'from-orange-500 to-orange-600' : 'from-yellow-500 to-yellow-600'} w-14 h-14 rounded-xl flex items-center justify-center shadow-lg transform transition-transform duration-200 hover:scale-110`}>
-                      <IconComponent className="w-8 h-8 text-white" />
+            {(() => {
+              const IconComponent = activeCategory.icon;
+              const colorClasses = getColorClasses(activeCategory.color);
+
+              return (
+                <div className={`border ${colorClasses.border} rounded-lg overflow-hidden transition-all duration-200`}>
+                  <div className={`w-full px-6 py-5 text-left flex items-center justify-between ${colorClasses.bg}`}>
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`bg-gradient-to-br ${
+                          colorClasses.text.includes('blue')
+                            ? 'from-blue-500 to-blue-600'
+                            : colorClasses.text.includes('green')
+                              ? 'from-green-500 to-green-600'
+                              : colorClasses.text.includes('orange')
+                                ? 'from-orange-500 to-orange-600'
+                                : 'from-yellow-500 to-yellow-600'
+                        } w-14 h-14 rounded-xl flex items-center justify-center shadow-lg`}
+                      >
+                        <IconComponent className="w-8 h-8 text-white" />
+                      </div>
+                      <span className="font-bold text-xl text-gray-900 dark:text-white">
+                        {activeCategory.title}
+                      </span>
                     </div>
-                    <span className="font-bold text-xl text-gray-900 dark:text-white">
-                      {category.title}
-                    </span>
                   </div>
-                  {isCategoryOpen ? (
-                    <ChevronUp className="w-6 h-6 text-gray-500 transition-transform duration-200" />
-                  ) : (
-                    <ChevronDown className="w-6 h-6 text-gray-500 transition-transform duration-200" />
-                  )}
-                </button>
 
-                {/* Questions */}
-                {isCategoryOpen && (
                   <div className="bg-white dark:bg-gray-800">
-                    {category.questions.map((faq) => {
+                    {activeCategory.questions.map((faq) => {
                       const isQuestionOpen = openQuestion === faq.id;
                       return (
                         <div
@@ -258,10 +315,84 @@ const FAQ = () => {
                       );
                     })}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                </div>
+              );
+            })()}
+
+            <CategoryNav />
+          </div>
+
+          {/* Desktop: acordeón completo */}
+          <div className="hidden lg:block space-y-4">
+            {faqCategories.map((category) => {
+              const IconComponent = category.icon;
+              const colorClasses = getColorClasses(category.color);
+              const isCategoryOpen = openCategory === category.id;
+
+              return (
+                <div
+                  key={category.id}
+                  className={`border ${colorClasses.border} rounded-lg overflow-hidden transition-all duration-200`}
+                >
+                  {/* Category Header */}
+                  <button
+                    onClick={() => toggleCategory(category.id)}
+                    className={`w-full px-6 py-5 text-left flex items-center justify-between ${colorClasses.bg} ${colorClasses.hover} transition-all duration-200 hover:shadow-md`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={`bg-gradient-to-br ${colorClasses.text.includes('blue') ? 'from-blue-500 to-blue-600' : colorClasses.text.includes('green') ? 'from-green-500 to-green-600' : colorClasses.text.includes('orange') ? 'from-orange-500 to-orange-600' : 'from-yellow-500 to-yellow-600'} w-14 h-14 rounded-xl flex items-center justify-center shadow-lg transform transition-transform duration-200 hover:scale-110`}>
+                        <IconComponent className="w-8 h-8 text-white" />
+                      </div>
+                      <span className="font-bold text-xl text-gray-900 dark:text-white">
+                        {category.title}
+                      </span>
+                    </div>
+                    {isCategoryOpen ? (
+                      <ChevronUp className="w-6 h-6 text-gray-500 transition-transform duration-200" />
+                    ) : (
+                      <ChevronDown className="w-6 h-6 text-gray-500 transition-transform duration-200" />
+                    )}
+                  </button>
+
+                  {/* Questions */}
+                  {isCategoryOpen && (
+                    <div className="bg-white dark:bg-gray-800">
+                      {category.questions.map((faq) => {
+                        const isQuestionOpen = openQuestion === faq.id;
+                        return (
+                          <div
+                            key={faq.id}
+                            className="border-t border-gray-200 dark:border-gray-700"
+                          >
+                            <button
+                              onClick={() => toggleQuestion(faq.id)}
+                              className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                            >
+                              <span className="font-semibold text-gray-900 dark:text-white pr-4">
+                                {faq.question}
+                              </span>
+                              {isQuestionOpen ? (
+                                <ChevronUp className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                              ) : (
+                                <ChevronDown className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                              )}
+                            </button>
+                            {isQuestionOpen && (
+                              <div className="px-6 pb-4">
+                                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                  {faq.answer}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* CTA */}
