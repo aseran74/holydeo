@@ -96,7 +96,7 @@ const EnjoyStayPage = () => {
         
         {/* Contenido del hero */}
         <div className="relative z-40 pointer-events-auto">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-32 pb-16 md:pb-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 md:pt-36 pb-16 md:pb-32">
             <div className="text-center max-w-4xl mx-auto">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
                 Disfruta tu estancia
