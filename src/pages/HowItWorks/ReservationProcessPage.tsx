@@ -19,7 +19,7 @@ import {
 
 const ReservationProcessPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeContract, setActiveContract] = useState<'45dias' | '10meses'>('45dias');
+  const [activeContract, setActiveContract] = useState<'1-90dias' | '3-11meses'>('1-90dias');
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <LandingNavbar />
@@ -30,7 +30,7 @@ const ReservationProcessPage = () => {
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-block mb-6 animate-bounce">
               <img
-                src="/logotrans.svg"
+                src="/logotrans-white.svg"
                 alt="Holydeo Logo"
                 className="h-20 w-auto max-w-[200px] object-contain drop-shadow-lg"
               />
@@ -61,7 +61,7 @@ const ReservationProcessPage = () => {
                 1️⃣ Reserva de Media Estancia
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-300">
-                (de septiembre a junio / julio)
+                (de 3 a 11 meses)
               </p>
               <p className="text-lg text-gray-700 dark:text-gray-300 mt-4">
                 Ideal para inquilinos que buscan quedarse toda la temporada.
@@ -164,7 +164,7 @@ const ReservationProcessPage = () => {
                 2️⃣ Reserva de Estancia Corta
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-300">
-                (entre 15 y 90 días)
+                (de 1 a 90 días)
               </p>
               <p className="text-lg text-gray-700 dark:text-gray-300 mt-4">
                 Perfecto para profesionales desplazados, nómadas digitales o clientes temporales.
@@ -303,34 +303,34 @@ const ReservationProcessPage = () => {
             {/* Tabs para seleccionar el tipo de contrato */}
             <div className="flex border-b border-gray-200 dark:border-gray-700">
               <button
-                onClick={() => setActiveContract('45dias')}
+                onClick={() => setActiveContract('1-90dias')}
                 className={`flex-1 px-6 py-4 font-semibold transition-colors ${
-                  activeContract === '45dias'
+                  activeContract === '1-90dias'
                     ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-b-2 border-blue-600'
                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
               >
-                Modelo 1: 45 Días
+                Modelo 1: 1-90 Días
               </button>
               <button
-                onClick={() => setActiveContract('10meses')}
+                onClick={() => setActiveContract('3-11meses')}
                 className={`flex-1 px-6 py-4 font-semibold transition-colors ${
-                  activeContract === '10meses'
+                  activeContract === '3-11meses'
                     ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-b-2 border-blue-600'
                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
               >
-                Modelo 2: 10 Meses
+                Modelo 2: 3-11 Meses
               </button>
             </div>
 
             {/* Contenido del Modal - Scrollable */}
             <div className="flex-1 overflow-y-auto p-6">
-              {activeContract === '45dias' ? (
+              {activeContract === '1-90dias' ? (
                 <div className="space-y-6">
                   <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
                     <p className="text-sm text-gray-700 dark:text-gray-300">
-                      <strong>Modelo 1: Contrato de Arrendamiento de Temporada (45 Días)</strong>
+                      <strong>Modelo 1: Contrato de Arrendamiento de Temporada (1-90 Días)</strong>
                       <br />
                       Este modelo se adapta a una estancia corta donde el pago es único al finalizar la reserva.
                     </p>
@@ -384,13 +384,13 @@ const ReservationProcessPage = () => {
                         <div className="mt-4 space-y-4">
                           <div>
                             <p className="font-semibold text-gray-900 dark:text-white">PRIMERA. Objeto y Plazo.</p>
-                            <p>El objeto del contrato es la vivienda descrita en el Exponendo 1. El plazo de duración es de 45 días, comenzando el [Día] de [Mes] de [Año] y finalizando el [Día] de [Mes] de [Año], fecha en la que la Parte Arrendataria deberá desalojar la vivienda.</p>
+                            <p>El objeto del contrato es la vivienda descrita en el Exponendo 1. El plazo de duración es de [1 a 90 días], comenzando el [Día] de [Mes] de [Año] y finalizando el [Día] de [Mes] de [Año], fecha en la que la Parte Arrendataria deberá desalojar la vivienda.</p>
                           </div>
 
                           <div>
                             <p className="font-semibold text-gray-900 dark:text-white">SEGUNDA. Renta y Forma de Pago.</p>
                             <ul className="list-disc list-inside ml-4 space-y-1">
-                              <li>La renta total pactada por los 45 días es de [Cantidad en número] € ([Cantidad en letra] euros).</li>
+                              <li>La renta total pactada por el período de estancia (1 a 90 días) es de [Cantidad en número] € ([Cantidad en letra] euros).</li>
                               <li>Forma de Pago: La renta se abonará en su totalidad al finalizar la reserva, en el momento de la entrega de llaves y revisión de la vivienda, mediante [Indicar método: transferencia bancaria, efectivo, etc.].</li>
                             </ul>
                           </div>
@@ -423,9 +423,9 @@ const ReservationProcessPage = () => {
                 <div className="space-y-6">
                   <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
                     <p className="text-sm text-gray-700 dark:text-gray-300">
-                      <strong>Modelo 2: Contrato de Arrendamiento de Temporada (10 Meses)</strong>
+                      <strong>Modelo 2: Contrato de Arrendamiento de Temporada (3-11 Meses)</strong>
                       <br />
-                      Este modelo se adapta a una duración más larga (Septiembre a Junio), con fianza legal, pago mensual y suministros incluidos.
+                      Este modelo se adapta a una duración más larga (de 3 a 11 meses), con fianza legal, pago mensual y suministros incluidos.
                     </p>
                   </div>
 
@@ -469,7 +469,7 @@ const ReservationProcessPage = () => {
                             <p className="font-semibold text-gray-900 dark:text-white">PRIMERA. Objeto y Plazo.</p>
                             <ul className="list-disc list-inside ml-4 space-y-1">
                               <li>El objeto del contrato es la vivienda descrita en el Exponendo 1.</li>
-                              <li>El plazo de duración es de 10 meses, comenzando el 1 de septiembre de [Año] y finalizando el 30 de junio de [Año siguiente], fecha en la que la Parte Arrendataria deberá desalojar la vivienda. No cabe prórroga tácita de este contrato por la naturaleza temporal de la necesidad del Arrendatario.</li>
+                              <li>El plazo de duración es de [3 a 11 meses], comenzando el [Día] de [Mes] de [Año] y finalizando el [Día] de [Mes] de [Año], fecha en la que la Parte Arrendataria deberá desalojar la vivienda. No cabe prórroga tácita de este contrato por la naturaleza temporal de la necesidad del Arrendatario.</li>
                             </ul>
                           </div>
 

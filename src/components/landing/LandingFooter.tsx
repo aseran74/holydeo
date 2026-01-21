@@ -2,8 +2,6 @@ import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 
 const LandingFooter = () => {
-  const currentYear = new Date().getFullYear();
-
   const footerLinks = {
     propiedades: [
       { name: 'Buscar Propiedades', href: '/properties' },
@@ -164,7 +162,7 @@ const LandingFooter = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             {/* Copyright */}
             <div className="text-gray-400 text-sm">
-              © {currentYear} CHISREACT. Todos los derechos reservados.
+              Holydeo2026@copyright.com
             </div>
 
             {/* Redes sociales */}
@@ -183,6 +181,9 @@ const LandingFooter = () => {
 
             {/* Enlaces legales */}
             <div className="flex space-x-6 text-sm">
+              <a href="#how-it-works" className="text-gray-400 hover:text-white transition-colors duration-200">
+                Como funciona
+              </a>
               <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors duration-200">
                 Privacidad
               </Link>

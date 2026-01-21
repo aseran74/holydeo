@@ -53,19 +53,18 @@ const EnjoyStayPage = () => {
         
         {/* Capa 2 - Casa moderna (fondo1) - encima de las estrellas, ocupa toda la página */}
         <div className="absolute inset-0 z-20 pointer-events-none">
-          {/* Imagen para desktop */}
+          {/* Imagen para desktop (solo >= lg) */}
           <img 
             src="/fondo1.png"
             alt="Casa moderna" 
-            className="hidden md:block w-full h-full object-cover"
+            className="hidden lg:block w-full h-full object-cover"
           />
-          {/* Imagen para móvil - posición baja */}
-          <div className="block md:hidden w-full h-full flex items-end justify-center">
+          {/* Imagen para móvil y tablet - posición baja */}
+          <div className="block lg:hidden w-full h-full flex items-end justify-center">
             <img 
               src="/Fondo1movil-removebg-preview.png"
               alt="Casa moderna móvil" 
-              className="w-full h-auto object-contain"
-              style={{ maxHeight: '100%' }}
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
@@ -96,7 +95,7 @@ const EnjoyStayPage = () => {
         
         {/* Contenido del hero */}
         <div className="relative z-40 pointer-events-auto">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-32 pb-16 md:pb-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 md:pt-40 pb-16 md:pb-32">
             <div className="text-center max-w-4xl mx-auto">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
                 Disfruta tu estancia

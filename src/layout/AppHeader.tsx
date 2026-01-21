@@ -12,6 +12,7 @@ const AppHeader: React.FC = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
   const handleToggle = () => {
+    // Breakpoint lg de Tailwind es 1024px
     if (window.innerWidth >= 1024) {
       toggleSidebar();
     } else {

@@ -73,7 +73,7 @@
     "pricePerMonth": "Precio máximo por mes",
     "pricePerMonthDescription": "Elige el precio máximo por mes para estancias largas (60 días mínimo, 9 meses máximo)",
     "season": "Temporada",
-    "seasonDescription": "Marca las temporadas que te interesan",
+    "seasonDescription": "Si vas toda una temporada , marca las temporadas que te interesan",
     "propertyType": "Tipo de vivienda",
     "propertyTypeDescription": "Marca para elegir el tipo de vivienda",
     "allTypes": "Todos los tipos",
@@ -172,7 +172,20 @@
   },
   "howItWorks": {
     "subtitle": "Estancias Largas con Experiencias Únicas",
-    "description": "De 15 días a 9 meses en destinos vacacionales fuera de temporada",
+    "description": "De 15 días a 11 meses en destinos vacacionales fuera de temporada",
+    "reservationModal": {
+      "cta": "Ver tipos de reserva",
+      "title": "Tipos de reserva",
+      "intro": "Todas las reservas se formalizan mediante contrato de media estancia, con una duración mínima de 15 días y máxima de 11 meses.",
+      "short": {
+        "title": "Estancia corta (15–90 días)",
+        "body": "Se paga la estancia completa en el momento de la reserva."
+      },
+      "monthly": {
+        "title": "Estancia por meses (3–11 meses)",
+        "body": "Se paga mes a mes durante toda la duración de la estancia."
+      }
+    },
     "whatWeDo": "Lo que hacemos",
     "howItWorks": "Cómo funciona",
     "cta": "Empieza a vivir tu próxima experiencia",

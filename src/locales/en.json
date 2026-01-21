@@ -172,7 +172,20 @@
   },
   "howItWorks": {
     "subtitle": "Long Stays with Unique Experiences",
-    "description": "From 15 days to 9 months in off-season vacation destinations",
+    "description": "From 15 days to 11 months in off-season vacation destinations",
+    "reservationModal": {
+      "cta": "See reservation types",
+      "title": "Reservation types",
+      "intro": "All bookings are formalized through a medium-stay contract, with a minimum duration of 15 days and a maximum of 11 months.",
+      "short": {
+        "title": "Short stay (15–90 days)",
+        "body": "The full stay is paid at the time of booking."
+      },
+      "monthly": {
+        "title": "Monthly stay (3–11 months)",
+        "body": "It is paid month by month throughout the stay."
+      }
+    },
     "whatWeDo": "What we do",
     "howItWorks": "How it works",
     "cta": "Start living your next experience",

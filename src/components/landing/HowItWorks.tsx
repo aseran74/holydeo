@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Search, PenSquare, PartyPopper, MapPin, CreditCard, CheckCircle } from 'lucide-react';
+import { Search, PenSquare, PartyPopper, MapPin, CreditCard, CheckCircle, Info } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useModal } from '../../hooks/useModal';
+import { Modal } from '../ui/modal';
 
 interface Step {
   icon: React.ReactNode;
@@ -13,6 +15,7 @@ interface Step {
 
 const HowItWorks = () => {
   const { t } = useLanguage();
+  const { isOpen: isReservationModalOpen, openModal: openReservationModal, closeModal: closeReservationModal } = useModal(false);
 
   const steps: Step[] = [
     // 1-3: Lo que hacemos
@@ -70,16 +73,29 @@ const HowItWorks = () => {
         <div className="text-center">
           <h2
             id="how-it-works-heading"
-            className="text-base font-semibold text-blue-600 dark:text-blue-400 tracking-wide uppercase"
+            className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight sm:text-4xl"
           >
-            {t('howItWorks.title')}
-          </h2>
-          <p className="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight sm:text-4xl">
             {t('howItWorks.subtitle')}
-          </p>
+          </h2>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-500 dark:text-gray-400">
             {t('howItWorks.description')}
           </p>
+          <div className="mt-4 flex justify-center">
+            <button
+              type="button"
+              onClick={openReservationModal}
+              aria-haspopup="dialog"
+              aria-expanded={isReservationModalOpen}
+              className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-600/30 active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+            >
+              <span className="absolute -right-1 -top-1 inline-flex h-3 w-3">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-60"></span>
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-white"></span>
+              </span>
+              <Info className="w-4 h-4 transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110" />
+              {t('howItWorks.reservationModal.cta')}
+            </button>
+          </div>
         </div>
 
         {/* Sección: Lo que hacemos */}
@@ -176,6 +192,58 @@ const HowItWorks = () => {
           </a>
         </div>
       </div>
+
+      <Modal
+        isOpen={isReservationModalOpen}
+        onClose={closeReservationModal}
+        className="mx-4 max-w-3xl"
+      >
+        <div className="p-6 sm:p-8">
+          <div className="flex items-start gap-3 pr-10">
+            <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+              <Info className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {t('howItWorks.reservationModal.title')}
+              </h3>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">
+                {t('howItWorks.reservationModal.intro')}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-800/60">
+              <h4 className="text-lg font-bold text-gray-900 dark:text-white">
+                {t('howItWorks.reservationModal.short.title')}
+              </h4>
+              <p className="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                {t('howItWorks.reservationModal.short.body')}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-800/60">
+              <h4 className="text-lg font-bold text-gray-900 dark:text-white">
+                {t('howItWorks.reservationModal.monthly.title')}
+              </h4>
+              <p className="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                {t('howItWorks.reservationModal.monthly.body')}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-end">
+            <button
+              type="button"
+              onClick={closeReservationModal}
+              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-colors"
+            >
+              {t('common.close')}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </section>
   );
 };
