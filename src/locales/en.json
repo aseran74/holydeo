@@ -178,11 +178,11 @@
       "title": "Reservation types",
       "intro": "All bookings are formalized through a medium-stay contract, with a minimum duration of 15 days and a maximum of 11 months.",
       "short": {
-        "title": "Short stay (15–90 days)",
+        "title": "Short stay (15–60 days)",
         "body": "The full stay is paid at the time of booking."
       },
       "monthly": {
-        "title": "Monthly stay (3–11 months)",
+        "title": "Monthly stay (2–11 months)",
         "body": "It is paid month by month throughout the stay."
       }
     },

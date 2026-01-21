@@ -60,7 +60,7 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
   };
 
   const daysDifference = calculateDays(formData.startDate, formData.endDate);
-  const isLongTerm = daysDifference > 90;
+  const isLongTerm = daysDifference > 60;
 
   // Función para convertir claves de temporada en información visual atractiva
   const getSeasonDisplayInfo = (seasonKey: string) => {
@@ -370,7 +370,7 @@ const SeasonRentalForm: React.FC<SeasonRentalFormProps> = ({
               </div>
               {isLongTerm && (
                 <div className="mt-1 text-xs text-blue-600">
-                  ⚠️ Alquiler de larga duración (más de 90 días)
+                  ⚠️ Alquiler de larga duración (más de 60 días)
                 </div>
               )}
             </div>

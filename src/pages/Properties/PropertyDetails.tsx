@@ -716,7 +716,7 @@ const PropertyDetails = () => {
                     // Mostrar toast informativo usando el hook personalizado
                     toast.info(
                       'Reserva Estancia Corta',
-                      'Pulsa tus días en el calendario de arriba. Recuerda: 15 días mínimo, 90 días máximo.'
+                      'Pulsa tus días en el calendario de arriba. Recuerda: 15 días mínimo, 60 días máximo.'
                     );
                   }}
                   className="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"

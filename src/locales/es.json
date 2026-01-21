@@ -178,11 +178,11 @@
       "title": "Tipos de reserva",
       "intro": "Todas las reservas se formalizan mediante contrato de media estancia, con una duración mínima de 15 días y máxima de 11 meses.",
       "short": {
-        "title": "Estancia corta (15–90 días)",
+        "title": "Estancia corta (15–60 días)",
         "body": "Se paga la estancia completa en el momento de la reserva."
       },
       "monthly": {
-        "title": "Estancia por meses (3–11 meses)",
+        "title": "Estancia por meses (2–11 meses)",
         "body": "Se paga mes a mes durante toda la duración de la estancia."
       }
     },
