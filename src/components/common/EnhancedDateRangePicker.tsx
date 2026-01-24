@@ -72,7 +72,7 @@ const EnhancedDateRangePicker: React.FC<EnhancedDateRangePickerProps> = ({
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div className={`relative ${className}`}>
+      <div className={`relative z-[9999] ${className}`}>
         <div
           onClick={() => setIsOpen(!isOpen)}
           className={`w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer flex items-center justify-between hover:border-gray-300 transition-colors ${
@@ -99,7 +99,7 @@ const EnhancedDateRangePicker: React.FC<EnhancedDateRangePickerProps> = ({
         </div>
 
         {isOpen && (
-          <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-4 min-w-[320px]">
+          <div className="absolute top-full left-0 right-0 z-[9999] mt-2 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 min-w-[320px]">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
                 <h4 className="text-sm font-medium text-gray-700 mb-2">Fecha de llegada</h4>
@@ -134,16 +134,16 @@ const EnhancedDateRangePicker: React.FC<EnhancedDateRangePickerProps> = ({
               </div>
             </div>
             
-            <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+            <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200 bg-white relative z-[10000]">
               <button
                 onClick={clearDates}
-                className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                className="text-sm text-gray-500 hover:text-gray-700 transition-colors font-medium"
               >
                 Limpiar fechas
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                className="px-5 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-base font-semibold shadow-md"
               >
                 Aplicar
               </button>
@@ -154,7 +154,7 @@ const EnhancedDateRangePicker: React.FC<EnhancedDateRangePickerProps> = ({
         {/* Overlay para cerrar al hacer clic fuera */}
         {isOpen && (
           <div
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-[9998]"
             onClick={() => setIsOpen(false)}
           />
         )}

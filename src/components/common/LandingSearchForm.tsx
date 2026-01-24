@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, ChevronDown, ChevronUp, Home, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
-import TailGridsDateRangePicker from './TailGridsDateRangePicker';
+import FullCalendarDatePicker from './FullCalendarDatePicker';
 import PriceFilter from './PriceFilter';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete';
 import { supabase } from '../../supabaseClient';
@@ -264,7 +264,7 @@ const LandingSearchForm: React.FC<LandingSearchFormProps> = ({
 
           {/* Calendario */}
           <div>
-            <TailGridsDateRangePicker
+            <FullCalendarDatePicker
               checkIn={searchData.checkIn}
               checkOut={searchData.checkOut}
               onCheckInChange={handleCheckInChange}

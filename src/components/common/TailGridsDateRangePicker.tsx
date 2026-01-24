@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Calendar, ChevronLeft, ChevronRight, ChevronDown, X } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, X } from "lucide-react";
 
 interface TailGridsDateRangePickerProps {
   checkIn: string;
@@ -22,7 +22,9 @@ const TailGridsDateRangePicker: React.FC<TailGridsDateRangePickerProps> = ({
   const [selectedStartDate, setSelectedStartDate] = useState<string | null>(checkIn || null);
   const [selectedEndDate, setSelectedEndDate] = useState<string | null>(checkOut || null);
   const [isOpen, setIsOpen] = useState(false);
+  const [openUpward, setOpenUpward] = useState(false);
   const datepickerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Actualizar fechas cuando cambien las props
   useEffect(() => {
@@ -127,6 +129,16 @@ const TailGridsDateRangePicker: React.FC<TailGridsDateRangePickerProps> = ({
   };
 
   const toggleDatepicker = () => {
+    if (!isOpen && inputRef.current) {
+      // Calcular si hay espacio suficiente debajo del input
+      const rect = inputRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const requiredSpace = 720; // Espacio requerido ampliado a 720px
+      
+      // Solo abrir hacia arriba si hay menos de 300px de espacio abajo
+      // De lo contrario, siempre abrir hacia abajo (preferencia)
+      setOpenUpward(spaceBelow < 300);
+    }
     setIsOpen(!isOpen);
   };
 
@@ -167,13 +179,14 @@ const TailGridsDateRangePicker: React.FC<TailGridsDateRangePickerProps> = ({
   }, []);
 
   return (
-    <div className={`relative z-50 ${className}`} ref={datepickerRef}>
+    <div className={`relative z-[9999] ${className}`} ref={datepickerRef}>
       <div className="relative flex items-center">
         <span className="absolute left-0 pl-5 text-gray-400">
           <Calendar className="w-5 h-5" />
         </span>
 
         <input
+          ref={inputRef}
           type="text"
           placeholder={placeholder}
           className={`w-full rounded-lg border border-gray-200 bg-gray-100 py-3 pl-[50px] pr-12 text-gray-800 outline-none transition focus:border-blue-500 focus:bg-white hover:bg-gray-200 dark:border-gray-600 dark:text-white dark:focus:border-blue-500`}
@@ -198,12 +211,26 @@ const TailGridsDateRangePicker: React.FC<TailGridsDateRangePickerProps> = ({
           className="absolute right-0 cursor-pointer pr-4 text-gray-400 hover:text-gray-600 transition-colors"
           onClick={toggleDatepicker}
         >
-          <ChevronDown className="w-4 h-4" />
+          {isOpen && openUpward ? (
+            <ChevronUp className="w-4 h-4" />
+          ) : (
+            <ChevronDown className="w-4 h-4" />
+          )}
         </span>
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-2 rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-600 dark:bg-gray-800">
+        <div 
+          className={`absolute left-0 right-0 z-[9999] rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-600 dark:bg-gray-800 ${
+            openUpward ? 'bottom-full mb-2' : 'top-full mt-2'
+          }`}
+          style={{
+            maxHeight: openUpward 
+              ? 'calc(100vh - 20px)' 
+              : '480px',
+            overflowY: 'auto'
+          }}
+        >
           <div className="p-5">
             <div className="flex items-center justify-between mb-4">
               <button
@@ -247,15 +274,15 @@ const TailGridsDateRangePicker: React.FC<TailGridsDateRangePickerProps> = ({
               {renderCalendar()}
             </div>
 
-            <div className="mt-5 flex justify-end space-x-2.5 border-t border-gray-200 pt-5 dark:border-gray-600">
+            <div className="mt-5 flex justify-end space-x-2.5 border-t border-gray-200 pt-5 dark:border-gray-600 bg-white dark:bg-gray-800 relative z-[10000]">
               <button
-                className="rounded-lg border border-blue-500 px-5 py-2.5 text-base font-medium text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                className="rounded-lg border-2 border-blue-500 px-5 py-2.5 text-base font-semibold text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 relative z-[10001] shadow-sm"
                 onClick={handleCancel}
               >
                 Cancelar
               </button>
               <button
-                className="rounded-lg bg-blue-500 px-5 py-2.5 text-base font-medium text-white hover:bg-blue-600"
+                className="rounded-lg bg-blue-500 px-5 py-2.5 text-base font-semibold text-white hover:bg-blue-600 relative z-[10001] shadow-md"
                 onClick={handleApply}
               >
                 Aplicar
