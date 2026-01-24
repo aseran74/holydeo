@@ -130,13 +130,9 @@ const TailGridsDateRangePicker: React.FC<TailGridsDateRangePickerProps> = ({
 
   const toggleDatepicker = () => {
     if (!isOpen && inputRef.current) {
-      // Calcular si hay espacio suficiente debajo del input
       const rect = inputRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
-      const requiredSpace = 720; // Espacio requerido ampliado a 720px
-      
-      // Solo abrir hacia arriba si hay menos de 300px de espacio abajo
-      // De lo contrario, siempre abrir hacia abajo (preferencia)
+      // Abrir hacia arriba si hay menos de 300px debajo; si no, hacia abajo
       setOpenUpward(spaceBelow < 300);
     }
     setIsOpen(!isOpen);
