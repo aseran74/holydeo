@@ -2,15 +2,27 @@ import { useState, useEffect } from 'react';
 import LandingSearchForm from '../common/LandingSearchForm';
 import { useLanguage } from '../../context/LanguageContext';
 
+// Generar array de imágenes secuenciales
+const generateImageSequence = () => {
+  const images = [];
+  for (let i = 0; i <= 49; i++) {
+    const num = i.toString().padStart(3, '0');
+    images.push(`/Hero/video-escritorio_${num}.jpg`);
+  }
+  return images;
+};
+
+const IMAGE_SEQUENCE = generateImageSequence();
+const TOTAL_IMAGES = IMAGE_SEQUENCE.length;
+
 const LandingHero = () => {
   const { t, language } = useLanguage();
   const [showUnderline, setShowUnderline] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [mobileVideoPlaying] = useState(false);
-  const [mobileVideoRef, setMobileVideoRef] = useState<HTMLVideoElement | null>(null);
-  const [desktopVideoRef, setDesktopVideoRef] = useState<HTMLVideoElement | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [scrollY, setScrollY] = useState(0);
+  const [mobileVideoRef, setMobileVideoRef] = useState<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -28,6 +40,17 @@ const LandingHero = () => {
       const windowHeight = window.innerHeight;
       const heroHeight = windowHeight;
       
+      // Solo actualizar imágenes en tablet y escritorio (no en móvil)
+      if (!isMobile) {
+        // Calcular el índice de la imagen basado en el scroll
+        // Mapear el scroll de 0 a heroHeight a índices de 0 a TOTAL_IMAGES-1
+        const scrollProgress = Math.min(Math.max(currentScrollY / heroHeight, 0), 1);
+        const newIndex = Math.floor(scrollProgress * (TOTAL_IMAGES - 1));
+        
+        // Actualizar la imagen basada en el scroll (funciona hacia arriba y abajo)
+        setCurrentImageIndex(newIndex);
+      }
+      
       // Mostrar el subrayado cuando estamos en la mitad del hero
       if (currentScrollY < heroHeight * 0.5) {
         setShowUnderline(true);
@@ -39,7 +62,6 @@ const LandingHero = () => {
       if (currentScrollY > 100) {
         setShowStats(true);
       }
-      // Quitamos el else para que no se oculten una vez que aparezcan
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -49,9 +71,9 @@ const LandingHero = () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkMobile);
     };
-  }, []);
+  }, [isMobile]);
 
-  // Efecto para configurar el tiempo de inicio del video
+  // Efecto para configurar el tiempo de inicio del video en móvil
   useEffect(() => {
     const setVideoStartTime = (videoElement: HTMLVideoElement) => {
       if (videoElement) {
@@ -71,11 +93,7 @@ const LandingHero = () => {
     if (mobileVideoRef) {
       setVideoStartTime(mobileVideoRef);
     }
-    
-    if (desktopVideoRef) {
-      setVideoStartTime(desktopVideoRef);
-    }
-  }, [mobileVideoRef, desktopVideoRef]);
+  }, [mobileVideoRef]);
 
   return (
     <section 
@@ -100,7 +118,7 @@ const LandingHero = () => {
           position: 'relative'
         }}
       >
-        {/* Video para móvil y escritorio con diferentes archivos */}
+        {/* Video para móvil, imágenes secuenciales para tablet y escritorio */}
         {isMobile ? (
           // Video para móvil (< 640px)
           <div className="relative w-full h-full m-0 p-0" style={{ margin: 0, padding: 0 }}>
@@ -133,44 +151,30 @@ const LandingHero = () => {
                 style={{ margin: 0, padding: 0 }}
               />
             </video>
-            
-            {/* Botón de play manual si el video no se reproduce automáticamente */}
-            {!mobileVideoPlaying && mobileVideoRef && (
-              <button
-                onClick={() => {
-                  if (mobileVideoRef) {
-                    mobileVideoRef.play();
-                  }
-                }}
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full border border-white/30 hover:bg-white/30 transition-all duration-300 z-10"
-              >
-                ▶️ {t('hero.search.playVideo')}
-              </button>
-            )}
           </div>
         ) : (
-          // Video para tablet y escritorio (≥ 640px)
-          <video 
-            ref={setDesktopVideoRef}
-            autoPlay 
-            muted 
-            loop 
-            playsInline 
-            className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0" 
-            style={{ 
-              objectPosition: 'center 30%', 
-              margin: 0, 
-              padding: 0,
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              width: '100%',
-              height: '100%'
-            }}
-          >
-            <source src="/video-escritorio.mp4" type="video/mp4" />
-          </video>
+          // Imágenes secuenciales para tablet y escritorio (≥ 640px)
+          <div className="relative w-full h-full m-0 p-0" style={{ margin: 0, padding: 0 }}>
+            <img 
+              src={IMAGE_SEQUENCE[currentImageIndex]}
+              alt={`Hero frame ${currentImageIndex}`}
+              className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
+              style={{ 
+                objectPosition: 'center 30%', 
+                margin: 0, 
+                padding: 0,
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                width: '100%',
+                height: '100%',
+                transition: 'opacity 0.2s ease-in-out',
+                imageRendering: 'auto'
+              }}
+              key={currentImageIndex}
+            />
+          </div>
         )}
         
         <div className="absolute inset-0 bg-black/60"></div>
@@ -221,7 +225,7 @@ const LandingHero = () => {
             </p>
 
             {/* Buscador */}
-            <div className="w-full max-w-4xl mx-auto relative z-10">
+            <div id="search" className="w-full max-w-4xl mx-auto relative z-10 scroll-mt-24">
               <LandingSearchForm />
             </div>
 
