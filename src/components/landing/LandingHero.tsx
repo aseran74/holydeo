@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import LandingSearchForm from '../common/LandingSearchForm';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -15,13 +15,31 @@ const generateImageSequence = () => {
 const IMAGE_SEQUENCE = generateImageSequence();
 const TOTAL_IMAGES = IMAGE_SEQUENCE.length;
 
+function getInitialHeroState() {
+  if (typeof window === 'undefined')
+    return { scrollY: 0, showUnderline: true, showStats: false, currentImageIndex: 0, isMobile: false };
+  const w = window.innerWidth;
+  const isMobile = w < 640;
+  const scrollY = window.scrollY;
+  const h = window.innerHeight;
+  const showUnderline = scrollY < h * 0.5;
+  const showStats = scrollY > 100;
+  let currentImageIndex = 0;
+  if (!isMobile) {
+    const p = Math.min(Math.max(scrollY / h, 0), 1);
+    currentImageIndex = Math.floor(p * (TOTAL_IMAGES - 1));
+  }
+  return { scrollY, showUnderline, showStats, currentImageIndex, isMobile };
+}
+
 const LandingHero = () => {
   const { t, language } = useLanguage();
-  const [showUnderline, setShowUnderline] = useState(false);
-  const [showStats, setShowStats] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [scrollY, setScrollY] = useState(0);
+  const initial = useMemo(() => getInitialHeroState(), []);
+  const [showUnderline, setShowUnderline] = useState(initial.showUnderline);
+  const [showStats, setShowStats] = useState(initial.showStats);
+  const [isMobile, setIsMobile] = useState(initial.isMobile);
+  const [currentImageIndex, setCurrentImageIndex] = useState(initial.currentImageIndex);
+  const [scrollY, setScrollY] = useState(initial.scrollY);
   const [mobileVideoRef, setMobileVideoRef] = useState<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -33,43 +51,64 @@ const LandingHero = () => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
 
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setScrollY(currentScrollY);
-      
-      const windowHeight = window.innerHeight;
-      const heroHeight = windowHeight;
-      
-      // Solo actualizar imágenes en tablet y escritorio (no en móvil)
-      if (!isMobile) {
-        // Calcular el índice de la imagen basado en el scroll
-        // Mapear el scroll de 0 a heroHeight a índices de 0 a TOTAL_IMAGES-1
-        const scrollProgress = Math.min(Math.max(currentScrollY / heroHeight, 0), 1);
-        const newIndex = Math.floor(scrollProgress * (TOTAL_IMAGES - 1));
-        
-        // Actualizar la imagen basada en el scroll (funciona hacia arriba y abajo)
-        setCurrentImageIndex(newIndex);
-      }
-      
-      // Mostrar el subrayado cuando estamos en la mitad del hero
-      if (currentScrollY < heroHeight * 0.5) {
-        setShowUnderline(true);
-      } else {
-        setShowUnderline(false);
-      }
+    let rafId: number | null = null;
+    let lastIndex = 0;
+    const MAX_INDEX_DELTA = 2; // Máximo cambio de fotogramas por frame para evitar fogonazos
 
-      // Mostrar las estadísticas cuando hacemos scroll y mantenerlas visibles
-      if (currentScrollY > 100) {
-        setShowStats(true);
+    const handleScroll = () => {
+      if (rafId != null) return;
+      rafId = requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        setScrollY(currentScrollY);
+
+        const windowHeight = window.innerHeight;
+        const heroHeight = windowHeight;
+
+        if (!isMobile) {
+          const scrollProgress = Math.min(Math.max(currentScrollY / heroHeight, 0), 1);
+          const targetIndex = Math.floor(scrollProgress * (TOTAL_IMAGES - 1));
+          const delta = targetIndex - lastIndex;
+          const cappedDelta = Math.max(-MAX_INDEX_DELTA, Math.min(MAX_INDEX_DELTA, delta));
+          const newIndex = Math.max(0, Math.min(TOTAL_IMAGES - 1, lastIndex + cappedDelta));
+          lastIndex = newIndex;
+          setCurrentImageIndex(newIndex);
+        }
+
+        if (currentScrollY < heroHeight * 0.5) {
+          setShowUnderline(true);
+        } else {
+          setShowUnderline(false);
+        }
+
+        if (currentScrollY > 100) {
+          setShowStats(true);
+        }
+
+        rafId = null;
+      });
+    };
+
+    const init = () => {
+      const currentScrollY = window.scrollY;
+      const h = window.innerHeight;
+      setScrollY(currentScrollY);
+      if (currentScrollY < h * 0.5) setShowUnderline(true);
+      else setShowUnderline(false);
+      if (currentScrollY > 100) setShowStats(true);
+      if (!isMobile) {
+        const progress = Math.min(Math.max(currentScrollY / h, 0), 1);
+        lastIndex = Math.floor(progress * (TOTAL_IMAGES - 1));
+        setCurrentImageIndex((prev) => (prev !== lastIndex ? lastIndex : prev));
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Ejecutar una vez al montar
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    init();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkMobile);
+      if (rafId != null) cancelAnimationFrame(rafId);
     };
   }, [isMobile]);
 
@@ -169,7 +208,7 @@ const LandingHero = () => {
                 bottom: 0,
                 width: '100%',
                 height: '100%',
-                transition: 'opacity 0.2s ease-in-out',
+                transform: 'translateZ(0)',
                 imageRendering: 'auto'
               }}
               key={currentImageIndex}

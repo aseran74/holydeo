@@ -16,15 +16,25 @@ import {
 } from 'lucide-react';
 
 const EnjoyStayPage = () => {
-  const [scrollY, setScrollY] = useState(0);
+  const [scrollY, setScrollY] = useState(
+    () => (typeof window !== 'undefined' ? window.scrollY : 0)
+  );
 
   useEffect(() => {
+    let rafId: number | null = null;
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      if (rafId != null) return;
+      rafId = requestAnimationFrame(() => {
+        setScrollY(window.scrollY);
+        rafId = null;
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId != null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
@@ -40,8 +50,8 @@ const EnjoyStayPage = () => {
         <div 
           className="absolute inset-0 z-10 pointer-events-none"
           style={{
-            transform: `translateY(${scrollY * 0.3}px)`,
-            transition: 'transform 0.1s ease-out'
+            transform: `translate3d(0, ${scrollY * 0.3}px, 0)`,
+            willChange: 'transform'
           }}
         >
           <img 
@@ -74,8 +84,8 @@ const EnjoyStayPage = () => {
           className="absolute inset-0 flex items-start justify-center pt-8 md:pt-4 pointer-events-none" 
           style={{ 
             zIndex: 15,
-            transform: `translateX(${-scrollY * 0.3}px)`,
-            transition: 'transform 0.1s ease-out'
+            transform: `translate3d(${-scrollY * 0.3}px, 0, 0)`,
+            willChange: 'transform'
           }}
         >
           <img 
