@@ -21,20 +21,9 @@ const EnjoyStayPage = () => {
   );
 
   useEffect(() => {
-    let rafId: number | null = null;
-    const handleScroll = () => {
-      if (rafId != null) return;
-      rafId = requestAnimationFrame(() => {
-        setScrollY(window.scrollY);
-        rafId = null;
-      });
-    };
-
+    const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (rafId != null) cancelAnimationFrame(rafId);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (

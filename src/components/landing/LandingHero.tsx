@@ -2,12 +2,13 @@ import { useState, useEffect, useMemo } from 'react';
 import LandingSearchForm from '../common/LandingSearchForm';
 import { useLanguage } from '../../context/LanguageContext';
 
-// Generar array de imágenes secuenciales
+// Generar array de imágenes secuenciales (WebP)
 const generateImageSequence = () => {
-  const images = [];
+  const images: string[] = [];
   for (let i = 0; i <= 49; i++) {
     const num = i.toString().padStart(3, '0');
-    images.push(`/Hero/video-escritorio_${num}.jpg`);
+    const n = (i + 1).toString();
+    images.push(`/Hero/video-escritorio_${num}_${n}_11zon.webp`);
   }
   return images;
 };
@@ -52,37 +53,23 @@ const LandingHero = () => {
     window.addEventListener('resize', checkMobile);
 
     let rafId: number | null = null;
-    let lastIndex = 0;
-    const MAX_INDEX_DELTA = 2; // Máximo cambio de fotogramas por frame para evitar fogonazos
 
     const handleScroll = () => {
       if (rafId != null) return;
       rafId = requestAnimationFrame(() => {
         const currentScrollY = window.scrollY;
-        setScrollY(currentScrollY);
+        const heroHeight = window.innerHeight;
 
-        const windowHeight = window.innerHeight;
-        const heroHeight = windowHeight;
+        setScrollY(currentScrollY);
 
         if (!isMobile) {
           const scrollProgress = Math.min(Math.max(currentScrollY / heroHeight, 0), 1);
           const targetIndex = Math.floor(scrollProgress * (TOTAL_IMAGES - 1));
-          const delta = targetIndex - lastIndex;
-          const cappedDelta = Math.max(-MAX_INDEX_DELTA, Math.min(MAX_INDEX_DELTA, delta));
-          const newIndex = Math.max(0, Math.min(TOTAL_IMAGES - 1, lastIndex + cappedDelta));
-          lastIndex = newIndex;
-          setCurrentImageIndex(newIndex);
+          setCurrentImageIndex(Math.max(0, Math.min(TOTAL_IMAGES - 1, targetIndex)));
         }
 
-        if (currentScrollY < heroHeight * 0.5) {
-          setShowUnderline(true);
-        } else {
-          setShowUnderline(false);
-        }
-
-        if (currentScrollY > 100) {
-          setShowStats(true);
-        }
+        setShowUnderline(currentScrollY < heroHeight * 0.5);
+        if (currentScrollY > 100) setShowStats(true);
 
         rafId = null;
       });
@@ -92,13 +79,12 @@ const LandingHero = () => {
       const currentScrollY = window.scrollY;
       const h = window.innerHeight;
       setScrollY(currentScrollY);
-      if (currentScrollY < h * 0.5) setShowUnderline(true);
-      else setShowUnderline(false);
+      setShowUnderline(currentScrollY < h * 0.5);
       if (currentScrollY > 100) setShowStats(true);
       if (!isMobile) {
         const progress = Math.min(Math.max(currentScrollY / h, 0), 1);
-        lastIndex = Math.floor(progress * (TOTAL_IMAGES - 1));
-        setCurrentImageIndex((prev) => (prev !== lastIndex ? lastIndex : prev));
+        const idx = Math.floor(progress * (TOTAL_IMAGES - 1));
+        setCurrentImageIndex((prev) => (prev !== idx ? idx : prev));
       }
     };
 
@@ -111,6 +97,14 @@ const LandingHero = () => {
       if (rafId != null) cancelAnimationFrame(rafId);
     };
   }, [isMobile]);
+
+  // Precarga de todas las imágenes del hero (evita fogonazos al hacer scroll)
+  useEffect(() => {
+    IMAGE_SEQUENCE.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   // Efecto para configurar el tiempo de inicio del video en móvil
   useEffect(() => {
@@ -194,13 +188,13 @@ const LandingHero = () => {
         ) : (
           // Imágenes secuenciales para tablet y escritorio (≥ 640px)
           <div className="relative w-full h-full m-0 p-0" style={{ margin: 0, padding: 0 }}>
-            <img 
+            <img
               src={IMAGE_SEQUENCE[currentImageIndex]}
-              alt={`Hero frame ${currentImageIndex}`}
+              alt="Hero"
               className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
-              style={{ 
-                objectPosition: 'center 30%', 
-                margin: 0, 
+              style={{
+                objectPosition: 'center 30%',
+                margin: 0,
                 padding: 0,
                 top: 0,
                 left: 0,
@@ -209,9 +203,8 @@ const LandingHero = () => {
                 width: '100%',
                 height: '100%',
                 transform: 'translateZ(0)',
-                imageRendering: 'auto'
+                imageRendering: 'auto',
               }}
-              key={currentImageIndex}
             />
           </div>
         )}
