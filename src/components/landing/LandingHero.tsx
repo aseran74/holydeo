@@ -15,6 +15,12 @@ const generateImageSequence = () => {
 
 const IMAGE_SEQUENCE = generateImageSequence();
 const TOTAL_IMAGES = IMAGE_SEQUENCE.length;
+const HERO_FRAME_SPEED = 1.5;
+
+const getFrameIndexFromScroll = (scrollY: number, heroHeight: number) => {
+  const scrollProgress = Math.min(Math.max((scrollY / heroHeight) * HERO_FRAME_SPEED, 0), 1);
+  return Math.floor(scrollProgress * (TOTAL_IMAGES - 1));
+};
 
 function getInitialHeroState() {
   if (typeof window === 'undefined')
@@ -27,8 +33,7 @@ function getInitialHeroState() {
   const showStats = scrollY > 100;
   let currentImageIndex = 0;
   if (!isMobile) {
-    const p = Math.min(Math.max(scrollY / h, 0), 1);
-    currentImageIndex = Math.floor(p * (TOTAL_IMAGES - 1));
+    currentImageIndex = getFrameIndexFromScroll(scrollY, h);
   }
   return { scrollY, showUnderline, showStats, currentImageIndex, isMobile };
 }
@@ -63,8 +68,7 @@ const LandingHero = () => {
         setScrollY(currentScrollY);
 
         if (!isMobile) {
-          const scrollProgress = Math.min(Math.max(currentScrollY / heroHeight, 0), 1);
-          const targetIndex = Math.floor(scrollProgress * (TOTAL_IMAGES - 1));
+          const targetIndex = getFrameIndexFromScroll(currentScrollY, heroHeight);
           setCurrentImageIndex(Math.max(0, Math.min(TOTAL_IMAGES - 1, targetIndex)));
         }
 
@@ -82,8 +86,7 @@ const LandingHero = () => {
       setShowUnderline(currentScrollY < h * 0.5);
       if (currentScrollY > 100) setShowStats(true);
       if (!isMobile) {
-        const progress = Math.min(Math.max(currentScrollY / h, 0), 1);
-        const idx = Math.floor(progress * (TOTAL_IMAGES - 1));
+        const idx = getFrameIndexFromScroll(currentScrollY, h);
         setCurrentImageIndex((prev) => (prev !== idx ? idx : prev));
       }
     };
