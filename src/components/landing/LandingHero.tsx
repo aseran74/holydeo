@@ -175,7 +175,7 @@ const LandingHero = () => {
       }}
     >
       <div 
-        className="relative w-full min-h-screen h-[150vh] m-0 p-0" 
+        className="relative w-full min-h-screen h-[120vh] m-0 p-0" 
         style={{ 
           margin: 0, 
           padding: 0,
@@ -277,7 +277,7 @@ const LandingHero = () => {
         <div className="absolute inset-0 bg-black/60 z-0"></div>
 
         {/* Contenido del hero */}
-        <div className="absolute inset-0 flex items-center justify-center py-96 sm:py-32 px-4 z-10">
+        <div className="absolute inset-0 flex items-start justify-center pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 px-4 z-10">
           <div className="text-center w-full max-w-4xl mx-auto">
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 leading-tight text-white px-6 sm:px-4">
