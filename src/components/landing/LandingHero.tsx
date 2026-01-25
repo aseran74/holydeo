@@ -18,7 +18,7 @@ const TOTAL_IMAGES = IMAGE_SEQUENCE.length;
 
 function getInitialHeroState() {
   if (typeof window === 'undefined')
-    return { scrollY: 0, showUnderline: true, showStats: false, currentImageIndex: 0, isMobile: false };
+    return { scrollY: 0, showUnderline: true, showStats: false, isMobile: false, currentImageIndex: 0 };
   const w = window.innerWidth;
   const isMobile = w < 640;
   const scrollY = window.scrollY;
@@ -30,7 +30,7 @@ function getInitialHeroState() {
     const p = Math.min(Math.max(scrollY / h, 0), 1);
     currentImageIndex = Math.floor(p * (TOTAL_IMAGES - 1));
   }
-  return { scrollY, showUnderline, showStats, currentImageIndex, isMobile };
+  return { scrollY, showUnderline, showStats, isMobile, currentImageIndex };
 }
 
 const LandingHero = () => {
@@ -39,9 +39,11 @@ const LandingHero = () => {
   const [showUnderline, setShowUnderline] = useState(initial.showUnderline);
   const [showStats, setShowStats] = useState(initial.showStats);
   const [isMobile, setIsMobile] = useState(initial.isMobile);
-  const [currentImageIndex, setCurrentImageIndex] = useState(initial.currentImageIndex);
   const [scrollY, setScrollY] = useState(initial.scrollY);
+  const [currentImageIndex, setCurrentImageIndex] = useState(initial.currentImageIndex);
+  const [videoEnded, setVideoEnded] = useState(false);
   const [mobileVideoRef, setMobileVideoRef] = useState<HTMLVideoElement | null>(null);
+  const [desktopVideoRef, setDesktopVideoRef] = useState<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -62,7 +64,8 @@ const LandingHero = () => {
 
         setScrollY(currentScrollY);
 
-        if (!isMobile) {
+        // Solo actualizar imágenes si el video terminó y no es móvil
+        if (!isMobile && videoEnded) {
           const scrollProgress = Math.min(Math.max(currentScrollY / heroHeight, 0), 1);
           const targetIndex = Math.floor(scrollProgress * (TOTAL_IMAGES - 1));
           setCurrentImageIndex(Math.max(0, Math.min(TOTAL_IMAGES - 1, targetIndex)));
@@ -81,7 +84,7 @@ const LandingHero = () => {
       setScrollY(currentScrollY);
       setShowUnderline(currentScrollY < h * 0.5);
       if (currentScrollY > 100) setShowStats(true);
-      if (!isMobile) {
+      if (!isMobile && videoEnded) {
         const progress = Math.min(Math.max(currentScrollY / h, 0), 1);
         const idx = Math.floor(progress * (TOTAL_IMAGES - 1));
         setCurrentImageIndex((prev) => (prev !== idx ? idx : prev));
@@ -96,15 +99,17 @@ const LandingHero = () => {
       window.removeEventListener('resize', checkMobile);
       if (rafId != null) cancelAnimationFrame(rafId);
     };
-  }, [isMobile]);
+  }, [isMobile, videoEnded]);
 
-  // Precarga de todas las imágenes del hero (evita fogonazos al hacer scroll)
+  // Precarga de todas las imágenes del hero
   useEffect(() => {
-    IMAGE_SEQUENCE.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
+    if (!isMobile) {
+      IMAGE_SEQUENCE.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+    }
+  }, [isMobile]);
 
   // Efecto para configurar el tiempo de inicio del video en móvil
   useEffect(() => {
@@ -127,6 +132,33 @@ const LandingHero = () => {
       setVideoStartTime(mobileVideoRef);
     }
   }, [mobileVideoRef]);
+
+  // Efecto para configurar el tiempo de inicio del video en desktop y detectar cuando termina
+  useEffect(() => {
+    const setVideoStartTime = (videoElement: HTMLVideoElement) => {
+      if (videoElement) {
+        videoElement.addEventListener('loadedmetadata', () => {
+          videoElement.currentTime = 1; // Empezar en el segundo 1
+        });
+        
+        // También configurar cuando el video esté listo para reproducir
+        videoElement.addEventListener('canplay', () => {
+          if (videoElement.currentTime < 1) {
+            videoElement.currentTime = 1;
+          }
+        });
+
+        // Detectar cuando el video termina
+        videoElement.addEventListener('ended', () => {
+          setVideoEnded(true);
+        });
+      }
+    };
+
+    if (desktopVideoRef) {
+      setVideoStartTime(desktopVideoRef);
+    }
+  }, [desktopVideoRef]);
 
   return (
     <section 
@@ -151,7 +183,7 @@ const LandingHero = () => {
           position: 'relative'
         }}
       >
-        {/* Video para móvil, imágenes secuenciales para tablet y escritorio */}
+        {/* Video para móvil y desktop */}
         {isMobile ? (
           // Video para móvil (< 640px)
           <div className="relative w-full h-full m-0 p-0" style={{ margin: 0, padding: 0 }}>
@@ -186,26 +218,59 @@ const LandingHero = () => {
             </video>
           </div>
         ) : (
-          // Imágenes secuenciales para tablet y escritorio (≥ 640px)
+          // Video o imágenes secuenciales para tablet y escritorio (≥ 640px)
           <div className="relative w-full h-full m-0 p-0" style={{ margin: 0, padding: 0 }}>
-            <img
-              src={IMAGE_SEQUENCE[currentImageIndex]}
-              alt="Hero"
-              className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
-              style={{
-                objectPosition: 'center 30%',
-                margin: 0,
-                padding: 0,
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                width: '100%',
-                height: '100%',
-                transform: 'translateZ(0)',
-                imageRendering: 'auto',
-              }}
-            />
+            {!videoEnded ? (
+              // Mostrar video hasta que termine
+              <video 
+                ref={setDesktopVideoRef}
+                autoPlay 
+                muted 
+                playsInline 
+                preload="auto"
+                className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
+                style={{ 
+                  objectPosition: 'center 30%', 
+                  margin: 0, 
+                  padding: 0,
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: '100%',
+                  height: '100%'
+                }}
+              >
+                <source src="/video-escritorio.mp4" type="video/mp4" />
+                {/* Fallback por si el video no carga */}
+                <img 
+                  src="/immovil.jpg"
+                  alt="Hero desktop fallback"
+                  className="w-full h-full object-cover object-center m-0 p-0"
+                  style={{ margin: 0, padding: 0 }}
+                />
+              </video>
+            ) : (
+              // Mostrar imágenes secuenciales cuando el video termine
+              <img
+                src={IMAGE_SEQUENCE[currentImageIndex]}
+                alt="Hero"
+                className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
+                style={{
+                  objectPosition: 'center 30%',
+                  margin: 0,
+                  padding: 0,
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: '100%',
+                  height: '100%',
+                  transform: 'translateZ(0)',
+                  imageRendering: 'auto',
+                }}
+              />
+            )}
           </div>
         )}
         
