@@ -5,10 +5,9 @@ import { useLanguage } from '../../context/LanguageContext';
 // Generar array de imágenes secuenciales (WebP)
 const generateImageSequence = () => {
   const images: string[] = [];
-  for (let i = 0; i <= 49; i++) {
+  for (let i = 0; i <= 81; i++) {
     const num = i.toString().padStart(3, '0');
-    const n = (i + 1).toString();
-    images.push(`/Hero/video-escritorio_${num}_${n}_11zon.webp`);
+    images.push(`/Hero/Hero2/Whisk_ymz2mdn2gtm4i2nx0snmbjytqwnmrtlhntoi1yn_${num}.webp`);
   }
   return images;
 };
@@ -64,8 +63,8 @@ const LandingHero = () => {
 
         setScrollY(currentScrollY);
 
-        // Solo actualizar imágenes si el video terminó y no es móvil
-        if (!isMobile && videoEnded) {
+        // Actualizar imágenes si el video terminó (tanto móvil como desktop)
+        if (videoEnded) {
           const scrollProgress = Math.min(Math.max(currentScrollY / heroHeight, 0), 1);
           const targetIndex = Math.floor(scrollProgress * (TOTAL_IMAGES - 1));
           setCurrentImageIndex(Math.max(0, Math.min(TOTAL_IMAGES - 1, targetIndex)));
@@ -84,7 +83,7 @@ const LandingHero = () => {
       setScrollY(currentScrollY);
       setShowUnderline(currentScrollY < h * 0.5);
       if (currentScrollY > 100) setShowStats(true);
-      if (!isMobile && videoEnded) {
+      if (videoEnded) {
         const progress = Math.min(Math.max(currentScrollY / h, 0), 1);
         const idx = Math.floor(progress * (TOTAL_IMAGES - 1));
         setCurrentImageIndex((prev) => (prev !== idx ? idx : prev));
@@ -101,17 +100,15 @@ const LandingHero = () => {
     };
   }, [isMobile, videoEnded]);
 
-  // Precarga de todas las imágenes del hero
+  // Precarga de todas las imágenes del hero (móvil y desktop)
   useEffect(() => {
-    if (!isMobile) {
-      IMAGE_SEQUENCE.forEach((src) => {
-        const img = new Image();
-        img.src = src;
-      });
-    }
-  }, [isMobile]);
+    IMAGE_SEQUENCE.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
-  // Efecto para configurar el tiempo de inicio del video en móvil
+  // Efecto para configurar el tiempo de inicio del video en móvil y detectar cuando termina
   useEffect(() => {
     const setVideoStartTime = (videoElement: HTMLVideoElement) => {
       if (videoElement) {
@@ -124,6 +121,11 @@ const LandingHero = () => {
           if (videoElement.currentTime < 1) {
             videoElement.currentTime = 1;
           }
+        });
+
+        // Detectar cuando el video termina
+        videoElement.addEventListener('ended', () => {
+          setVideoEnded(true);
         });
       }
     };
@@ -164,18 +166,14 @@ const LandingHero = () => {
     <section 
       className="relative text-white overflow-hidden m-0 p-0" 
       style={{ 
-        margin: 0, 
-        padding: 0,
-        position: 'relative',
         width: '100vw',
         left: '50%',
-        right: '50%',
-        marginLeft: '-50vw',
-        marginRight: '-50vw'
+        transform: 'translateX(-50%)',
+        position: 'relative',
       }}
     >
       <div 
-        className="relative w-full min-h-screen h-[120vh] m-0 p-0" 
+        className="relative w-full min-h-screen h-[120vh] sm:h-[144vh] m-0 p-0" 
         style={{ 
           margin: 0, 
           padding: 0,
@@ -185,37 +183,46 @@ const LandingHero = () => {
       >
         {/* Video para móvil y desktop */}
         {isMobile ? (
-          // Video para móvil (< 640px)
-          <div className="relative w-full h-full m-0 p-0" style={{ margin: 0, padding: 0 }}>
-            <video 
-              ref={setMobileVideoRef}
-              autoPlay 
-              muted 
-              loop 
-              playsInline 
-              preload="auto"
-              className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
-              style={{ 
-                objectPosition: 'center 30%', 
-                margin: 0, 
-                padding: 0,
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                width: '100%',
-                height: '100%'
-              }}
-            >
-              <source src="/video-movil.mp4" type="video/mp4" />
-              {/* Fallback por si el video no carga */}
-              <img 
-                src="/immovil.jpg"
-                alt="Hero móvil fallback"
-                className="w-full h-full object-cover object-center m-0 p-0"
-                style={{ margin: 0, padding: 0 }}
+          // Video o imágenes secuenciales para móvil (< 640px)
+          <div className="relative w-full h-full">
+            {!videoEnded ? (
+              // Mostrar video hasta que termine
+              <video 
+                ref={setMobileVideoRef}
+                autoPlay 
+                muted 
+                playsInline 
+                preload="auto"
+                className="w-full h-full object-cover"
+                style={{ 
+                  objectPosition: 'center 100%',
+                  width: '100%',
+                  height: '120%'
+                }}
+              >
+                <source src="/Video3.mp4" type="video/mp4" />
+                {/* Fallback por si el video no carga */}
+                <img 
+                  src="/immovil.jpg"
+                  alt="Hero móvil fallback"
+                  className="w-full h-full object-cover"
+                />
+              </video>
+            ) : (
+              // Mostrar imágenes secuenciales cuando el video termine
+              <img
+                src={IMAGE_SEQUENCE[currentImageIndex]}
+                alt="Hero"
+                className="w-full h-full object-cover"
+                style={{
+                  objectPosition: 'center 100%',
+                  width: '100%',
+                  height: '120%',
+                  transform: 'translateZ(0)',
+                  imageRendering: 'auto',
+                }}
               />
-            </video>
+            )}
           </div>
         ) : (
           // Video o imágenes secuenciales para tablet y escritorio (≥ 640px)
@@ -241,7 +248,7 @@ const LandingHero = () => {
                   height: '100%'
                 }}
               >
-                <source src="/video-escritorio.mp4" type="video/mp4" />
+                <source src="/Video3.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -257,7 +264,7 @@ const LandingHero = () => {
                 alt="Hero"
                 className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
                 style={{
-                  objectPosition: 'center 30%',
+                  objectPosition: 'center 80%',
                   margin: 0,
                   padding: 0,
                   top: 0,
@@ -274,13 +281,14 @@ const LandingHero = () => {
           </div>
         )}
         
-        <div className="absolute inset-0 bg-black/60 z-0"></div>
+        {/* Overlay con degradado para mejor visibilidad en móvil */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60 sm:bg-black/50 z-0"></div>
 
         {/* Contenido del hero */}
-        <div className="absolute inset-0 flex items-start justify-center pt-32 sm:pt-28 md:pt-32 pb-16 sm:pb-20 px-4 z-10">
+        <div className="absolute inset-0 flex items-start justify-center pt-24 sm:pt-32 pb-16 px-4 z-10">
           <div className="text-center w-full max-w-4xl mx-auto">
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 leading-tight text-white px-6 sm:px-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 leading-tight text-white px-6 sm:px-4 drop-shadow-lg">
               {t('hero.title')}{' '}
               {language === 'es' && (
                 <span className="relative inline-block">
@@ -317,7 +325,7 @@ const LandingHero = () => {
               <span className="hidden sm:inline text-blue-400">.</span>
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl mb-8 text-white max-w-3xl mx-auto drop-shadow-md">
               {t('hero.subtitle')}
             </p>
 
