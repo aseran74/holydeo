@@ -225,7 +225,7 @@ const LandingHero = () => {
                 src={IMAGE_SEQUENCE[currentImageIndex]}
                 alt="Hero"
                 className="w-full h-full object-cover"
-                style={{
+                style={{ 
                   objectPosition: 'center center',
                   width: '120%',
                   height: '120%',
@@ -248,7 +248,7 @@ const LandingHero = () => {
                 preload="auto"
                 className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
                 style={{ 
-                  objectPosition: 'center 180%', 
+                  objectPosition: 'center 100%', 
                   margin: 0, 
                   padding: 0,
                   top: 0,
