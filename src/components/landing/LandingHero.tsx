@@ -195,9 +195,9 @@ const LandingHero = () => {
                 preload="auto"
                 className="w-full h-full object-cover"
                 style={{ 
-                  objectPosition: 'center 100%',
+                  objectPosition: 'center 180%',
                   width: '100%',
-                  height: '120%'
+                  height: '140%'
                 }}
               >
                 <source src="/Video3.mp4" type="video/mp4" />
@@ -215,9 +215,9 @@ const LandingHero = () => {
                 alt="Hero"
                 className="w-full h-full object-cover"
                 style={{
-                  objectPosition: 'center 100%',
+                  objectPosition: 'center 180%',
                   width: '100%',
-                  height: '120%',
+                  height: '140%',
                   transform: 'translateZ(0)',
                   imageRendering: 'auto',
                 }}
