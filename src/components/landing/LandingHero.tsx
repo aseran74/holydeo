@@ -224,13 +224,19 @@ const LandingHero = () => {
               <img
                 src={IMAGE_SEQUENCE[currentImageIndex]}
                 alt="Hero"
-                className="w-full h-full object-cover"
-                style={{ 
-                  objectPosition: 'center center',
-                  width: '120%',
-                  height: '120%',
+                className="w-full h-full object-cover absolute m-0 p-0"
+                style={{
+                  // 'top' controla qué tan abajo empieza la imagen
+                  top: '00%', 
+                  left: 0,
+                  width: '100%',
+                  // Un height mayor a 100% permite que la imagen se desplace sin dejar huecos
+                  height: '140%', 
+                  // 'center 20%' hace que se vea más la parte de arriba de la foto
+                  objectPosition: 'center 200%', 
                   transform: 'translateZ(0)',
                   imageRendering: 'auto',
+                  transition: 'object-position 0.5s ease-out' // Suaviza el cambio
                 }}
               />
             )}
