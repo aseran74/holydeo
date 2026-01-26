@@ -2,10 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import LandingSearchForm from '../common/LandingSearchForm';
 import { useLanguage } from '../../context/LanguageContext';
 
-// Generar array de imágenes secuenciales (WebP)
+// Generar array de imágenes secuenciales (WebP) - Solo las 20 primeras
 const generateImageSequence = () => {
   const images: string[] = [];
-  for (let i = 0; i <= 81; i++) {
+  for (let i = 0; i <= 19; i++) {
     const num = i.toString().padStart(3, '0');
     images.push(`/Hero/Hero2/Whisk_ymz2mdn2gtm4i2nx0snmbjytqwnmrtlhntoi1yn_${num}.webp`);
   }
@@ -100,11 +100,22 @@ const LandingHero = () => {
     };
   }, [isMobile, videoEnded]);
 
-  // Precarga de todas las imágenes del hero (móvil y desktop)
+  // Precarga de todas las imágenes del hero con cache (móvil y desktop)
   useEffect(() => {
     IMAGE_SEQUENCE.forEach((src) => {
       const img = new Image();
+      // Forzar cache agregando timestamp para evitar problemas de cache
       img.src = src;
+      // Pre-cargar con fetch para asegurar cache
+      fetch(src, { 
+        cache: 'force-cache',
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'max-age=31536000'
+        }
+      }).catch(() => {
+        // Si falla el fetch, la imagen se cargará normalmente
+      });
     });
   }, []);
 
@@ -195,9 +206,9 @@ const LandingHero = () => {
                 preload="auto"
                 className="w-full h-full object-cover"
                 style={{ 
-                  objectPosition: 'center 180%',
+                  objectPosition: 'center center',
                   width: '100%',
-                  height: '140%'
+                  height: '100%'
                 }}
               >
                 <source src="/Video3.mp4" type="video/mp4" />
@@ -215,9 +226,9 @@ const LandingHero = () => {
                 alt="Hero"
                 className="w-full h-full object-cover"
                 style={{
-                  objectPosition: 'center 180%',
+                  objectPosition: 'center center',
                   width: '100%',
-                  height: '140%',
+                  height: '100%',
                   transform: 'translateZ(0)',
                   imageRendering: 'auto',
                 }}
@@ -281,8 +292,8 @@ const LandingHero = () => {
           </div>
         )}
         
-        {/* Overlay con degradado para mejor visibilidad en móvil */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60 sm:bg-black/50 z-0"></div>
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/40 sm:bg-black/60 z-0"></div>
 
         {/* Contenido del hero */}
         <div className="absolute inset-0 flex items-start justify-center pt-24 sm:pt-32 pb-16 px-4 z-10">
@@ -330,12 +341,12 @@ const LandingHero = () => {
             </p>
 
             {/* Buscador */}
-            <div id="search" className="w-full max-w-4xl mx-auto relative z-10 scroll-mt-24">
+            <div id="search" className="w-full max-w-4xl mx-auto relative z-20 scroll-mt-24">
               <LandingSearchForm />
             </div>
 
             {/* Estadísticas con efecto de scroll */}
-            <div className={`mt-8 sm:mt-12 flex flex-row md:grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full px-6 sm:px-4 transition-all duration-1000 ease-out transform z-[-10] ${
+            <div className={`mt-8 sm:mt-12 flex flex-row md:grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full px-6 sm:px-4 transition-all duration-1000 ease-out transform z-10 ${
               showStats 
                 ? 'translate-y-0 opacity-100' 
                 : 'translate-y-8 opacity-0'
