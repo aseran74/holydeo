@@ -207,8 +207,8 @@ const LandingHero = () => {
                 className="w-full h-full object-cover"
                 style={{ 
                   objectPosition: 'center center',
-                  width: '100%',
-                  height: '100%'
+                  width: '120%',
+                  height: '120%'
                 }}
               >
                 <source src="/Video3.mp4" type="video/mp4" />
@@ -227,8 +227,8 @@ const LandingHero = () => {
                 className="w-full h-full object-cover"
                 style={{
                   objectPosition: 'center center',
-                  width: '100%',
-                  height: '100%',
+                  width: '120%',
+                  height: '120%',
                   transform: 'translateZ(0)',
                   imageRendering: 'auto',
                 }}
@@ -248,7 +248,7 @@ const LandingHero = () => {
                 preload="auto"
                 className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
                 style={{ 
-                  objectPosition: 'center 30%', 
+                  objectPosition: 'center 180%', 
                   margin: 0, 
                   padding: 0,
                   top: 0,
@@ -256,7 +256,7 @@ const LandingHero = () => {
                   right: 0,
                   bottom: 0,
                   width: '100%',
-                  height: '100%'
+                  height: '120%'
                 }}
               >
                 <source src="/Video3.mp4" type="video/mp4" />
@@ -265,7 +265,7 @@ const LandingHero = () => {
                   src="/immovil.jpg"
                   alt="Hero desktop fallback"
                   className="w-full h-full object-cover object-center m-0 p-0"
-                  style={{ margin: 0, padding: 0 }}
+                  style={{ margin: 10, padding: 0 }}
                 />
               </video>
             ) : (
@@ -275,15 +275,16 @@ const LandingHero = () => {
                 alt="Hero"
                 className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
                 style={{
-                  objectPosition: 'center 80%',
+                  objectPosition: 'center 100%',
                   margin: 0,
                   padding: 0,
                   top: 0,
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  width: '100%',
-                  height: '100%',
+                  width: '130%',
+                  height: '120%'
+                  ,
                   transform: 'translateZ(0)',
                   imageRendering: 'auto',
                 }}
