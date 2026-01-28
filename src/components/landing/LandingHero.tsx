@@ -7,7 +7,8 @@ const generateImageSequence = () => {
   const images: string[] = [];
   for (let i = 0; i <= 19; i++) {
     const num = i.toString().padStart(3, '0');
-    images.push(`/Hero/Hero2/Whisk_ymz2mdn2gtm4i2nx0snmbjytqwnmrtlhntoi1yn_${num}.webp`);
+    const n = (i + 1).toString();
+    images.push(`/Hero/video-escritorio_${num}_${n}_11zon.webp`);
   }
   return images;
 };
@@ -211,7 +212,7 @@ const LandingHero = () => {
                   height: '120%'
                 }}
               >
-                <source src="/Videodefi.mp4" type="video/mp4" />
+                <source src="/video-escritorio.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -265,7 +266,7 @@ const LandingHero = () => {
                   height: '120%'
                 }}
               >
-                <source src="/Videodefi.mp4" type="video/mp4" />
+                <source src="/video-escritorio.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
