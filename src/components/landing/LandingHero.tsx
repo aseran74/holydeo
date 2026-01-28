@@ -2,12 +2,12 @@ import { useState, useEffect, useMemo } from 'react';
 import LandingSearchForm from '../common/LandingSearchForm';
 import { useLanguage } from '../../context/LanguageContext';
 
-// Generar array de imágenes secuenciales (WebP) - Solo las 20 primeras
+// Generar array de imágenes secuenciales (WebP) - Hasta 50 fotogramas
 const generateImageSequence = () => {
   const images: string[] = [];
-  for (let i = 0; i <= 19; i++) {
+  for (let i = 0; i <= 49; i++) {
     const num = i.toString().padStart(3, '0');
-    images.push(`/Hero3/Whisk_uwy3immjfwn4ejy40cowajytydmhrtl4ktmx0yy_${num}.webp`);
+    images.push(`/Hero4/Video4_${num}.webp`);
   }
   return images;
 };
@@ -212,7 +212,7 @@ const LandingHero = () => {
                   filter: 'brightness(1.2) contrast(1.1)'
                 }}
               >
-                <source src="/Videofinal2.mp4" type="video/mp4" />
+                <source src="/Video4.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -267,7 +267,7 @@ const LandingHero = () => {
                   filter: 'brightness(1.2) contrast(1.1)'
                 }}
               >
-                <source src="/Videofinal2.mp4" type="video/mp4" />
+                <source src="/Video4.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
