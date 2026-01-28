@@ -212,7 +212,7 @@ const LandingHero = () => {
                   filter: 'brightness(1.2) contrast(1.1)'
                 }}
               >
-                <source src="/Videofinal.mp4" type="video/mp4" />
+                <source src="/Videofinal2.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -267,7 +267,7 @@ const LandingHero = () => {
                   filter: 'brightness(1.2) contrast(1.1)'
                 }}
               >
-                <source src="/Videofinal.mp4" type="video/mp4" />
+                <source src="/Videofinal2.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
