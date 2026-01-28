@@ -15,18 +15,10 @@ const generateImageSequence = () => {
 const IMAGE_SEQUENCE = generateImageSequence();
 const TOTAL_IMAGES = IMAGE_SEQUENCE.length;
 
-// Función de easing para hacer el scroll más suave (ease-out cuadrático)
-const easeOutQuad = (t: number): number => {
-  return t * (2 - t);
-};
-
-// Función para calcular el índice de imagen con easing suave
+// Calcula el índice de la imagen de forma lineal respecto al scroll (sin suavizado)
 const calculateImageIndex = (scrollProgress: number): number => {
-  // Aplicar easing para que las últimas imágenes se vean más gradualmente
-  const easedProgress = easeOutQuad(scrollProgress);
-  // Ajustar para que las últimas imágenes tarden más en aparecer
-  const adjustedProgress = Math.pow(easedProgress, 0.85);
-  return Math.floor(adjustedProgress * (TOTAL_IMAGES - 1));
+  const clamped = Math.min(Math.max(scrollProgress, 0), 1);
+  return Math.floor(clamped * (TOTAL_IMAGES - 1));
 };
 
 function getInitialHeroState() {
@@ -59,11 +51,11 @@ const LandingHero = () => {
   const [mobileVideoRef, setMobileVideoRef] = useState<HTMLVideoElement | null>(null);
   const [desktopVideoRef, setDesktopVideoRef] = useState<HTMLVideoElement | null>(null);
 
-  // Delay de 2s antes de arrancar el video (móvil y desktop)
+  // Delay de 3s antes de arrancar el video (móvil y desktop)
   useEffect(() => {
     if (videoEnded) return;
     setShouldPlayVideo(false);
-    const t = window.setTimeout(() => setShouldPlayVideo(true), 2000);
+    const t = window.setTimeout(() => setShouldPlayVideo(true), 3000);
     return () => window.clearTimeout(t);
   }, [videoEnded]);
 
