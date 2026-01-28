@@ -2,10 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import LandingSearchForm from '../common/LandingSearchForm';
 import { useLanguage } from '../../context/LanguageContext';
 
-// Generar array de imágenes secuenciales (WebP) - Hasta 50 fotogramas
+// Generar array de imágenes secuenciales (WebP) - Todas las imágenes
 const generateImageSequence = () => {
   const images: string[] = [];
-  for (let i = 0; i <= 49; i++) {
+  for (let i = 0; i <= 81; i++) {
     const num = i.toString().padStart(3, '0');
     images.push(`/Hero4/Video4_${num}.webp`);
   }
@@ -14,6 +14,20 @@ const generateImageSequence = () => {
 
 const IMAGE_SEQUENCE = generateImageSequence();
 const TOTAL_IMAGES = IMAGE_SEQUENCE.length;
+
+// Función de easing para hacer el scroll más suave (ease-out cuadrático)
+const easeOutQuad = (t: number): number => {
+  return t * (2 - t);
+};
+
+// Función para calcular el índice de imagen con easing suave
+const calculateImageIndex = (scrollProgress: number): number => {
+  // Aplicar easing para que las últimas imágenes se vean más gradualmente
+  const easedProgress = easeOutQuad(scrollProgress);
+  // Ajustar para que las últimas imágenes tarden más en aparecer
+  const adjustedProgress = Math.pow(easedProgress, 0.85);
+  return Math.floor(adjustedProgress * (TOTAL_IMAGES - 1));
+};
 
 function getInitialHeroState() {
   if (typeof window === 'undefined')
@@ -27,7 +41,7 @@ function getInitialHeroState() {
   let currentImageIndex = 0;
   if (!isMobile) {
     const p = Math.min(Math.max(scrollY / h, 0), 1);
-    currentImageIndex = Math.floor(p * (TOTAL_IMAGES - 1));
+    currentImageIndex = calculateImageIndex(p);
   }
   return { scrollY, showUnderline, showStats, isMobile, currentImageIndex };
 }
@@ -66,7 +80,7 @@ const LandingHero = () => {
         // Actualizar imágenes si el video terminó (tanto móvil como desktop)
         if (videoEnded) {
           const scrollProgress = Math.min(Math.max(currentScrollY / heroHeight, 0), 1);
-          const targetIndex = Math.floor(scrollProgress * (TOTAL_IMAGES - 1));
+          const targetIndex = calculateImageIndex(scrollProgress);
           setCurrentImageIndex(Math.max(0, Math.min(TOTAL_IMAGES - 1, targetIndex)));
         }
 
@@ -85,7 +99,7 @@ const LandingHero = () => {
       if (currentScrollY > 100) setShowStats(true);
       if (videoEnded) {
         const progress = Math.min(Math.max(currentScrollY / h, 0), 1);
-        const idx = Math.floor(progress * (TOTAL_IMAGES - 1));
+        const idx = calculateImageIndex(progress);
         setCurrentImageIndex((prev) => (prev !== idx ? idx : prev));
       }
     };
@@ -208,11 +222,10 @@ const LandingHero = () => {
                 style={{ 
                   objectPosition: 'center center',
                   width: '100%',
-                  height: '100%',
-                  filter: 'brightness(1.2) contrast(1.1)'
+                  height: '100%'
                 }}
               >
-                <source src="/Video4.mp4" type="video/mp4" />
+                <source src="/Furgo mas bonita.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -236,8 +249,7 @@ const LandingHero = () => {
                   objectPosition: 'center 200%', 
                   transform: 'translateZ(0)',
                   imageRendering: 'auto',
-                  transition: 'object-position 0.5s ease-out', // Suaviza el cambio
-                  filter: 'brightness(1.2) contrast(1.1)'
+                  transition: 'object-position 0.5s ease-out' // Suaviza el cambio
                 }}
               />
             )}
@@ -263,11 +275,10 @@ const LandingHero = () => {
                   right: 0,
                   bottom: 0,
                   width: '100%',
-                  height: '100%',
-                  filter: 'brightness(1.2) contrast(1.1)'
+                  height: '100%'
                 }}
               >
-                <source src="/Video4.mp4" type="video/mp4" />
+                <source src="/Furgo mas bonita.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -294,7 +305,6 @@ const LandingHero = () => {
                   height: '100%',
                   transform: 'translateZ(0)',
                   imageRendering: 'auto',
-                  filter: 'brightness(1.2) contrast(1.1)'
                 }}
               />
             )}
@@ -302,7 +312,7 @@ const LandingHero = () => {
         )}
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black/20 sm:bg-black/40 z-0"></div>
+        <div className="absolute inset-0 bg-black/40 sm:bg-black/60 z-0"></div>
 
         {/* Contenido del hero */}
         <div className="absolute inset-0 flex items-start justify-center pt-24 sm:pt-32 pb-16 px-4 z-10">
