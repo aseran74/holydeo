@@ -7,8 +7,7 @@ const generateImageSequence = () => {
   const images: string[] = [];
   for (let i = 0; i <= 19; i++) {
     const num = i.toString().padStart(3, '0');
-    const n = (i + 1).toString();
-    images.push(`/Hero/video-escritorio_${num}_${n}_11zon.webp`);
+    images.push(`/Hero3/Whisk_uwy3immjfwn4ejy40cowajytydmhrtl4ktmx0yy_${num}.webp`);
   }
   return images;
 };
@@ -208,11 +207,12 @@ const LandingHero = () => {
                 className="w-full h-full object-cover"
                 style={{ 
                   objectPosition: 'center center',
-                  width: '120%',
-                  height: '120%'
+                  width: '100%',
+                  height: '100%',
+                  filter: 'brightness(1.2) contrast(1.1)'
                 }}
               >
-                <source src="/video-escritorio.mp4" type="video/mp4" />
+                <source src="/Videofinal.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -231,13 +231,13 @@ const LandingHero = () => {
                   top: '00%', 
                   left: 0,
                   width: '100%',
-                  // Un height mayor a 100% permite que la imagen se desplace sin dejar huecos
-                  height: '140%', 
+                  height: '100%', 
                   // 'center 20%' hace que se vea más la parte de arriba de la foto
                   objectPosition: 'center 200%', 
                   transform: 'translateZ(0)',
                   imageRendering: 'auto',
-                  transition: 'object-position 0.5s ease-out' // Suaviza el cambio
+                  transition: 'object-position 0.5s ease-out', // Suaviza el cambio
+                  filter: 'brightness(1.2) contrast(1.1)'
                 }}
               />
             )}
@@ -263,10 +263,11 @@ const LandingHero = () => {
                   right: 0,
                   bottom: 0,
                   width: '100%',
-                  height: '120%'
+                  height: '100%',
+                  filter: 'brightness(1.2) contrast(1.1)'
                 }}
               >
-                <source src="/video-escritorio.mp4" type="video/mp4" />
+                <source src="/Videofinal.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -289,11 +290,11 @@ const LandingHero = () => {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  width: '130%',
-                  height: '120%'
-                  ,
+                  width: '100%',
+                  height: '100%',
                   transform: 'translateZ(0)',
                   imageRendering: 'auto',
+                  filter: 'brightness(1.2) contrast(1.1)'
                 }}
               />
             )}
@@ -301,7 +302,7 @@ const LandingHero = () => {
         )}
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black/40 sm:bg-black/60 z-0"></div>
+        <div className="absolute inset-0 bg-black/20 sm:bg-black/40 z-0"></div>
 
         {/* Contenido del hero */}
         <div className="absolute inset-0 flex items-start justify-center pt-24 sm:pt-32 pb-16 px-4 z-10">
