@@ -211,7 +211,7 @@ const LandingHero = () => {
                   height: '120%'
                 }}
               >
-                <source src="/Video3.mp4" type="video/mp4" />
+                <source src="/Videodefi.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -265,7 +265,7 @@ const LandingHero = () => {
                   height: '120%'
                 }}
               >
-                <source src="/Video3.mp4" type="video/mp4" />
+                <source src="/Videodefi.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
