@@ -55,8 +55,26 @@ const LandingHero = () => {
   const [scrollY, setScrollY] = useState(initial.scrollY);
   const [currentImageIndex, setCurrentImageIndex] = useState(initial.currentImageIndex);
   const [videoEnded, setVideoEnded] = useState(false);
+  const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
   const [mobileVideoRef, setMobileVideoRef] = useState<HTMLVideoElement | null>(null);
   const [desktopVideoRef, setDesktopVideoRef] = useState<HTMLVideoElement | null>(null);
+
+  // Delay de 2s antes de arrancar el video (móvil y desktop)
+  useEffect(() => {
+    if (videoEnded) return;
+    setShouldPlayVideo(false);
+    const t = window.setTimeout(() => setShouldPlayVideo(true), 2000);
+    return () => window.clearTimeout(t);
+  }, [videoEnded]);
+
+  // Intentar reproducir cuando toque (por si autoPlay no arranca a la primera)
+  useEffect(() => {
+    if (!shouldPlayVideo || videoEnded) return;
+    const v = isMobile ? mobileVideoRef : desktopVideoRef;
+    if (!v) return;
+    // muted + playsInline ya están puestos; play() puede fallar en algunos navegadores y no pasa nada
+    v.play().catch(() => {});
+  }, [shouldPlayVideo, videoEnded, isMobile, mobileVideoRef, desktopVideoRef]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -214,7 +232,7 @@ const LandingHero = () => {
               // Mostrar video hasta que termine
               <video 
                 ref={setMobileVideoRef}
-                autoPlay 
+                autoPlay={shouldPlayVideo}
                 muted 
                 playsInline 
                 preload="auto"
@@ -225,7 +243,7 @@ const LandingHero = () => {
                   height: '100%'
                 }}
               >
-                <source src="/Furgo mas bonita.mp4" type="video/mp4" />
+                <source src="/Hero4/Furgopeque.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -261,13 +279,13 @@ const LandingHero = () => {
               // Mostrar video hasta que termine
               <video 
                 ref={setDesktopVideoRef}
-                autoPlay 
+                autoPlay={shouldPlayVideo}
                 muted 
                 playsInline 
                 preload="auto"
                 className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
                 style={{ 
-                  objectPosition: 'center 100%', 
+                  objectPosition: 'center center', 
                   margin: 0, 
                   padding: 0,
                   top: 0,
@@ -278,7 +296,7 @@ const LandingHero = () => {
                   height: '100%'
                 }}
               >
-                <source src="/Furgo mas bonita.mp4" type="video/mp4" />
+                <source src="/Hero4/Furgopeque.mp4" type="video/mp4" />
                 {/* Fallback por si el video no carga */}
                 <img 
                   src="/immovil.jpg"
@@ -294,7 +312,7 @@ const LandingHero = () => {
                 alt="Hero"
                 className="w-full h-full object-cover object-center absolute inset-0 m-0 p-0"
                 style={{
-                  objectPosition: 'center 100%',
+                  objectPosition: 'center center',
                   margin: 0,
                   padding: 0,
                   top: 0,
@@ -312,7 +330,7 @@ const LandingHero = () => {
         )}
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black/40 sm:bg-black/60 z-0"></div>
+        <div className="absolute inset-0 bg-black/20 sm:bg-black/40 z-0"></div>
 
         {/* Contenido del hero */}
         <div className="absolute inset-0 flex items-start justify-center pt-24 sm:pt-32 pb-16 px-4 z-10">
