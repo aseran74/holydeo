@@ -139,7 +139,14 @@
       }
     },
     "notFound": "Can't find the answer you're looking for?",
-    "contactSupport": "Contact Support"
+    "contactSupport": "Contact Support",
+    "searchPlaceholder": "Search questions…",
+    "clearSearch": "Clear search",
+    "results": "{count} results",
+    "noResults": "No results found for your search.",
+    "helpTitle": "Need help?",
+    "helpSubtitle": "If your question isn’t here, our team replies quickly.",
+    "helpNote": "Typical reply within 24h (24/7 support for urgent issues)."
   },
   "hero": {
     "title": "Live off season",
