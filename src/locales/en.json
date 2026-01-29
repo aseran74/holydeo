@@ -104,6 +104,8 @@
   "faq": {
     "title": "Frequently Asked Questions",
     "subtitle": "We answer all your questions about bookings and accommodations",
+    "prevCategory": "Previous",
+    "nextCategory": "Next",
     "questions": {
       "howToBook": {
         "question": "How can I book a property?",

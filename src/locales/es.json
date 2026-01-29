@@ -104,6 +104,8 @@
   "faq": {
     "title": "Preguntas Frecuentes",
     "subtitle": "Resolvemos todas tus dudas sobre reservas y alojamientos",
+    "prevCategory": "Anterior",
+    "nextCategory": "Siguiente",
     "questions": {
       "howToBook": {
         "question": "¿Cómo puedo reservar una propiedad?",
