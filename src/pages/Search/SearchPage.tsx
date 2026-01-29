@@ -108,27 +108,48 @@ const SearchPage = () => {
     lng: -3.7038 
   }), []);
 
+  const hasGoogleMaps = useMemo(
+    () => isLoaded && typeof window !== 'undefined' && !!window.google?.maps,
+    [isLoaded]
+  );
+
   // Iconos de marcadores optimizados con useMemo
-  const propertyMarkerIcon = useMemo(() => ({
-    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+  const propertyMarkerIcon = useMemo(() => {
+    const url = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" fill="#3B82F6" stroke="#1E40AF" stroke-width="2"/>
         <path d="M9 22V12H15V22" fill="white"/>
       </svg>
-    `)}`,
-    scaledSize: new window.google.maps.Size(32, 32),
-    anchor: new window.google.maps.Point(16, 32)
-  }), []);
+    `)}`;
 
-  const experienceMarkerIcon = useMemo(() => ({
-    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+    if (!hasGoogleMaps) {
+      return { url };
+    }
+
+    return {
+      url,
+      scaledSize: new window.google.maps.Size(32, 32),
+      anchor: new window.google.maps.Point(16, 32),
+    };
+  }, [hasGoogleMaps]);
+
+  const experienceMarkerIcon = useMemo(() => {
+    const url = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#F59E0B" stroke="#D97706" stroke-width="2"/>
       </svg>
-    `)}`,
-    scaledSize: new window.google.maps.Size(32, 32),
-    anchor: new window.google.maps.Point(16, 32)
-  }), []);
+    `)}`;
+
+    if (!hasGoogleMaps) {
+      return { url };
+    }
+
+    return {
+      url,
+      scaledSize: new window.google.maps.Size(32, 32),
+      anchor: new window.google.maps.Point(16, 32),
+    };
+  }, [hasGoogleMaps]);
 
   // Helper function to get proper image URL for experiences
   const getExperienceImageUrl = (photos: string[] | undefined) => {
@@ -582,7 +603,7 @@ const SearchPage = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 search-page">
+    <div className={`min-h-screen bg-gray-50 search-page ${viewMode === 'map' ? 'overflow-hidden md:overflow-auto' : ''}`}>
       <LandingNavbar />
 
       {/* Contenido principal */}
@@ -811,16 +832,19 @@ const SearchPage = () => {
               </div>
                          ) : viewMode === 'map' ? (
                // Vista del mapa
-               <div className="mb-8 rounded-lg overflow-hidden shadow md:relative" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+            <div
+              className="fixed inset-0 z-40 mb-0 overflow-hidden bg-white shadow rounded-none md:relative md:mb-8 md:rounded-lg"
+              style={{ maxWidth: '100%', overflow: 'hidden' }}
+            >
                  {!isLoaded ? (
-                   <div className="flex items-center justify-center h-[90vh] md:h-[85vh] min-h-[90vh] md:min-h-[85vh] bg-gray-100">
+                <div className="flex items-center justify-center h-[100dvh] md:h-[85vh] min-h-[100dvh] md:min-h-[85vh] bg-gray-100">
                      <div className="text-center">
                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                        <p className="text-gray-600">Cargando mapa...</p>
                      </div>
                    </div>
                  ) : loadError ? (
-                   <div className="flex items-center justify-center h-[90vh] md:h-[85vh] min-h-[90vh] md:min-h-[85vh] bg-gray-100">
+                <div className="flex items-center justify-center h-[100dvh] md:h-[85vh] min-h-[100dvh] md:min-h-[85vh] bg-gray-100">
                      <div className="text-center text-red-600">
                        <p>Error al cargar el mapa</p>
                        <p className="text-sm">{loadError.message}</p>
@@ -830,7 +854,7 @@ const SearchPage = () => {
                    <>
                      <GoogleMap
                        mapContainerStyle={mapContainerStyle}
-                       mapContainerClassName="!h-[90vh] !min-h-[90vh] md:!h-[85vh] md:!min-h-[85vh]"
+                    mapContainerClassName="!h-[100dvh] !min-h-[100dvh] md:!h-[85vh] md:!min-h-[85vh]"
                        onLoad={onLoadMap}
                        center={defaultCenter}
                        zoom={6}
